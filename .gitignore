@@ -17,9 +17,9 @@ logs
 config/buildConfig.json
 config/manifest.json
 config/manifest-dll.json
-app/view/*
-!app/view/layout.html
-!app/view/README.md
-!app/view/.gitkeep
+app/template/*
+!app/template/layout.html
+!app/template/README.md
+!app/template/.gitkeep
 package-lock.json
 yarn.lock

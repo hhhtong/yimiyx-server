@@ -13,6 +13,7 @@ module.exports = {
   },
   alias: {
     '~': __dirname,
+    '@': 'app/web',
     app: 'app/web/framework/vue',
     server: 'app/web/framework/vue/entry/server.js',
     client: 'app/web/framework/vue/entry/client.js',

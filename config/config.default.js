@@ -12,7 +12,7 @@ module.exports = app => {
   };
 
   exports.vuessr = {
-    layout: path.join(app.baseDir, 'app/web/view/layout.html')
+    layout: path.join(app.baseDir, 'app/web/template/index.html')
   };
 
   exports.logger = {
