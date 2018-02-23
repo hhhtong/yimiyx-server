@@ -4,12 +4,12 @@ module.exports = app => {
 
     async index() {
       const { ctx } = this;
-      await ctx.render('app/app.js', { message: 'server render' });
+      await ctx.renderClient('app/app.js', { message: 'client render' });
     }
 
-    async client() {
+    async server() {
       const { ctx } = this;
-      await ctx.renderClient('app/app.js', { message: 'client render' });
+      await ctx.render('app/app.js', { message: 'server render' });
     }
 
     // async pager() {
