@@ -1,0 +1,10 @@
+{
+    "defaultSeverity": "error",
+    "extends": "eslint-config-standard",
+    "jsRules": {},
+    "rules": {
+        "quotemark": [true, "single", "jsx-double"],
+        "eofline": false
+    },
+    "rulesDirectory": ["app/web/"]
+}
