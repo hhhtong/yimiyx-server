@@ -1,8 +1,10 @@
-require('reflect-metadata');
-const typeorm = require('typeorm');
+import 'reflect-metadata';
+import typeorm from 'typeorm';
 
 module.exports = {
-  get initDB() {
+  get connectDB() {
+    console.warn('############', this);
+
     if (!this.DB) {
       this.DB = typeorm.createConnection({
         type: "mariadb",

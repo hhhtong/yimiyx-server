@@ -4,9 +4,9 @@ export default class HomeController extends Controller {
 
   async index() {
     const { ctx } = this;
+    console.log('@@@', ctx.connectDB);
     const connection = await ctx.connectDB;
 
-    console.log('@@@', connection);
     await ctx.renderClient('app/app.js');
   }
 
