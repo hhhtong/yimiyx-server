@@ -9,12 +9,12 @@
     "index.ts",
     "app/**/*.ts",
     "config/**/*.ts",
-    "mock/**/*.ts",
-    "test/**/*.ts"
+    "test/**/*.ts",
+    "libs/**/**/**/*.ts"
   ],
   "exclude": [
     "public",
-    "app/web",
+    "app/web*",
     "app/public",
     "app/view"
   ]
