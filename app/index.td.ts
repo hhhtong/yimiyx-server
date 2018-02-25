@@ -1,4 +1,5 @@
 import HomeController from './controller/home';
+import SupplierService from './service/supplier'
 
 declare module 'egg' {
   export interface Application {
@@ -9,6 +10,7 @@ declare module 'egg' {
   }
 
   export interface IService {
+    supplier: SupplierService
   }
 
   function startCluster(options: any)

@@ -1,8 +1,12 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-// import { Category } from "./Category";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+// import { Category } from "./Category"; // 外键
 
 @Entity()
 export class Supplier {
+  constructor({ title, text }) {
+    this.title = title;
+    this.text = text;
+  }
 
   @PrimaryGeneratedColumn()
   id: number;

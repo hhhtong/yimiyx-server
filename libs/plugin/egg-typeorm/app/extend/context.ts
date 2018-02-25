@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 
-export const connectDB = () => {
-  if (!this.instanceDB) {
-    this.instanceDB = createConnection()
+export default {
+  get db() {
+    if (!this.connection) {
+      this.connection = createConnection();
+    }
+    return this.connection;
   }
-  return this.instanceDB
 }
