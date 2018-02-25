@@ -1,0 +1,1 @@
+## typeorm规范 migration 迁移目录，每个迁移类有一个up一个down方法

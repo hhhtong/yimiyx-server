@@ -9,17 +9,17 @@
   "synchronize": true,
   "logging": false,
   "entities": [
-    "app/entity/*.js"
+    "app/db/entity/*.js"
   ],
   "subscribers": [
-    "app/subscriber/*.js"
+    "app/db/subscriber/*.js"
   ],
   "migrations": [
-    "app/migration/*.js"
+    "app/db/migration/*.js"
   ],
   "cli": {
-    "entitiesDir": "app/entity",
-    "migrationsDir": "app/migration",
-    "subscribersDir": "app/subscriber"
+    "entitiesDir": "app/db/entity",
+    "migrationsDir": "app/db/migration",
+    "subscribersDir": "app/db/subscriber"
   }
 }

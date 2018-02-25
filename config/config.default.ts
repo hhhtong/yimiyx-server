@@ -1,12 +1,12 @@
 import { Application, EggAppConfig } from 'egg';
-import * as path from 'path';
-import * as fs from 'fs';
+import { join } from 'path';
+// import { readFileSync } from 'fs';
 
 export default (app: EggAppConfig) => {
   const exports: any = {};
 
   // exports.siteFile = {
-  //   '/favicon.ico': fs.readFileSync(path.join(app.baseDir, 'app/web/asset/images/favicon.ico'))
+  //   '/favicon.ico': readFileSync(join(app.baseDir, 'app/web/asset/images/favicon.ico'))
   // };
 
   exports.view = {
@@ -14,17 +14,17 @@ export default (app: EggAppConfig) => {
   };
 
   exports.vuessr = {
-    layout: path.join(app.baseDir, 'app/web/template/layout.html')
+    layout: join(app.baseDir, 'app/web/template/layout.html')
   };
 
   exports.logger = {
     consoleLevel: 'DEBUG',
-    dir: path.join(app.baseDir, 'logs')
+    dir: join(app.baseDir, 'logs')
   };
 
   exports.static = {
     prefix: '/public/',
-    dir: path.join(app.baseDir, 'public')
+    dir: join(app.baseDir, 'public')
   };
 
   exports.keys = '123456';

@@ -1,6 +1,6 @@
 import { Service } from 'egg';
 import { Logger } from 'egg-logger';
-import { Supplier } from "../entity/supplier";
+import { Supplier } from "../db/entity/supplier";
 
 const log = new Logger()
 
@@ -11,9 +11,11 @@ export default class SupplierService extends Service {
 
     try {
       await db.manager.save(supplier);
-      log.info('插入数据成功：', supplier);
+      log.info(`插入数据成功：${supplier}`);
+      await db.close()
     } catch (e) {
       log.error(e.message)
+      await db.close()
     }
   }
 }
