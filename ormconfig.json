@@ -5,7 +5,7 @@
   "port": 3306,
   "username": "root",
   "password": "root",
-  "database": "test",
+  "database": "veggie_db",
   "synchronize": true,
   "logging": false,
   "entities": [

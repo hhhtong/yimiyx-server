@@ -9,13 +9,13 @@
       @on-visible-change="handleVisibleChange">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
         <FormItem label="负责人" prop="noNull">
-          <Input v-model="formValidate.name" placeholder="请输入负责人姓名"></Input>
+          <Input v-model="formValidate.principal" placeholder="请输入负责人姓名"></Input>
         </FormItem>
         <FormItem label="联系电话" prop="tel">
           <Input v-model="formValidate.tel" placeholder="请输入负责人联系电话"></Input>
         </FormItem>
-        <FormItem label="所在城市" prop="city">
-          <Select v-model="formValidate.city" placeholder="选择供货商所在城市">
+        <FormItem label="所在城市" prop="cityId">
+          <Select v-model="formValidate.cityId" placeholder="选择供货商所在城市">
             <Option value="beijing">New York</Option>
             <Option value="shanghai">London</Option>
             <Option value="shenzhen">Sydney</Option>
@@ -87,9 +87,9 @@ export default {
     return {
       payTypeRadios,
       formValidate: {
-        name: '',
+        principal: '',
         tel: '',
-        city: '',
+        cityId: '',
         address: '',
         supplierType: 1,
         payType: 'ali',
@@ -107,7 +107,7 @@ export default {
           { required: true, message: '手机号不能为空', trigger: 'blur' },
           { type: 'tel', message: '请输入正确的手机号', trigger: 'blur' }
         ],
-        city: [
+        cityId: [
           { required: true, message: '请选择一个城市', trigger: 'change' }
         ],
         address: [

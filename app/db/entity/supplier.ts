@@ -1,21 +1,49 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 // import { Category } from "./Category"; // 外键
 
+export interface SupplierRowData {
+  principal?: string;
+  tel?: string;
+  cityId?: string;
+}
+
 @Entity()
 export class Supplier {
-  constructor({ title, text }) {
-    this.title = title;
-    this.text = text;
+  constructor({ principal, tel, cityId }: SupplierRowData) {
+    this.principal = principal;
+    this.tel = tel;
+    this.cityId = cityId;
   }
 
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
+  /**
+   * 负责人姓名
+   */
+  @Column('varchar', {
+    length: 6,
+    nullable: false
+  })
+  principal: string;
 
-  @Column("text")
-  text: string;
+  /**
+   * 负责人联系方式
+   */
+  @Column('varchar', {
+    length: 20,
+    nullable: false
+  })
+  tel: string;
+
+  /**
+   * 负责人联系方式
+   */
+  @Column('char', {
+    length: 4,
+    nullable: false
+  })
+  cityId: string;
 
   // @ManyToMany(type => Category)
   // @JoinTable()
