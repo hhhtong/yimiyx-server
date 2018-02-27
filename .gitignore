@@ -13,10 +13,13 @@ artifacts.json
 *tmp
 _site
 logs
-app/**/*.js
-!app/web/*.js
+app/controller/**/*.js
+app/db/**/*.js
+app/middleware/**/*.js
+app/service/**/*.js
+app/web@ts/**/*.js
 config/**/*.js
-index.js
+/index.js
 config/buildConfig.json
 config/manifest.json
 config/manifest-dll.json
