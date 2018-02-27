@@ -14,14 +14,10 @@
         <FormItem label="联系电话" prop="tel">
           <Input v-model="formValidate.tel" placeholder="请输入负责人联系电话"></Input>
         </FormItem>
-        <FormItem label="所在城市" prop="cityId">
-          <Select v-model="formValidate.cityId" placeholder="选择供货商所在城市">
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
-          </Select>
+        <FormItem label="所在地区" prop="area">
+          <al-cascader v-model="formValidate.area" placeholder="请选择供货商所在地区"/>
         </FormItem>
-        <FormItem label="供货商地址" prop="address">
+        <FormItem label="详细地址" prop="address">
           <Input v-model="formValidate.address" type="textarea" :autosize="{ minRows: 2,maxRows: 4 }" placeholder="在此输入供货商所在详细地址"></Input>
         </FormItem>
         <FormItem label="供货商类型" required>
@@ -69,6 +65,8 @@
 </template>
 
 <script>
+import { isMobilePhone } from 'validator'
+console.info(require('area-data'))
 const payTypeRadios = [
   { text: '银行转账', label: 'bank' },
   { text: '支付宝', label: 'ali' },
@@ -84,12 +82,22 @@ export default {
   },
 
   data() {
+    const validateTel = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('手机号不能为空'))
+      } else if (!isMobilePhone(value, 'zh-CN')) {
+        return callback(new Error('请输入正确的手机号'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       payTypeRadios,
       formValidate: {
         principal: '',
         tel: '',
-        cityId: '',
+        area: [],
         address: '',
         supplierType: 1,
         payType: 'ali',
@@ -104,11 +112,10 @@ export default {
           { required: true, message: '该项不能为空', trigger: 'blur' }
         ],
         tel: [
-          { required: true, message: '手机号不能为空', trigger: 'blur' },
-          { type: 'tel', message: '请输入正确的手机号', trigger: 'blur' }
+          { validator: validateTel, trigger: 'blur' }
         ],
-        cityId: [
-          { required: true, message: '请选择一个城市', trigger: 'change' }
+        area: [
+          { required: true, message: '请选择一个城市', trigger: 'blur' }
         ],
         address: [
           { required: true, message: '地址不能为空', trigger: 'blur' },
@@ -154,10 +161,9 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.$Message.success('Success!')
           this.$emit('handleSave', this.formValidate)
         } else {
-          this.$Message.error('Fail!')
+          this.$Message.error('填写错误，请认真检查!')
         }
       })
     },

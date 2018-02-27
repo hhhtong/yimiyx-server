@@ -29,8 +29,10 @@ import router from 'router/index'
 import { appRouter } from 'router/router'
 import { mapState } from 'vuex'
 import { VirtualScroller } from 'vue-virtual-scroller'
+import iViewArea from 'iview-area'
 
 Vue.use(iView)
+Vue.use(iViewArea)
 Vue.component('virtual-scroller', VirtualScroller)
 
 export default {

@@ -1,7 +1,10 @@
 import Cookies from 'js-cookie'
+import { getToken } from '@/libs/auth'
 
 const user = {
-  state: {},
+  state: {
+    token: getToken()
+  },
   mutations: {
     logout (state, vm) {
       Cookies.remove('user')

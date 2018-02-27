@@ -27,11 +27,6 @@
     <Layout>
       <Content>
         <Table :data="tableData" :columns="tableColumns" stripe></Table>
-        <!-- <div style="margin: 10px;overflow: hidden">
-          <div style="float: right;">
-            <Page :total="100" :current="1" @on-change="changePage"></Page>
-          </div>
-        </div> -->
       </Content>
       <!-- <Sider
         v-model="showSlder"
@@ -160,8 +155,8 @@ export default {
 
     },
     // 添加 | 修改供货商 -> 保存
-    handleSave() {
-
+    handleSave(formData) {
+      // this
     }
   }
 }

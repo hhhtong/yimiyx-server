@@ -1,5 +1,5 @@
-'use strict';
-const path = require('path');
+'use strict'
+const path = require('path')
 
 module.exports = {
   egg: true,
@@ -32,7 +32,7 @@ module.exports = {
     // typescript: true
   },
   plugins: {},
-  done() {
+  done () {
 
   }
-};
+}

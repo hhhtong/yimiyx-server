@@ -1,54 +1,54 @@
-(function() {
-  const defs = {}; // id -> {dependencies, definition, instance (possibly undefined)}
+(function () {
+  const defs = {} // id -> {dependencies, definition, instance (possibly undefined)}
 
   // Used when there is no 'main' module.
   // The name is probably (hopefully) unique so minification removes for releases.
-  const register_3795 = function(id) {
-    const module = dem(id);
-    const fragments = id.split('.');
-    let target = Function('return this;')();
+  const register_3795 = function (id) {
+    const module = dem(id)
+    const fragments = id.split('.')
+    let target = Function('return this;')()
     for (let i = 0; i < fragments.length - 1; ++i) {
-      if (target[fragments[i]] === undefined) { target[fragments[i]] = {}; }
-      target = target[fragments[i]];
+      if (target[fragments[i]] === undefined) { target[fragments[i]] = {} }
+      target = target[fragments[i]]
     }
-    target[fragments[fragments.length - 1]] = module;
-  };
+    target[fragments[fragments.length - 1]] = module
+  }
 
-  const instantiate = function(id) {
-    const actual = defs[id];
-    const dependencies = actual.deps;
-    const definition = actual.defn;
-    const len = dependencies.length;
-    const instances = new Array(len);
-    for (let i = 0; i < len; ++i) { instances[i] = dem(dependencies[i]); }
-    const defResult = definition.apply(null, instances);
-    if (defResult === undefined) { throw 'module [' + id + '] returned undefined'; }
-    actual.instance = defResult;
-  };
+  const instantiate = function (id) {
+    const actual = defs[id]
+    const dependencies = actual.deps
+    const definition = actual.defn
+    const len = dependencies.length
+    const instances = new Array(len)
+    for (let i = 0; i < len; ++i) { instances[i] = dem(dependencies[i]) }
+    const defResult = definition.apply(null, instances)
+    if (defResult === undefined) { throw 'module [' + id + '] returned undefined' }
+    actual.instance = defResult
+  }
 
-  const def = function(id, dependencies, definition) {
-    if (typeof id !== 'string') { throw 'module id must be a string'; } else if (dependencies === undefined) { throw 'no dependencies for ' + id; } else if (definition === undefined) { throw 'no definition function for ' + id; }
+  const def = function (id, dependencies, definition) {
+    if (typeof id !== 'string') { throw 'module id must be a string' } else if (dependencies === undefined) { throw 'no dependencies for ' + id } else if (definition === undefined) { throw 'no definition function for ' + id }
     defs[id] = {
       deps: dependencies,
       defn: definition,
       instance: undefined
-    };
-  };
+    }
+  }
 
-  var dem = function(id) {
-    const actual = defs[id];
-    if (actual === undefined) { throw 'module [' + id + '] was undefined'; } else if (actual.instance === undefined) { instantiate(id); }
-    return actual.instance;
-  };
+  var dem = function (id) {
+    const actual = defs[id]
+    if (actual === undefined) { throw 'module [' + id + '] was undefined' } else if (actual.instance === undefined) { instantiate(id) }
+    return actual.instance
+  }
 
-  const req = function(ids, callback) {
-    const len = ids.length;
-    const instances = new Array(len);
-    for (let i = 0; i < len; ++i) { instances[i] = dem(ids[i]); }
-    callback.apply(null, instances);
-  };
+  const req = function (ids, callback) {
+    const len = ids.length
+    const instances = new Array(len)
+    for (let i = 0; i < len; ++i) { instances[i] = dem(ids[i]) }
+    callback.apply(null, instances)
+  }
 
-  const ephox = {};
+  const ephox = {}
 
   ephox.bolt = {
     module: {
@@ -58,20 +58,20 @@
         demand: dem
       }
     }
-  };
+  }
 
-  const define = def;
-  const require = req;
-  const demand = dem;
+  const define = def
+  const require = req
+  const demand = dem
   // this helps with minification when using a lot of global references
-  const defineGlobal = function(id, ref) {
-    define(id, [], function() { return ref; });
-  };
+  const defineGlobal = function (id, ref) {
+    define(id, [], function () { return ref })
+  }
   /* jsc
 ["tinymce.themes.modern.Theme","global!window","tinymce.core.ThemeManager","tinymce.themes.modern.api.ThemeApi","tinymce.ui.Api","tinymce.ui.FormatControls","global!tinymce.util.Tools.resolve","tinymce.themes.modern.ui.Render","tinymce.themes.modern.ui.Resize","tinymce.ui.NotificationManagerImpl","tinymce.ui.WindowManagerImpl","tinymce.core.ui.Factory","tinymce.core.util.Tools","tinymce.ui.AbsoluteLayout","tinymce.ui.BrowseButton","tinymce.ui.Button","tinymce.ui.ButtonGroup","tinymce.ui.Checkbox","tinymce.ui.Collection","tinymce.ui.ColorBox","tinymce.ui.ColorButton","tinymce.ui.ColorPicker","tinymce.ui.ComboBox","tinymce.ui.Container","tinymce.ui.Control","tinymce.ui.DragHelper","tinymce.ui.DropZone","tinymce.ui.ElementPath","tinymce.ui.FieldSet","tinymce.ui.FilePicker","tinymce.ui.FitLayout","tinymce.ui.FlexLayout","tinymce.ui.FloatPanel","tinymce.ui.FlowLayout","tinymce.ui.Form","ephox.katamari.api.Fun","ephox.sugar.api.node.Element","ephox.sugar.api.search.SelectorFind","global!document","tinymce.core.EditorManager","tinymce.core.Env","tinymce.ui.Widget","tinymce.ui.editorui.Align","tinymce.ui.editorui.FontSelect","tinymce.ui.editorui.FontSizeSelect","tinymce.ui.editorui.FormatSelect","tinymce.ui.editorui.Formats","tinymce.ui.editorui.InsertButton","tinymce.ui.editorui.SimpleControls","tinymce.ui.editorui.UndoRedo","tinymce.ui.editorui.VisualAid","tinymce.ui.FormItem","tinymce.ui.GridLayout","tinymce.ui.Iframe","tinymce.ui.InfoBox","tinymce.ui.KeyboardNavigation","tinymce.ui.Label","tinymce.ui.Layout","tinymce.ui.ListBox","tinymce.ui.Menu","tinymce.ui.MenuBar","tinymce.ui.MenuButton","tinymce.ui.MenuItem","tinymce.ui.MessageBox","tinymce.ui.Movable","tinymce.ui.Notification","tinymce.ui.Panel","tinymce.ui.PanelButton","tinymce.ui.Path","tinymce.ui.Progress","tinymce.ui.Radio","tinymce.ui.ReflowQueue","tinymce.ui.Resizable","tinymce.ui.ResizeHandle","tinymce.ui.Scrollable","tinymce.ui.SelectBox","tinymce.ui.Selector","tinymce.ui.Slider","tinymce.ui.Spacer","tinymce.ui.SplitButton","tinymce.ui.StackLayout","tinymce.ui.TabPanel","tinymce.ui.TextBox","tinymce.ui.Throbber","tinymce.ui.Toolbar","tinymce.ui.Tooltip","tinymce.ui.Window","tinymce.themes.modern.api.Settings","tinymce.themes.modern.modes.Iframe","tinymce.themes.modern.modes.Inline","tinymce.themes.modern.ui.ProgressState","tinymce.core.dom.DOMUtils","tinymce.themes.modern.api.Events","ephox.katamari.api.Arr","global!setTimeout","tinymce.ui.DomUtils","tinymce.core.dom.DomQuery","tinymce.core.util.Class","tinymce.core.util.EventDispatcher","tinymce.ui.BoxUtils","tinymce.ui.ClassList","tinymce.ui.data.ObservableObject","tinymce.core.util.Delay","global!RegExp","tinymce.core.util.VK","tinymce.core.util.Color","global!Array","global!Error","tinymce.ui.content.LinkTargets","global!console","ephox.sugar.api.search.PredicateFind","ephox.sugar.api.search.Selectors","ephox.sugar.impl.ClosestOrAncestor","tinymce.ui.editorui.FormatUtils","tinymce.ui.fmt.FontInfo","tinymce.themes.modern.ui.A11y","tinymce.themes.modern.ui.ContextToolbars","tinymce.themes.modern.ui.Menubar","tinymce.themes.modern.ui.Sidebar","tinymce.themes.modern.ui.SkinLoaded","tinymce.themes.modern.ui.Toolbar","tinymce.ui.data.Binding","tinymce.core.util.Observable","ephox.katamari.api.Option","global!String","ephox.katamari.api.Id","ephox.sugar.api.search.SelectorFilter","ephox.katamari.api.Type","ephox.sugar.api.node.Body","ephox.sugar.api.dom.Compare","ephox.sugar.api.node.NodeTypes","ephox.sugar.api.node.Node","tinymce.core.geom.Rect","global!Object","global!Date","global!Math","ephox.sugar.api.search.PredicateFilter","ephox.katamari.api.Thunk","ephox.sand.api.Node","ephox.sand.api.PlatformDetection","ephox.sugar.api.search.Traverse","ephox.sand.util.Global","ephox.sand.core.PlatformDetection","global!navigator","ephox.katamari.api.Struct","ephox.sugar.alien.Recurse","ephox.katamari.api.Resolve","ephox.sand.core.Browser","ephox.sand.core.OperatingSystem","ephox.sand.detect.DeviceType","ephox.sand.detect.UaString","ephox.sand.info.PlatformInfo","ephox.katamari.data.Immutable","ephox.katamari.data.MixedBag","ephox.katamari.api.Global","ephox.sand.detect.Version","ephox.katamari.api.Strings","ephox.katamari.api.Obj","ephox.katamari.util.BagUtils","global!Number","ephox.katamari.str.StrAppend","ephox.katamari.str.StringParts"]
 jsc */
-  defineGlobal('global!window', window);
-  defineGlobal('global!tinymce.util.Tools.resolve', tinymce.util.Tools.resolve);
+  defineGlobal('global!window', window)
+  defineGlobal('global!tinymce.util.Tools.resolve', tinymce.util.Tools.resolve)
   /**
  * ResolveGlobal.js
  *
@@ -87,10 +87,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.ThemeManager');
+    function (resolve) {
+      return resolve('tinymce.ThemeManager')
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -107,10 +107,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.EditorManager');
+    function (resolve) {
+      return resolve('tinymce.EditorManager')
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -127,10 +127,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.Tools');
+    function (resolve) {
+      return resolve('tinymce.util.Tools')
     }
-  );
+  )
 
   /**
  * Settings.js
@@ -148,127 +148,127 @@ jsc */
       'tinymce.core.EditorManager',
       'tinymce.core.util.Tools'
     ],
-    function(EditorManager, Tools) {
-      const isBrandingEnabled = function(editor) {
-        return editor.getParam('branding', true);
-      };
+    function (EditorManager, Tools) {
+      const isBrandingEnabled = function (editor) {
+        return editor.getParam('branding', true)
+      }
 
-      const hasMenubar = function(editor) {
-        return getMenubar(editor) !== false;
-      };
+      const hasMenubar = function (editor) {
+        return getMenubar(editor) !== false
+      }
 
-      var getMenubar = function(editor) {
-        return editor.getParam('menubar');
-      };
+      var getMenubar = function (editor) {
+        return editor.getParam('menubar')
+      }
 
-      const hasStatusbar = function(editor) {
-        return editor.getParam('statusbar', true);
-      };
+      const hasStatusbar = function (editor) {
+        return editor.getParam('statusbar', true)
+      }
 
-      const getToolbarSize = function(editor) {
-        return editor.getParam('toolbar_items_size');
-      };
+      const getToolbarSize = function (editor) {
+        return editor.getParam('toolbar_items_size')
+      }
 
-      const getResize = function(editor) {
-        const resize = editor.getParam('resize', 'vertical');
+      const getResize = function (editor) {
+        const resize = editor.getParam('resize', 'vertical')
         if (resize === false) {
-          return 'none';
+          return 'none'
         } else if (resize === 'both') {
-          return 'both';
+          return 'both'
         } else {
-          return 'vertical';
+          return 'vertical'
         }
-      };
+      }
 
-      const isReadOnly = function(editor) {
-        return editor.getParam('readonly', false);
-      };
+      const isReadOnly = function (editor) {
+        return editor.getParam('readonly', false)
+      }
 
-      const getFixedToolbarContainer = function(editor) {
-        return editor.getParam('fixed_toolbar_container');
-      };
+      const getFixedToolbarContainer = function (editor) {
+        return editor.getParam('fixed_toolbar_container')
+      }
 
-      const getInlineToolbarPositionHandler = function(editor) {
-        return editor.getParam('inline_toolbar_position_handler');
-      };
+      const getInlineToolbarPositionHandler = function (editor) {
+        return editor.getParam('inline_toolbar_position_handler')
+      }
 
-      const getMenu = function(editor) {
-        return editor.getParam('menu');
-      };
+      const getMenu = function (editor) {
+        return editor.getParam('menu')
+      }
 
-      const getRemovedMenuItems = function(editor) {
-        return editor.getParam('removed_menuitems', '');
-      };
+      const getRemovedMenuItems = function (editor) {
+        return editor.getParam('removed_menuitems', '')
+      }
 
-      const getMinWidth = function(editor) {
-        return editor.getParam('min_width', 100);
-      };
+      const getMinWidth = function (editor) {
+        return editor.getParam('min_width', 100)
+      }
 
-      const getMinHeight = function(editor) {
-        return editor.getParam('min_height', 100);
-      };
+      const getMinHeight = function (editor) {
+        return editor.getParam('min_height', 100)
+      }
 
-      const getMaxWidth = function(editor) {
-        return editor.getParam('max_width', 0xFFFF);
-      };
+      const getMaxWidth = function (editor) {
+        return editor.getParam('max_width', 0xFFFF)
+      }
 
-      const getMaxHeight = function(editor) {
-        return editor.getParam('max_height', 0xFFFF);
-      };
+      const getMaxHeight = function (editor) {
+        return editor.getParam('max_height', 0xFFFF)
+      }
 
-      const getSkinUrl = function(editor) {
-        const settings = editor.settings;
-        const skin = settings.skin;
-        let skinUrl = settings.skin_url;
+      const getSkinUrl = function (editor) {
+        const settings = editor.settings
+        const skin = settings.skin
+        let skinUrl = settings.skin_url
 
         if (skin !== false) {
-          const skinName = skin || 'lightgray';
+          const skinName = skin || 'lightgray'
 
           if (skinUrl) {
-            skinUrl = editor.documentBaseURI.toAbsolute(skinUrl);
+            skinUrl = editor.documentBaseURI.toAbsolute(skinUrl)
           } else {
-            skinUrl = EditorManager.baseURL + '/skins/' + skinName;
+            skinUrl = EditorManager.baseURL + '/skins/' + skinName
           }
         }
 
-        return skinUrl;
-      };
+        return skinUrl
+      }
 
-      const isInline = function(editor) {
-        return editor.getParam('inline', false);
-      };
+      const isInline = function (editor) {
+        return editor.getParam('inline', false)
+      }
 
-      const getIndexedToolbars = function(settings, defaultToolbar) {
-        const toolbars = [];
+      const getIndexedToolbars = function (settings, defaultToolbar) {
+        const toolbars = []
 
         // Generate toolbar<n>
         for (let i = 1; i < 10; i++) {
-          const toolbar = settings['toolbar' + i];
+          const toolbar = settings['toolbar' + i]
           if (!toolbar) {
-            break;
+            break
           }
 
-          toolbars.push(toolbar);
+          toolbars.push(toolbar)
         }
 
-        const mainToolbar = settings.toolbar ? [ settings.toolbar ] : [ defaultToolbar ];
-        return toolbars.length > 0 ? toolbars : mainToolbar;
-      };
+        const mainToolbar = settings.toolbar ? [ settings.toolbar ] : [ defaultToolbar ]
+        return toolbars.length > 0 ? toolbars : mainToolbar
+      }
 
-      const getToolbars = function(editor) {
-        const toolbar = editor.getParam('toolbar');
-        const defaultToolbar = 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image';
+      const getToolbars = function (editor) {
+        const toolbar = editor.getParam('toolbar')
+        const defaultToolbar = 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
 
         if (toolbar === false) {
-          return [];
+          return []
         } else if (Tools.isArray(toolbar)) {
-          return Tools.grep(toolbar, function(toolbar) {
-            return toolbar.length > 0;
-          });
+          return Tools.grep(toolbar, function (toolbar) {
+            return toolbar.length > 0
+          })
         } else {
-          return getIndexedToolbars(editor.settings, defaultToolbar);
+          return getIndexedToolbars(editor.settings, defaultToolbar)
         }
-      };
+      }
 
       return {
         isBrandingEnabled,
@@ -289,9 +289,9 @@ jsc */
         getSkinUrl,
         isInline,
         getToolbars
-      };
+      }
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -308,10 +308,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.dom.DOMUtils');
+    function (resolve) {
+      return resolve('tinymce.dom.DOMUtils')
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -328,10 +328,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.ui.Factory');
+    function (resolve) {
+      return resolve('tinymce.ui.Factory')
     }
-  );
+  )
 
   /**
  * Events.js
@@ -347,26 +347,26 @@ jsc */
     'tinymce.themes.modern.api.Events',
     [
     ],
-    function() {
-      const fireSkinLoaded = function(editor) {
-        return editor.fire('SkinLoaded');
-      };
+    function () {
+      const fireSkinLoaded = function (editor) {
+        return editor.fire('SkinLoaded')
+      }
 
-      const fireResizeEditor = function(editor) {
-        return editor.fire('ResizeEditor');
-      };
+      const fireResizeEditor = function (editor) {
+        return editor.fire('ResizeEditor')
+      }
 
-      const fireBeforeRenderUI = function(editor) {
-        return editor.fire('BeforeRenderUI');
-      };
+      const fireBeforeRenderUI = function (editor) {
+        return editor.fire('BeforeRenderUI')
+      }
 
       return {
         fireSkinLoaded,
         fireResizeEditor,
         fireBeforeRenderUI
-      };
+      }
     }
-  );
+  )
 
   /**
  * A11y.js
@@ -382,33 +382,33 @@ jsc */
     'tinymce.themes.modern.ui.A11y',
     [
     ],
-    function() {
-      const focus = function(panel, type) {
-        return function() {
-          const item = panel.find(type)[0];
+    function () {
+      const focus = function (panel, type) {
+        return function () {
+          const item = panel.find(type)[0]
 
           if (item) {
-            item.focus(true);
+            item.focus(true)
           }
-        };
-      };
+        }
+      }
 
-      const addKeys = function(editor, panel) {
-        editor.shortcuts.add('Alt+F9', '', focus(panel, 'menubar'));
-        editor.shortcuts.add('Alt+F10,F10', '', focus(panel, 'toolbar'));
-        editor.shortcuts.add('Alt+F11', '', focus(panel, 'elementpath'));
-        panel.on('cancel', function() {
-          editor.focus();
-        });
-      };
+      const addKeys = function (editor, panel) {
+        editor.shortcuts.add('Alt+F9', '', focus(panel, 'menubar'))
+        editor.shortcuts.add('Alt+F10,F10', '', focus(panel, 'toolbar'))
+        editor.shortcuts.add('Alt+F11', '', focus(panel, 'elementpath'))
+        panel.on('cancel', function () {
+          editor.focus()
+        })
+      }
 
       return {
         addKeys
-      };
+      }
     }
-  );
+  )
 
-  defineGlobal('global!document', document);
+  defineGlobal('global!document', document)
   /**
  * ResolveGlobal.js
  *
@@ -424,10 +424,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.geom.Rect');
+    function (resolve) {
+      return resolve('tinymce.geom.Rect')
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -444,10 +444,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.Delay');
+    function (resolve) {
+      return resolve('tinymce.util.Delay')
     }
-  );
+  )
 
   /**
  * Toolbar.js
@@ -466,72 +466,72 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.themes.modern.api.Settings'
     ],
-    function(Factory, Tools, Settings) {
-      const createToolbar = function(editor, items, size) {
+    function (Factory, Tools, Settings) {
+      const createToolbar = function (editor, items, size) {
         let toolbarItems = [],
-          buttonGroup;
+          buttonGroup
 
         if (!items) {
-          return;
+          return
         }
 
-        Tools.each(items.split(/[ ,]/), function(item) {
-          let itemName;
+        Tools.each(items.split(/[ ,]/), function (item) {
+          let itemName
 
-          const bindSelectorChanged = function() {
-            const selection = editor.selection;
+          const bindSelectorChanged = function () {
+            const selection = editor.selection
 
             if (item.settings.stateSelector) {
-              selection.selectorChanged(item.settings.stateSelector, function(state) {
-                item.active(state);
-              }, true);
+              selection.selectorChanged(item.settings.stateSelector, function (state) {
+                item.active(state)
+              }, true)
             }
 
             if (item.settings.disabledStateSelector) {
-              selection.selectorChanged(item.settings.disabledStateSelector, function(state) {
-                item.disabled(state);
-              });
+              selection.selectorChanged(item.settings.disabledStateSelector, function (state) {
+                item.disabled(state)
+              })
             }
-          };
+          }
 
           if (item === '|') {
-            buttonGroup = null;
+            buttonGroup = null
           } else {
             if (!buttonGroup) {
-              buttonGroup = { type: 'buttongroup', items: [] };
-              toolbarItems.push(buttonGroup);
+              buttonGroup = { type: 'buttongroup', items: [] }
+              toolbarItems.push(buttonGroup)
             }
 
             if (editor.buttons[item]) {
             // TODO: Move control creation to some UI class
-              itemName = item;
-              item = editor.buttons[itemName];
+              itemName = item
+              item = editor.buttons[itemName]
 
               if (typeof item === 'function') {
-                item = item();
+                item = item()
               }
 
-              item.type = item.type || 'button';
-              item.size = size;
+              item.type = item.type || 'button'
+              item.size = size
 
-              item = Factory.create(item);
-              buttonGroup.items.push(item);
+              item = Factory.create(item)
+              buttonGroup.items.push(item)
 
               if (editor.initialized) {
-                bindSelectorChanged();
+                bindSelectorChanged()
               } else {
-                editor.on('init', bindSelectorChanged);
+                editor.on('init', bindSelectorChanged)
               }
             }
           }
-        });
+        })
 
         return {
           type: 'toolbar',
           layout: 'flow',
           items: toolbarItems
-        };
-      };
+        }
+      }
 
       /**
      * Creates the toolbars from config and returns a toolbar array.
@@ -539,18 +539,18 @@ jsc */
      * @param {String} size Optional toolbar item size.
      * @return {Array} Array with toolbars.
      */
-      const createToolbars = function(editor, size) {
-        const toolbars = [];
+      const createToolbars = function (editor, size) {
+        const toolbars = []
 
-        const addToolbar = function(items) {
+        const addToolbar = function (items) {
           if (items) {
-            toolbars.push(createToolbar(editor, items, size));
+            toolbars.push(createToolbar(editor, items, size))
           }
-        };
+        }
 
-        Tools.each(Settings.getToolbars(editor), function(toolbar) {
-          addToolbar(toolbar);
-        });
+        Tools.each(Settings.getToolbars(editor), function (toolbar) {
+          addToolbar(toolbar)
+        })
 
         if (toolbars.length) {
           return {
@@ -560,16 +560,16 @@ jsc */
             ariaRoot: true,
             ariaRemember: true,
             items: toolbars
-          };
+          }
         }
-      };
+      }
 
       return {
         createToolbar,
         createToolbars
-      };
+      }
     }
-  );
+  )
 
   /**
  * ContextToolbars.js
@@ -593,10 +593,10 @@ jsc */
       'tinymce.themes.modern.api.Settings',
       'tinymce.themes.modern.ui.Toolbar'
     ],
-    function(document, DOMUtils, Rect, Factory, Delay, Tools, Settings, Toolbar) {
-      const DOM = DOMUtils.DOM;
+    function (document, DOMUtils, Rect, Factory, Delay, Tools, Settings, Toolbar) {
+      const DOM = DOMUtils.DOM
 
-      const toClientRect = function(geomRect) {
+      const toClientRect = function (geomRect) {
         return {
           left: geomRect.x,
           top: geomRect.y,
@@ -604,82 +604,82 @@ jsc */
           height: geomRect.h,
           right: geomRect.x + geomRect.w,
           bottom: geomRect.y + geomRect.h
-        };
-      };
+        }
+      }
 
-      const hideAllFloatingPanels = function(editor) {
-        Tools.each(editor.contextToolbars, function(toolbar) {
+      const hideAllFloatingPanels = function (editor) {
+        Tools.each(editor.contextToolbars, function (toolbar) {
           if (toolbar.panel) {
-            toolbar.panel.hide();
+            toolbar.panel.hide()
           }
-        });
-      };
+        })
+      }
 
-      const movePanelTo = function(panel, pos) {
-        panel.moveTo(pos.left, pos.top);
-      };
+      const movePanelTo = function (panel, pos) {
+        panel.moveTo(pos.left, pos.top)
+      }
 
-      const togglePositionClass = function(panel, relPos, predicate) {
-        relPos = relPos ? relPos.substr(0, 2) : '';
+      const togglePositionClass = function (panel, relPos, predicate) {
+        relPos = relPos ? relPos.substr(0, 2) : ''
 
         Tools.each({
           t: 'down',
           b: 'up'
-        }, function(cls, pos) {
-          panel.classes.toggle('arrow-' + cls, predicate(pos, relPos.substr(0, 1)));
-        });
+        }, function (cls, pos) {
+          panel.classes.toggle('arrow-' + cls, predicate(pos, relPos.substr(0, 1)))
+        })
 
         Tools.each({
           l: 'left',
           r: 'right'
-        }, function(cls, pos) {
-          panel.classes.toggle('arrow-' + cls, predicate(pos, relPos.substr(1, 1)));
-        });
-      };
+        }, function (cls, pos) {
+          panel.classes.toggle('arrow-' + cls, predicate(pos, relPos.substr(1, 1)))
+        })
+      }
 
-      const userConstrain = function(handler, x, y, elementRect, contentAreaRect, panelRect) {
-        panelRect = toClientRect({ x, y, w: panelRect.w, h: panelRect.h });
+      const userConstrain = function (handler, x, y, elementRect, contentAreaRect, panelRect) {
+        panelRect = toClientRect({ x, y, w: panelRect.w, h: panelRect.h })
 
         if (handler) {
           panelRect = handler({
             elementRect: toClientRect(elementRect),
             contentAreaRect: toClientRect(contentAreaRect),
             panelRect
-          });
+          })
         }
 
-        return panelRect;
-      };
+        return panelRect
+      }
 
-      const addContextualToolbars = function(editor) {
-        let scrollContainer;
+      const addContextualToolbars = function (editor) {
+        let scrollContainer
 
-        const getContextToolbars = function() {
-          return editor.contextToolbars || [];
-        };
+        const getContextToolbars = function () {
+          return editor.contextToolbars || []
+        }
 
-        const getElementRect = function(elm) {
+        const getElementRect = function (elm) {
           let pos,
             targetRect,
-            root;
+            root
 
-          pos = DOM.getPos(editor.getContentAreaContainer());
-          targetRect = editor.dom.getRect(elm);
-          root = editor.dom.getRoot();
+          pos = DOM.getPos(editor.getContentAreaContainer())
+          targetRect = editor.dom.getRect(elm)
+          root = editor.dom.getRoot()
 
           // Adjust targetPos for scrolling in the editor
           if (root.nodeName === 'BODY') {
-            targetRect.x -= root.ownerDocument.documentElement.scrollLeft || root.scrollLeft;
-            targetRect.y -= root.ownerDocument.documentElement.scrollTop || root.scrollTop;
+            targetRect.x -= root.ownerDocument.documentElement.scrollLeft || root.scrollLeft
+            targetRect.y -= root.ownerDocument.documentElement.scrollTop || root.scrollTop
           }
 
-          targetRect.x += pos.x;
-          targetRect.y += pos.y;
+          targetRect.x += pos.x
+          targetRect.y += pos.y
 
-          return targetRect;
-        };
+          return targetRect
+        }
 
-        const reposition = function(match, shouldShow) {
+        const reposition = function (match, shouldShow) {
           let relPos,
             panelRect,
             elementRect,
@@ -687,121 +687,121 @@ jsc */
             panel,
             relRect,
             testPositions,
-            smallElementWidthThreshold;
-          const handler = Settings.getInlineToolbarPositionHandler(editor);
+            smallElementWidthThreshold
+          const handler = Settings.getInlineToolbarPositionHandler(editor)
 
           if (editor.removed) {
-            return;
+            return
           }
 
           if (!match || !match.toolbar.panel) {
-            hideAllFloatingPanels(editor);
-            return;
+            hideAllFloatingPanels(editor)
+            return
           }
 
           testPositions = [
             'bc-tc', 'tc-bc',
             'tl-bl', 'bl-tl',
             'tr-br', 'br-tr'
-          ];
+          ]
 
-          panel = match.toolbar.panel;
+          panel = match.toolbar.panel
 
           // Only show the panel on some events not for example nodeChange since that fires when context menu is opened
           if (shouldShow) {
-            panel.show();
+            panel.show()
           }
 
-          elementRect = getElementRect(match.element);
-          panelRect = DOM.getRect(panel.getEl());
-          contentAreaRect = DOM.getRect(editor.getContentAreaContainer() || editor.getBody());
-          smallElementWidthThreshold = 25;
+          elementRect = getElementRect(match.element)
+          panelRect = DOM.getRect(panel.getEl())
+          contentAreaRect = DOM.getRect(editor.getContentAreaContainer() || editor.getBody())
+          smallElementWidthThreshold = 25
 
           if (DOM.getStyle(match.element, 'display', true) !== 'inline') {
           // We need to use these instead of the rect values since the style
           // size properites might not be the same as the real size for a table
-            elementRect.w = match.element.clientWidth;
-            elementRect.h = match.element.clientHeight;
+            elementRect.w = match.element.clientWidth
+            elementRect.h = match.element.clientHeight
           }
 
           if (!editor.inline) {
-            contentAreaRect.w = editor.getDoc().documentElement.offsetWidth;
+            contentAreaRect.w = editor.getDoc().documentElement.offsetWidth
           }
 
           // Inflate the elementRect so it doesn't get placed above resize handles
           if (editor.selection.controlSelection.isResizable(match.element) && elementRect.w < smallElementWidthThreshold) {
-            elementRect = Rect.inflate(elementRect, 0, 8);
+            elementRect = Rect.inflate(elementRect, 0, 8)
           }
 
-          relPos = Rect.findBestRelativePosition(panelRect, elementRect, contentAreaRect, testPositions);
-          elementRect = Rect.clamp(elementRect, contentAreaRect);
+          relPos = Rect.findBestRelativePosition(panelRect, elementRect, contentAreaRect, testPositions)
+          elementRect = Rect.clamp(elementRect, contentAreaRect)
 
           if (relPos) {
-            relRect = Rect.relativePosition(panelRect, elementRect, relPos);
-            movePanelTo(panel, userConstrain(handler, relRect.x, relRect.y, elementRect, contentAreaRect, panelRect));
+            relRect = Rect.relativePosition(panelRect, elementRect, relPos)
+            movePanelTo(panel, userConstrain(handler, relRect.x, relRect.y, elementRect, contentAreaRect, panelRect))
           } else {
           // Allow overflow below the editor to avoid placing toolbars ontop of tables
-            contentAreaRect.h += panelRect.h;
+            contentAreaRect.h += panelRect.h
 
-            elementRect = Rect.intersect(contentAreaRect, elementRect);
+            elementRect = Rect.intersect(contentAreaRect, elementRect)
             if (elementRect) {
               relPos = Rect.findBestRelativePosition(panelRect, elementRect, contentAreaRect, [
                 'bc-tc', 'bl-tl', 'br-tr'
-              ]);
+              ])
 
               if (relPos) {
-                relRect = Rect.relativePosition(panelRect, elementRect, relPos);
-                movePanelTo(panel, userConstrain(handler, relRect.x, relRect.y, elementRect, contentAreaRect, panelRect));
+                relRect = Rect.relativePosition(panelRect, elementRect, relPos)
+                movePanelTo(panel, userConstrain(handler, relRect.x, relRect.y, elementRect, contentAreaRect, panelRect))
               } else {
-                movePanelTo(panel, userConstrain(handler, elementRect.x, elementRect.y, elementRect, contentAreaRect, panelRect));
+                movePanelTo(panel, userConstrain(handler, elementRect.x, elementRect.y, elementRect, contentAreaRect, panelRect))
               }
             } else {
-              panel.hide();
+              panel.hide()
             }
           }
 
-          togglePositionClass(panel, relPos, function(pos1, pos2) {
-            return pos1 === pos2;
-          });
+          togglePositionClass(panel, relPos, function (pos1, pos2) {
+            return pos1 === pos2
+          })
 
         // drawRect(contentAreaRect, 'blue');
         // drawRect(elementRect, 'red');
         // drawRect(panelRect, 'green');
-        };
+        }
 
-        const repositionHandler = function(show) {
-          return function() {
-            const execute = function() {
+        const repositionHandler = function (show) {
+          return function () {
+            const execute = function () {
               if (editor.selection) {
-                reposition(findFrontMostMatch(editor.selection.getNode()), show);
+                reposition(findFrontMostMatch(editor.selection.getNode()), show)
               }
-            };
+            }
 
-            Delay.requestAnimationFrame(execute);
-          };
-        };
-
-        const bindScrollEvent = function() {
-          if (!scrollContainer) {
-            scrollContainer = editor.selection.getScrollContainer() || editor.getWin();
-            DOM.bind(scrollContainer, 'scroll', repositionHandler(true));
-
-            editor.on('remove', function() {
-              DOM.unbind(scrollContainer, 'scroll');
-            });
+            Delay.requestAnimationFrame(execute)
           }
-        };
+        }
 
-        const showContextToolbar = function(match) {
-          let panel;
+        const bindScrollEvent = function () {
+          if (!scrollContainer) {
+            scrollContainer = editor.selection.getScrollContainer() || editor.getWin()
+            DOM.bind(scrollContainer, 'scroll', repositionHandler(true))
+
+            editor.on('remove', function () {
+              DOM.unbind(scrollContainer, 'scroll')
+            })
+          }
+        }
+
+        const showContextToolbar = function (match) {
+          let panel
 
           if (match.toolbar.panel) {
-            match.toolbar.panel.show();
-            reposition(match);
-            return;
+            match.toolbar.panel.show()
+            reposition(match)
+            return
           }
 
-          bindScrollEvent();
+          bindScrollEvent()
 
           panel = Factory.create({
             type: 'floatpanel',
@@ -816,104 +816,104 @@ jsc */
             fixed: true,
             border: 1,
             items: Toolbar.createToolbar(editor, match.toolbar.items),
-            oncancel() {
-              editor.focus();
+            oncancel () {
+              editor.focus()
             }
-          });
+          })
 
-          match.toolbar.panel = panel;
-          panel.renderTo(document.body).reflow();
-          reposition(match);
-        };
+          match.toolbar.panel = panel
+          panel.renderTo(document.body).reflow()
+          reposition(match)
+        }
 
-        const hideAllContextToolbars = function() {
-          Tools.each(getContextToolbars(), function(toolbar) {
+        const hideAllContextToolbars = function () {
+          Tools.each(getContextToolbars(), function (toolbar) {
             if (toolbar.panel) {
-              toolbar.panel.hide();
+              toolbar.panel.hide()
             }
-          });
-        };
+          })
+        }
 
-        var findFrontMostMatch = function(targetElm) {
+        var findFrontMostMatch = function (targetElm) {
           let i,
             y,
             parentsAndSelf,
-            toolbars = getContextToolbars();
+            toolbars = getContextToolbars()
 
-          parentsAndSelf = editor.$(targetElm).parents().add(targetElm);
+          parentsAndSelf = editor.$(targetElm).parents().add(targetElm)
           for (i = parentsAndSelf.length - 1; i >= 0; i--) {
             for (y = toolbars.length - 1; y >= 0; y--) {
               if (toolbars[y].predicate(parentsAndSelf[i])) {
                 return {
                   toolbar: toolbars[y],
                   element: parentsAndSelf[i]
-                };
+                }
               }
             }
           }
 
-          return null;
-        };
+          return null
+        }
 
-        editor.on('click keyup setContent ObjectResized', function(e) {
+        editor.on('click keyup setContent ObjectResized', function (e) {
         // Only act on partial inserts
           if (e.type === 'setcontent' && !e.selection) {
-            return;
+            return
           }
 
           // Needs to be delayed to avoid Chrome img focus out bug
-          Delay.setEditorTimeout(editor, function() {
-            let match;
+          Delay.setEditorTimeout(editor, function () {
+            let match
 
-            match = findFrontMostMatch(editor.selection.getNode());
+            match = findFrontMostMatch(editor.selection.getNode())
             if (match) {
-              hideAllContextToolbars();
-              showContextToolbar(match);
+              hideAllContextToolbars()
+              showContextToolbar(match)
             } else {
-              hideAllContextToolbars();
+              hideAllContextToolbars()
             }
-          });
-        });
+          })
+        })
 
-        editor.on('blur hide contextmenu', hideAllContextToolbars);
+        editor.on('blur hide contextmenu', hideAllContextToolbars)
 
-        editor.on('ObjectResizeStart', function() {
-          const match = findFrontMostMatch(editor.selection.getNode());
+        editor.on('ObjectResizeStart', function () {
+          const match = findFrontMostMatch(editor.selection.getNode())
 
           if (match && match.toolbar.panel) {
-            match.toolbar.panel.hide();
+            match.toolbar.panel.hide()
           }
-        });
+        })
 
-        editor.on('ResizeEditor ResizeWindow', repositionHandler(true));
-        editor.on('nodeChange', repositionHandler(false));
+        editor.on('ResizeEditor ResizeWindow', repositionHandler(true))
+        editor.on('nodeChange', repositionHandler(false))
 
-        editor.on('remove', function() {
-          Tools.each(getContextToolbars(), function(toolbar) {
+        editor.on('remove', function () {
+          Tools.each(getContextToolbars(), function (toolbar) {
             if (toolbar.panel) {
-              toolbar.panel.remove();
+              toolbar.panel.remove()
             }
-          });
+          })
 
-          editor.contextToolbars = {};
-        });
+          editor.contextToolbars = {}
+        })
 
-        editor.shortcuts.add('ctrl+shift+e > ctrl+shift+p', '', function() {
-          const match = findFrontMostMatch(editor.selection.getNode());
+        editor.shortcuts.add('ctrl+shift+e > ctrl+shift+p', '', function () {
+          const match = findFrontMostMatch(editor.selection.getNode())
           if (match && match.toolbar.panel) {
-            match.toolbar.panel.items()[0].focus();
+            match.toolbar.panel.items()[0].focus()
           }
-        });
-      };
+        })
+      }
 
       return {
         addContextualToolbars
-      };
+      }
     }
-  );
+  )
 
-  defineGlobal('global!Array', Array);
-  defineGlobal('global!Error', Error);
+  defineGlobal('global!Array', Array)
+  defineGlobal('global!Error', Error)
   define(
     'ephox.katamari.api.Fun',
 
@@ -922,69 +922,69 @@ jsc */
       'global!Error'
     ],
 
-    function(Array, Error) {
-      const noop = function() { };
+    function (Array, Error) {
+      const noop = function () { }
 
-      const compose = function(fa, fb) {
-        return function() {
-          return fa(fb.apply(null, arguments));
-        };
-      };
+      const compose = function (fa, fb) {
+        return function () {
+          return fa(fb.apply(null, arguments))
+        }
+      }
 
-      const constant = function(value) {
-        return function() {
-          return value;
-        };
-      };
+      const constant = function (value) {
+        return function () {
+          return value
+        }
+      }
 
-      const identity = function(x) {
-        return x;
-      };
+      const identity = function (x) {
+        return x
+      }
 
-      const tripleEquals = function(a, b) {
-        return a === b;
-      };
+      const tripleEquals = function (a, b) {
+        return a === b
+      }
 
       // Don't use array slice(arguments), makes the whole function unoptimisable on Chrome
-      const curry = function(f) {
+      const curry = function (f) {
       // equivalent to arguments.slice(1)
       // starting at 1 because 0 is the f, makes things tricky.
       // Pay attention to what variable is where, and the -1 magic.
       // thankfully, we have tests for this.
-        const args = new Array(arguments.length - 1);
-        for (let i = 1; i < arguments.length; i++) args[i - 1] = arguments[i];
+        const args = new Array(arguments.length - 1)
+        for (let i = 1; i < arguments.length; i++) args[i - 1] = arguments[i]
 
-        return function() {
-          const newArgs = new Array(arguments.length);
-          for (let j = 0; j < newArgs.length; j++) newArgs[j] = arguments[j];
+        return function () {
+          const newArgs = new Array(arguments.length)
+          for (let j = 0; j < newArgs.length; j++) newArgs[j] = arguments[j]
 
-          const all = args.concat(newArgs);
-          return f.apply(null, all);
-        };
-      };
+          const all = args.concat(newArgs)
+          return f.apply(null, all)
+        }
+      }
 
-      const not = function(f) {
-        return function() {
-          return !f.apply(null, arguments);
-        };
-      };
+      const not = function (f) {
+        return function () {
+          return !f.apply(null, arguments)
+        }
+      }
 
-      const die = function(msg) {
-        return function() {
-          throw new Error(msg);
-        };
-      };
+      const die = function (msg) {
+        return function () {
+          throw new Error(msg)
+        }
+      }
 
-      const apply = function(f) {
-        return f();
-      };
+      const apply = function (f) {
+        return f()
+      }
 
-      const call = function(f) {
-        f();
-      };
+      const call = function (f) {
+        f()
+      }
 
-      const never = constant(false);
-      const always = constant(true);
+      const never = constant(false)
+      const always = constant(true)
 
       return {
         noop,
@@ -999,11 +999,11 @@ jsc */
         call,
         never,
         always
-      };
+      }
     }
-  );
+  )
 
-  defineGlobal('global!Object', Object);
+  defineGlobal('global!Object', Object)
   define(
     'ephox.katamari.api.Option',
 
@@ -1012,9 +1012,9 @@ jsc */
       'global!Object'
     ],
 
-    function(Fun, Object) {
-      const never = Fun.never;
-      const always = Fun.always;
+    function (Fun, Object) {
+      const never = Fun.never
+      const always = Fun.always
 
       /**
       Option objects support the following methods:
@@ -1072,27 +1072,27 @@ jsc */
 
     */
 
-      const none = function() { return NONE; };
+      const none = function () { return NONE }
 
-      var NONE = (function() {
-        const eq = function(o) {
-          return o.isNone();
-        };
+      var NONE = (function () {
+        const eq = function (o) {
+          return o.isNone()
+        }
 
         // inlined from peanut, maybe a micro-optimisation?
-        const call = function(thunk) { return thunk(); };
-        const id = function(n) { return n; };
-        const noop = function() { };
+        const call = function (thunk) { return thunk() }
+        const id = function (n) { return n }
+        const noop = function () { }
 
         const me = {
-          fold(n, s) { return n(); },
+          fold (n, s) { return n() },
           is: never,
           isSome: never,
           isNone: always,
           getOr: id,
           getOrThunk: call,
-          getOrDie(msg) {
-            throw new Error(msg || 'error: getOrDie called on none.');
+          getOrDie (msg) {
+            throw new Error(msg || 'error: getOrDie called on none.')
           },
           or: id,
           orThunk: call,
@@ -1106,34 +1106,34 @@ jsc */
           filter: none,
           equals: eq,
           equals_: eq,
-          toArray() { return []; },
+          toArray () { return [] },
           toString: Fun.constant('none()')
-        };
-        if (Object.freeze) Object.freeze(me);
-        return me;
-      })();
+        }
+        if (Object.freeze) Object.freeze(me)
+        return me
+      })()
 
       /** some :: a -> Option a */
-      var some = function(a) {
+      var some = function (a) {
       // inlined from peanut, maybe a micro-optimisation?
-        const constant_a = function() { return a; };
+        const constant_a = function () { return a }
 
-        const self = function() {
+        const self = function () {
         // can't Fun.constant this one
-          return me;
-        };
+          return me
+        }
 
-        const map = function(f) {
-          return some(f(a));
-        };
+        const map = function (f) {
+          return some(f(a))
+        }
 
-        const bind = function(f) {
-          return f(a);
-        };
+        const bind = function (f) {
+          return f(a)
+        }
 
         var me = {
-          fold(n, s) { return s(a); },
-          is(v) { return a === v; },
+          fold (n, s) { return s(a) },
+          is (v) { return a === v },
           isSome: always,
           isNone: never,
           getOr: constant_a,
@@ -1142,54 +1142,54 @@ jsc */
           or: self,
           orThunk: self,
           map,
-          ap(optfab) {
-            return optfab.fold(none, function(fab) {
-              return some(fab(a));
-            });
+          ap (optfab) {
+            return optfab.fold(none, function (fab) {
+              return some(fab(a))
+            })
           },
-          each(f) {
-            f(a);
+          each (f) {
+            f(a)
           },
           bind,
           flatten: constant_a,
           exists: bind,
           forall: bind,
-          filter(f) {
-            return f(a) ? me : NONE;
+          filter (f) {
+            return f(a) ? me : NONE
           },
-          equals(o) {
-            return o.is(a);
+          equals (o) {
+            return o.is(a)
           },
-          equals_(o, elementEq) {
+          equals_ (o, elementEq) {
             return o.fold(
               never,
-              function(b) { return elementEq(a, b); }
-            );
+              function (b) { return elementEq(a, b) }
+            )
           },
-          toArray() {
-            return [a];
+          toArray () {
+            return [a]
           },
-          toString() {
-            return 'some(' + a + ')';
+          toString () {
+            return 'some(' + a + ')'
           }
-        };
-        return me;
-      };
+        }
+        return me
+      }
 
       /** from :: undefined|null|a -> Option a */
-      const from = function(value) {
-        return value === null || value === undefined ? NONE : some(value);
-      };
+      const from = function (value) {
+        return value === null || value === undefined ? NONE : some(value)
+      }
 
       return {
         some,
         none,
         from
-      };
+      }
     }
-  );
+  )
 
-  defineGlobal('global!String', String);
+  defineGlobal('global!String', String)
   define(
     'ephox.katamari.api.Arr',
 
@@ -1200,42 +1200,42 @@ jsc */
       'global!String'
     ],
 
-    function(Option, Array, Error, String) {
+    function (Option, Array, Error, String) {
     // Use the native Array.indexOf if it is available (IE9+) otherwise fall back to manual iteration
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-      const rawIndexOf = (function() {
-        const pIndexOf = Array.prototype.indexOf;
+      const rawIndexOf = (function () {
+        const pIndexOf = Array.prototype.indexOf
 
-        const fastIndex = function(xs, x) { return pIndexOf.call(xs, x); };
+        const fastIndex = function (xs, x) { return pIndexOf.call(xs, x) }
 
-        const slowIndex = function(xs, x) { return slowIndexOf(xs, x); };
+        const slowIndex = function (xs, x) { return slowIndexOf(xs, x) }
 
-        return pIndexOf === undefined ? slowIndex : fastIndex;
-      })();
+        return pIndexOf === undefined ? slowIndex : fastIndex
+      })()
 
-      const indexOf = function(xs, x) {
+      const indexOf = function (xs, x) {
       // The rawIndexOf method does not wrap up in an option. This is for performance reasons.
-        const r = rawIndexOf(xs, x);
-        return r === -1 ? Option.none() : Option.some(r);
-      };
+        const r = rawIndexOf(xs, x)
+        return r === -1 ? Option.none() : Option.some(r)
+      }
 
-      const contains = function(xs, x) {
-        return rawIndexOf(xs, x) > -1;
-      };
+      const contains = function (xs, x) {
+        return rawIndexOf(xs, x) > -1
+      }
 
       // Using findIndex is likely less optimal in Chrome (dynamic return type instead of bool)
       // but if we need that micro-optimisation we can inline it later.
-      const exists = function(xs, pred) {
-        return findIndex(xs, pred).isSome();
-      };
+      const exists = function (xs, pred) {
+        return findIndex(xs, pred).isSome()
+      }
 
-      const range = function(num, f) {
-        const r = [];
+      const range = function (num, f) {
+        const r = []
         for (let i = 0; i < num; i++) {
-          r.push(f(i));
+          r.push(f(i))
         }
-        return r;
-      };
+        return r
+      }
 
       // It's a total micro optimisation, but these do make some difference.
       // Particularly for browsers other than Chrome.
@@ -1244,64 +1244,64 @@ jsc */
       // - not using push
       // http://jsperf.com/array-direct-assignment-vs-push/2
 
-      const chunk = function(array, size) {
-        const r = [];
+      const chunk = function (array, size) {
+        const r = []
         for (let i = 0; i < array.length; i += size) {
-          const s = array.slice(i, i + size);
-          r.push(s);
+          const s = array.slice(i, i + size)
+          r.push(s)
         }
-        return r;
-      };
+        return r
+      }
 
-      const map = function(xs, f) {
+      const map = function (xs, f) {
       // pre-allocating array size when it's guaranteed to be known
       // http://jsperf.com/push-allocated-vs-dynamic/22
-        const len = xs.length;
-        const r = new Array(len);
+        const len = xs.length
+        const r = new Array(len)
         for (let i = 0; i < len; i++) {
-          const x = xs[i];
-          r[i] = f(x, i, xs);
+          const x = xs[i]
+          r[i] = f(x, i, xs)
         }
-        return r;
-      };
+        return r
+      }
 
       // Unwound implementing other functions in terms of each.
       // The code size is roughly the same, and it should allow for better optimisation.
-      const each = function(xs, f) {
+      const each = function (xs, f) {
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
-          f(x, i, xs);
+          const x = xs[i]
+          f(x, i, xs)
         }
-      };
+      }
 
-      const eachr = function(xs, f) {
+      const eachr = function (xs, f) {
         for (let i = xs.length - 1; i >= 0; i--) {
-          const x = xs[i];
-          f(x, i, xs);
+          const x = xs[i]
+          f(x, i, xs)
         }
-      };
+      }
 
-      const partition = function(xs, pred) {
-        const pass = [];
-        const fail = [];
+      const partition = function (xs, pred) {
+        const pass = []
+        const fail = []
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
-          const arr = pred(x, i, xs) ? pass : fail;
-          arr.push(x);
+          const x = xs[i]
+          const arr = pred(x, i, xs) ? pass : fail
+          arr.push(x)
         }
-        return { pass, fail };
-      };
+        return { pass, fail }
+      }
 
-      const filter = function(xs, pred) {
-        const r = [];
+      const filter = function (xs, pred) {
+        const r = []
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
+          const x = xs[i]
           if (pred(x, i, xs)) {
-            r.push(x);
+            r.push(x)
           }
         }
-        return r;
-      };
+        return r
+      }
 
       /*
      * Groups an array into contiguous arrays of like elements. Whether an element is like or not depends on f.
@@ -1314,151 +1314,151 @@ jsc */
      *  For a good explanation, see the group function (which is a special case of groupBy)
      *  http://hackage.haskell.org/package/base-4.7.0.0/docs/Data-List.html#v:group
      */
-      const groupBy = function(xs, f) {
+      const groupBy = function (xs, f) {
         if (xs.length === 0) {
-          return [];
+          return []
         } else {
-          let wasType = f(xs[0]); // initial case for matching
-          const r = [];
-          let group = [];
+          let wasType = f(xs[0]) // initial case for matching
+          const r = []
+          let group = []
 
           for (let i = 0, len = xs.length; i < len; i++) {
-            const x = xs[i];
-            const type = f(x);
+            const x = xs[i]
+            const type = f(x)
             if (type !== wasType) {
-              r.push(group);
-              group = [];
+              r.push(group)
+              group = []
             }
-            wasType = type;
-            group.push(x);
+            wasType = type
+            group.push(x)
           }
           if (group.length !== 0) {
-            r.push(group);
+            r.push(group)
           }
-          return r;
+          return r
         }
-      };
+      }
 
-      const foldr = function(xs, f, acc) {
-        eachr(xs, function(x) {
-          acc = f(acc, x);
-        });
-        return acc;
-      };
+      const foldr = function (xs, f, acc) {
+        eachr(xs, function (x) {
+          acc = f(acc, x)
+        })
+        return acc
+      }
 
-      const foldl = function(xs, f, acc) {
-        each(xs, function(x) {
-          acc = f(acc, x);
-        });
-        return acc;
-      };
+      const foldl = function (xs, f, acc) {
+        each(xs, function (x) {
+          acc = f(acc, x)
+        })
+        return acc
+      }
 
-      const find = function(xs, pred) {
+      const find = function (xs, pred) {
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
+          const x = xs[i]
           if (pred(x, i, xs)) {
-            return Option.some(x);
+            return Option.some(x)
           }
         }
-        return Option.none();
-      };
+        return Option.none()
+      }
 
-      var findIndex = function(xs, pred) {
+      var findIndex = function (xs, pred) {
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
+          const x = xs[i]
           if (pred(x, i, xs)) {
-            return Option.some(i);
+            return Option.some(i)
           }
         }
 
-        return Option.none();
-      };
+        return Option.none()
+      }
 
-      var slowIndexOf = function(xs, x) {
+      var slowIndexOf = function (xs, x) {
         for (let i = 0, len = xs.length; i < len; ++i) {
           if (xs[i] === x) {
-            return i;
+            return i
           }
         }
 
-        return -1;
-      };
+        return -1
+      }
 
-      const push = Array.prototype.push;
-      const flatten = function(xs) {
+      const push = Array.prototype.push
+      const flatten = function (xs) {
       // Note, this is possible because push supports multiple arguments:
       // http://jsperf.com/concat-push/6
       // Note that in the past, concat() would silently work (very slowly) for array-like objects.
       // With this change it will throw an error.
-        const r = [];
+        const r = []
         for (let i = 0, len = xs.length; i < len; ++i) {
         // Ensure that each value is an array itself
-          if (!Array.prototype.isPrototypeOf(xs[i])) throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs);
-          push.apply(r, xs[i]);
+          if (!Array.prototype.isPrototypeOf(xs[i])) throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs)
+          push.apply(r, xs[i])
         }
-        return r;
-      };
+        return r
+      }
 
-      const bind = function(xs, f) {
-        const output = map(xs, f);
-        return flatten(output);
-      };
+      const bind = function (xs, f) {
+        const output = map(xs, f)
+        return flatten(output)
+      }
 
-      const forall = function(xs, pred) {
+      const forall = function (xs, pred) {
         for (let i = 0, len = xs.length; i < len; ++i) {
-          const x = xs[i];
+          const x = xs[i]
           if (pred(x, i, xs) !== true) {
-            return false;
+            return false
           }
         }
-        return true;
-      };
+        return true
+      }
 
-      const equal = function(a1, a2) {
-        return a1.length === a2.length && forall(a1, function(x, i) {
-          return x === a2[i];
-        });
-      };
+      const equal = function (a1, a2) {
+        return a1.length === a2.length && forall(a1, function (x, i) {
+          return x === a2[i]
+        })
+      }
 
-      const slice = Array.prototype.slice;
-      const reverse = function(xs) {
-        const r = slice.call(xs, 0);
-        r.reverse();
-        return r;
-      };
+      const slice = Array.prototype.slice
+      const reverse = function (xs) {
+        const r = slice.call(xs, 0)
+        r.reverse()
+        return r
+      }
 
-      const difference = function(a1, a2) {
-        return filter(a1, function(x) {
-          return !contains(a2, x);
-        });
-      };
+      const difference = function (a1, a2) {
+        return filter(a1, function (x) {
+          return !contains(a2, x)
+        })
+      }
 
-      const mapToObject = function(xs, f) {
-        const r = {};
+      const mapToObject = function (xs, f) {
+        const r = {}
         for (let i = 0, len = xs.length; i < len; i++) {
-          const x = xs[i];
-          r[String(x)] = f(x, i);
+          const x = xs[i]
+          r[String(x)] = f(x, i)
         }
-        return r;
-      };
+        return r
+      }
 
-      const pure = function(x) {
-        return [x];
-      };
+      const pure = function (x) {
+        return [x]
+      }
 
-      const sort = function(xs, comparator) {
-        const copy = slice.call(xs, 0);
-        copy.sort(comparator);
-        return copy;
-      };
+      const sort = function (xs, comparator) {
+        const copy = slice.call(xs, 0)
+        copy.sort(comparator)
+        return copy
+      }
 
-      const head = function(xs) {
-        return xs.length === 0 ? Option.none() : Option.some(xs[0]);
-      };
+      const head = function (xs) {
+        return xs.length === 0 ? Option.none() : Option.some(xs[0])
+      }
 
-      const last = function(xs) {
-        return xs.length === 0 ? Option.none() : Option.some(xs[xs.length - 1]);
-      };
+      const last = function (xs) {
+        return xs.length === 0 ? Option.none() : Option.some(xs[xs.length - 1])
+      }
 
       return {
         map,
@@ -1487,9 +1487,9 @@ jsc */
         range,
         head,
         last
-      };
+      }
     }
-  );
+  )
   /**
  * Menubar.js
  *
@@ -1508,7 +1508,7 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.themes.modern.api.Settings'
     ],
-    function(Arr, Fun, Tools, Settings) {
+    function (Arr, Fun, Tools, Settings) {
       const defaultMenus = {
         file: { title: 'File', items: 'newdocument restoredraft | preview | print' },
         edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall' },
@@ -1518,142 +1518,142 @@ jsc */
         tools: { title: 'Tools', items: 'spellchecker spellcheckerlanguage | a11ycheck' },
         table: { title: 'Table' },
         help: { title: 'Help' }
-      };
+      }
 
-      const delimiterMenuNamePair = function() {
-        return { name: '|', item: { text: '|' } };
-      };
+      const delimiterMenuNamePair = function () {
+        return { name: '|', item: { text: '|' } }
+      }
 
-      const createMenuNameItemPair = function(name, item) {
-        const menuItem = item ? { name, item } : null;
-        return name === '|' ? delimiterMenuNamePair() : menuItem;
-      };
+      const createMenuNameItemPair = function (name, item) {
+        const menuItem = item ? { name, item } : null
+        return name === '|' ? delimiterMenuNamePair() : menuItem
+      }
 
-      const hasItemName = function(namedMenuItems, name) {
-        return Arr.findIndex(namedMenuItems, function(namedMenuItem) {
-          return namedMenuItem.name === name;
-        }).isSome();
-      };
+      const hasItemName = function (namedMenuItems, name) {
+        return Arr.findIndex(namedMenuItems, function (namedMenuItem) {
+          return namedMenuItem.name === name
+        }).isSome()
+      }
 
-      const isSeparator = function(namedMenuItem) {
-        return namedMenuItem && namedMenuItem.item.text === '|';
-      };
+      const isSeparator = function (namedMenuItem) {
+        return namedMenuItem && namedMenuItem.item.text === '|'
+      }
 
-      const cleanupMenu = function(namedMenuItems, removedMenuItems) {
-        const menuItemsPass1 = Arr.filter(namedMenuItems, function(namedMenuItem) {
-          return removedMenuItems.hasOwnProperty(namedMenuItem.name) === false;
-        });
+      const cleanupMenu = function (namedMenuItems, removedMenuItems) {
+        const menuItemsPass1 = Arr.filter(namedMenuItems, function (namedMenuItem) {
+          return removedMenuItems.hasOwnProperty(namedMenuItem.name) === false
+        })
 
-        const menuItemsPass2 = Arr.filter(menuItemsPass1, function(namedMenuItem, i, namedMenuItems) {
-          return !isSeparator(namedMenuItem) || !isSeparator(namedMenuItems[i - 1]);
-        });
+        const menuItemsPass2 = Arr.filter(menuItemsPass1, function (namedMenuItem, i, namedMenuItems) {
+          return !isSeparator(namedMenuItem) || !isSeparator(namedMenuItems[i - 1])
+        })
 
-        return Arr.filter(menuItemsPass2, function(namedMenuItem, i, namedMenuItems) {
-          return !isSeparator(namedMenuItem) || i > 0 && i < namedMenuItems.length - 1;
-        });
-      };
+        return Arr.filter(menuItemsPass2, function (namedMenuItem, i, namedMenuItems) {
+          return !isSeparator(namedMenuItem) || i > 0 && i < namedMenuItems.length - 1
+        })
+      }
 
-      const createMenu = function(editorMenuItems, menus, removedMenuItems, context) {
+      const createMenu = function (editorMenuItems, menus, removedMenuItems, context) {
         let menuButton,
           menu,
           namedMenuItems,
-          isUserDefined;
+          isUserDefined
 
         // User defined menu
         if (menus) {
-          menu = menus[context];
-          isUserDefined = true;
+          menu = menus[context]
+          isUserDefined = true
         } else {
-          menu = defaultMenus[context];
+          menu = defaultMenus[context]
         }
 
         if (menu) {
-          menuButton = { text: menu.title };
-          namedMenuItems = [];
+          menuButton = { text: menu.title }
+          namedMenuItems = []
 
           // Default/user defined items
-          Tools.each((menu.items || '').split(/[ ,]/), function(name) {
-            const namedMenuItem = createMenuNameItemPair(name, editorMenuItems[name]);
+          Tools.each((menu.items || '').split(/[ ,]/), function (name) {
+            const namedMenuItem = createMenuNameItemPair(name, editorMenuItems[name])
 
             if (namedMenuItem) {
-              namedMenuItems.push(namedMenuItem);
+              namedMenuItems.push(namedMenuItem)
             }
-          });
+          })
 
           // Added though context
           if (!isUserDefined) {
-            Tools.each(editorMenuItems, function(item, name) {
+            Tools.each(editorMenuItems, function (item, name) {
               if (item.context === context && !hasItemName(namedMenuItems, name)) {
                 if (item.separator === 'before') {
-                  namedMenuItems.push(delimiterMenuNamePair());
+                  namedMenuItems.push(delimiterMenuNamePair())
                 }
 
                 if (item.prependToContext) {
-                  namedMenuItems.unshift(createMenuNameItemPair(name, item));
+                  namedMenuItems.unshift(createMenuNameItemPair(name, item))
                 } else {
-                  namedMenuItems.push(createMenuNameItemPair(name, item));
+                  namedMenuItems.push(createMenuNameItemPair(name, item))
                 }
 
                 if (item.separator === 'after') {
-                  namedMenuItems.push(delimiterMenuNamePair());
+                  namedMenuItems.push(delimiterMenuNamePair())
                 }
               }
-            });
+            })
           }
 
-          menuButton.menu = Arr.map(cleanupMenu(namedMenuItems, removedMenuItems), function(menuItem) {
-            return menuItem.item;
-          });
+          menuButton.menu = Arr.map(cleanupMenu(namedMenuItems, removedMenuItems), function (menuItem) {
+            return menuItem.item
+          })
 
           if (!menuButton.menu.length) {
-            return null;
+            return null
           }
         }
 
-        return menuButton;
-      };
+        return menuButton
+      }
 
-      const getDefaultMenubar = function(editor) {
+      const getDefaultMenubar = function (editor) {
         let name,
-          defaultMenuBar = [];
-        const menu = Settings.getMenu(editor);
+          defaultMenuBar = []
+        const menu = Settings.getMenu(editor)
 
         if (menu) {
           for (name in menu) {
-            defaultMenuBar.push(name);
+            defaultMenuBar.push(name)
           }
         } else {
           for (name in defaultMenus) {
-            defaultMenuBar.push(name);
+            defaultMenuBar.push(name)
           }
         }
 
-        return defaultMenuBar;
-      };
+        return defaultMenuBar
+      }
 
-      const createMenuButtons = function(editor) {
-        const menuButtons = [];
-        const defaultMenuBar = getDefaultMenubar(editor);
-        const removedMenuItems = Tools.makeMap(Settings.getRemovedMenuItems(editor).split(/[ ,]/));
+      const createMenuButtons = function (editor) {
+        const menuButtons = []
+        const defaultMenuBar = getDefaultMenubar(editor)
+        const removedMenuItems = Tools.makeMap(Settings.getRemovedMenuItems(editor).split(/[ ,]/))
 
-        const menubar = Settings.getMenubar(editor);
-        const enabledMenuNames = typeof menubar === 'string' ? menubar.split(/[ ,]/) : defaultMenuBar;
+        const menubar = Settings.getMenubar(editor)
+        const enabledMenuNames = typeof menubar === 'string' ? menubar.split(/[ ,]/) : defaultMenuBar
         for (let i = 0; i < enabledMenuNames.length; i++) {
-          const menuItems = enabledMenuNames[i];
-          const menu = createMenu(editor.menuItems, Settings.getMenu(editor), removedMenuItems, menuItems);
+          const menuItems = enabledMenuNames[i]
+          const menu = createMenu(editor.menuItems, Settings.getMenu(editor), removedMenuItems, menuItems)
           if (menu) {
-            menuButtons.push(menu);
+            menuButtons.push(menu)
           }
         }
 
-        return menuButtons;
-      };
+        return menuButtons
+      }
 
       return {
         createMenuButtons
-      };
+      }
     }
-  );
+  )
 
   /**
  * Resize.js
@@ -1672,52 +1672,52 @@ jsc */
       'tinymce.themes.modern.api.Events',
       'tinymce.themes.modern.api.Settings'
     ],
-    function(DOMUtils, Events, Settings) {
-      const DOM = DOMUtils.DOM;
-      const getSize = function(elm) {
+    function (DOMUtils, Events, Settings) {
+      const DOM = DOMUtils.DOM
+      const getSize = function (elm) {
         return {
           width: elm.clientWidth,
           height: elm.clientHeight
-        };
-      };
+        }
+      }
 
-      const resizeTo = function(editor, width, height) {
+      const resizeTo = function (editor, width, height) {
         let containerElm,
           iframeElm,
           containerSize,
-          iframeSize;
+          iframeSize
 
-        containerElm = editor.getContainer();
-        iframeElm = editor.getContentAreaContainer().firstChild;
-        containerSize = getSize(containerElm);
-        iframeSize = getSize(iframeElm);
+        containerElm = editor.getContainer()
+        iframeElm = editor.getContentAreaContainer().firstChild
+        containerSize = getSize(containerElm)
+        iframeSize = getSize(iframeElm)
 
         if (width !== null) {
-          width = Math.max(Settings.getMinWidth(editor), width);
-          width = Math.min(Settings.getMaxWidth(editor), width);
+          width = Math.max(Settings.getMinWidth(editor), width)
+          width = Math.min(Settings.getMaxWidth(editor), width)
 
-          DOM.setStyle(containerElm, 'width', width + (containerSize.width - iframeSize.width));
-          DOM.setStyle(iframeElm, 'width', width);
+          DOM.setStyle(containerElm, 'width', width + (containerSize.width - iframeSize.width))
+          DOM.setStyle(iframeElm, 'width', width)
         }
 
-        height = Math.max(Settings.getMinHeight(editor), height);
-        height = Math.min(Settings.getMaxHeight(editor), height);
-        DOM.setStyle(iframeElm, 'height', height);
+        height = Math.max(Settings.getMinHeight(editor), height)
+        height = Math.min(Settings.getMaxHeight(editor), height)
+        DOM.setStyle(iframeElm, 'height', height)
 
-        Events.fireResizeEditor(editor);
-      };
+        Events.fireResizeEditor(editor)
+      }
 
-      const resizeBy = function(editor, dw, dh) {
-        const elm = editor.getContentAreaContainer();
-        resizeTo(editor, elm.clientWidth + dw, elm.clientHeight + dh);
-      };
+      const resizeBy = function (editor, dw, dh) {
+        const elm = editor.getContentAreaContainer()
+        resizeTo(editor, elm.clientWidth + dw, elm.clientHeight + dh)
+      }
 
       return {
         resizeTo,
         resizeBy
-      };
+      }
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -1734,10 +1734,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.Env');
+    function (resolve) {
+      return resolve('tinymce.Env')
     }
-  );
+  )
 
   /**
  * Sidebar.js
@@ -1757,63 +1757,63 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.themes.modern.api.Events'
     ],
-    function(Env, Factory, Tools, Events) {
-      const api = function(elm) {
+    function (Env, Factory, Tools, Events) {
+      const api = function (elm) {
         return {
-          element() {
-            return elm;
+          element () {
+            return elm
           }
-        };
-      };
-
-      const trigger = function(sidebar, panel, callbackName) {
-        const callback = sidebar.settings[callbackName];
-        if (callback) {
-          callback(api(panel.getEl('body')));
         }
-      };
+      }
 
-      const hidePanels = function(name, container, sidebars) {
-        Tools.each(sidebars, function(sidebar) {
-          const panel = container.items().filter('#' + sidebar.name)[0];
+      const trigger = function (sidebar, panel, callbackName) {
+        const callback = sidebar.settings[callbackName]
+        if (callback) {
+          callback(api(panel.getEl('body')))
+        }
+      }
+
+      const hidePanels = function (name, container, sidebars) {
+        Tools.each(sidebars, function (sidebar) {
+          const panel = container.items().filter('#' + sidebar.name)[0]
 
           if (panel && panel.visible() && sidebar.name !== name) {
-            trigger(sidebar, panel, 'onhide');
-            panel.visible(false);
+            trigger(sidebar, panel, 'onhide')
+            panel.visible(false)
           }
-        });
-      };
+        })
+      }
 
-      const deactivateButtons = function(toolbar) {
-        toolbar.items().each(function(ctrl) {
-          ctrl.active(false);
-        });
-      };
+      const deactivateButtons = function (toolbar) {
+        toolbar.items().each(function (ctrl) {
+          ctrl.active(false)
+        })
+      }
 
-      const findSidebar = function(sidebars, name) {
-        return Tools.grep(sidebars, function(sidebar) {
-          return sidebar.name === name;
-        })[0];
-      };
+      const findSidebar = function (sidebars, name) {
+        return Tools.grep(sidebars, function (sidebar) {
+          return sidebar.name === name
+        })[0]
+      }
 
-      const showPanel = function(editor, name, sidebars) {
-        return function(e) {
-          const btnCtrl = e.control;
-          const container = btnCtrl.parents().filter('panel')[0];
-          let panel = container.find('#' + name)[0];
-          const sidebar = findSidebar(sidebars, name);
+      const showPanel = function (editor, name, sidebars) {
+        return function (e) {
+          const btnCtrl = e.control
+          const container = btnCtrl.parents().filter('panel')[0]
+          let panel = container.find('#' + name)[0]
+          const sidebar = findSidebar(sidebars, name)
 
-          hidePanels(name, container, sidebars);
-          deactivateButtons(btnCtrl.parent());
+          hidePanels(name, container, sidebars)
+          deactivateButtons(btnCtrl.parent())
 
           if (panel && panel.visible()) {
-            trigger(sidebar, panel, 'onhide');
-            panel.hide();
-            btnCtrl.active(false);
+            trigger(sidebar, panel, 'onhide')
+            panel.hide()
+            btnCtrl.active(false)
           } else {
             if (panel) {
-              panel.show();
-              trigger(sidebar, panel, 'onshow');
+              panel.show()
+              trigger(sidebar, panel, 'onshow')
             } else {
               panel = Factory.create({
                 type: 'container',
@@ -1821,31 +1821,31 @@ jsc */
                 layout: 'stack',
                 classes: 'sidebar-panel',
                 html: ''
-              });
+              })
 
-              container.prepend(panel);
-              trigger(sidebar, panel, 'onrender');
-              trigger(sidebar, panel, 'onshow');
+              container.prepend(panel)
+              trigger(sidebar, panel, 'onrender')
+              trigger(sidebar, panel, 'onshow')
             }
 
-            btnCtrl.active(true);
+            btnCtrl.active(true)
           }
 
-          Events.fireResizeEditor(editor);
-        };
-      };
+          Events.fireResizeEditor(editor)
+        }
+      }
 
-      const isModernBrowser = function() {
-        return !Env.ie || Env.ie >= 11;
-      };
+      const isModernBrowser = function () {
+        return !Env.ie || Env.ie >= 11
+      }
 
-      const hasSidebar = function(editor) {
-        return isModernBrowser() && editor.sidebars ? editor.sidebars.length > 0 : false;
-      };
+      const hasSidebar = function (editor) {
+        return isModernBrowser() && editor.sidebars ? editor.sidebars.length > 0 : false
+      }
 
-      const createSidebar = function(editor) {
-        const buttons = Tools.map(editor.sidebars, function(sidebar) {
-          const settings = sidebar.settings;
+      const createSidebar = function (editor) {
+        const buttons = Tools.map(editor.sidebars, function (sidebar) {
+          const settings = sidebar.settings
 
           return {
             type: 'button',
@@ -1853,8 +1853,8 @@ jsc */
             image: settings.image,
             tooltip: settings.tooltip,
             onclick: showPanel(editor, sidebar.name, editor.sidebars)
-          };
-        });
+          }
+        })
 
         return {
           type: 'panel',
@@ -1869,15 +1869,15 @@ jsc */
               items: buttons
             }
           ]
-        };
-      };
+        }
+      }
 
       return {
         hasSidebar,
         createSidebar
-      };
+      }
     }
-  );
+  )
   /**
  * SkinLoaded.js
  *
@@ -1892,27 +1892,27 @@ jsc */
     'tinymce.themes.modern.ui.SkinLoaded', [
       'tinymce.themes.modern.api.Events'
     ],
-    function(Events) {
-      const fireSkinLoaded = function(editor) {
-        const done = function() {
-          editor._skinLoaded = true;
-          Events.fireSkinLoaded(editor);
-        };
+    function (Events) {
+      const fireSkinLoaded = function (editor) {
+        const done = function () {
+          editor._skinLoaded = true
+          Events.fireSkinLoaded(editor)
+        }
 
-        return function() {
+        return function () {
           if (editor.initialized) {
-            done();
+            done()
           } else {
-            editor.on('init', done);
+            editor.on('init', done)
           }
-        };
-      };
+        }
+      }
 
       return {
         fireSkinLoaded
-      };
+      }
     }
-  );
+  )
 
   /**
  * Iframe.js
@@ -1940,16 +1940,16 @@ jsc */
       'tinymce.themes.modern.ui.SkinLoaded',
       'tinymce.themes.modern.ui.Toolbar'
     ],
-    function(DOMUtils, Factory, Tools, Events, Settings, A11y, ContextToolbars, Menubar, Resize, Sidebar, SkinLoaded, Toolbar) {
-      const DOM = DOMUtils.DOM;
+    function (DOMUtils, Factory, Tools, Events, Settings, A11y, ContextToolbars, Menubar, Resize, Sidebar, SkinLoaded, Toolbar) {
+      const DOM = DOMUtils.DOM
 
-      const switchMode = function(panel) {
-        return function(e) {
-          panel.find('*').disabled(e.mode === 'readonly');
-        };
-      };
+      const switchMode = function (panel) {
+        return function (e) {
+          panel.find('*').disabled(e.mode === 'readonly')
+        }
+      }
 
-      const editArea = function(border) {
+      const editArea = function (border) {
         return {
           type: 'panel',
           name: 'iframe',
@@ -1957,10 +1957,10 @@ jsc */
           classes: 'edit-area',
           border,
           html: ''
-        };
-      };
+        }
+      }
 
-      const editAreaContainer = function(editor) {
+      const editAreaContainer = function (editor) {
         return {
           type: 'panel',
           layout: 'stack',
@@ -1970,16 +1970,16 @@ jsc */
             editArea('0'),
             Sidebar.createSidebar(editor)
           ]
-        };
-      };
+        }
+      }
 
-      const render = function(editor, theme, args) {
+      const render = function (editor, theme, args) {
         let panel,
           resizeHandleCtrl,
-          startSize;
+          startSize
 
         if (args.skinUiCss) {
-          DOM.styleSheetLoader.load(args.skinUiCss, SkinLoaded.fireSkinLoaded(editor));
+          DOM.styleSheetLoader.load(args.skinUiCss, SkinLoaded.fireSkinLoaded(editor))
         }
 
         panel = theme.panel = Factory.create({
@@ -2000,34 +2000,34 @@ jsc */
             },
             Sidebar.hasSidebar(editor) ? editAreaContainer(editor) : editArea('1 0 0 0')
           ]
-        });
+        })
 
         if (Settings.getResize(editor) !== 'none') {
           resizeHandleCtrl = {
             type: 'resizehandle',
             direction: Settings.getResize(editor),
 
-            onResizeStart() {
-              const elm = editor.getContentAreaContainer().firstChild;
+            onResizeStart () {
+              const elm = editor.getContentAreaContainer().firstChild
 
               startSize = {
                 width: elm.clientWidth,
                 height: elm.clientHeight
-              };
+              }
             },
 
-            onResize(e) {
+            onResize (e) {
               if (Settings.getResize(editor) === 'both') {
-                Resize.resizeTo(editor, startSize.width + e.deltaX, startSize.height + e.deltaY);
+                Resize.resizeTo(editor, startSize.width + e.deltaX, startSize.height + e.deltaY)
               } else {
-                Resize.resizeTo(editor, null, startSize.height + e.deltaY);
+                Resize.resizeTo(editor, null, startSize.height + e.deltaY)
               }
             }
-          };
+          }
         }
 
         if (Settings.hasStatusbar(editor)) {
-          const brandingLabel = Settings.isBrandingEnabled(editor) ? { type: 'label', classes: 'branding', html: ' powered by <a href="https://www.tinymce.com/?utm_campaign=editor_referral&utm_medium=poweredby&utm_source=tinymce" rel="noopener" target="_blank">tinymce</a>' } : null;
+          const brandingLabel = Settings.isBrandingEnabled(editor) ? { type: 'label', classes: 'branding', html: ' powered by <a href="https://www.tinymce.com/?utm_campaign=editor_referral&utm_medium=poweredby&utm_source=tinymce" rel="noopener" target="_blank">tinymce</a>' } : null
 
           panel.add({
             type: 'panel',
@@ -2041,42 +2041,42 @@ jsc */
               resizeHandleCtrl,
               brandingLabel
             ]
-          });
+          })
         }
 
-        Events.fireBeforeRenderUI(editor);
-        editor.on('SwitchMode', switchMode(panel));
-        panel.renderBefore(args.targetNode).reflow();
+        Events.fireBeforeRenderUI(editor)
+        editor.on('SwitchMode', switchMode(panel))
+        panel.renderBefore(args.targetNode).reflow()
 
         if (Settings.isReadOnly(editor)) {
-          editor.setMode('readonly');
+          editor.setMode('readonly')
         }
 
         if (args.width) {
-          DOM.setStyle(panel.getEl(), 'width', args.width);
+          DOM.setStyle(panel.getEl(), 'width', args.width)
         }
 
         // Remove the panel when the editor is removed
-        editor.on('remove', function() {
-          panel.remove();
-          panel = null;
-        });
+        editor.on('remove', function () {
+          panel.remove()
+          panel = null
+        })
 
         // Add accesibility shortcuts
-        A11y.addKeys(editor, panel);
-        ContextToolbars.addContextualToolbars(editor);
+        A11y.addKeys(editor, panel)
+        ContextToolbars.addContextualToolbars(editor)
 
         return {
           iframeContainer: panel.find('#iframe')[0].getEl(),
           editorContainer: panel.getEl()
-        };
-      };
+        }
+      }
 
       return {
         render
-      };
+      }
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -2093,10 +2093,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.dom.DomQuery');
+    function (resolve) {
+      return resolve('tinymce.dom.DomQuery')
     }
-  );
+  )
 
   /**
  * DomUtils.js
@@ -2122,120 +2122,120 @@ jsc */
       'tinymce.core.Env',
       'tinymce.core.util.Tools'
     ],
-    function(document, DOMUtils, Env, Tools) {
-      'use strict';
+    function (document, DOMUtils, Env, Tools) {
+      'use strict'
 
-      let count = 0;
+      let count = 0
 
       var funcs = {
-        id() {
-          return 'mceu_' + (count++);
+        id () {
+          return 'mceu_' + (count++)
         },
 
-        create(name, attrs, children) {
-          const elm = document.createElement(name);
+        create (name, attrs, children) {
+          const elm = document.createElement(name)
 
-          DOMUtils.DOM.setAttribs(elm, attrs);
+          DOMUtils.DOM.setAttribs(elm, attrs)
 
           if (typeof children === 'string') {
-            elm.innerHTML = children;
+            elm.innerHTML = children
           } else {
-            Tools.each(children, function(child) {
+            Tools.each(children, function (child) {
               if (child.nodeType) {
-                elm.appendChild(child);
+                elm.appendChild(child)
               }
-            });
+            })
           }
 
-          return elm;
+          return elm
         },
 
-        createFragment(html) {
-          return DOMUtils.DOM.createFragment(html);
+        createFragment (html) {
+          return DOMUtils.DOM.createFragment(html)
         },
 
-        getWindowSize() {
-          return DOMUtils.DOM.getViewPort();
+        getWindowSize () {
+          return DOMUtils.DOM.getViewPort()
         },
 
-        getSize(elm) {
+        getSize (elm) {
           let width,
-            height;
+            height
 
           if (elm.getBoundingClientRect) {
-            const rect = elm.getBoundingClientRect();
+            const rect = elm.getBoundingClientRect()
 
-            width = Math.max(rect.width || (rect.right - rect.left), elm.offsetWidth);
-            height = Math.max(rect.height || (rect.bottom - rect.bottom), elm.offsetHeight);
+            width = Math.max(rect.width || (rect.right - rect.left), elm.offsetWidth)
+            height = Math.max(rect.height || (rect.bottom - rect.bottom), elm.offsetHeight)
           } else {
-            width = elm.offsetWidth;
-            height = elm.offsetHeight;
+            width = elm.offsetWidth
+            height = elm.offsetHeight
           }
 
-          return { width, height };
+          return { width, height }
         },
 
-        getPos(elm, root) {
-          return DOMUtils.DOM.getPos(elm, root || funcs.getContainer());
+        getPos (elm, root) {
+          return DOMUtils.DOM.getPos(elm, root || funcs.getContainer())
         },
 
-        getContainer() {
-          return Env.container ? Env.container : document.body;
+        getContainer () {
+          return Env.container ? Env.container : document.body
         },
 
-        getViewPort(win) {
-          return DOMUtils.DOM.getViewPort(win);
+        getViewPort (win) {
+          return DOMUtils.DOM.getViewPort(win)
         },
 
-        get(id) {
-          return document.getElementById(id);
+        get (id) {
+          return document.getElementById(id)
         },
 
-        addClass(elm, cls) {
-          return DOMUtils.DOM.addClass(elm, cls);
+        addClass (elm, cls) {
+          return DOMUtils.DOM.addClass(elm, cls)
         },
 
-        removeClass(elm, cls) {
-          return DOMUtils.DOM.removeClass(elm, cls);
+        removeClass (elm, cls) {
+          return DOMUtils.DOM.removeClass(elm, cls)
         },
 
-        hasClass(elm, cls) {
-          return DOMUtils.DOM.hasClass(elm, cls);
+        hasClass (elm, cls) {
+          return DOMUtils.DOM.hasClass(elm, cls)
         },
 
-        toggleClass(elm, cls, state) {
-          return DOMUtils.DOM.toggleClass(elm, cls, state);
+        toggleClass (elm, cls, state) {
+          return DOMUtils.DOM.toggleClass(elm, cls, state)
         },
 
-        css(elm, name, value) {
-          return DOMUtils.DOM.setStyle(elm, name, value);
+        css (elm, name, value) {
+          return DOMUtils.DOM.setStyle(elm, name, value)
         },
 
-        getRuntimeStyle(elm, name) {
-          return DOMUtils.DOM.getStyle(elm, name, true);
+        getRuntimeStyle (elm, name) {
+          return DOMUtils.DOM.getStyle(elm, name, true)
         },
 
-        on(target, name, callback, scope) {
-          return DOMUtils.DOM.bind(target, name, callback, scope);
+        on (target, name, callback, scope) {
+          return DOMUtils.DOM.bind(target, name, callback, scope)
         },
 
-        off(target, name, callback) {
-          return DOMUtils.DOM.unbind(target, name, callback);
+        off (target, name, callback) {
+          return DOMUtils.DOM.unbind(target, name, callback)
         },
 
-        fire(target, name, args) {
-          return DOMUtils.DOM.fire(target, name, args);
+        fire (target, name, args) {
+          return DOMUtils.DOM.fire(target, name, args)
         },
 
-        innerHtml(elm, html) {
+        innerHtml (elm, html) {
         // Workaround for <div> in <p> bug on IE 8 #6178
-          DOMUtils.DOM.setHTML(elm, html);
+          DOMUtils.DOM.setHTML(elm, html)
         }
-      };
+      }
 
-      return funcs;
+      return funcs
     }
-  );
+  )
   /**
  * Movable.js
  *
@@ -2258,10 +2258,10 @@ jsc */
       'global!window',
       'tinymce.ui.DomUtils'
     ],
-    function(document, window, DomUtils) {
-      'use strict';
+    function (document, window, DomUtils) {
+      'use strict'
 
-      function calculateRelativePosition(ctrl, targetElm, rel) {
+      function calculateRelativePosition (ctrl, targetElm, rel) {
         let ctrlElm,
           pos,
           x,
@@ -2271,66 +2271,66 @@ jsc */
           targetW,
           targetH,
           viewport,
-          size;
+          size
 
-        viewport = DomUtils.getViewPort();
+        viewport = DomUtils.getViewPort()
 
         // Get pos of target
-        pos = DomUtils.getPos(targetElm);
-        x = pos.x;
-        y = pos.y;
+        pos = DomUtils.getPos(targetElm)
+        x = pos.x
+        y = pos.y
 
         if (ctrl.state.get('fixed') && DomUtils.getRuntimeStyle(document.body, 'position') == 'static') {
-          x -= viewport.x;
-          y -= viewport.y;
+          x -= viewport.x
+          y -= viewport.y
         }
 
         // Get size of self
-        ctrlElm = ctrl.getEl();
-        size = DomUtils.getSize(ctrlElm);
-        selfW = size.width;
-        selfH = size.height;
+        ctrlElm = ctrl.getEl()
+        size = DomUtils.getSize(ctrlElm)
+        selfW = size.width
+        selfH = size.height
 
         // Get size of target
-        size = DomUtils.getSize(targetElm);
-        targetW = size.width;
-        targetH = size.height;
+        size = DomUtils.getSize(targetElm)
+        targetW = size.width
+        targetH = size.height
 
         // Parse align string
-        rel = (rel || '').split('');
+        rel = (rel || '').split('')
 
         // Target corners
         if (rel[0] === 'b') {
-          y += targetH;
+          y += targetH
         }
 
         if (rel[1] === 'r') {
-          x += targetW;
+          x += targetW
         }
 
         if (rel[0] === 'c') {
-          y += Math.round(targetH / 2);
+          y += Math.round(targetH / 2)
         }
 
         if (rel[1] === 'c') {
-          x += Math.round(targetW / 2);
+          x += Math.round(targetW / 2)
         }
 
         // Self corners
         if (rel[3] === 'b') {
-          y -= selfH;
+          y -= selfH
         }
 
         if (rel[4] === 'r') {
-          x -= selfW;
+          x -= selfW
         }
 
         if (rel[3] === 'c') {
-          y -= Math.round(selfH / 2);
+          y -= Math.round(selfH / 2)
         }
 
         if (rel[4] === 'c') {
-          x -= Math.round(selfW / 2);
+          x -= Math.round(selfW / 2)
         }
 
         return {
@@ -2338,7 +2338,7 @@ jsc */
           y,
           w: selfW,
           h: selfH
-        };
+        }
       }
 
       return {
@@ -2350,25 +2350,25 @@ jsc */
        * @param {Array} rels Array with relative positions.
        * @return {String} Best suitable relative position.
        */
-        testMoveRel(elm, rels) {
-          const viewPortRect = DomUtils.getViewPort();
+        testMoveRel (elm, rels) {
+          const viewPortRect = DomUtils.getViewPort()
 
           for (let i = 0; i < rels.length; i++) {
-            const pos = calculateRelativePosition(this, elm, rels[i]);
+            const pos = calculateRelativePosition(this, elm, rels[i])
 
             if (this.state.get('fixed')) {
               if (pos.x > 0 && pos.x + pos.w < viewPortRect.w && pos.y > 0 && pos.y + pos.h < viewPortRect.h) {
-                return rels[i];
+                return rels[i]
               }
             } else {
               if (pos.x > viewPortRect.x && pos.x + pos.w < viewPortRect.w + viewPortRect.x &&
               pos.y > viewPortRect.y && pos.y + pos.h < viewPortRect.h + viewPortRect.y) {
-                return rels[i];
+                return rels[i]
               }
             }
           }
 
-          return rels[0];
+          return rels[0]
         },
 
         /**
@@ -2379,13 +2379,13 @@ jsc */
        * @param {String} rel Relative mode. For example: br-tl.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        moveRel(elm, rel) {
+        moveRel (elm, rel) {
           if (typeof rel !== 'string') {
-            rel = this.testMoveRel(elm, rel);
+            rel = this.testMoveRel(elm, rel)
           }
 
-          const pos = calculateRelativePosition(this, elm, rel);
-          return this.moveTo(pos.x, pos.y);
+          const pos = calculateRelativePosition(this, elm, rel)
+          return this.moveTo(pos.x, pos.y)
         },
 
         /**
@@ -2396,13 +2396,13 @@ jsc */
        * @param {Number} dy Relative y position.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        moveBy(dx, dy) {
+        moveBy (dx, dy) {
           let self = this,
-            rect = self.layoutRect();
+            rect = self.layoutRect()
 
-          self.moveTo(rect.x + dx, rect.y + dy);
+          self.moveTo(rect.x + dx, rect.y + dy)
 
-          return self;
+          return self
         },
 
         /**
@@ -2413,45 +2413,45 @@ jsc */
        * @param {Number} y Absolute y position.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        moveTo(x, y) {
-          const self = this;
+        moveTo (x, y) {
+          const self = this
 
           // TODO: Move this to some global class
-          function constrain(value, max, size) {
+          function constrain (value, max, size) {
             if (value < 0) {
-              return 0;
+              return 0
             }
 
             if (value + size > max) {
-              value = max - size;
-              return value < 0 ? 0 : value;
+              value = max - size
+              return value < 0 ? 0 : value
             }
 
-            return value;
+            return value
           }
 
           if (self.settings.constrainToViewport) {
-            const viewPortRect = DomUtils.getViewPort(window);
-            const layoutRect = self.layoutRect();
+            const viewPortRect = DomUtils.getViewPort(window)
+            const layoutRect = self.layoutRect()
 
-            x = constrain(x, viewPortRect.w + viewPortRect.x, layoutRect.w);
-            y = constrain(y, viewPortRect.h + viewPortRect.y, layoutRect.h);
+            x = constrain(x, viewPortRect.w + viewPortRect.x, layoutRect.w)
+            y = constrain(y, viewPortRect.h + viewPortRect.y, layoutRect.h)
           }
 
           if (self.state.get('rendered')) {
-            self.layoutRect({ x, y }).repaint();
+            self.layoutRect({ x, y }).repaint()
           } else {
-            self.settings.x = x;
-            self.settings.y = y;
+            self.settings.x = x
+            self.settings.y = y
           }
 
-          self.fire('move', { x, y });
+          self.fire('move', { x, y })
 
-          return self;
+          return self
         }
-      };
+      }
     }
-  );
+  )
   /**
  * ResolveGlobal.js
  *
@@ -2467,10 +2467,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.Class');
+    function (resolve) {
+      return resolve('tinymce.util.Class')
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -2487,10 +2487,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.EventDispatcher');
+    function (resolve) {
+      return resolve('tinymce.util.EventDispatcher')
     }
-  );
+  )
 
   /**
  * BoxUtils.js
@@ -2513,8 +2513,8 @@ jsc */
     [
       'global!document'
     ],
-    function(document) {
-      'use strict';
+    function (document) {
+      'use strict'
 
       return {
       /**
@@ -2525,35 +2525,35 @@ jsc */
        * @return {Object} Object with top/right/bottom/left properties.
        * @private
        */
-        parseBox(value) {
+        parseBox (value) {
           let len,
-            radix = 10;
+            radix = 10
 
           if (!value) {
-            return;
+            return
           }
 
           if (typeof value === 'number') {
-            value = value || 0;
+            value = value || 0
 
             return {
               top: value,
               left: value,
               bottom: value,
               right: value
-            };
+            }
           }
 
-          value = value.split(' ');
-          len = value.length;
+          value = value.split(' ')
+          len = value.length
 
           if (len === 1) {
-            value[1] = value[2] = value[3] = value[0];
+            value[1] = value[2] = value[3] = value[0]
           } else if (len === 2) {
-            value[2] = value[0];
-            value[3] = value[1];
+            value[2] = value[0]
+            value[3] = value[1]
           } else if (len === 3) {
-            value[3] = value[1];
+            value[3] = value[1]
           }
 
           return {
@@ -2561,29 +2561,29 @@ jsc */
             right: parseInt(value[1], radix) || 0,
             bottom: parseInt(value[2], radix) || 0,
             left: parseInt(value[3], radix) || 0
-          };
+          }
         },
 
-        measureBox(elm, prefix) {
-          function getStyle(name) {
-            const defaultView = document.defaultView;
+        measureBox (elm, prefix) {
+          function getStyle (name) {
+            const defaultView = document.defaultView
 
             if (defaultView) {
             // Remove camelcase
-              name = name.replace(/[A-Z]/g, function(a) {
-                return '-' + a;
-              });
+              name = name.replace(/[A-Z]/g, function (a) {
+                return '-' + a
+              })
 
-              return defaultView.getComputedStyle(elm, null).getPropertyValue(name);
+              return defaultView.getComputedStyle(elm, null).getPropertyValue(name)
             }
 
-            return elm.currentStyle[name];
+            return elm.currentStyle[name]
           }
 
-          function getSide(name) {
-            const val = parseFloat(getStyle(name), 10);
+          function getSide (name) {
+            const val = parseFloat(getStyle(name), 10)
 
-            return isNaN(val) ? 0 : val;
+            return isNaN(val) ? 0 : val
           }
 
           return {
@@ -2591,11 +2591,11 @@ jsc */
             right: getSide(prefix + 'RightWidth'),
             bottom: getSide(prefix + 'BottomWidth'),
             left: getSide(prefix + 'LeftWidth')
-          };
+          }
         }
-      };
+      }
     }
-  );
+  )
 
   /**
  * ClassList.js
@@ -2618,10 +2618,10 @@ jsc */
     [
       'tinymce.core.util.Tools'
     ],
-    function(Tools) {
-      'use strict';
+    function (Tools) {
+      'use strict'
 
-      function noop() {
+      function noop () {
       }
 
       /**
@@ -2631,11 +2631,11 @@ jsc */
      * @constructor ClassList
      * @param {function} onchange Onchange callback to be executed.
      */
-      function ClassList(onchange) {
-        this.cls = [];
-        this.cls._map = {};
-        this.onchange = onchange || noop;
-        this.prefix = '';
+      function ClassList (onchange) {
+        this.cls = []
+        this.cls._map = {}
+        this.onchange = onchange || noop
+        this.prefix = ''
       }
 
       Tools.extend(ClassList.prototype, {
@@ -2646,14 +2646,14 @@ jsc */
        * @param {String} cls Class to be added.
        * @return {tinymce.ui.ClassList} Current class list instance.
        */
-        add(cls) {
+        add (cls) {
           if (cls && !this.contains(cls)) {
-            this.cls._map[cls] = true;
-            this.cls.push(cls);
-            this._change();
+            this.cls._map[cls] = true
+            this.cls.push(cls)
+            this._change()
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -2663,20 +2663,20 @@ jsc */
        * @param {String} cls Class to be removed.
        * @return {tinymce.ui.ClassList} Current class list instance.
        */
-        remove(cls) {
+        remove (cls) {
           if (this.contains(cls)) {
             for (var i = 0; i < this.cls.length; i++) {
               if (this.cls[i] === cls) {
-                break;
+                break
               }
             }
 
-            this.cls.splice(i, 1);
-            delete this.cls._map[cls];
-            this._change();
+            this.cls.splice(i, 1)
+            delete this.cls._map[cls]
+            this._change()
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -2687,20 +2687,20 @@ jsc */
        * @param {Boolean} state Optional state if it should be added/removed.
        * @return {tinymce.ui.ClassList} Current class list instance.
        */
-        toggle(cls, state) {
-          const curState = this.contains(cls);
+        toggle (cls, state) {
+          const curState = this.contains(cls)
 
           if (curState !== state) {
             if (curState) {
-              this.remove(cls);
+              this.remove(cls)
             } else {
-              this.add(cls);
+              this.add(cls)
             }
 
-            this._change();
+            this._change()
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -2710,8 +2710,8 @@ jsc */
        * @param {String} cls Class to look for.
        * @return {Boolean} true/false if the class exists or not.
        */
-        contains(cls) {
-          return !!this.cls._map[cls];
+        contains (cls) {
+          return !!this.cls._map[cls]
         },
 
         /**
@@ -2721,35 +2721,35 @@ jsc */
        * @return {String} Space separated list of classes.
        */
 
-        _change() {
-          delete this.clsValue;
-          this.onchange.call(this);
+        _change () {
+          delete this.clsValue
+          this.onchange.call(this)
         }
-      });
+      })
 
       // IE 8 compatibility
-      ClassList.prototype.toString = function() {
-        let value;
+      ClassList.prototype.toString = function () {
+        let value
 
         if (this.clsValue) {
-          return this.clsValue;
+          return this.clsValue
         }
 
-        value = '';
+        value = ''
         for (let i = 0; i < this.cls.length; i++) {
           if (i > 0) {
-            value += ' ';
+            value += ' '
           }
 
-          value += this.prefix + this.cls[i];
+          value += this.prefix + this.cls[i]
         }
 
-        return value;
-      };
+        return value
+      }
 
-      return ClassList;
+      return ClassList
     }
-  );
+  )
   /**
  * Selector.js
  *
@@ -2794,8 +2794,8 @@ jsc */
     [
       'tinymce.core.util.Class'
     ],
-    function(Class) {
-      'use strict';
+    function (Class) {
+      'use strict'
 
       /**
      * Produces an array with a unique set of objects. It will not compare the values
@@ -2806,35 +2806,35 @@ jsc */
      * @param {Array} array Array to make into an array with unique items.
      * @return {Array} Array with unique items.
      */
-      function unique(array) {
+      function unique (array) {
         let uniqueItems = [],
           i = array.length,
-          item;
+          item
 
         while (i--) {
-          item = array[i];
+          item = array[i]
 
           if (!item.__checked) {
-            uniqueItems.push(item);
-            item.__checked = 1;
+            uniqueItems.push(item)
+            item.__checked = 1
           }
         }
 
-        i = uniqueItems.length;
+        i = uniqueItems.length
         while (i--) {
-          delete uniqueItems[i].__checked;
+          delete uniqueItems[i].__checked
         }
 
-        return uniqueItems;
+        return uniqueItems
       }
 
-      const expression = /^([\w\\*]+)?(?:#([\w\-\\]+))?(?:\.([\w\\\.]+))?(?:\[\@?([\w\\]+)([\^\$\*!~]?=)([\w\\]+)\])?(?:\:(.+))?/i;
+      const expression = /^([\w\\*]+)?(?:#([\w\-\\]+))?(?:\.([\w\\\.]+))?(?:\[\@?([\w\\]+)([\^\$\*!~]?=)([\w\\]+)\])?(?:\:(.+))?/i
 
       /* jshint maxlen:255 */
       /* eslint max-len:0 */
       let chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^\[\]]*\]|['"][^'"]*['"]|[^\[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?((?:.|\r|\n)*)/g,
         whiteSpace = /^\s*|\s*$/g,
-        Collection;
+        Collection
 
       var Selector = Class.extend({
       /**
@@ -2844,49 +2844,49 @@ jsc */
        * @method init
        * @param {String} selector CSS like selector expression.
        */
-        init(selector) {
-          const match = this.match;
+        init (selector) {
+          const match = this.match
 
-          function compileNameFilter(name) {
+          function compileNameFilter (name) {
             if (name) {
-              name = name.toLowerCase();
+              name = name.toLowerCase()
 
-              return function(item) {
-                return name === '*' || item.type === name;
-              };
+              return function (item) {
+                return name === '*' || item.type === name
+              }
             }
           }
 
-          function compileIdFilter(id) {
+          function compileIdFilter (id) {
             if (id) {
-              return function(item) {
-                return item._name === id;
-              };
+              return function (item) {
+                return item._name === id
+              }
             }
           }
 
-          function compileClassesFilter(classes) {
+          function compileClassesFilter (classes) {
             if (classes) {
-              classes = classes.split('.');
+              classes = classes.split('.')
 
-              return function(item) {
-                let i = classes.length;
+              return function (item) {
+                let i = classes.length
 
                 while (i--) {
                   if (!item.classes.contains(classes[i])) {
-                    return false;
+                    return false
                   }
                 }
 
-                return true;
-              };
+                return true
+              }
             }
           }
 
-          function compileAttrFilter(name, cmp, check) {
+          function compileAttrFilter (name, cmp, check) {
             if (name) {
-              return function(item) {
-                const value = item[name] ? item[name]() : '';
+              return function (item) {
+                const value = item[name] ? item[name]() : ''
 
                 return !cmp ? !!check
                   : cmp === '=' ? value === check
@@ -2895,103 +2895,103 @@ jsc */
                         : cmp === '!=' ? value != check
                           : cmp === '^=' ? value.indexOf(check) === 0
                             : cmp === '$=' ? value.substr(value.length - check.length) === check
-                              : false;
-              };
+                              : false
+              }
             }
           }
 
-          function compilePsuedoFilter(name) {
-            let notSelectors;
+          function compilePsuedoFilter (name) {
+            let notSelectors
 
             if (name) {
-              name = /(?:not\((.+)\))|(.+)/i.exec(name);
+              name = /(?:not\((.+)\))|(.+)/i.exec(name)
 
               if (!name[1]) {
-                name = name[2];
+                name = name[2]
 
-                return function(item, index, length) {
+                return function (item, index, length) {
                   return name === 'first' ? index === 0
                     : name === 'last' ? index === length - 1
                       : name === 'even' ? index % 2 === 0
                         : name === 'odd' ? index % 2 === 1
                           : item[name] ? item[name]()
-                            : false;
-                };
+                            : false
+                }
               }
 
               // Compile not expression
-              notSelectors = parseChunks(name[1], []);
+              notSelectors = parseChunks(name[1], [])
 
-              return function(item) {
-                return !match(item, notSelectors);
-              };
+              return function (item) {
+                return !match(item, notSelectors)
+              }
             }
           }
 
-          function compile(selector, filters, direct) {
-            let parts;
+          function compile (selector, filters, direct) {
+            let parts
 
-            function add(filter) {
+            function add (filter) {
               if (filter) {
-                filters.push(filter);
+                filters.push(filter)
               }
             }
 
             // Parse expression into parts
-            parts = expression.exec(selector.replace(whiteSpace, ''));
+            parts = expression.exec(selector.replace(whiteSpace, ''))
 
-            add(compileNameFilter(parts[1]));
-            add(compileIdFilter(parts[2]));
-            add(compileClassesFilter(parts[3]));
-            add(compileAttrFilter(parts[4], parts[5], parts[6]));
-            add(compilePsuedoFilter(parts[7]));
+            add(compileNameFilter(parts[1]))
+            add(compileIdFilter(parts[2]))
+            add(compileClassesFilter(parts[3]))
+            add(compileAttrFilter(parts[4], parts[5], parts[6]))
+            add(compilePsuedoFilter(parts[7]))
 
             // Mark the filter with pseudo for performance
-            filters.pseudo = !!parts[7];
-            filters.direct = direct;
+            filters.pseudo = !!parts[7]
+            filters.direct = direct
 
-            return filters;
+            return filters
           }
 
           // Parser logic based on Sizzle by John Resig
-          function parseChunks(selector, selectors) {
+          function parseChunks (selector, selectors) {
             let parts = [],
               extra,
               matches,
-              i;
+              i
 
             do {
-              chunker.exec('');
-              matches = chunker.exec(selector);
+              chunker.exec('')
+              matches = chunker.exec(selector)
 
               if (matches) {
-                selector = matches[3];
-                parts.push(matches[1]);
+                selector = matches[3]
+                parts.push(matches[1])
 
                 if (matches[2]) {
-                  extra = matches[3];
-                  break;
+                  extra = matches[3]
+                  break
                 }
               }
-            } while (matches);
+            } while (matches)
 
             if (extra) {
-              parseChunks(extra, selectors);
+              parseChunks(extra, selectors)
             }
 
-            selector = [];
+            selector = []
             for (i = 0; i < parts.length; i++) {
               if (parts[i] != '>') {
-                selector.push(compile(parts[i], [], parts[i - 1] === '>'));
+                selector.push(compile(parts[i], [], parts[i - 1] === '>'))
               }
             }
 
-            selectors.push(selector);
+            selectors.push(selector)
 
-            return selectors;
+            return selectors
           }
 
-          this._selectors = parseChunks(selector, []);
+          this._selectors = parseChunks(selector, [])
         },
 
         /**
@@ -3002,7 +3002,7 @@ jsc */
        * @param {Array} selectors Optional array of selectors, mostly used internally.
        * @return {Boolean} true/false state if the control matches or not.
        */
-        match(control, selectors) {
+        match (control, selectors) {
           let i,
             l,
             si,
@@ -3015,59 +3015,59 @@ jsc */
             length,
             siblings,
             count,
-            item;
+            item
 
-          selectors = selectors || this._selectors;
+          selectors = selectors || this._selectors
           for (i = 0, l = selectors.length; i < l; i++) {
-            selector = selectors[i];
-            sl = selector.length;
-            item = control;
-            count = 0;
+            selector = selectors[i]
+            sl = selector.length
+            item = control
+            count = 0
 
             for (si = sl - 1; si >= 0; si--) {
-              filters = selector[si];
+              filters = selector[si]
 
               while (item) {
               // Find the index and length since a pseudo filter like :first needs it
                 if (filters.pseudo) {
-                  siblings = item.parent().items();
-                  index = length = siblings.length;
+                  siblings = item.parent().items()
+                  index = length = siblings.length
                   while (index--) {
                     if (siblings[index] === item) {
-                      break;
+                      break
                     }
                   }
                 }
 
                 for (fi = 0, fl = filters.length; fi < fl; fi++) {
                   if (!filters[fi](item, index, length)) {
-                    fi = fl + 1;
-                    break;
+                    fi = fl + 1
+                    break
                   }
                 }
 
                 if (fi === fl) {
-                  count++;
-                  break;
+                  count++
+                  break
                 } else {
                 // If it didn't match the right most expression then
                 // break since it's no point looking at the parents
                   if (si === sl - 1) {
-                    break;
+                    break
                   }
                 }
 
-                item = item.parent();
+                item = item.parent()
               }
             }
 
             // If we found all selectors then return true otherwise continue looking
             if (count === sl) {
-              return true;
+              return true
             }
           }
 
-          return false;
+          return false
         },
 
         /**
@@ -3077,28 +3077,28 @@ jsc */
        * @param {tinymce.ui.Control} container Container to look for items in.
        * @return {tinymce.ui.Collection} Collection with matched elements.
        */
-        find(container) {
+        find (container) {
           let matches = [],
             i,
             l,
-            selectors = this._selectors;
+            selectors = this._selectors
 
-          function collect(items, selector, index) {
+          function collect (items, selector, index) {
             let i,
               l,
               fi,
               fl,
               item,
-              filters = selector[index];
+              filters = selector[index]
 
             for (i = 0, l = items.length; i < l; i++) {
-              item = items[i];
+              item = items[i]
 
               // Run each filter against the item
               for (fi = 0, fl = filters.length; fi < fl; fi++) {
                 if (!filters[fi](item, i, l)) {
-                  fi = fl + 1;
-                  break;
+                  fi = fl + 1
+                  break
                 }
               }
 
@@ -3106,48 +3106,48 @@ jsc */
               if (fi === fl) {
               // Matched item is on the last expression like: panel toolbar [button]
                 if (index == selector.length - 1) {
-                  matches.push(item);
+                  matches.push(item)
                 } else {
                 // Collect next expression type
                   if (item.items) {
-                    collect(item.items(), selector, index + 1);
+                    collect(item.items(), selector, index + 1)
                   }
                 }
               } else if (filters.direct) {
-                return;
+                return
               }
 
               // Collect child items
               if (item.items) {
-                collect(item.items(), selector, index);
+                collect(item.items(), selector, index)
               }
             }
           }
 
           if (container.items) {
             for (i = 0, l = selectors.length; i < l; i++) {
-              collect(container.items(), selectors[i], 0);
+              collect(container.items(), selectors[i], 0)
             }
 
             // Unique the matches if needed
             if (l > 1) {
-              matches = unique(matches);
+              matches = unique(matches)
             }
           }
 
           // Fix for circular reference
           if (!Collection) {
           // TODO: Fix me!
-            Collection = Selector.Collection;
+            Collection = Selector.Collection
           }
 
-          return new Collection(matches);
+          return new Collection(matches)
         }
-      });
+      })
 
-      return Selector;
+      return Selector
     }
-  );
+  )
 
   /**
  * Collection.js
@@ -3175,13 +3175,13 @@ jsc */
       'tinymce.ui.Selector',
       'tinymce.core.util.Class'
     ],
-    function(Tools, Selector, Class) {
-      'use strict';
+    function (Tools, Selector, Class) {
+      'use strict'
 
       let Collection,
         proto,
         push = Array.prototype.push,
-        slice = Array.prototype.slice;
+        slice = Array.prototype.slice
 
       proto = {
       /**
@@ -3199,9 +3199,9 @@ jsc */
        * @method init
        * @param {Array} items Optional array with items to add.
        */
-        init(items) {
+        init (items) {
           if (items) {
-            this.add(items);
+            this.add(items)
           }
         },
 
@@ -3212,21 +3212,21 @@ jsc */
        * @param {Array} items Array if items to add to collection.
        * @return {tinymce.ui.Collection} Current collection instance.
        */
-        add(items) {
-          const self = this;
+        add (items) {
+          const self = this
 
           // Force single item into array
           if (!Tools.isArray(items)) {
             if (items instanceof Collection) {
-              self.add(items.toArray());
+              self.add(items.toArray())
             } else {
-              push.call(self, items);
+              push.call(self, items)
             }
           } else {
-            push.apply(self, items);
+            push.apply(self, items)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -3237,20 +3237,20 @@ jsc */
        * @param {Array} items Array with items to set into the Collection.
        * @return {tinymce.ui.Collection} Collection instance.
        */
-        set(items) {
+        set (items) {
           let self = this,
             len = self.length,
-            i;
+            i
 
-          self.length = 0;
-          self.add(items);
+          self.length = 0
+          self.add(items)
 
           // Remove old entries
           for (i = self.length; i < len; i++) {
-            delete self[i];
+            delete self[i]
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -3260,35 +3260,35 @@ jsc */
        * @param {String} selector Selector expression to filter items by.
        * @return {tinymce.ui.Collection} Collection containing the filtered items.
        */
-        filter(selector) {
+        filter (selector) {
           let self = this,
             i,
             l,
             matches = [],
             item,
-            match;
+            match
 
           // Compile string into selector expression
           if (typeof selector === 'string') {
-            selector = new Selector(selector);
+            selector = new Selector(selector)
 
-            match = function(item) {
-              return selector.match(item);
-            };
+            match = function (item) {
+              return selector.match(item)
+            }
           } else {
           // Use selector as matching function
-            match = selector;
+            match = selector
           }
 
           for (i = 0, l = self.length; i < l; i++) {
-            item = self[i];
+            item = self[i]
 
             if (match(item)) {
-              matches.push(item);
+              matches.push(item)
             }
           }
 
-          return new Collection(matches);
+          return new Collection(matches)
         },
 
         /**
@@ -3299,8 +3299,8 @@ jsc */
        * @param {Number} len Optional length to slice.
        * @return {tinymce.ui.Collection} Current collection.
        */
-        slice() {
-          return new Collection(slice.apply(this, arguments));
+        slice () {
+          return new Collection(slice.apply(this, arguments))
         },
 
         /**
@@ -3310,8 +3310,8 @@ jsc */
        * @param {Number} index Index of the item to set the collection to.
        * @return {tinymce.ui.Collection} Current collection.
        */
-        eq(index) {
-          return index === -1 ? this.slice(index) : this.slice(index, +index + 1);
+        eq (index) {
+          return index === -1 ? this.slice(index) : this.slice(index, +index + 1)
         },
 
         /**
@@ -3321,10 +3321,10 @@ jsc */
        * @param {function} callback Callback to execute for each item in collection.
        * @return {tinymce.ui.Collection} Current collection instance.
        */
-        each(callback) {
-          Tools.each(this, callback);
+        each (callback) {
+          Tools.each(this, callback)
 
-          return this;
+          return this
         },
 
         /**
@@ -3333,8 +3333,8 @@ jsc */
        * @method toArray
        * @return {Array} Array with all items from collection.
        */
-        toArray() {
-          return Tools.toArray(this);
+        toArray () {
+          return Tools.toArray(this)
         },
 
         /**
@@ -3344,17 +3344,17 @@ jsc */
        * @param {Control} ctrl Control instance to look for.
        * @return {Number} Index of the specified control or -1.
        */
-        indexOf(ctrl) {
+        indexOf (ctrl) {
           let self = this,
-            i = self.length;
+            i = self.length
 
           while (i--) {
             if (self[i] === ctrl) {
-              break;
+              break
             }
           }
 
-          return i;
+          return i
         },
 
         /**
@@ -3363,8 +3363,8 @@ jsc */
        * @method reverse
        * @return {tinymce.ui.Collection} Collection instance with reversed items.
        */
-        reverse() {
-          return new Collection(Tools.toArray(this).reverse());
+        reverse () {
+          return new Collection(Tools.toArray(this).reverse())
         },
 
         /**
@@ -3374,8 +3374,8 @@ jsc */
        * @param {String} cls Class to check for.
        * @return {Boolean} true/false state if the class exists or not.
        */
-        hasClass(cls) {
-          return this[0] ? this[0].classes.contains(cls) : false;
+        hasClass (cls) {
+          return this[0] ? this[0].classes.contains(cls) : false
         },
 
         /**
@@ -3386,25 +3386,25 @@ jsc */
        * @param {Object} value Optional object value to set.
        * @return {tinymce.ui.Collection} Current collection instance or value of the first item on a get operation.
        */
-        prop(name, value) {
+        prop (name, value) {
           let self = this,
             undef,
-            item;
+            item
 
           if (value !== undef) {
-            self.each(function(item) {
+            self.each(function (item) {
               if (item[name]) {
-                item[name](value);
+                item[name](value)
               }
-            });
+            })
 
-            return self;
+            return self
           }
 
-          item = self[0];
+          item = self[0]
 
           if (item && item[name]) {
-            return item[name]();
+            return item[name]()
           }
         },
 
@@ -3417,17 +3417,17 @@ jsc */
        * @param {Object} ... Multiple arguments to pass to each function.
        * @return {tinymce.ui.Collection} Current collection.
        */
-        exec(name) {
+        exec (name) {
           let self = this,
-            args = Tools.toArray(arguments).slice(1);
+            args = Tools.toArray(arguments).slice(1)
 
-          self.each(function(item) {
+          self.each(function (item) {
             if (item[name]) {
-              item[name].apply(item, args);
+              item[name].apply(item, args)
             }
-          });
+          })
 
-          return self;
+          return self
         },
 
         /**
@@ -3436,14 +3436,14 @@ jsc */
        * @method remove
        * @return {tinymce.ui.Collection} Current collection.
        */
-        remove() {
-          let i = this.length;
+        remove () {
+          let i = this.length
 
           while (i--) {
-            this[i].remove();
+            this[i].remove()
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -3453,10 +3453,10 @@ jsc */
        * @param {String} cls Class to add to each item.
        * @return {tinymce.ui.Collection} Current collection instance.
        */
-        addClass(cls) {
-          return this.each(function(item) {
-            item.classes.add(cls);
-          });
+        addClass (cls) {
+          return this.each(function (item) {
+            item.classes.add(cls)
+          })
         },
 
         /**
@@ -3466,10 +3466,10 @@ jsc */
        * @param {String} cls Class to remove from each item.
        * @return {tinymce.ui.Collection} Current collection instance.
        */
-        removeClass(cls) {
-          return this.each(function(item) {
-            item.classes.remove(cls);
-          });
+        removeClass (cls) {
+          return this.each(function (item) {
+            item.classes.remove(cls)
+          })
         }
 
       /**
@@ -3572,39 +3572,39 @@ jsc */
        * @return {tinymce.ui.Collection} Current collection instance or visible state of the first item on a get operation.
        */
       // visible: function(state) {}, -- Generated by code below
-      };
+      }
 
       // Extend tinymce.ui.Collection prototype with some generated control specific methods
-      Tools.each('fire on off show hide append prepend before after reflow'.split(' '), function(name) {
-        proto[name] = function() {
-          const args = Tools.toArray(arguments);
+      Tools.each('fire on off show hide append prepend before after reflow'.split(' '), function (name) {
+        proto[name] = function () {
+          const args = Tools.toArray(arguments)
 
-          this.each(function(ctrl) {
+          this.each(function (ctrl) {
             if (name in ctrl) {
-              ctrl[name].apply(ctrl, args);
+              ctrl[name].apply(ctrl, args)
             }
-          });
+          })
 
-          return this;
-        };
-      });
+          return this
+        }
+      })
 
       // Extend tinymce.ui.Collection prototype with some property methods
-      Tools.each('text name disabled active selected checked visible parent value data'.split(' '), function(name) {
-        proto[name] = function(value) {
-          return this.prop(name, value);
-        };
-      });
+      Tools.each('text name disabled active selected checked visible parent value data'.split(' '), function (name) {
+        proto[name] = function (value) {
+          return this.prop(name, value)
+        }
+      })
 
       // Create class based on the new prototype
-      Collection = Class.extend(proto);
+      Collection = Class.extend(proto)
 
       // Stick Collection into Selector to prevent circual references
-      Selector.Collection = Collection;
+      Selector.Collection = Collection
 
-      return Collection;
+      return Collection
     }
-  );
+  )
   /**
  * Binding.js
  *
@@ -3626,7 +3626,7 @@ jsc */
     'tinymce.ui.data.Binding',
     [
     ],
-    function() {
+    function () {
     /**
      * Constructs a new bidning.
      *
@@ -3634,8 +3634,8 @@ jsc */
      * @method Binding
      * @param {Object} settings Settings to the binding.
      */
-      function Binding(settings) {
-        this.create = settings.create;
+      function Binding (settings) {
+        this.create = settings.create
       }
 
       /**
@@ -3646,49 +3646,49 @@ jsc */
      * @param {String} name Name of property to bind.
      * @return {tinymce.data.Binding} Binding instance.
      */
-      Binding.create = function(model, name) {
+      Binding.create = function (model, name) {
         return new Binding({
-          create(otherModel, otherName) {
-            let bindings;
+          create (otherModel, otherName) {
+            let bindings
 
-            function fromSelfToOther(e) {
-              otherModel.set(otherName, e.value);
+            function fromSelfToOther (e) {
+              otherModel.set(otherName, e.value)
             }
 
-            function fromOtherToSelf(e) {
-              model.set(name, e.value);
+            function fromOtherToSelf (e) {
+              model.set(name, e.value)
             }
 
-            otherModel.on('change:' + otherName, fromOtherToSelf);
-            model.on('change:' + name, fromSelfToOther);
+            otherModel.on('change:' + otherName, fromOtherToSelf)
+            model.on('change:' + name, fromSelfToOther)
 
             // Keep track of the bindings
-            bindings = otherModel._bindings;
+            bindings = otherModel._bindings
 
             if (!bindings) {
-              bindings = otherModel._bindings = [];
+              bindings = otherModel._bindings = []
 
-              otherModel.on('destroy', function() {
-                let i = bindings.length;
+              otherModel.on('destroy', function () {
+                let i = bindings.length
 
                 while (i--) {
-                  bindings[i]();
+                  bindings[i]()
                 }
-              });
+              })
             }
 
-            bindings.push(function() {
-              model.off('change:' + name, fromSelfToOther);
-            });
+            bindings.push(function () {
+              model.off('change:' + name, fromSelfToOther)
+            })
 
-            return model.get(name);
+            return model.get(name)
           }
-        });
-      };
+        })
+      }
 
-      return Binding;
+      return Binding
     }
-  );
+  )
   /**
  * ResolveGlobal.js
  *
@@ -3704,10 +3704,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.Observable');
+    function (resolve) {
+      return resolve('tinymce.util.Observable')
     }
-  );
+  )
 
   /**
  * ObservableObject.js
@@ -3732,67 +3732,67 @@ jsc */
       'tinymce.core.util.Class',
       'tinymce.core.util.Observable',
       'tinymce.core.util.Tools'
-    ], function(Binding, Class, Observable, Tools) {
-      function isNode(node) {
-        return node.nodeType > 0;
+    ], function (Binding, Class, Observable, Tools) {
+      function isNode (node) {
+        return node.nodeType > 0
       }
 
       // Todo: Maybe this should be shallow compare since it might be huge object references
-      function isEqual(a, b) {
+      function isEqual (a, b) {
         let k,
-          checked;
+          checked
 
         // Strict equals
         if (a === b) {
-          return true;
+          return true
         }
 
         // Compare null
         if (a === null || b === null) {
-          return a === b;
+          return a === b
         }
 
         // Compare number, boolean, string, undefined
         if (typeof a !== 'object' || typeof b !== 'object') {
-          return a === b;
+          return a === b
         }
 
         // Compare arrays
         if (Tools.isArray(b)) {
           if (a.length !== b.length) {
-            return false;
+            return false
           }
 
-          k = a.length;
+          k = a.length
           while (k--) {
             if (!isEqual(a[k], b[k])) {
-              return false;
+              return false
             }
           }
         }
 
         // Shallow compare nodes
         if (isNode(a) || isNode(b)) {
-          return a === b;
+          return a === b
         }
 
         // Compare objects
-        checked = {};
+        checked = {}
         for (k in b) {
           if (!isEqual(a[k], b[k])) {
-            return false;
+            return false
           }
 
-          checked[k] = true;
+          checked[k] = true
         }
 
         for (k in a) {
           if (!checked[k] && !isEqual(a[k], b[k])) {
-            return false;
+            return false
           }
         }
 
-        return true;
+        return true
       }
 
       return Class.extend({
@@ -3804,21 +3804,21 @@ jsc */
        * @constructor
        * @param {Object} data Initial data for the object.
        */
-        init(data) {
+        init (data) {
           let name,
-            value;
+            value
 
-          data = data || {};
+          data = data || {}
 
           for (name in data) {
-            value = data[name];
+            value = data[name]
 
             if (value instanceof Binding) {
-              data[name] = value.create(this, name);
+              data[name] = value.create(this, name)
             }
           }
 
-          this.data = data;
+          this.data = data
         },
 
         /**
@@ -3830,38 +3830,38 @@ jsc */
        * @param {Object} value Value to set for the property.
        * @return {tinymce.data.ObservableObject} Observable object instance.
        */
-        set(name, value) {
+        set (name, value) {
           let key,
             args,
-            oldValue = this.data[name];
+            oldValue = this.data[name]
 
           if (value instanceof Binding) {
-            value = value.create(this, name);
+            value = value.create(this, name)
           }
 
           if (typeof name === 'object') {
             for (key in name) {
-              this.set(key, name[key]);
+              this.set(key, name[key])
             }
 
-            return this;
+            return this
           }
 
           if (!isEqual(oldValue, value)) {
-            this.data[name] = value;
+            this.data[name] = value
 
             args = {
               target: this,
               name,
               value,
               oldValue
-            };
+            }
 
-            this.fire('change:' + name, args);
-            this.fire('change', args);
+            this.fire('change:' + name, args)
+            this.fire('change', args)
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -3871,8 +3871,8 @@ jsc */
        * @param {String} name Name of the property to get.
        * @return {Object} Object value of propery.
        */
-        get(name) {
-          return this.data[name];
+        get (name) {
+          return this.data[name]
         },
 
         /**
@@ -3882,8 +3882,8 @@ jsc */
        * @param {String} name Name of the property to check for.
        * @return {Boolean} true/false if the item exists.
        */
-        has(name) {
-          return name in this.data;
+        has (name) {
+          return name in this.data
         },
 
         /**
@@ -3894,8 +3894,8 @@ jsc */
        * @param {String} name Name of the property to sync with the property it's inserted to.
        * @return {tinymce.data.Binding} Data binding instance.
        */
-        bind(name) {
-          return Binding.create(this, name);
+        bind (name) {
+          return Binding.create(this, name)
         },
 
         /**
@@ -3904,12 +3904,12 @@ jsc */
        *
        * @method destroy
        */
-        destroy() {
-          this.fire('destroy');
+        destroy () {
+          this.fire('destroy')
         }
-      });
+      })
     }
-  );
+  )
   /**
  * ReflowQueue.js
  *
@@ -3934,9 +3934,9 @@ jsc */
       'global!document',
       'tinymce.core.util.Delay'
     ],
-    function(document, Delay) {
+    function (document, Delay) {
       let dirtyCtrls = {},
-        animationFrameRequested;
+        animationFrameRequested
 
       return {
       /**
@@ -3946,37 +3946,37 @@ jsc */
        * @method add
        * @param {tinymce.ui.Control} ctrl Control to add to queue.
        */
-        add(ctrl) {
-          const parent = ctrl.parent();
+        add (ctrl) {
+          const parent = ctrl.parent()
 
           if (parent) {
             if (!parent._layout || parent._layout.isNative()) {
-              return;
+              return
             }
 
             if (!dirtyCtrls[parent._id]) {
-              dirtyCtrls[parent._id] = parent;
+              dirtyCtrls[parent._id] = parent
             }
 
             if (!animationFrameRequested) {
-              animationFrameRequested = true;
+              animationFrameRequested = true
 
-              Delay.requestAnimationFrame(function() {
+              Delay.requestAnimationFrame(function () {
                 let id,
-                  ctrl;
+                  ctrl
 
-                animationFrameRequested = false;
+                animationFrameRequested = false
 
                 for (id in dirtyCtrls) {
-                  ctrl = dirtyCtrls[id];
+                  ctrl = dirtyCtrls[id]
 
                   if (ctrl.state.get('rendered')) {
-                    ctrl.reflow();
+                    ctrl.reflow()
                   }
                 }
 
-                dirtyCtrls = {};
-              }, document.body);
+                dirtyCtrls = {}
+              }, document.body)
             }
           }
         },
@@ -3988,14 +3988,14 @@ jsc */
        * @method remove
        * @param {tinymce.ui.Control} ctrl Control to remove from queue.
        */
-        remove(ctrl) {
+        remove (ctrl) {
           if (dirtyCtrls[ctrl._id]) {
-            delete dirtyCtrls[ctrl._id];
+            delete dirtyCtrls[ctrl._id]
           }
         }
-      };
+      }
     }
-  );
+  )
 
   /**
  * Control.js
@@ -4030,22 +4030,22 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.ui.ReflowQueue'
     ],
-    function(document, DomQuery, Class, EventDispatcher, Tools, BoxUtils, ClassList, Collection, ObservableObject, DomUtils, ReflowQueue) {
-      'use strict';
+    function (document, DomQuery, Class, EventDispatcher, Tools, BoxUtils, ClassList, Collection, ObservableObject, DomUtils, ReflowQueue) {
+      'use strict'
 
-      const hasMouseWheelEventSupport = 'onmousewheel' in document;
-      const hasWheelEventSupport = false;
-      const classPrefix = 'mce-';
+      const hasMouseWheelEventSupport = 'onmousewheel' in document
+      const hasWheelEventSupport = false
+      const classPrefix = 'mce-'
       let Control,
-        idCounter = 0;
+        idCounter = 0
 
       const proto = {
         Statics: {
           classPrefix
         },
 
-        isRtl() {
-          return Control.rtl;
+        isRtl () {
+          return Control.rtl
         },
 
         /**
@@ -4073,83 +4073,83 @@ jsc */
        * @setting {Boolean} disabled Is the control disabled by default.
        * @setting {String} name Name of the control instance.
        */
-        init(settings) {
+        init (settings) {
           let self = this,
             classes,
-            defaultClasses;
+            defaultClasses
 
-          function applyClasses(classes) {
-            let i;
+          function applyClasses (classes) {
+            let i
 
-            classes = classes.split(' ');
+            classes = classes.split(' ')
             for (i = 0; i < classes.length; i++) {
-              self.classes.add(classes[i]);
+              self.classes.add(classes[i])
             }
           }
 
-          self.settings = settings = Tools.extend({}, self.Defaults, settings);
+          self.settings = settings = Tools.extend({}, self.Defaults, settings)
 
           // Initial states
-          self._id = settings.id || ('mceu_' + (idCounter++));
-          self._aria = { role: settings.role };
-          self._elmCache = {};
-          self.$ = DomQuery;
+          self._id = settings.id || ('mceu_' + (idCounter++))
+          self._aria = { role: settings.role }
+          self._elmCache = {}
+          self.$ = DomQuery
 
           self.state = new ObservableObject({
             visible: true,
             active: false,
             disabled: false,
             value: ''
-          });
+          })
 
-          self.data = new ObservableObject(settings.data);
+          self.data = new ObservableObject(settings.data)
 
-          self.classes = new ClassList(function() {
+          self.classes = new ClassList(function () {
             if (self.state.get('rendered')) {
-              self.getEl().className = this.toString();
+              self.getEl().className = this.toString()
             }
-          });
-          self.classes.prefix = self.classPrefix;
+          })
+          self.classes.prefix = self.classPrefix
 
           // Setup classes
-          classes = settings.classes;
+          classes = settings.classes
           if (classes) {
             if (self.Defaults) {
-              defaultClasses = self.Defaults.classes;
+              defaultClasses = self.Defaults.classes
 
               if (defaultClasses && classes != defaultClasses) {
-                applyClasses(defaultClasses);
+                applyClasses(defaultClasses)
               }
             }
 
-            applyClasses(classes);
+            applyClasses(classes)
           }
 
-          Tools.each('title text name visible disabled active value'.split(' '), function(name) {
+          Tools.each('title text name visible disabled active value'.split(' '), function (name) {
             if (name in settings) {
-              self[name](settings[name]);
+              self[name](settings[name])
             }
-          });
+          })
 
-          self.on('click', function() {
+          self.on('click', function () {
             if (self.disabled()) {
-              return false;
+              return false
             }
-          });
+          })
 
           /**
          * Name/value object with settings for the current control.
          *
          * @field {Object} settings
          */
-          self.settings = settings;
+          self.settings = settings
 
-          self.borderBox = BoxUtils.parseBox(settings.border);
-          self.paddingBox = BoxUtils.parseBox(settings.padding);
-          self.marginBox = BoxUtils.parseBox(settings.margin);
+          self.borderBox = BoxUtils.parseBox(settings.border)
+          self.paddingBox = BoxUtils.parseBox(settings.padding)
+          self.marginBox = BoxUtils.parseBox(settings.margin)
 
           if (settings.hidden) {
-            self.hide();
+            self.hide()
           }
         },
 
@@ -4162,8 +4162,8 @@ jsc */
        * @method getContainerElm
        * @return {Element} HTML DOM element to render into.
        */
-        getContainerElm() {
-          return DomUtils.getContainer();
+        getContainerElm () {
+          return DomUtils.getContainer()
         },
 
         /**
@@ -4173,20 +4173,20 @@ jsc */
        * @param {Element} elm HTML dom element to get parent control from.
        * @return {tinymce.ui.Control} Control instance or undefined.
        */
-        getParentCtrl(elm) {
+        getParentCtrl (elm) {
           let ctrl,
-            lookup = this.getRoot().controlIdLookup;
+            lookup = this.getRoot().controlIdLookup
 
           while (elm && lookup) {
-            ctrl = lookup[elm.id];
+            ctrl = lookup[elm.id]
             if (ctrl) {
-              break;
+              break
             }
 
-            elm = elm.parentNode;
+            elm = elm.parentNode
           }
 
-          return ctrl;
+          return ctrl
         },
 
         /**
@@ -4197,45 +4197,45 @@ jsc */
        * @method initLayoutRect
        * @return {Object} Layout rect instance.
        */
-        initLayoutRect() {
+        initLayoutRect () {
           let self = this,
             settings = self.settings,
             borderBox,
-            layoutRect;
+            layoutRect
           let elm = self.getEl(),
             width,
             height,
             minWidth,
             minHeight,
-            autoResize;
+            autoResize
           let startMinWidth,
             startMinHeight,
-            initialSize;
+            initialSize
 
           // Measure the current element
-          borderBox = self.borderBox = self.borderBox || BoxUtils.measureBox(elm, 'border');
-          self.paddingBox = self.paddingBox || BoxUtils.measureBox(elm, 'padding');
-          self.marginBox = self.marginBox || BoxUtils.measureBox(elm, 'margin');
-          initialSize = DomUtils.getSize(elm);
+          borderBox = self.borderBox = self.borderBox || BoxUtils.measureBox(elm, 'border')
+          self.paddingBox = self.paddingBox || BoxUtils.measureBox(elm, 'padding')
+          self.marginBox = self.marginBox || BoxUtils.measureBox(elm, 'margin')
+          initialSize = DomUtils.getSize(elm)
 
           // Setup minWidth/minHeight and width/height
-          startMinWidth = settings.minWidth;
-          startMinHeight = settings.minHeight;
-          minWidth = startMinWidth || initialSize.width;
-          minHeight = startMinHeight || initialSize.height;
-          width = settings.width;
-          height = settings.height;
-          autoResize = settings.autoResize;
-          autoResize = typeof autoResize !== 'undefined' ? autoResize : !width && !height;
+          startMinWidth = settings.minWidth
+          startMinHeight = settings.minHeight
+          minWidth = startMinWidth || initialSize.width
+          minHeight = startMinHeight || initialSize.height
+          width = settings.width
+          height = settings.height
+          autoResize = settings.autoResize
+          autoResize = typeof autoResize !== 'undefined' ? autoResize : !width && !height
 
-          width = width || minWidth;
-          height = height || minHeight;
+          width = width || minWidth
+          height = height || minHeight
 
-          const deltaW = borderBox.left + borderBox.right;
-          const deltaH = borderBox.top + borderBox.bottom;
+          const deltaW = borderBox.left + borderBox.right
+          const deltaH = borderBox.top + borderBox.bottom
 
-          const maxW = settings.maxWidth || 0xFFFF;
-          const maxH = settings.maxHeight || 0xFFFF;
+          const maxW = settings.maxWidth || 0xFFFF
+          const maxH = settings.maxHeight || 0xFFFF
 
           // Setup initial layout rect
           self._layoutRect = layoutRect = {
@@ -4257,11 +4257,11 @@ jsc */
             maxH,
             autoResize,
             scrollW: 0
-          };
+          }
 
-          self._lastLayoutRect = {};
+          self._lastLayoutRect = {}
 
-          return layoutRect;
+          return layoutRect
         },
 
         /**
@@ -4271,7 +4271,7 @@ jsc */
        * @param {Object} [newRect] Optional new layout rect.
        * @return {tinymce.ui.Control/Object} Current control or rect object.
        */
-        layoutRect(newRect) {
+        layoutRect (newRect) {
           let self = this,
             curRect = self._layoutRect,
             lastLayoutRect,
@@ -4279,108 +4279,108 @@ jsc */
             deltaWidth,
             deltaHeight,
             undef,
-            repaintControls;
+            repaintControls
 
           // Initialize default layout rect
           if (!curRect) {
-            curRect = self.initLayoutRect();
+            curRect = self.initLayoutRect()
           }
 
           // Set new rect values
           if (newRect) {
           // Calc deltas between inner and outer sizes
-            deltaWidth = curRect.deltaW;
-            deltaHeight = curRect.deltaH;
+            deltaWidth = curRect.deltaW
+            deltaHeight = curRect.deltaH
 
             // Set x position
             if (newRect.x !== undef) {
-              curRect.x = newRect.x;
+              curRect.x = newRect.x
             }
 
             // Set y position
             if (newRect.y !== undef) {
-              curRect.y = newRect.y;
+              curRect.y = newRect.y
             }
 
             // Set minW
             if (newRect.minW !== undef) {
-              curRect.minW = newRect.minW;
+              curRect.minW = newRect.minW
             }
 
             // Set minH
             if (newRect.minH !== undef) {
-              curRect.minH = newRect.minH;
+              curRect.minH = newRect.minH
             }
 
             // Set new width and calculate inner width
-            size = newRect.w;
+            size = newRect.w
             if (size !== undef) {
-              size = size < curRect.minW ? curRect.minW : size;
-              size = size > curRect.maxW ? curRect.maxW : size;
-              curRect.w = size;
-              curRect.innerW = size - deltaWidth;
+              size = size < curRect.minW ? curRect.minW : size
+              size = size > curRect.maxW ? curRect.maxW : size
+              curRect.w = size
+              curRect.innerW = size - deltaWidth
             }
 
             // Set new height and calculate inner height
-            size = newRect.h;
+            size = newRect.h
             if (size !== undef) {
-              size = size < curRect.minH ? curRect.minH : size;
-              size = size > curRect.maxH ? curRect.maxH : size;
-              curRect.h = size;
-              curRect.innerH = size - deltaHeight;
+              size = size < curRect.minH ? curRect.minH : size
+              size = size > curRect.maxH ? curRect.maxH : size
+              curRect.h = size
+              curRect.innerH = size - deltaHeight
             }
 
             // Set new inner width and calculate width
-            size = newRect.innerW;
+            size = newRect.innerW
             if (size !== undef) {
-              size = size < curRect.minW - deltaWidth ? curRect.minW - deltaWidth : size;
-              size = size > curRect.maxW - deltaWidth ? curRect.maxW - deltaWidth : size;
-              curRect.innerW = size;
-              curRect.w = size + deltaWidth;
+              size = size < curRect.minW - deltaWidth ? curRect.minW - deltaWidth : size
+              size = size > curRect.maxW - deltaWidth ? curRect.maxW - deltaWidth : size
+              curRect.innerW = size
+              curRect.w = size + deltaWidth
             }
 
             // Set new height and calculate inner height
-            size = newRect.innerH;
+            size = newRect.innerH
             if (size !== undef) {
-              size = size < curRect.minH - deltaHeight ? curRect.minH - deltaHeight : size;
-              size = size > curRect.maxH - deltaHeight ? curRect.maxH - deltaHeight : size;
-              curRect.innerH = size;
-              curRect.h = size + deltaHeight;
+              size = size < curRect.minH - deltaHeight ? curRect.minH - deltaHeight : size
+              size = size > curRect.maxH - deltaHeight ? curRect.maxH - deltaHeight : size
+              curRect.innerH = size
+              curRect.h = size + deltaHeight
             }
 
             // Set new contentW
             if (newRect.contentW !== undef) {
-              curRect.contentW = newRect.contentW;
+              curRect.contentW = newRect.contentW
             }
 
             // Set new contentH
             if (newRect.contentH !== undef) {
-              curRect.contentH = newRect.contentH;
+              curRect.contentH = newRect.contentH
             }
 
             // Compare last layout rect with the current one to see if we need to repaint or not
-            lastLayoutRect = self._lastLayoutRect;
+            lastLayoutRect = self._lastLayoutRect
             if (lastLayoutRect.x !== curRect.x || lastLayoutRect.y !== curRect.y ||
             lastLayoutRect.w !== curRect.w || lastLayoutRect.h !== curRect.h) {
-              repaintControls = Control.repaintControls;
+              repaintControls = Control.repaintControls
 
               if (repaintControls) {
                 if (repaintControls.map && !repaintControls.map[self._id]) {
-                  repaintControls.push(self);
-                  repaintControls.map[self._id] = true;
+                  repaintControls.push(self)
+                  repaintControls.map[self._id] = true
                 }
               }
 
-              lastLayoutRect.x = curRect.x;
-              lastLayoutRect.y = curRect.y;
-              lastLayoutRect.w = curRect.w;
-              lastLayoutRect.h = curRect.h;
+              lastLayoutRect.x = curRect.x
+              lastLayoutRect.y = curRect.y
+              lastLayoutRect.w = curRect.w
+              lastLayoutRect.h = curRect.h
             }
 
-            return self;
+            return self
           }
 
-          return curRect;
+          return curRect
         },
 
         /**
@@ -4388,95 +4388,95 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             style,
             bodyStyle,
             bodyElm,
             rect,
-            borderBox;
+            borderBox
           let borderW,
             borderH,
             lastRepaintRect,
             round,
-            value;
+            value
 
           // Use Math.round on all values on IE < 9
-          round = !document.createRange ? Math.round : function(value) {
-            return value;
-          };
+          round = !document.createRange ? Math.round : function (value) {
+            return value
+          }
 
-          style = self.getEl().style;
-          rect = self._layoutRect;
-          lastRepaintRect = self._lastRepaintRect || {};
+          style = self.getEl().style
+          rect = self._layoutRect
+          lastRepaintRect = self._lastRepaintRect || {}
 
-          borderBox = self.borderBox;
-          borderW = borderBox.left + borderBox.right;
-          borderH = borderBox.top + borderBox.bottom;
+          borderBox = self.borderBox
+          borderW = borderBox.left + borderBox.right
+          borderH = borderBox.top + borderBox.bottom
 
           if (rect.x !== lastRepaintRect.x) {
-            style.left = round(rect.x) + 'px';
-            lastRepaintRect.x = rect.x;
+            style.left = round(rect.x) + 'px'
+            lastRepaintRect.x = rect.x
           }
 
           if (rect.y !== lastRepaintRect.y) {
-            style.top = round(rect.y) + 'px';
-            lastRepaintRect.y = rect.y;
+            style.top = round(rect.y) + 'px'
+            lastRepaintRect.y = rect.y
           }
 
           if (rect.w !== lastRepaintRect.w) {
-            value = round(rect.w - borderW);
-            style.width = (value >= 0 ? value : 0) + 'px';
-            lastRepaintRect.w = rect.w;
+            value = round(rect.w - borderW)
+            style.width = (value >= 0 ? value : 0) + 'px'
+            lastRepaintRect.w = rect.w
           }
 
           if (rect.h !== lastRepaintRect.h) {
-            value = round(rect.h - borderH);
-            style.height = (value >= 0 ? value : 0) + 'px';
-            lastRepaintRect.h = rect.h;
+            value = round(rect.h - borderH)
+            style.height = (value >= 0 ? value : 0) + 'px'
+            lastRepaintRect.h = rect.h
           }
 
           // Update body if needed
           if (self._hasBody && rect.innerW !== lastRepaintRect.innerW) {
-            value = round(rect.innerW);
+            value = round(rect.innerW)
 
-            bodyElm = self.getEl('body');
+            bodyElm = self.getEl('body')
             if (bodyElm) {
-              bodyStyle = bodyElm.style;
-              bodyStyle.width = (value >= 0 ? value : 0) + 'px';
+              bodyStyle = bodyElm.style
+              bodyStyle.width = (value >= 0 ? value : 0) + 'px'
             }
 
-            lastRepaintRect.innerW = rect.innerW;
+            lastRepaintRect.innerW = rect.innerW
           }
 
           if (self._hasBody && rect.innerH !== lastRepaintRect.innerH) {
-            value = round(rect.innerH);
+            value = round(rect.innerH)
 
-            bodyElm = bodyElm || self.getEl('body');
+            bodyElm = bodyElm || self.getEl('body')
             if (bodyElm) {
-              bodyStyle = bodyStyle || bodyElm.style;
-              bodyStyle.height = (value >= 0 ? value : 0) + 'px';
+              bodyStyle = bodyStyle || bodyElm.style
+              bodyStyle.height = (value >= 0 ? value : 0) + 'px'
             }
 
-            lastRepaintRect.innerH = rect.innerH;
+            lastRepaintRect.innerH = rect.innerH
           }
 
-          self._lastRepaintRect = lastRepaintRect;
-          self.fire('repaint', {}, false);
+          self._lastRepaintRect = lastRepaintRect
+          self.fire('repaint', {}, false)
         },
 
         /**
        * Updates the controls layout rect by re-measuing it.
        */
-        updateLayoutRect() {
-          const self = this;
+        updateLayoutRect () {
+          const self = this
 
-          self.parent()._lastRect = null;
+          self.parent()._lastRect = null
 
-          DomUtils.css(self.getEl(), { width: '', height: '' });
+          DomUtils.css(self.getEl(), { width: '', height: '' })
 
-          self._layoutRect = self._lastRepaintRect = self._lastLayoutRect = null;
-          self.initLayoutRect();
+          self._layoutRect = self._lastRepaintRect = self._lastLayoutRect = null
+          self.initLayoutRect()
         },
 
         /**
@@ -4490,42 +4490,42 @@ jsc */
        * @param {String/function} callback Callback function to execute ones the event occurs.
        * @return {tinymce.ui.Control} Current control object.
        */
-        on(name, callback) {
-          const self = this;
+        on (name, callback) {
+          const self = this
 
-          function resolveCallbackName(name) {
+          function resolveCallbackName (name) {
             let callback,
-              scope;
+              scope
 
             if (typeof name !== 'string') {
-              return name;
+              return name
             }
 
-            return function(e) {
+            return function (e) {
               if (!callback) {
-                self.parentsAndSelf().each(function(ctrl) {
-                  const callbacks = ctrl.settings.callbacks;
+                self.parentsAndSelf().each(function (ctrl) {
+                  const callbacks = ctrl.settings.callbacks
 
                   if (callbacks && (callback = callbacks[name])) {
-                    scope = ctrl;
-                    return false;
+                    scope = ctrl
+                    return false
                   }
-                });
+                })
               }
 
               if (!callback) {
-                e.action = name;
-                this.fire('execute', e);
-                return;
+                e.action = name
+                this.fire('execute', e)
+                return
               }
 
-              return callback.call(scope, e);
-            };
+              return callback.call(scope, e)
+            }
           }
 
-          getEventDispatcher(self).on(name, resolveCallbackName(callback));
+          getEventDispatcher(self).on(name, resolveCallbackName(callback))
 
-          return self;
+          return self
         },
 
         /**
@@ -4538,9 +4538,9 @@ jsc */
        * @param {function} [callback] Callback function to unbind.
        * @return {tinymce.ui.Control} Current control object.
        */
-        off(name, callback) {
-          getEventDispatcher(this).off(name, callback);
-          return this;
+        off (name, callback) {
+          getEventDispatcher(this).off(name, callback)
+          return this
         },
 
         /**
@@ -4553,27 +4553,27 @@ jsc */
        * @param {Boolean} [bubble] Value to control bubbling. Defaults to true.
        * @return {Object} Current arguments object.
        */
-        fire(name, args, bubble) {
-          const self = this;
+        fire (name, args, bubble) {
+          const self = this
 
-          args = args || {};
+          args = args || {}
 
           if (!args.control) {
-            args.control = self;
+            args.control = self
           }
 
-          args = getEventDispatcher(self).fire(name, args);
+          args = getEventDispatcher(self).fire(name, args)
 
           // Bubble event up to parents
           if (bubble !== false && self.parent) {
-            let parent = self.parent();
+            let parent = self.parent()
             while (parent && !args.isPropagationStopped()) {
-              parent.fire(name, args, false);
-              parent = parent.parent();
+              parent.fire(name, args, false)
+              parent = parent.parent()
             }
           }
 
-          return args;
+          return args
         },
 
         /**
@@ -4583,8 +4583,8 @@ jsc */
        * @param {String} name Name of the event to check for.
        * @return {Boolean} True/false state if the event has listeners.
        */
-        hasEventListeners(name) {
-          return getEventDispatcher(this).has(name);
+        hasEventListeners (name) {
+          return getEventDispatcher(this).has(name)
         },
 
         /**
@@ -4594,22 +4594,22 @@ jsc */
        * @param {String} selector Optional selector expression to find parents.
        * @return {tinymce.ui.Collection} Collection with all parent controls.
        */
-        parents(selector) {
+        parents (selector) {
           let self = this,
             ctrl,
-            parents = new Collection();
+            parents = new Collection()
 
           // Add each parent to collection
           for (ctrl = self.parent(); ctrl; ctrl = ctrl.parent()) {
-            parents.add(ctrl);
+            parents.add(ctrl)
           }
 
           // Filter away everything that doesn't match the selector
           if (selector) {
-            parents = parents.filter(selector);
+            parents = parents.filter(selector)
           }
 
-          return parents;
+          return parents
         },
 
         /**
@@ -4619,8 +4619,8 @@ jsc */
        * @param {String} selector Optional selector expression to find parents.
        * @return {tinymce.ui.Collection} Collection with all parent controls.
        */
-        parentsAndSelf(selector) {
-          return new Collection(this).add(this.parents(selector));
+        parentsAndSelf (selector) {
+          return new Collection(this).add(this.parents(selector))
         },
 
         /**
@@ -4629,10 +4629,10 @@ jsc */
        * @method next
        * @return {tinymce.ui.Control} Next control instance.
        */
-        next() {
-          const parentControls = this.parent().items();
+        next () {
+          const parentControls = this.parent().items()
 
-          return parentControls[parentControls.indexOf(this) + 1];
+          return parentControls[parentControls.indexOf(this) + 1]
         },
 
         /**
@@ -4641,10 +4641,10 @@ jsc */
        * @method prev
        * @return {tinymce.ui.Control} Previous control instance.
        */
-        prev() {
-          const parentControls = this.parent().items();
+        prev () {
+          const parentControls = this.parent().items()
 
-          return parentControls[parentControls.indexOf(this) - 1];
+          return parentControls[parentControls.indexOf(this) - 1]
         },
 
         /**
@@ -4654,9 +4654,9 @@ jsc */
        * @param {String} html Html string to set as inner html.
        * @return {tinymce.ui.Control} Current control object.
        */
-        innerHtml(html) {
-          this.$el.html(html);
-          return this;
+        innerHtml (html) {
+          this.$el.html(html)
+          return this
         },
 
         /**
@@ -4666,14 +4666,14 @@ jsc */
        * @param {String} [suffix] Suffix to get element by.
        * @return {Element} HTML DOM element for the current control or it's children.
        */
-        getEl(suffix) {
-          const id = suffix ? this._id + '-' + suffix : this._id;
+        getEl (suffix) {
+          const id = suffix ? this._id + '-' + suffix : this._id
 
           if (!this._elmCache[id]) {
-            this._elmCache[id] = DomQuery('#' + id)[0];
+            this._elmCache[id] = DomQuery('#' + id)[0]
           }
 
-          return this._elmCache[id];
+          return this._elmCache[id]
         },
 
         /**
@@ -4682,8 +4682,8 @@ jsc */
        * @method show
        * @return {tinymce.ui.Control} Current control instance.
        */
-        show() {
-          return this.visible(true);
+        show () {
+          return this.visible(true)
         },
 
         /**
@@ -4692,8 +4692,8 @@ jsc */
        * @method hide
        * @return {tinymce.ui.Control} Current control instance.
        */
-        hide() {
-          return this.visible(false);
+        hide () {
+          return this.visible(false)
         },
 
         /**
@@ -4702,14 +4702,14 @@ jsc */
        * @method focus
        * @return {tinymce.ui.Control} Current control instance.
        */
-        focus() {
+        focus () {
           try {
-            this.getEl().focus();
+            this.getEl().focus()
           } catch (ex) {
           // Ignore IE error
           }
 
-          return this;
+          return this
         },
 
         /**
@@ -4718,10 +4718,10 @@ jsc */
        * @method blur
        * @return {tinymce.ui.Control} Current control instance.
        */
-        blur() {
-          this.getEl().blur();
+        blur () {
+          this.getEl().blur()
 
-          return this;
+          return this
         },
 
         /**
@@ -4732,21 +4732,21 @@ jsc */
        * @param {String} value Value of the aria property.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        aria(name, value) {
+        aria (name, value) {
           let self = this,
-            elm = self.getEl(self.ariaTarget);
+            elm = self.getEl(self.ariaTarget)
 
           if (typeof value === 'undefined') {
-            return self._aria[name];
+            return self._aria[name]
           }
 
-          self._aria[name] = value;
+          self._aria[name] = value
 
           if (self.state.get('rendered')) {
-            elm.setAttribute(name == 'role' ? name : 'aria-' + name, value);
+            elm.setAttribute(name == 'role' ? name : 'aria-' + name, value)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -4758,14 +4758,14 @@ jsc */
        * @param {Boolean} [translate=true] False if the contents shouldn't be translated.
        * @return {String} Encoded and possible traslated string.
        */
-        encode(text, translate) {
+        encode (text, translate) {
           if (translate !== false) {
-            text = this.translate(text);
+            text = this.translate(text)
           }
 
-          return (text || '').replace(/[&<>"]/g, function(match) {
-            return '&#' + match.charCodeAt(0) + ';';
-          });
+          return (text || '').replace(/[&<>"]/g, function (match) {
+            return '&#' + match.charCodeAt(0) + ';'
+          })
         },
 
         /**
@@ -4775,8 +4775,8 @@ jsc */
        * @param {String} text Text to translate.
        * @return {String} Translated string or the same as the input.
        */
-        translate(text) {
-          return Control.translate ? Control.translate(text) : text;
+        translate (text) {
+          return Control.translate ? Control.translate(text) : text
         },
 
         /**
@@ -4786,15 +4786,15 @@ jsc */
        * @param {Array/tinymce.ui.Collection} items Array of items to prepend before this control.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        before(items) {
+        before (items) {
           let self = this,
-            parent = self.parent();
+            parent = self.parent()
 
           if (parent) {
-            parent.insert(items, parent.items().indexOf(self), true);
+            parent.insert(items, parent.items().indexOf(self), true)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -4804,15 +4804,15 @@ jsc */
        * @param {Array/tinymce.ui.Collection} items Array of items to append after this control.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        after(items) {
+        after (items) {
           let self = this,
-            parent = self.parent();
+            parent = self.parent()
 
           if (parent) {
-            parent.insert(items, parent.items().indexOf(self));
+            parent.insert(items, parent.items().indexOf(self))
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -4821,53 +4821,53 @@ jsc */
        * @method remove
        * @return {tinymce.ui.Control} Current control instance.
        */
-        remove() {
+        remove () {
           let self = this,
             elm = self.getEl(),
             parent = self.parent(),
             newItems,
-            i;
+            i
 
           if (self.items) {
-            const controls = self.items().toArray();
-            i = controls.length;
+            const controls = self.items().toArray()
+            i = controls.length
             while (i--) {
-              controls[i].remove();
+              controls[i].remove()
             }
           }
 
           if (parent && parent.items) {
-            newItems = [];
+            newItems = []
 
-            parent.items().each(function(item) {
+            parent.items().each(function (item) {
               if (item !== self) {
-                newItems.push(item);
+                newItems.push(item)
               }
-            });
+            })
 
-            parent.items().set(newItems);
-            parent._lastRect = null;
+            parent.items().set(newItems)
+            parent._lastRect = null
           }
 
           if (self._eventsRoot && self._eventsRoot == self) {
-            DomQuery(elm).off();
+            DomQuery(elm).off()
           }
 
-          const lookup = self.getRoot().controlIdLookup;
+          const lookup = self.getRoot().controlIdLookup
           if (lookup) {
-            delete lookup[self._id];
+            delete lookup[self._id]
           }
 
           if (elm && elm.parentNode) {
-            elm.parentNode.removeChild(elm);
+            elm.parentNode.removeChild(elm)
           }
 
-          self.state.set('rendered', false);
-          self.state.destroy();
+          self.state.set('rendered', false)
+          self.state.destroy()
 
-          self.fire('remove');
+          self.fire('remove')
 
-          return self;
+          return self
         },
 
         /**
@@ -4877,10 +4877,10 @@ jsc */
        * @param {Element} elm Element to render before.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        renderBefore(elm) {
-          DomQuery(elm).before(this.renderHtml());
-          this.postRender();
-          return this;
+        renderBefore (elm) {
+          DomQuery(elm).before(this.renderHtml())
+          this.postRender()
+          return this
         },
 
         /**
@@ -4890,20 +4890,20 @@ jsc */
        * @param {Element} elm Element to render to.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        renderTo(elm) {
-          DomQuery(elm || this.getContainerElm()).append(this.renderHtml());
-          this.postRender();
-          return this;
+        renderTo (elm) {
+          DomQuery(elm || this.getContainerElm()).append(this.renderHtml())
+          this.postRender()
+          return this
         },
 
-        preRender() {
+        preRender () {
         },
 
-        render() {
+        render () {
         },
 
-        renderHtml() {
-          return '<div id="' + this._id + '" class="' + this.classes + '"></div>';
+        renderHtml () {
+          return '<div id="' + this._id + '" class="' + this.classes + '"></div>'
         },
 
         /**
@@ -4912,101 +4912,101 @@ jsc */
        * @method postRender
        * @return {tinymce.ui.Control} Current control instance.
        */
-        postRender() {
+        postRender () {
           let self = this,
             settings = self.settings,
             elm,
             box,
             parent,
             name,
-            parentEventsRoot;
+            parentEventsRoot
 
-          self.$el = DomQuery(self.getEl());
-          self.state.set('rendered', true);
+          self.$el = DomQuery(self.getEl())
+          self.state.set('rendered', true)
 
           // Bind on<event> settings
           for (name in settings) {
             if (name.indexOf('on') === 0) {
-              self.on(name.substr(2), settings[name]);
+              self.on(name.substr(2), settings[name])
             }
           }
 
           if (self._eventsRoot) {
             for (parent = self.parent(); !parentEventsRoot && parent; parent = parent.parent()) {
-              parentEventsRoot = parent._eventsRoot;
+              parentEventsRoot = parent._eventsRoot
             }
 
             if (parentEventsRoot) {
               for (name in parentEventsRoot._nativeEvents) {
-                self._nativeEvents[name] = true;
+                self._nativeEvents[name] = true
               }
             }
           }
 
-          bindPendingEvents(self);
+          bindPendingEvents(self)
 
           if (settings.style) {
-            elm = self.getEl();
+            elm = self.getEl()
             if (elm) {
-              elm.setAttribute('style', settings.style);
-              elm.style.cssText = settings.style;
+              elm.setAttribute('style', settings.style)
+              elm.style.cssText = settings.style
             }
           }
 
           if (self.settings.border) {
-            box = self.borderBox;
+            box = self.borderBox
             self.$el.css({
               'border-top-width': box.top,
               'border-right-width': box.right,
               'border-bottom-width': box.bottom,
               'border-left-width': box.left
-            });
+            })
           }
 
           // Add instance to lookup
-          const root = self.getRoot();
+          const root = self.getRoot()
           if (!root.controlIdLookup) {
-            root.controlIdLookup = {};
+            root.controlIdLookup = {}
           }
 
-          root.controlIdLookup[self._id] = self;
+          root.controlIdLookup[self._id] = self
 
           for (const key in self._aria) {
-            self.aria(key, self._aria[key]);
+            self.aria(key, self._aria[key])
           }
 
           if (self.state.get('visible') === false) {
-            self.getEl().style.display = 'none';
+            self.getEl().style.display = 'none'
           }
 
-          self.bindStates();
+          self.bindStates()
 
-          self.state.on('change:visible', function(e) {
+          self.state.on('change:visible', function (e) {
             let state = e.value,
-              parentCtrl;
+              parentCtrl
 
             if (self.state.get('rendered')) {
-              self.getEl().style.display = state === false ? 'none' : '';
+              self.getEl().style.display = state === false ? 'none' : ''
 
               // Need to force a reflow here on IE 8
-              self.getEl().getBoundingClientRect();
+              self.getEl().getBoundingClientRect()
             }
 
             // Parent container needs to reflow
-            parentCtrl = self.parent();
+            parentCtrl = self.parent()
             if (parentCtrl) {
-              parentCtrl._lastRect = null;
+              parentCtrl._lastRect = null
             }
 
-            self.fire(state ? 'show' : 'hide');
+            self.fire(state ? 'show' : 'hide')
 
-            ReflowQueue.add(self);
-          });
+            ReflowQueue.add(self)
+          })
 
-          self.fire('postrender', {}, false);
+          self.fire('postrender', {}, false)
         },
 
-        bindStates() {
+        bindStates () {
         },
 
         /**
@@ -5016,79 +5016,79 @@ jsc */
        * @param {String} align Alignment in view top|center|bottom.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        scrollIntoView(align) {
-          function getOffset(elm, rootElm) {
+        scrollIntoView (align) {
+          function getOffset (elm, rootElm) {
             let x,
               y,
-              parent = elm;
+              parent = elm
 
-            x = y = 0;
+            x = y = 0
             while (parent && parent != rootElm && parent.nodeType) {
-              x += parent.offsetLeft || 0;
-              y += parent.offsetTop || 0;
-              parent = parent.offsetParent;
+              x += parent.offsetLeft || 0
+              y += parent.offsetTop || 0
+              parent = parent.offsetParent
             }
 
-            return { x, y };
+            return { x, y }
           }
 
           let elm = this.getEl(),
-            parentElm = elm.parentNode;
+            parentElm = elm.parentNode
           let x,
             y,
             width,
             height,
             parentWidth,
-            parentHeight;
-          const pos = getOffset(elm, parentElm);
+            parentHeight
+          const pos = getOffset(elm, parentElm)
 
-          x = pos.x;
-          y = pos.y;
-          width = elm.offsetWidth;
-          height = elm.offsetHeight;
-          parentWidth = parentElm.clientWidth;
-          parentHeight = parentElm.clientHeight;
+          x = pos.x
+          y = pos.y
+          width = elm.offsetWidth
+          height = elm.offsetHeight
+          parentWidth = parentElm.clientWidth
+          parentHeight = parentElm.clientHeight
 
           if (align == 'end') {
-            x -= parentWidth - width;
-            y -= parentHeight - height;
+            x -= parentWidth - width
+            y -= parentHeight - height
           } else if (align == 'center') {
-            x -= (parentWidth / 2) - (width / 2);
-            y -= (parentHeight / 2) - (height / 2);
+            x -= (parentWidth / 2) - (width / 2)
+            y -= (parentHeight / 2) - (height / 2)
           }
 
-          parentElm.scrollLeft = x;
-          parentElm.scrollTop = y;
+          parentElm.scrollLeft = x
+          parentElm.scrollTop = y
 
-          return this;
+          return this
         },
 
-        getRoot() {
+        getRoot () {
           let ctrl = this,
             rootControl,
-            parents = [];
+            parents = []
 
           while (ctrl) {
             if (ctrl.rootControl) {
-              rootControl = ctrl.rootControl;
-              break;
+              rootControl = ctrl.rootControl
+              break
             }
 
-            parents.push(ctrl);
-            rootControl = ctrl;
-            ctrl = ctrl.parent();
+            parents.push(ctrl)
+            rootControl = ctrl
+            ctrl = ctrl.parent()
           }
 
           if (!rootControl) {
-            rootControl = this;
+            rootControl = this
           }
 
-          let i = parents.length;
+          let i = parents.length
           while (i--) {
-            parents[i].rootControl = rootControl;
+            parents[i].rootControl = rootControl
           }
 
-          return rootControl;
+          return rootControl
         },
 
         /**
@@ -5102,15 +5102,15 @@ jsc */
        * @method reflow
        * @return {tinymce.ui.Control} Current control instance.
        */
-        reflow() {
-          ReflowQueue.remove(this);
+        reflow () {
+          ReflowQueue.remove(this)
 
-          const parent = this.parent();
+          const parent = this.parent()
           if (parent && parent._layout && !parent._layout.isNative()) {
-            parent.reflow();
+            parent.reflow()
           }
 
-          return this;
+          return this
         }
 
       /**
@@ -5175,201 +5175,201 @@ jsc */
        * @return {Boolean/tinymce.ui.Control} Current control on a set operation or current state on a get.
        */
       // visible: function(value) {} -- Generated
-      };
+      }
 
       /**
      * Setup state properties.
      */
-      Tools.each('text title visible disabled active value'.split(' '), function(name) {
-        proto[name] = function(value) {
+      Tools.each('text title visible disabled active value'.split(' '), function (name) {
+        proto[name] = function (value) {
           if (arguments.length === 0) {
-            return this.state.get(name);
+            return this.state.get(name)
           }
 
           if (typeof value !== 'undefined') {
-            this.state.set(name, value);
+            this.state.set(name, value)
           }
 
-          return this;
-        };
-      });
+          return this
+        }
+      })
 
-      Control = Class.extend(proto);
+      Control = Class.extend(proto)
 
-      function getEventDispatcher(obj) {
+      function getEventDispatcher (obj) {
         if (!obj._eventDispatcher) {
           obj._eventDispatcher = new EventDispatcher({
             scope: obj,
-            toggleEvent(name, state) {
+            toggleEvent (name, state) {
               if (state && EventDispatcher.isNative(name)) {
                 if (!obj._nativeEvents) {
-                  obj._nativeEvents = {};
+                  obj._nativeEvents = {}
                 }
 
-                obj._nativeEvents[name] = true;
+                obj._nativeEvents[name] = true
 
                 if (obj.state.get('rendered')) {
-                  bindPendingEvents(obj);
+                  bindPendingEvents(obj)
                 }
               }
             }
-          });
+          })
         }
 
-        return obj._eventDispatcher;
+        return obj._eventDispatcher
       }
 
-      function bindPendingEvents(eventCtrl) {
+      function bindPendingEvents (eventCtrl) {
         let i,
           l,
           parents,
           eventRootCtrl,
           nativeEvents,
-          name;
+          name
 
-        function delegate(e) {
-          const control = eventCtrl.getParentCtrl(e.target);
+        function delegate (e) {
+          const control = eventCtrl.getParentCtrl(e.target)
 
           if (control) {
-            control.fire(e.type, e);
+            control.fire(e.type, e)
           }
         }
 
-        function mouseLeaveHandler() {
-          const ctrl = eventRootCtrl._lastHoverCtrl;
+        function mouseLeaveHandler () {
+          const ctrl = eventRootCtrl._lastHoverCtrl
 
           if (ctrl) {
-            ctrl.fire('mouseleave', { target: ctrl.getEl() });
+            ctrl.fire('mouseleave', { target: ctrl.getEl() })
 
-            ctrl.parents().each(function(ctrl) {
-              ctrl.fire('mouseleave', { target: ctrl.getEl() });
-            });
+            ctrl.parents().each(function (ctrl) {
+              ctrl.fire('mouseleave', { target: ctrl.getEl() })
+            })
 
-            eventRootCtrl._lastHoverCtrl = null;
+            eventRootCtrl._lastHoverCtrl = null
           }
         }
 
-        function mouseEnterHandler(e) {
+        function mouseEnterHandler (e) {
           let ctrl = eventCtrl.getParentCtrl(e.target),
             lastCtrl = eventRootCtrl._lastHoverCtrl,
             idx = 0,
             i,
             parents,
-            lastParents;
+            lastParents
 
           // Over on a new control
           if (ctrl !== lastCtrl) {
-            eventRootCtrl._lastHoverCtrl = ctrl;
+            eventRootCtrl._lastHoverCtrl = ctrl
 
-            parents = ctrl.parents().toArray().reverse();
-            parents.push(ctrl);
+            parents = ctrl.parents().toArray().reverse()
+            parents.push(ctrl)
 
             if (lastCtrl) {
-              lastParents = lastCtrl.parents().toArray().reverse();
-              lastParents.push(lastCtrl);
+              lastParents = lastCtrl.parents().toArray().reverse()
+              lastParents.push(lastCtrl)
 
               for (idx = 0; idx < lastParents.length; idx++) {
                 if (parents[idx] !== lastParents[idx]) {
-                  break;
+                  break
                 }
               }
 
               for (i = lastParents.length - 1; i >= idx; i--) {
-                lastCtrl = lastParents[i];
+                lastCtrl = lastParents[i]
                 lastCtrl.fire('mouseleave', {
                   target: lastCtrl.getEl()
-                });
+                })
               }
             }
 
             for (i = idx; i < parents.length; i++) {
-              ctrl = parents[i];
+              ctrl = parents[i]
               ctrl.fire('mouseenter', {
                 target: ctrl.getEl()
-              });
+              })
             }
           }
         }
 
-        function fixWheelEvent(e) {
-          e.preventDefault();
+        function fixWheelEvent (e) {
+          e.preventDefault()
 
           if (e.type == 'mousewheel') {
-            e.deltaY = -1 / 40 * e.wheelDelta;
+            e.deltaY = -1 / 40 * e.wheelDelta
 
             if (e.wheelDeltaX) {
-              e.deltaX = -1 / 40 * e.wheelDeltaX;
+              e.deltaX = -1 / 40 * e.wheelDeltaX
             }
           } else {
-            e.deltaX = 0;
-            e.deltaY = e.detail;
+            e.deltaX = 0
+            e.deltaY = e.detail
           }
 
-          e = eventCtrl.fire('wheel', e);
+          e = eventCtrl.fire('wheel', e)
         }
 
-        nativeEvents = eventCtrl._nativeEvents;
+        nativeEvents = eventCtrl._nativeEvents
         if (nativeEvents) {
         // Find event root element if it exists
-          parents = eventCtrl.parents().toArray();
-          parents.unshift(eventCtrl);
+          parents = eventCtrl.parents().toArray()
+          parents.unshift(eventCtrl)
           for (i = 0, l = parents.length; !eventRootCtrl && i < l; i++) {
-            eventRootCtrl = parents[i]._eventsRoot;
+            eventRootCtrl = parents[i]._eventsRoot
           }
 
           // Event root wasn't found the use the root control
           if (!eventRootCtrl) {
-            eventRootCtrl = parents[parents.length - 1] || eventCtrl;
+            eventRootCtrl = parents[parents.length - 1] || eventCtrl
           }
 
           // Set the eventsRoot property on children that didn't have it
-          eventCtrl._eventsRoot = eventRootCtrl;
+          eventCtrl._eventsRoot = eventRootCtrl
           for (l = i, i = 0; i < l; i++) {
-            parents[i]._eventsRoot = eventRootCtrl;
+            parents[i]._eventsRoot = eventRootCtrl
           }
 
-          let eventRootDelegates = eventRootCtrl._delegates;
+          let eventRootDelegates = eventRootCtrl._delegates
           if (!eventRootDelegates) {
-            eventRootDelegates = eventRootCtrl._delegates = {};
+            eventRootDelegates = eventRootCtrl._delegates = {}
           }
 
           // Bind native event delegates
           for (name in nativeEvents) {
             if (!nativeEvents) {
-              return false;
+              return false
             }
 
             if (name === 'wheel' && !hasWheelEventSupport) {
               if (hasMouseWheelEventSupport) {
-                DomQuery(eventCtrl.getEl()).on('mousewheel', fixWheelEvent);
+                DomQuery(eventCtrl.getEl()).on('mousewheel', fixWheelEvent)
               } else {
-                DomQuery(eventCtrl.getEl()).on('DOMMouseScroll', fixWheelEvent);
+                DomQuery(eventCtrl.getEl()).on('DOMMouseScroll', fixWheelEvent)
               }
 
-              continue;
+              continue
             }
 
             // Special treatment for mousenter/mouseleave since these doesn't bubble
             if (name === 'mouseenter' || name === 'mouseleave') {
             // Fake mousenter/mouseleave
               if (!eventRootCtrl._hasMouseEnter) {
-                DomQuery(eventRootCtrl.getEl()).on('mouseleave', mouseLeaveHandler).on('mouseover', mouseEnterHandler);
-                eventRootCtrl._hasMouseEnter = 1;
+                DomQuery(eventRootCtrl.getEl()).on('mouseleave', mouseLeaveHandler).on('mouseover', mouseEnterHandler)
+                eventRootCtrl._hasMouseEnter = 1
               }
             } else if (!eventRootDelegates[name]) {
-              DomQuery(eventRootCtrl.getEl()).on(name, delegate);
-              eventRootDelegates[name] = true;
+              DomQuery(eventRootCtrl.getEl()).on(name, delegate)
+              eventRootDelegates[name] = true
             }
 
             // Remove the event once it's bound
-            nativeEvents[name] = false;
+            nativeEvents[name] = false
           }
         }
       }
 
-      return Control;
+      return Control
     }
-  );
+  )
 
   /**
  * KeyboardNavigation.js
@@ -5391,12 +5391,12 @@ jsc */
     [
       'global!document'
     ],
-    function(document) {
-      'use strict';
+    function (document) {
+      'use strict'
 
-      const hasTabstopData = function(elm) {
-        return !!elm.getAttribute('data-mce-tabstop');
-      };
+      const hasTabstopData = function (elm) {
+        return !!elm.getAttribute('data-mce-tabstop')
+      }
 
       /**
      * This class handles all keyboard navigation for WAI-ARIA support. Each root container
@@ -5404,23 +5404,23 @@ jsc */
      *
      * @constructor
      */
-      return function(settings) {
+      return function (settings) {
         let root = settings.root,
           focusedElement,
-          focusedControl;
+          focusedControl
 
-        function isElement(node) {
-          return node && node.nodeType === 1;
+        function isElement (node) {
+          return node && node.nodeType === 1
         }
 
         try {
-          focusedElement = document.activeElement;
+          focusedElement = document.activeElement
         } catch (ex) {
         // IE sometimes fails to return a proper element
-          focusedElement = document.body;
+          focusedElement = document.body
         }
 
-        focusedControl = root.getParentCtrl(focusedElement);
+        focusedControl = root.getParentCtrl(focusedElement)
 
         /**
        * Returns the currently focused elements wai aria role of the currently
@@ -5430,14 +5430,14 @@ jsc */
        * @param {Element} elm Optional element to get role from.
        * @return {String} Role of specified element.
        */
-        function getRole(elm) {
-          elm = elm || focusedElement;
+        function getRole (elm) {
+          elm = elm || focusedElement
 
           if (isElement(elm)) {
-            return elm.getAttribute('role');
+            return elm.getAttribute('role')
           }
 
-          return null;
+          return null
         }
 
         /**
@@ -5448,13 +5448,13 @@ jsc */
        * @param {Element} elm Optional element to get parent role from.
        * @return {String} Role of the first parent that has a role.
        */
-        function getParentRole(elm) {
+        function getParentRole (elm) {
           let role,
-            parent = elm || focusedElement;
+            parent = elm || focusedElement
 
           while ((parent = parent.parentNode)) {
             if ((role = getRole(parent))) {
-              return role;
+              return role
             }
           }
         }
@@ -5466,11 +5466,11 @@ jsc */
        * @param {String} name Name of the aria property to get for example "disabled".
        * @return {String} Aria property value.
        */
-        function getAriaProp(name) {
-          const elm = focusedElement;
+        function getAriaProp (name) {
+          const elm = focusedElement
 
           if (isElement(elm)) {
-            return elm.getAttribute('aria-' + name);
+            return elm.getAttribute('aria-' + name)
           }
         }
 
@@ -5481,12 +5481,12 @@ jsc */
        * @param {Element} elm Element to check if it's an text input element or not.
        * @return {Boolean} True/false if the element is a text element or not.
        */
-        function isTextInputElement(elm) {
-          const tagName = elm.tagName.toUpperCase();
+        function isTextInputElement (elm) {
+          const tagName = elm.tagName.toUpperCase()
 
           // Notice: since type can be "email" etc we don't check the type
           // So all input elements gets treated as text input elements
-          return tagName == 'INPUT' || tagName == 'TEXTAREA' || tagName == 'SELECT';
+          return tagName == 'INPUT' || tagName == 'TEXTAREA' || tagName == 'SELECT'
         }
 
         /**
@@ -5496,20 +5496,20 @@ jsc */
        * @param {Element} elm DOM element to check if it can be focused or not.
        * @return {Boolean} True/false if the element can have focus.
        */
-        function canFocus(elm) {
+        function canFocus (elm) {
           if (isTextInputElement(elm) && !elm.hidden) {
-            return true;
+            return true
           }
 
           if (hasTabstopData(elm)) {
-            return true;
+            return true
           }
 
           if (/^(button|menuitem|checkbox|tab|menuitemcheckbox|option|gridcell|slider)$/.test(getRole(elm))) {
-            return true;
+            return true
           }
 
-          return false;
+          return false
         }
 
         /**
@@ -5519,26 +5519,26 @@ jsc */
        * @param {Element} elm DOM element to find focusable elements within.
        * @return {Array} Array of focusable elements.
        */
-        function getFocusElements(elm) {
-          const elements = [];
+        function getFocusElements (elm) {
+          const elements = []
 
-          function collect(elm) {
+          function collect (elm) {
             if (elm.nodeType != 1 || elm.style.display == 'none' || elm.disabled) {
-              return;
+              return
             }
 
             if (canFocus(elm)) {
-              elements.push(elm);
+              elements.push(elm)
             }
 
             for (let i = 0; i < elm.childNodes.length; i++) {
-              collect(elm.childNodes[i]);
+              collect(elm.childNodes[i])
             }
           }
 
-          collect(elm || root.getEl());
+          collect(elm || root.getEl())
 
-          return elements;
+          return elements
         }
 
         /**
@@ -5550,23 +5550,23 @@ jsc */
        * @param {tinymce.ui.Control} targetControl Optional target control to find root of.
        * @return {tinymce.ui.Control} Navigation root control.
        */
-        function getNavigationRoot(targetControl) {
+        function getNavigationRoot (targetControl) {
           let navigationRoot,
-            controls;
+            controls
 
-          targetControl = targetControl || focusedControl;
-          controls = targetControl.parents().toArray();
-          controls.unshift(targetControl);
+          targetControl = targetControl || focusedControl
+          controls = targetControl.parents().toArray()
+          controls.unshift(targetControl)
 
           for (let i = 0; i < controls.length; i++) {
-            navigationRoot = controls[i];
+            navigationRoot = controls[i]
 
             if (navigationRoot.settings.ariaRoot) {
-              break;
+              break
             }
           }
 
-          return navigationRoot;
+          return navigationRoot
         }
 
         /**
@@ -5576,14 +5576,14 @@ jsc */
        * @private
        * @param {tinymce.ui.Control} targetControl Target control to focus the first item in.
        */
-        function focusFirst(targetControl) {
-          const navigationRoot = getNavigationRoot(targetControl);
-          const focusElements = getFocusElements(navigationRoot.getEl());
+        function focusFirst (targetControl) {
+          const navigationRoot = getNavigationRoot(targetControl)
+          const focusElements = getFocusElements(navigationRoot.getEl())
 
           if (navigationRoot.settings.ariaRemember && 'lastAriaIndex' in navigationRoot) {
-            moveFocusToIndex(navigationRoot.lastAriaIndex, focusElements);
+            moveFocusToIndex(navigationRoot.lastAriaIndex, focusElements)
           } else {
-            moveFocusToIndex(0, focusElements);
+            moveFocusToIndex(0, focusElements)
           }
         }
 
@@ -5596,18 +5596,18 @@ jsc */
        * @param {Array} elements Array with dom elements to move focus within.
        * @return {Number} Input index or a changed index if it was out of range.
        */
-        function moveFocusToIndex(idx, elements) {
+        function moveFocusToIndex (idx, elements) {
           if (idx < 0) {
-            idx = elements.length - 1;
+            idx = elements.length - 1
           } else if (idx >= elements.length) {
-            idx = 0;
+            idx = 0
           }
 
           if (elements[idx]) {
-            elements[idx].focus();
+            elements[idx].focus()
           }
 
-          return idx;
+          return idx
         }
 
         /**
@@ -5617,20 +5617,20 @@ jsc */
        * @param {Number} dir Direction to move in positive means forward, negative means backwards.
        * @param {Array} elements Optional array of elements to move within defaults to the current navigation roots elements.
        */
-        function moveFocus(dir, elements) {
+        function moveFocus (dir, elements) {
           let idx = -1,
-            navigationRoot = getNavigationRoot();
+            navigationRoot = getNavigationRoot()
 
-          elements = elements || getFocusElements(navigationRoot.getEl());
+          elements = elements || getFocusElements(navigationRoot.getEl())
 
           for (let i = 0; i < elements.length; i++) {
             if (elements[i] === focusedElement) {
-              idx = i;
+              idx = i
             }
           }
 
-          idx += dir;
-          navigationRoot.lastAriaIndex = moveFocusToIndex(idx, elements);
+          idx += dir
+          navigationRoot.lastAriaIndex = moveFocusToIndex(idx, elements)
         }
 
         /**
@@ -5638,15 +5638,15 @@ jsc */
        *
        * @private
        */
-        function left() {
-          const parentRole = getParentRole();
+        function left () {
+          const parentRole = getParentRole()
 
           if (parentRole == 'tablist') {
-            moveFocus(-1, getFocusElements(focusedElement.parentNode));
+            moveFocus(-1, getFocusElements(focusedElement.parentNode))
           } else if (focusedControl.parent().submenu) {
-            cancel();
+            cancel()
           } else {
-            moveFocus(-1);
+            moveFocus(-1)
           }
         }
 
@@ -5655,16 +5655,16 @@ jsc */
        *
        * @private
        */
-        function right() {
+        function right () {
           let role = getRole(),
-            parentRole = getParentRole();
+            parentRole = getParentRole()
 
           if (parentRole == 'tablist') {
-            moveFocus(1, getFocusElements(focusedElement.parentNode));
+            moveFocus(1, getFocusElements(focusedElement.parentNode))
           } else if (role == 'menuitem' && parentRole == 'menu' && getAriaProp('haspopup')) {
-            enter();
+            enter()
           } else {
-            moveFocus(1);
+            moveFocus(1)
           }
         }
 
@@ -5673,8 +5673,8 @@ jsc */
        *
        * @private
        */
-        function up() {
-          moveFocus(-1);
+        function up () {
+          moveFocus(-1)
         }
 
         /**
@@ -5682,16 +5682,16 @@ jsc */
        *
        * @private
        */
-        function down() {
+        function down () {
           let role = getRole(),
-            parentRole = getParentRole();
+            parentRole = getParentRole()
 
           if (role == 'menuitem' && parentRole == 'menubar') {
-            enter();
+            enter()
           } else if (role == 'button' && getAriaProp('haspopup')) {
-            enter({ key: 'down' });
+            enter({ key: 'down' })
           } else {
-            moveFocus(1);
+            moveFocus(1)
           }
         }
 
@@ -5701,17 +5701,17 @@ jsc */
        * @private
        * @param {DOMEvent} e DOM event object.
        */
-        function tab(e) {
-          const parentRole = getParentRole();
+        function tab (e) {
+          const parentRole = getParentRole()
 
           if (parentRole == 'tablist') {
-            const elm = getFocusElements(focusedControl.getEl('body'))[0];
+            const elm = getFocusElements(focusedControl.getEl('body'))[0]
 
             if (elm) {
-              elm.focus();
+              elm.focus()
             }
           } else {
-            moveFocus(e.shiftKey ? -1 : 1);
+            moveFocus(e.shiftKey ? -1 : 1)
           }
         }
 
@@ -5720,8 +5720,8 @@ jsc */
        *
        * @private
        */
-        function cancel() {
-          focusedControl.fire('cancel');
+        function cancel () {
+          focusedControl.fire('cancel')
         }
 
         /**
@@ -5730,77 +5730,77 @@ jsc */
        * @private
        * @param {Object} aria Optional aria data to pass along with the enter event.
        */
-        function enter(aria) {
-          aria = aria || {};
-          focusedControl.fire('click', { target: focusedElement, aria });
+        function enter (aria) {
+          aria = aria || {}
+          focusedControl.fire('click', { target: focusedElement, aria })
         }
 
-        root.on('keydown', function(e) {
-          function handleNonTabOrEscEvent(e, handler) {
+        root.on('keydown', function (e) {
+          function handleNonTabOrEscEvent (e, handler) {
           // Ignore non tab keys for text elements
             if (isTextInputElement(focusedElement) || hasTabstopData(focusedElement)) {
-              return;
+              return
             }
 
             if (getRole(focusedElement) === 'slider') {
-              return;
+              return
             }
 
             if (handler(e) !== false) {
-              e.preventDefault();
+              e.preventDefault()
             }
           }
 
           if (e.isDefaultPrevented()) {
-            return;
+            return
           }
 
           switch (e.keyCode) {
             case 37: // DOM_VK_LEFT
-              handleNonTabOrEscEvent(e, left);
-              break;
+              handleNonTabOrEscEvent(e, left)
+              break
 
             case 39: // DOM_VK_RIGHT
-              handleNonTabOrEscEvent(e, right);
-              break;
+              handleNonTabOrEscEvent(e, right)
+              break
 
             case 38: // DOM_VK_UP
-              handleNonTabOrEscEvent(e, up);
-              break;
+              handleNonTabOrEscEvent(e, up)
+              break
 
             case 40: // DOM_VK_DOWN
-              handleNonTabOrEscEvent(e, down);
-              break;
+              handleNonTabOrEscEvent(e, down)
+              break
 
             case 27: // DOM_VK_ESCAPE
-              cancel();
-              break;
+              cancel()
+              break
 
             case 14: // DOM_VK_ENTER
             case 13: // DOM_VK_RETURN
             case 32: // DOM_VK_SPACE
-              handleNonTabOrEscEvent(e, enter);
-              break;
+              handleNonTabOrEscEvent(e, enter)
+              break
 
             case 9: // DOM_VK_TAB
               if (tab(e) !== false) {
-                e.preventDefault();
+                e.preventDefault()
               }
-              break;
+              break
           }
-        });
+        })
 
-        root.on('focusin', function(e) {
-          focusedElement = e.target;
-          focusedControl = e.control;
-        });
+        root.on('focusin', function (e) {
+          focusedElement = e.target
+          focusedControl = e.control
+        })
 
         return {
           focusFirst
-        };
-      };
+        }
+      }
     }
-  );
+  )
   /**
  * Container.js
  *
@@ -5833,10 +5833,10 @@ jsc */
       'tinymce.ui.ClassList',
       'tinymce.ui.ReflowQueue'
     ],
-    function(Control, Collection, Selector, Factory, KeyboardNavigation, Tools, $, ClassList, ReflowQueue) {
-      'use strict';
+    function (Control, Collection, Selector, Factory, KeyboardNavigation, Tools, $, ClassList, ReflowQueue) {
+      'use strict'
 
-      const selectorCache = {};
+      const selectorCache = {}
 
       return Control.extend({
       /**
@@ -5848,46 +5848,46 @@ jsc */
        * @setting {String} layout Layout manager by name to use.
        * @setting {Object} defaults Default settings to apply to all items.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          settings = self.settings;
+          self._super(settings)
+          settings = self.settings
 
           if (settings.fixed) {
-            self.state.set('fixed', true);
+            self.state.set('fixed', true)
           }
 
-          self._items = new Collection();
+          self._items = new Collection()
 
           if (self.isRtl()) {
-            self.classes.add('rtl');
+            self.classes.add('rtl')
           }
 
-          self.bodyClasses = new ClassList(function() {
+          self.bodyClasses = new ClassList(function () {
             if (self.state.get('rendered')) {
-              self.getEl('body').className = this.toString();
+              self.getEl('body').className = this.toString()
             }
-          });
-          self.bodyClasses.prefix = self.classPrefix;
+          })
+          self.bodyClasses.prefix = self.classPrefix
 
-          self.classes.add('container');
-          self.bodyClasses.add('container-body');
+          self.classes.add('container')
+          self.bodyClasses.add('container-body')
 
           if (settings.containerCls) {
-            self.classes.add(settings.containerCls);
+            self.classes.add(settings.containerCls)
           }
 
-          self._layout = Factory.create((settings.layout || '') + 'layout');
+          self._layout = Factory.create((settings.layout || '') + 'layout')
 
           if (self.settings.items) {
-            self.add(self.settings.items);
+            self.add(self.settings.items)
           } else {
-            self.add(self.render());
+            self.add(self.render())
           }
 
           // TODO: Fix this!
-          self._hasBody = true;
+          self._hasBody = true
         },
 
         /**
@@ -5896,8 +5896,8 @@ jsc */
        * @method items
        * @return {tinymce.ui.Collection} Control collection direct child controls.
        */
-        items() {
-          return this._items;
+        items () {
+          return this._items
         },
 
         /**
@@ -5907,10 +5907,10 @@ jsc */
        * @param {String} selector Selector CSS pattern to find children by.
        * @return {tinymce.ui.Collection} Control collection with child controls.
        */
-        find(selector) {
-          selector = selectorCache[selector] = selectorCache[selector] || new Selector(selector);
+        find (selector) {
+          selector = selectorCache[selector] = selectorCache[selector] || new Selector(selector)
 
-          return selector.find(this);
+          return selector.find(this)
         },
 
         /**
@@ -5921,12 +5921,12 @@ jsc */
        * @param {Array/Object/tinymce.ui.Control} items Array or item that will be added to the container.
        * @return {tinymce.ui.Collection} Current collection control.
        */
-        add(items) {
-          const self = this;
+        add (items) {
+          const self = this
 
-          self.items().add(self.create(items)).parent(self);
+          self.items().add(self.create(items)).parent(self)
 
-          return self;
+          return self
         },
 
         /**
@@ -5937,44 +5937,44 @@ jsc */
        * @param {Boolean} keyboard Optional true/false if the focus was a keyboard focus or not.
        * @return {tinymce.ui.Collection} Current instance.
        */
-        focus(keyboard) {
+        focus (keyboard) {
           let self = this,
             focusCtrl,
             keyboardNav,
-            items;
+            items
 
           if (keyboard) {
-            keyboardNav = self.keyboardNav || self.parents().eq(-1)[0].keyboardNav;
+            keyboardNav = self.keyboardNav || self.parents().eq(-1)[0].keyboardNav
 
             if (keyboardNav) {
-              keyboardNav.focusFirst(self);
-              return;
+              keyboardNav.focusFirst(self)
+              return
             }
           }
 
-          items = self.find('*');
+          items = self.find('*')
 
           // TODO: Figure out a better way to auto focus alert dialog buttons
           if (self.statusbar) {
-            items.add(self.statusbar.items());
+            items.add(self.statusbar.items())
           }
 
-          items.each(function(ctrl) {
+          items.each(function (ctrl) {
             if (ctrl.settings.autofocus) {
-              focusCtrl = null;
-              return false;
+              focusCtrl = null
+              return false
             }
 
             if (ctrl.canFocus) {
-              focusCtrl = focusCtrl || ctrl;
+              focusCtrl = focusCtrl || ctrl
             }
-          });
+          })
 
           if (focusCtrl) {
-            focusCtrl.focus();
+            focusCtrl.focus()
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -5984,35 +5984,35 @@ jsc */
        * @param {tinymce.ui.Control} oldItem Old item to be replaced.
        * @param {tinymce.ui.Control} newItem New item to be inserted.
        */
-        replace(oldItem, newItem) {
+        replace (oldItem, newItem) {
           let ctrlElm,
             items = this.items(),
-            i = items.length;
+            i = items.length
 
           // Replace the item in collection
           while (i--) {
             if (items[i] === oldItem) {
-              items[i] = newItem;
-              break;
+              items[i] = newItem
+              break
             }
           }
 
           if (i >= 0) {
           // Remove new item from DOM
-            ctrlElm = newItem.getEl();
+            ctrlElm = newItem.getEl()
             if (ctrlElm) {
-              ctrlElm.parentNode.removeChild(ctrlElm);
+              ctrlElm.parentNode.removeChild(ctrlElm)
             }
 
             // Remove old item from DOM
-            ctrlElm = oldItem.getEl();
+            ctrlElm = oldItem.getEl()
             if (ctrlElm) {
-              ctrlElm.parentNode.removeChild(ctrlElm);
+              ctrlElm.parentNode.removeChild(ctrlElm)
             }
           }
 
           // Adopt the item
-          newItem.parent(this);
+          newItem.parent(this)
         },
 
         /**
@@ -6023,38 +6023,38 @@ jsc */
        * @param {Array} items Array of items to convert into control instances.
        * @return {Array} Array with control instances.
        */
-        create(items) {
+        create (items) {
           let self = this,
             settings,
-            ctrlItems = [];
+            ctrlItems = []
 
           // Non array structure, then force it into an array
           if (!Tools.isArray(items)) {
-            items = [items];
+            items = [items]
           }
 
           // Add default type to each child control
-          Tools.each(items, function(item) {
+          Tools.each(items, function (item) {
             if (item) {
             // Construct item if needed
               if (!(item instanceof Control)) {
               // Name only then convert it to an object
                 if (typeof item === 'string') {
-                  item = { type: item };
+                  item = { type: item }
                 }
 
                 // Create control instance based on input settings and default settings
-                settings = Tools.extend({}, self.settings.defaults, item);
+                settings = Tools.extend({}, self.settings.defaults, item)
                 item.type = settings.type = settings.type || item.type || self.settings.defaultType ||
-                (settings.defaults ? settings.defaults.type : null);
-                item = Factory.create(settings);
+                (settings.defaults ? settings.defaults.type : null)
+                item = Factory.create(settings)
               }
 
-              ctrlItems.push(item);
+              ctrlItems.push(item)
             }
-          });
+          })
 
-          return ctrlItems;
+          return ctrlItems
         },
 
         /**
@@ -6062,34 +6062,34 @@ jsc */
        *
        * @private
        */
-        renderNew() {
-          const self = this;
+        renderNew () {
+          const self = this
 
           // Render any new items
-          self.items().each(function(ctrl, index) {
-            let containerElm;
+          self.items().each(function (ctrl, index) {
+            let containerElm
 
-            ctrl.parent(self);
+            ctrl.parent(self)
 
             if (!ctrl.state.get('rendered')) {
-              containerElm = self.getEl('body');
+              containerElm = self.getEl('body')
 
               // Insert or append the item
               if (containerElm.hasChildNodes() && index <= containerElm.childNodes.length - 1) {
-                $(containerElm.childNodes[index]).before(ctrl.renderHtml());
+                $(containerElm.childNodes[index]).before(ctrl.renderHtml())
               } else {
-                $(containerElm).append(ctrl.renderHtml());
+                $(containerElm).append(ctrl.renderHtml())
               }
 
-              ctrl.postRender();
-              ReflowQueue.add(ctrl);
+              ctrl.postRender()
+              ReflowQueue.add(ctrl)
             }
-          });
+          })
 
-          self._layout.applyClasses(self.items().filter(':visible'));
-          self._lastRect = null;
+          self._layout.applyClasses(self.items().filter(':visible'))
+          self._lastRect = null
 
-          return self;
+          return self
         },
 
         /**
@@ -6099,8 +6099,8 @@ jsc */
        * @param {Array/tinymce.ui.Collection} items Array if controls to append.
        * @return {tinymce.ui.Container} Current container instance.
        */
-        append(items) {
-          return this.add(items).renderNew();
+        append (items) {
+          return this.add(items).renderNew()
         },
 
         /**
@@ -6110,12 +6110,12 @@ jsc */
        * @param {Array/tinymce.ui.Collection} items Array if controls to prepend.
        * @return {tinymce.ui.Container} Current container instance.
        */
-        prepend(items) {
-          const self = this;
+        prepend (items) {
+          const self = this
 
-          self.items().set(self.create(items).concat(self.items().toArray()));
+          self.items().set(self.create(items).concat(self.items().toArray()))
 
-          return self.renderNew();
+          return self.renderNew()
         },
 
         /**
@@ -6126,26 +6126,26 @@ jsc */
        * @param {Number} index Index to insert controls at.
        * @param {Boolean} [before=false] Inserts controls before the index.
        */
-        insert(items, index, before) {
+        insert (items, index, before) {
           let self = this,
             curItems,
             beforeItems,
-            afterItems;
+            afterItems
 
-          items = self.create(items);
-          curItems = self.items();
+          items = self.create(items)
+          curItems = self.items()
 
           if (!before && index < curItems.length - 1) {
-            index += 1;
+            index += 1
           }
 
           if (index >= 0 && index < curItems.length) {
-            beforeItems = curItems.slice(0, index).toArray();
-            afterItems = curItems.slice(index).toArray();
-            curItems.set(beforeItems.concat(items, afterItems));
+            beforeItems = curItems.slice(0, index).toArray()
+            afterItems = curItems.slice(index).toArray()
+            curItems.set(beforeItems.concat(items, afterItems))
           }
 
-          return self.renderNew();
+          return self.renderNew()
         },
 
         /**
@@ -6157,14 +6157,14 @@ jsc */
        * @param {Object} data JSON data object to set control values by.
        * @return {tinymce.ui.Container} Current form instance.
        */
-        fromJSON(data) {
-          const self = this;
+        fromJSON (data) {
+          const self = this
 
           for (const name in data) {
-            self.find('#' + name).value(data[name]);
+            self.find('#' + name).value(data[name])
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -6174,20 +6174,20 @@ jsc */
        * @method toJSON
        * @return {Object} JSON object with form data.
        */
-        toJSON() {
+        toJSON () {
           let self = this,
-            data = {};
+            data = {}
 
-          self.find('*').each(function(ctrl) {
+          self.find('*').each(function (ctrl) {
             let name = ctrl.name(),
-              value = ctrl.value();
+              value = ctrl.value()
 
             if (name && typeof value !== 'undefined') {
-              data[name] = value;
+              data[name] = value
             }
-          });
+          })
 
-          return data;
+          return data
         },
 
         /**
@@ -6196,13 +6196,13 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
-            role = this.settings.role;
+            role = this.settings.role
 
-          self.preRender();
-          layout.preRender(self);
+          self.preRender()
+          layout.preRender(self)
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '"' + (role ? ' role="' + this.settings.role + '"' : '') + '>' +
@@ -6210,7 +6210,7 @@ jsc */
           (self.settings.html || '') + layout.renderHtml(self) +
           '</div>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -6219,37 +6219,37 @@ jsc */
        * @method postRender
        * @return {tinymce.ui.Container} Current combobox instance.
        */
-        postRender() {
+        postRender () {
           let self = this,
-            box;
+            box
 
-          self.items().exec('postRender');
-          self._super();
+          self.items().exec('postRender')
+          self._super()
 
-          self._layout.postRender(self);
-          self.state.set('rendered', true);
+          self._layout.postRender(self)
+          self.state.set('rendered', true)
 
           if (self.settings.style) {
-            self.$el.css(self.settings.style);
+            self.$el.css(self.settings.style)
           }
 
           if (self.settings.border) {
-            box = self.borderBox;
+            box = self.borderBox
             self.$el.css({
               'border-top-width': box.top,
               'border-right-width': box.right,
               'border-bottom-width': box.bottom,
               'border-left-width': box.left
-            });
+            })
           }
 
           if (!self.parent()) {
             self.keyboardNav = new KeyboardNavigation({
               root: self
-            });
+            })
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -6260,14 +6260,14 @@ jsc */
        * @method initLayoutRect
        * @return {Object} Layout rect instance.
        */
-        initLayoutRect() {
+        initLayoutRect () {
           let self = this,
-            layoutRect = self._super();
+            layoutRect = self._super()
 
           // Recalc container size by asking layout manager
-          self._layout.recalc(self);
+          self._layout.recalc(self)
 
-          return layoutRect;
+          return layoutRect
         },
 
         /**
@@ -6276,16 +6276,16 @@ jsc */
        *
        * @method recalc
        */
-        recalc() {
+        recalc () {
           let self = this,
             rect = self._layoutRect,
-            lastRect = self._lastRect;
+            lastRect = self._lastRect
 
           if (!lastRect || lastRect.w != rect.w || lastRect.h != rect.h) {
-            self._layout.recalc(self);
-            rect = self.layoutRect();
-            self._lastRect = { x: rect.x, y: rect.y, w: rect.w, h: rect.h };
-            return true;
+            self._layout.recalc(self)
+            rect = self.layoutRect()
+            self._lastRect = { x: rect.x, y: rect.y, w: rect.w, h: rect.h }
+            return true
           }
         },
 
@@ -6300,35 +6300,35 @@ jsc */
        * @method reflow
        * @return {tinymce.ui.Container} Current container instance.
        */
-        reflow() {
-          let i;
+        reflow () {
+          let i
 
-          ReflowQueue.remove(this);
+          ReflowQueue.remove(this)
 
           if (this.visible()) {
-            Control.repaintControls = [];
-            Control.repaintControls.map = {};
+            Control.repaintControls = []
+            Control.repaintControls.map = {}
 
-            this.recalc();
-            i = Control.repaintControls.length;
+            this.recalc()
+            i = Control.repaintControls.length
 
             while (i--) {
-              Control.repaintControls[i].repaint();
+              Control.repaintControls[i].repaint()
             }
 
             // TODO: Fix me!
             if (this.settings.layout !== 'flow' && this.settings.layout !== 'stack') {
-              this.repaint();
+              this.repaint()
             }
 
-            Control.repaintControls = [];
+            Control.repaintControls = []
           }
 
-          return this;
+          return this
         }
-      });
+      })
     }
-  );
+  )
   /**
  * DragHelper.js
  *
@@ -6363,50 +6363,50 @@ jsc */
       'global!window',
       'tinymce.core.dom.DomQuery'
     ],
-    function(document, window, DomQuery) {
-      'use strict';
+    function (document, window, DomQuery) {
+      'use strict'
 
-      function getDocumentSize(doc) {
+      function getDocumentSize (doc) {
         let documentElement,
           body,
           scrollWidth,
-          clientWidth;
+          clientWidth
         let offsetWidth,
           scrollHeight,
           clientHeight,
           offsetHeight,
-          max = Math.max;
+          max = Math.max
 
-        documentElement = doc.documentElement;
-        body = doc.body;
+        documentElement = doc.documentElement
+        body = doc.body
 
-        scrollWidth = max(documentElement.scrollWidth, body.scrollWidth);
-        clientWidth = max(documentElement.clientWidth, body.clientWidth);
-        offsetWidth = max(documentElement.offsetWidth, body.offsetWidth);
+        scrollWidth = max(documentElement.scrollWidth, body.scrollWidth)
+        clientWidth = max(documentElement.clientWidth, body.clientWidth)
+        offsetWidth = max(documentElement.offsetWidth, body.offsetWidth)
 
-        scrollHeight = max(documentElement.scrollHeight, body.scrollHeight);
-        clientHeight = max(documentElement.clientHeight, body.clientHeight);
-        offsetHeight = max(documentElement.offsetHeight, body.offsetHeight);
+        scrollHeight = max(documentElement.scrollHeight, body.scrollHeight)
+        clientHeight = max(documentElement.clientHeight, body.clientHeight)
+        offsetHeight = max(documentElement.offsetHeight, body.offsetHeight)
 
         return {
           width: scrollWidth < offsetWidth ? clientWidth : scrollWidth,
           height: scrollHeight < offsetHeight ? clientHeight : scrollHeight
-        };
+        }
       }
 
-      function updateWithTouchData(e) {
+      function updateWithTouchData (e) {
         let keys,
-          i;
+          i
 
         if (e.changedTouches) {
-          keys = 'screenX screenY pageX pageY clientX clientY'.split(' ');
+          keys = 'screenX screenY pageX pageY clientX clientY'.split(' ')
           for (i = 0; i < keys.length; i++) {
-            e[keys[i]] = e.changedTouches[0][keys[i]];
+            e[keys[i]] = e.changedTouches[0][keys[i]]
           }
         }
       }
 
-      return function(id, settings) {
+      return function (id, settings) {
         let $eventOverlay,
           doc = settings.document || document,
           downButton,
@@ -6414,32 +6414,32 @@ jsc */
           stop,
           drag,
           startX,
-          startY;
+          startY
 
-        settings = settings || {};
+        settings = settings || {}
 
-        function getHandleElm() {
-          return doc.getElementById(settings.handle || id);
+        function getHandleElm () {
+          return doc.getElementById(settings.handle || id)
         }
 
-        start = function(e) {
+        start = function (e) {
           let docSize = getDocumentSize(doc),
             handleElm,
-            cursor;
+            cursor
 
-          updateWithTouchData(e);
+          updateWithTouchData(e)
 
-          e.preventDefault();
-          downButton = e.button;
-          handleElm = getHandleElm();
-          startX = e.screenX;
-          startY = e.screenY;
+          e.preventDefault()
+          downButton = e.button
+          handleElm = getHandleElm()
+          startX = e.screenX
+          startY = e.screenY
 
           // Grab cursor from handle so we can place it on overlay
           if (window.getComputedStyle) {
-            cursor = window.getComputedStyle(handleElm, null).getPropertyValue('cursor');
+            cursor = window.getComputedStyle(handleElm, null).getPropertyValue('cursor')
           } else {
-            cursor = handleElm.runtimeStyle.cursor;
+            cursor = handleElm.runtimeStyle.cursor
           }
 
           $eventOverlay = DomQuery('<div></div>').css({
@@ -6451,52 +6451,52 @@ jsc */
             zIndex: 0x7FFFFFFF,
             opacity: 0.0001,
             cursor
-          }).appendTo(doc.body);
+          }).appendTo(doc.body)
 
-          DomQuery(doc).on('mousemove touchmove', drag).on('mouseup touchend', stop);
+          DomQuery(doc).on('mousemove touchmove', drag).on('mouseup touchend', stop)
 
-          settings.start(e);
-        };
+          settings.start(e)
+        }
 
-        drag = function(e) {
-          updateWithTouchData(e);
+        drag = function (e) {
+          updateWithTouchData(e)
 
           if (e.button !== downButton) {
-            return stop(e);
+            return stop(e)
           }
 
-          e.deltaX = e.screenX - startX;
-          e.deltaY = e.screenY - startY;
+          e.deltaX = e.screenX - startX
+          e.deltaY = e.screenY - startY
 
-          e.preventDefault();
-          settings.drag(e);
-        };
+          e.preventDefault()
+          settings.drag(e)
+        }
 
-        stop = function(e) {
-          updateWithTouchData(e);
+        stop = function (e) {
+          updateWithTouchData(e)
 
-          DomQuery(doc).off('mousemove touchmove', drag).off('mouseup touchend', stop);
+          DomQuery(doc).off('mousemove touchmove', drag).off('mouseup touchend', stop)
 
-          $eventOverlay.remove();
+          $eventOverlay.remove()
 
           if (settings.stop) {
-            settings.stop(e);
+            settings.stop(e)
           }
-        };
+        }
 
         /**
        * Destroys the drag/drop helper instance.
        *
        * @method destroy
        */
-        this.destroy = function() {
-          DomQuery(getHandleElm()).off();
-        };
+        this.destroy = function () {
+          DomQuery(getHandleElm()).off()
+        }
 
-        DomQuery(getHandleElm()).on('mousedown touchstart', start);
-      };
+        DomQuery(getHandleElm()).on('mousedown touchstart', start)
+      }
     }
-  );
+  )
   /**
  * Scrollable.js
  *
@@ -6519,144 +6519,144 @@ jsc */
       'tinymce.core.dom.DomQuery',
       'tinymce.ui.DragHelper'
     ],
-    function($, DragHelper) {
-      'use strict';
+    function ($, DragHelper) {
+      'use strict'
 
       return {
-        init() {
-          const self = this;
-          self.on('repaint', self.renderScroll);
+        init () {
+          const self = this
+          self.on('repaint', self.renderScroll)
         },
 
-        renderScroll() {
+        renderScroll () {
           let self = this,
-            margin = 2;
+            margin = 2
 
-          function repaintScroll() {
+          function repaintScroll () {
             let hasScrollH,
               hasScrollV,
-              bodyElm;
+              bodyElm
 
-            function repaintAxis(axisName, posName, sizeName, contentSizeName, hasScroll, ax) {
+            function repaintAxis (axisName, posName, sizeName, contentSizeName, hasScroll, ax) {
               let containerElm,
                 scrollBarElm,
-                scrollThumbElm;
+                scrollThumbElm
               let containerSize,
                 scrollSize,
                 ratio,
-                rect;
+                rect
               let posNameLower,
-                sizeNameLower;
+                sizeNameLower
 
-              scrollBarElm = self.getEl('scroll' + axisName);
+              scrollBarElm = self.getEl('scroll' + axisName)
               if (scrollBarElm) {
-                posNameLower = posName.toLowerCase();
-                sizeNameLower = sizeName.toLowerCase();
+                posNameLower = posName.toLowerCase()
+                sizeNameLower = sizeName.toLowerCase()
 
-                $(self.getEl('absend')).css(posNameLower, self.layoutRect()[contentSizeName] - 1);
+                $(self.getEl('absend')).css(posNameLower, self.layoutRect()[contentSizeName] - 1)
 
                 if (!hasScroll) {
-                  $(scrollBarElm).css('display', 'none');
-                  return;
+                  $(scrollBarElm).css('display', 'none')
+                  return
                 }
 
-                $(scrollBarElm).css('display', 'block');
-                containerElm = self.getEl('body');
-                scrollThumbElm = self.getEl('scroll' + axisName + 't');
-                containerSize = containerElm['client' + sizeName] - (margin * 2);
-                containerSize -= hasScrollH && hasScrollV ? scrollBarElm['client' + ax] : 0;
-                scrollSize = containerElm['scroll' + sizeName];
-                ratio = containerSize / scrollSize;
+                $(scrollBarElm).css('display', 'block')
+                containerElm = self.getEl('body')
+                scrollThumbElm = self.getEl('scroll' + axisName + 't')
+                containerSize = containerElm['client' + sizeName] - (margin * 2)
+                containerSize -= hasScrollH && hasScrollV ? scrollBarElm['client' + ax] : 0
+                scrollSize = containerElm['scroll' + sizeName]
+                ratio = containerSize / scrollSize
 
-                rect = {};
-                rect[posNameLower] = containerElm['offset' + posName] + margin;
-                rect[sizeNameLower] = containerSize;
-                $(scrollBarElm).css(rect);
+                rect = {}
+                rect[posNameLower] = containerElm['offset' + posName] + margin
+                rect[sizeNameLower] = containerSize
+                $(scrollBarElm).css(rect)
 
-                rect = {};
-                rect[posNameLower] = containerElm['scroll' + posName] * ratio;
-                rect[sizeNameLower] = containerSize * ratio;
-                $(scrollThumbElm).css(rect);
+                rect = {}
+                rect[posNameLower] = containerElm['scroll' + posName] * ratio
+                rect[sizeNameLower] = containerSize * ratio
+                $(scrollThumbElm).css(rect)
               }
             }
 
-            bodyElm = self.getEl('body');
-            hasScrollH = bodyElm.scrollWidth > bodyElm.clientWidth;
-            hasScrollV = bodyElm.scrollHeight > bodyElm.clientHeight;
+            bodyElm = self.getEl('body')
+            hasScrollH = bodyElm.scrollWidth > bodyElm.clientWidth
+            hasScrollV = bodyElm.scrollHeight > bodyElm.clientHeight
 
-            repaintAxis('h', 'Left', 'Width', 'contentW', hasScrollH, 'Height');
-            repaintAxis('v', 'Top', 'Height', 'contentH', hasScrollV, 'Width');
+            repaintAxis('h', 'Left', 'Width', 'contentW', hasScrollH, 'Height')
+            repaintAxis('v', 'Top', 'Height', 'contentH', hasScrollV, 'Width')
           }
 
-          function addScroll() {
-            function addScrollAxis(axisName, posName, sizeName, deltaPosName, ax) {
+          function addScroll () {
+            function addScrollAxis (axisName, posName, sizeName, deltaPosName, ax) {
               let scrollStart,
                 axisId = self._id + '-scroll' + axisName,
-                prefix = self.classPrefix;
+                prefix = self.classPrefix
 
               $(self.getEl()).append(
                 '<div id="' + axisId + '" class="' + prefix + 'scrollbar ' + prefix + 'scrollbar-' + axisName + '">' +
               '<div id="' + axisId + 't" class="' + prefix + 'scrollbar-thumb"></div>' +
               '</div>'
-              );
+              )
 
               self.draghelper = new DragHelper(axisId + 't', {
-                start() {
-                  scrollStart = self.getEl('body')['scroll' + posName];
-                  $('#' + axisId).addClass(prefix + 'active');
+                start () {
+                  scrollStart = self.getEl('body')['scroll' + posName]
+                  $('#' + axisId).addClass(prefix + 'active')
                 },
 
-                drag(e) {
+                drag (e) {
                   let ratio,
                     hasScrollH,
                     hasScrollV,
                     containerSize,
-                    layoutRect = self.layoutRect();
+                    layoutRect = self.layoutRect()
 
-                  hasScrollH = layoutRect.contentW > layoutRect.innerW;
-                  hasScrollV = layoutRect.contentH > layoutRect.innerH;
-                  containerSize = self.getEl('body')['client' + sizeName] - (margin * 2);
-                  containerSize -= hasScrollH && hasScrollV ? self.getEl('scroll' + axisName)['client' + ax] : 0;
+                  hasScrollH = layoutRect.contentW > layoutRect.innerW
+                  hasScrollV = layoutRect.contentH > layoutRect.innerH
+                  containerSize = self.getEl('body')['client' + sizeName] - (margin * 2)
+                  containerSize -= hasScrollH && hasScrollV ? self.getEl('scroll' + axisName)['client' + ax] : 0
 
-                  ratio = containerSize / self.getEl('body')['scroll' + sizeName];
-                  self.getEl('body')['scroll' + posName] = scrollStart + (e['delta' + deltaPosName] / ratio);
+                  ratio = containerSize / self.getEl('body')['scroll' + sizeName]
+                  self.getEl('body')['scroll' + posName] = scrollStart + (e['delta' + deltaPosName] / ratio)
                 },
 
-                stop() {
-                  $('#' + axisId).removeClass(prefix + 'active');
+                stop () {
+                  $('#' + axisId).removeClass(prefix + 'active')
                 }
-              });
+              })
             }
 
-            self.classes.add('scroll');
+            self.classes.add('scroll')
 
-            addScrollAxis('v', 'Top', 'Height', 'Y', 'Width');
-            addScrollAxis('h', 'Left', 'Width', 'X', 'Height');
+            addScrollAxis('v', 'Top', 'Height', 'Y', 'Width')
+            addScrollAxis('h', 'Left', 'Width', 'X', 'Height')
           }
 
           if (self.settings.autoScroll) {
             if (!self._hasScroll) {
-              self._hasScroll = true;
-              addScroll();
+              self._hasScroll = true
+              addScroll()
 
-              self.on('wheel', function(e) {
-                const bodyEl = self.getEl('body');
+              self.on('wheel', function (e) {
+                const bodyEl = self.getEl('body')
 
-                bodyEl.scrollLeft += (e.deltaX || 0) * 10;
-                bodyEl.scrollTop += e.deltaY * 10;
+                bodyEl.scrollLeft += (e.deltaX || 0) * 10
+                bodyEl.scrollTop += e.deltaY * 10
 
-                repaintScroll();
-              });
+                repaintScroll()
+              })
 
-              $(self.getEl('body')).on('scroll', repaintScroll);
+              $(self.getEl('body')).on('scroll', repaintScroll)
             }
 
-            repaintScroll();
+            repaintScroll()
           }
         }
-      };
+      }
     }
-  );
+  )
   /**
  * Panel.js
  *
@@ -6681,8 +6681,8 @@ jsc */
       'tinymce.ui.Container',
       'tinymce.ui.Scrollable'
     ],
-    function(Container, Scrollable) {
-      'use strict';
+    function (Container, Scrollable) {
+      'use strict'
 
       return Container.extend({
         Defaults: {
@@ -6698,26 +6698,26 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
-            innerHtml = self.settings.html;
+            innerHtml = self.settings.html
 
-          self.preRender();
-          layout.preRender(self);
+          self.preRender()
+          layout.preRender(self)
 
           if (typeof innerHtml === 'undefined') {
             innerHtml = (
               '<div id="' + self._id + '-body" class="' + self.bodyClasses + '">' +
             layout.renderHtml(self) +
             '</div>'
-            );
+            )
           } else {
             if (typeof innerHtml === 'function') {
-              innerHtml = innerHtml.call(self);
+              innerHtml = innerHtml.call(self)
             }
 
-            self._hasBody = false;
+            self._hasBody = false
           }
 
           return (
@@ -6725,11 +6725,11 @@ jsc */
           (self._preBodyHtml || '') +
           innerHtml +
           '</div>'
-          );
+          )
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Resizable.js
@@ -6751,8 +6751,8 @@ jsc */
     [
       'tinymce.ui.DomUtils'
     ],
-    function(DomUtils) {
-      'use strict';
+    function (DomUtils) {
+      'use strict'
 
       return {
       /**
@@ -6760,10 +6760,10 @@ jsc */
        *
        * @method resizeToContent
        */
-        resizeToContent() {
-          this._layoutRect.autoResize = true;
-          this._lastRect = null;
-          this.reflow();
+        resizeToContent () {
+          this._layoutRect.autoResize = true
+          this._lastRect = null
+          this.reflow()
         },
 
         /**
@@ -6774,17 +6774,17 @@ jsc */
        * @param {Number} h Control height.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        resizeTo(w, h) {
+        resizeTo (w, h) {
         // TODO: Fix hack
           if (w <= 1 || h <= 1) {
-            const rect = DomUtils.getWindowSize();
+            const rect = DomUtils.getWindowSize()
 
-            w = w <= 1 ? w * rect.w : w;
-            h = h <= 1 ? h * rect.h : h;
+            w = w <= 1 ? w * rect.w : w
+            h = h <= 1 ? h * rect.h : h
           }
 
-          this._layoutRect.autoResize = false;
-          return this.layoutRect({ minW: w, minH: h, w, h }).reflow();
+          this._layoutRect.autoResize = false
+          return this.layoutRect({ minW: w, minH: h, w, h }).reflow()
         },
 
         /**
@@ -6795,15 +6795,15 @@ jsc */
        * @param {Number} dh Relative control height.
        * @return {tinymce.ui.Control} Current control instance.
        */
-        resizeBy(dw, dh) {
+        resizeBy (dw, dh) {
           let self = this,
-            rect = self.layoutRect();
+            rect = self.layoutRect()
 
-          return self.resizeTo(rect.w + dw, rect.h + dh);
+          return self.resizeTo(rect.w + dw, rect.h + dh)
         }
-      };
+      }
     }
-  );
+  )
   /**
  * FloatPanel.js
  *
@@ -6835,96 +6835,96 @@ jsc */
       'tinymce.ui.Panel',
       'tinymce.ui.Resizable'
     ],
-    function(document, window, DomQuery, Delay, DomUtils, Movable, Panel, Resizable) {
-      'use strict';
+    function (document, window, DomQuery, Delay, DomUtils, Movable, Panel, Resizable) {
+      'use strict'
 
       let documentClickHandler,
         documentScrollHandler,
         windowResizeHandler,
-        visiblePanels = [];
+        visiblePanels = []
       let zOrder = [],
-        hasModal;
+        hasModal
 
-      function isChildOf(ctrl, parent) {
+      function isChildOf (ctrl, parent) {
         while (ctrl) {
           if (ctrl == parent) {
-            return true;
+            return true
           }
 
-          ctrl = ctrl.parent();
+          ctrl = ctrl.parent()
         }
       }
 
-      function skipOrHidePanels(e) {
+      function skipOrHidePanels (e) {
       // Hide any float panel when a click/focus out is out side that float panel and the
       // float panels direct parent for example a click on a menu button
-        let i = visiblePanels.length;
+        let i = visiblePanels.length
 
         while (i--) {
           let panel = visiblePanels[i],
-            clickCtrl = panel.getParentCtrl(e.target);
+            clickCtrl = panel.getParentCtrl(e.target)
 
           if (panel.settings.autohide) {
             if (clickCtrl) {
               if (isChildOf(clickCtrl, panel) || panel.parent() === clickCtrl) {
-                continue;
+                continue
               }
             }
 
-            e = panel.fire('autohide', { target: e.target });
+            e = panel.fire('autohide', { target: e.target })
             if (!e.isDefaultPrevented()) {
-              panel.hide();
+              panel.hide()
             }
           }
         }
       }
 
-      function bindDocumentClickHandler() {
+      function bindDocumentClickHandler () {
         if (!documentClickHandler) {
-          documentClickHandler = function(e) {
+          documentClickHandler = function (e) {
           // Gecko fires click event and in the wrong order on Mac so lets normalize
             if (e.button == 2) {
-              return;
+              return
             }
 
-            skipOrHidePanels(e);
-          };
+            skipOrHidePanels(e)
+          }
 
-          DomQuery(document).on('click touchstart', documentClickHandler);
+          DomQuery(document).on('click touchstart', documentClickHandler)
         }
       }
 
-      function bindDocumentScrollHandler() {
+      function bindDocumentScrollHandler () {
         if (!documentScrollHandler) {
-          documentScrollHandler = function() {
-            let i;
+          documentScrollHandler = function () {
+            let i
 
-            i = visiblePanels.length;
+            i = visiblePanels.length
             while (i--) {
-              repositionPanel(visiblePanels[i]);
+              repositionPanel(visiblePanels[i])
             }
-          };
+          }
 
-          DomQuery(window).on('scroll', documentScrollHandler);
+          DomQuery(window).on('scroll', documentScrollHandler)
         }
       }
 
-      function bindWindowResizeHandler() {
+      function bindWindowResizeHandler () {
         if (!windowResizeHandler) {
           let docElm = document.documentElement,
             clientWidth = docElm.clientWidth,
-            clientHeight = docElm.clientHeight;
+            clientHeight = docElm.clientHeight
 
-          windowResizeHandler = function() {
+          windowResizeHandler = function () {
           // Workaround for #7065 IE 7 fires resize events event though the window wasn't resized
             if (!document.all || clientWidth != docElm.clientWidth || clientHeight != docElm.clientHeight) {
-              clientWidth = docElm.clientWidth;
-              clientHeight = docElm.clientHeight;
-              FloatPanel.hideAll();
+              clientWidth = docElm.clientWidth
+              clientHeight = docElm.clientHeight
+              FloatPanel.hideAll()
             }
-          };
+          }
 
-          DomQuery(window).on('resize', windowResizeHandler);
+          DomQuery(window).on('resize', windowResizeHandler)
         }
       }
 
@@ -6932,19 +6932,19 @@ jsc */
      * Repositions the panel to the top of page if the panel is outside of the visual viewport. It will
      * also reposition all child panels of the current panel.
      */
-      function repositionPanel(panel) {
-        const scrollY = DomUtils.getViewPort().y;
+      function repositionPanel (panel) {
+        const scrollY = DomUtils.getViewPort().y
 
-        function toggleFixedChildPanels(fixed, deltaY) {
-          let parent;
+        function toggleFixedChildPanels (fixed, deltaY) {
+          let parent
 
           for (let i = 0; i < visiblePanels.length; i++) {
             if (visiblePanels[i] != panel) {
-              parent = visiblePanels[i].parent();
+              parent = visiblePanels[i].parent()
 
               while (parent && (parent = parent.parent())) {
                 if (parent == panel) {
-                  visiblePanels[i].fixed(fixed).moveBy(0, deltaY).repaint();
+                  visiblePanels[i].fixed(fixed).moveBy(0, deltaY).repaint()
                 }
               }
             }
@@ -6953,34 +6953,34 @@ jsc */
 
         if (panel.settings.autofix) {
           if (!panel.state.get('fixed')) {
-            panel._autoFixY = panel.layoutRect().y;
+            panel._autoFixY = panel.layoutRect().y
 
             if (panel._autoFixY < scrollY) {
-              panel.fixed(true).layoutRect({ y: 0 }).repaint();
-              toggleFixedChildPanels(true, scrollY - panel._autoFixY);
+              panel.fixed(true).layoutRect({ y: 0 }).repaint()
+              toggleFixedChildPanels(true, scrollY - panel._autoFixY)
             }
           } else {
             if (panel._autoFixY > scrollY) {
-              panel.fixed(false).layoutRect({ y: panel._autoFixY }).repaint();
-              toggleFixedChildPanels(false, panel._autoFixY - scrollY);
+              panel.fixed(false).layoutRect({ y: panel._autoFixY }).repaint()
+              toggleFixedChildPanels(false, panel._autoFixY - scrollY)
             }
           }
         }
       }
 
-      function addRemove(add, ctrl) {
+      function addRemove (add, ctrl) {
         let i,
           zIndex = FloatPanel.zIndex || 0xFFFF,
-          topModal;
+          topModal
 
         if (add) {
-          zOrder.push(ctrl);
+          zOrder.push(ctrl)
         } else {
-          i = zOrder.length;
+          i = zOrder.length
 
           while (i--) {
             if (zOrder[i] === ctrl) {
-              zOrder.splice(i, 1);
+              zOrder.splice(i, 1)
             }
           }
         }
@@ -6988,26 +6988,26 @@ jsc */
         if (zOrder.length) {
           for (i = 0; i < zOrder.length; i++) {
             if (zOrder[i].modal) {
-              zIndex++;
-              topModal = zOrder[i];
+              zIndex++
+              topModal = zOrder[i]
             }
 
-            zOrder[i].getEl().style.zIndex = zIndex;
-            zOrder[i].zIndex = zIndex;
-            zIndex++;
+            zOrder[i].getEl().style.zIndex = zIndex
+            zOrder[i].zIndex = zIndex
+            zIndex++
           }
         }
 
-        const modalBlockEl = DomQuery('#' + ctrl.classPrefix + 'modal-block', ctrl.getContainerElm())[0];
+        const modalBlockEl = DomQuery('#' + ctrl.classPrefix + 'modal-block', ctrl.getContainerElm())[0]
 
         if (topModal) {
-          DomQuery(modalBlockEl).css('z-index', topModal.zIndex - 1);
+          DomQuery(modalBlockEl).css('z-index', topModal.zIndex - 1)
         } else if (modalBlockEl) {
-          modalBlockEl.parentNode.removeChild(modalBlockEl);
-          hasModal = false;
+          modalBlockEl.parentNode.removeChild(modalBlockEl)
+          hasModal = false
         }
 
-        FloatPanel.currentZIndex = zIndex;
+        FloatPanel.currentZIndex = zIndex
       }
 
       var FloatPanel = Panel.extend({
@@ -7020,92 +7020,92 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Boolean} autohide Automatically hide the panel.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          self._eventsRoot = self;
+          self._super(settings)
+          self._eventsRoot = self
 
-          self.classes.add('floatpanel');
+          self.classes.add('floatpanel')
 
           // Hide floatpanes on click out side the root button
           if (settings.autohide) {
-            bindDocumentClickHandler();
-            bindWindowResizeHandler();
-            visiblePanels.push(self);
+            bindDocumentClickHandler()
+            bindWindowResizeHandler()
+            visiblePanels.push(self)
           }
 
           if (settings.autofix) {
-            bindDocumentScrollHandler();
+            bindDocumentScrollHandler()
 
-            self.on('move', function() {
-              repositionPanel(this);
-            });
+            self.on('move', function () {
+              repositionPanel(this)
+            })
           }
 
-          self.on('postrender show', function(e) {
+          self.on('postrender show', function (e) {
             if (e.control == self) {
               let $modalBlockEl,
-                prefix = self.classPrefix;
+                prefix = self.classPrefix
 
               if (self.modal && !hasModal) {
-                $modalBlockEl = DomQuery('#' + prefix + 'modal-block', self.getContainerElm());
+                $modalBlockEl = DomQuery('#' + prefix + 'modal-block', self.getContainerElm())
                 if (!$modalBlockEl[0]) {
                   $modalBlockEl = DomQuery(
                     '<div id="' + prefix + 'modal-block" class="' + prefix + 'reset ' + prefix + 'fade"></div>'
-                  ).appendTo(self.getContainerElm());
+                  ).appendTo(self.getContainerElm())
                 }
 
-                Delay.setTimeout(function() {
-                  $modalBlockEl.addClass(prefix + 'in');
-                  DomQuery(self.getEl()).addClass(prefix + 'in');
-                });
+                Delay.setTimeout(function () {
+                  $modalBlockEl.addClass(prefix + 'in')
+                  DomQuery(self.getEl()).addClass(prefix + 'in')
+                })
 
-                hasModal = true;
+                hasModal = true
               }
 
-              addRemove(true, self);
+              addRemove(true, self)
             }
-          });
+          })
 
-          self.on('show', function() {
-            self.parents().each(function(ctrl) {
+          self.on('show', function () {
+            self.parents().each(function (ctrl) {
               if (ctrl.state.get('fixed')) {
-                self.fixed(true);
-                return false;
+                self.fixed(true)
+                return false
               }
-            });
-          });
+            })
+          })
 
           if (settings.popover) {
-            self._preBodyHtml = '<div class="' + self.classPrefix + 'arrow"></div>';
-            self.classes.add('popover').add('bottom').add(self.isRtl() ? 'end' : 'start');
+            self._preBodyHtml = '<div class="' + self.classPrefix + 'arrow"></div>'
+            self.classes.add('popover').add('bottom').add(self.isRtl() ? 'end' : 'start')
           }
 
-          self.aria('label', settings.ariaLabel);
-          self.aria('labelledby', self._id);
-          self.aria('describedby', self.describedBy || self._id + '-none');
+          self.aria('label', settings.ariaLabel)
+          self.aria('labelledby', self._id)
+          self.aria('describedby', self.describedBy || self._id + '-none')
         },
 
-        fixed(state) {
-          const self = this;
+        fixed (state) {
+          const self = this
 
           if (self.state.get('fixed') != state) {
             if (self.state.get('rendered')) {
-              const viewport = DomUtils.getViewPort();
+              const viewport = DomUtils.getViewPort()
 
               if (state) {
-                self.layoutRect().y -= viewport.y;
+                self.layoutRect().y -= viewport.y
               } else {
-                self.layoutRect().y += viewport.y;
+                self.layoutRect().y += viewport.y
               }
             }
 
-            self.classes.toggle('fixed', state);
-            self.state.set('fixed', state);
+            self.classes.toggle('fixed', state)
+            self.state.set('fixed', state)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -7114,23 +7114,23 @@ jsc */
        * @method show
        * @return {tinymce.ui.FloatPanel} Current floatpanel instance.
        */
-        show() {
+        show () {
           let self = this,
             i,
-            state = self._super();
+            state = self._super()
 
-          i = visiblePanels.length;
+          i = visiblePanels.length
           while (i--) {
             if (visiblePanels[i] === self) {
-              break;
+              break
             }
           }
 
           if (i === -1) {
-            visiblePanels.push(self);
+            visiblePanels.push(self)
           }
 
-          return state;
+          return state
         },
 
         /**
@@ -7139,11 +7139,11 @@ jsc */
        * @method hide
        * @return {tinymce.ui.FloatPanel} Current floatpanel instance.
        */
-        hide() {
-          removeVisiblePanel(this);
-          addRemove(false, this);
+        hide () {
+          removeVisiblePanel(this)
+          addRemove(false, this)
 
-          return this._super();
+          return this._super()
         },
 
         /**
@@ -7152,8 +7152,8 @@ jsc */
        *
        * @method hideAll
        */
-        hideAll() {
-          FloatPanel.hideAll();
+        hideAll () {
+          FloatPanel.hideAll()
         },
 
         /**
@@ -7161,15 +7161,15 @@ jsc */
        *
        * @method close
        */
-        close() {
-          const self = this;
+        close () {
+          const self = this
 
           if (!self.fire('close').isDefaultPrevented()) {
-            self.remove();
-            addRemove(false, self);
+            self.remove()
+            addRemove(false, self)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -7177,21 +7177,21 @@ jsc */
        *
        * @method remove
        */
-        remove() {
-          removeVisiblePanel(this);
-          this._super();
+        remove () {
+          removeVisiblePanel(this)
+          this._super()
         },
 
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
           if (self.settings.bodyRole) {
-            this.getEl('body').setAttribute('role', self.settings.bodyRole);
+            this.getEl('body').setAttribute('role', self.settings.bodyRole)
           }
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
 
       /**
      * Hide all visible float panels with he autohide setting enabled. This is for
@@ -7200,40 +7200,40 @@ jsc */
      * @static
      * @method hideAll
      */
-      FloatPanel.hideAll = function() {
-        let i = visiblePanels.length;
+      FloatPanel.hideAll = function () {
+        let i = visiblePanels.length
 
         while (i--) {
-          const panel = visiblePanels[i];
+          const panel = visiblePanels[i]
 
           if (panel && panel.settings.autohide) {
-            panel.hide();
-            visiblePanels.splice(i, 1);
-          }
-        }
-      };
-
-      function removeVisiblePanel(panel) {
-        let i;
-
-        i = visiblePanels.length;
-        while (i--) {
-          if (visiblePanels[i] === panel) {
-            visiblePanels.splice(i, 1);
-          }
-        }
-
-        i = zOrder.length;
-        while (i--) {
-          if (zOrder[i] === panel) {
-            zOrder.splice(i, 1);
+            panel.hide()
+            visiblePanels.splice(i, 1)
           }
         }
       }
 
-      return FloatPanel;
+      function removeVisiblePanel (panel) {
+        let i
+
+        i = visiblePanels.length
+        while (i--) {
+          if (visiblePanels[i] === panel) {
+            visiblePanels.splice(i, 1)
+          }
+        }
+
+        i = zOrder.length
+        while (i--) {
+          if (zOrder[i] === panel) {
+            zOrder.splice(i, 1)
+          }
+        }
+      }
+
+      return FloatPanel
     }
-  );
+  )
 
   /**
  * Inline.js
@@ -7260,64 +7260,64 @@ jsc */
       'tinymce.themes.modern.ui.Toolbar',
       'tinymce.ui.FloatPanel'
     ],
-    function(document, DOMUtils, Factory, Events, Settings, A11y, ContextToolbars, Menubar, SkinLoaded, Toolbar, FloatPanel) {
-      const render = function(editor, theme, args) {
+    function (document, DOMUtils, Factory, Events, Settings, A11y, ContextToolbars, Menubar, SkinLoaded, Toolbar, FloatPanel) {
+      const render = function (editor, theme, args) {
         let panel,
-          inlineToolbarContainer;
-        const DOM = DOMUtils.DOM;
+          inlineToolbarContainer
+        const DOM = DOMUtils.DOM
 
-        const fixedToolbarContainer = Settings.getFixedToolbarContainer(editor);
+        const fixedToolbarContainer = Settings.getFixedToolbarContainer(editor)
         if (fixedToolbarContainer) {
-          inlineToolbarContainer = DOM.select(fixedToolbarContainer)[0];
+          inlineToolbarContainer = DOM.select(fixedToolbarContainer)[0]
         }
 
-        const reposition = function() {
+        const reposition = function () {
           if (panel && panel.moveRel && panel.visible() && !panel._fixed) {
           // TODO: This is kind of ugly and doesn't handle multiple scrollable elements
             let scrollContainer = editor.selection.getScrollContainer(),
-              body = editor.getBody();
+              body = editor.getBody()
             let deltaX = 0,
-              deltaY = 0;
+              deltaY = 0
 
             if (scrollContainer) {
               let bodyPos = DOM.getPos(body),
-                scrollContainerPos = DOM.getPos(scrollContainer);
+                scrollContainerPos = DOM.getPos(scrollContainer)
 
-              deltaX = Math.max(0, scrollContainerPos.x - bodyPos.x);
-              deltaY = Math.max(0, scrollContainerPos.y - bodyPos.y);
+              deltaX = Math.max(0, scrollContainerPos.x - bodyPos.x)
+              deltaY = Math.max(0, scrollContainerPos.y - bodyPos.y)
             }
 
-            panel.fixed(false).moveRel(body, editor.rtl ? ['tr-br', 'br-tr'] : ['tl-bl', 'bl-tl', 'tr-br']).moveBy(deltaX, deltaY);
+            panel.fixed(false).moveRel(body, editor.rtl ? ['tr-br', 'br-tr'] : ['tl-bl', 'bl-tl', 'tr-br']).moveBy(deltaX, deltaY)
           }
-        };
+        }
 
-        const show = function() {
+        const show = function () {
           if (panel) {
-            panel.show();
-            reposition();
-            DOM.addClass(editor.getBody(), 'mce-edit-focus');
+            panel.show()
+            reposition()
+            DOM.addClass(editor.getBody(), 'mce-edit-focus')
           }
-        };
+        }
 
-        const hide = function() {
+        const hide = function () {
           if (panel) {
           // We require two events as the inline float panel based toolbar does not have autohide=true
-            panel.hide();
+            panel.hide()
 
             // All other autohidden float panels will be closed below.
-            FloatPanel.hideAll();
+            FloatPanel.hideAll()
 
-            DOM.removeClass(editor.getBody(), 'mce-edit-focus');
+            DOM.removeClass(editor.getBody(), 'mce-edit-focus')
           }
-        };
+        }
 
-        const render = function() {
+        const render = function () {
           if (panel) {
             if (!panel.visible()) {
-              show();
+              show()
             }
 
-            return;
+            return
           }
 
           // Render a plain panel inside the inlineToolbarContainer if it's defined
@@ -7336,7 +7336,7 @@ jsc */
               Settings.hasMenubar(editor) === false ? null : { type: 'menubar', border: '0 0 1 0', items: Menubar.createMenuButtons(editor) },
               Toolbar.createToolbars(editor, Settings.getToolbarSize(editor))
             ]
-          });
+          })
 
           // Add statusbar
           /* if (settings.statusbar !== false) {
@@ -7345,54 +7345,54 @@ jsc */
           ]});
         } */
 
-          Events.fireBeforeRenderUI(editor);
-          panel.renderTo(inlineToolbarContainer || document.body).reflow();
+          Events.fireBeforeRenderUI(editor)
+          panel.renderTo(inlineToolbarContainer || document.body).reflow()
 
-          A11y.addKeys(editor, panel);
-          show();
-          ContextToolbars.addContextualToolbars(editor);
+          A11y.addKeys(editor, panel)
+          show()
+          ContextToolbars.addContextualToolbars(editor)
 
-          editor.on('nodeChange', reposition);
-          editor.on('activate', show);
-          editor.on('deactivate', hide);
+          editor.on('nodeChange', reposition)
+          editor.on('activate', show)
+          editor.on('deactivate', hide)
 
-          editor.nodeChanged();
-        };
+          editor.nodeChanged()
+        }
 
-        editor.settings.content_editable = true;
+        editor.settings.content_editable = true
 
-        editor.on('focus', function() {
+        editor.on('focus', function () {
         // Render only when the CSS file has been loaded
           if (args.skinUiCss) {
-            DOM.styleSheetLoader.load(args.skinUiCss, render, render);
+            DOM.styleSheetLoader.load(args.skinUiCss, render, render)
           } else {
-            render();
+            render()
           }
-        });
+        })
 
-        editor.on('blur hide', hide);
+        editor.on('blur hide', hide)
 
         // Remove the panel when the editor is removed
-        editor.on('remove', function() {
+        editor.on('remove', function () {
           if (panel) {
-            panel.remove();
-            panel = null;
+            panel.remove()
+            panel = null
           }
-        });
+        })
 
         // Preload skin css
         if (args.skinUiCss) {
-          DOM.styleSheetLoader.load(args.skinUiCss, SkinLoaded.fireSkinLoaded(editor));
+          DOM.styleSheetLoader.load(args.skinUiCss, SkinLoaded.fireSkinLoaded(editor))
         }
 
-        return {};
-      };
+        return {}
+      }
 
       return {
         render
-      };
+      }
     }
-  );
+  )
 
   /**
  * Throbber.js
@@ -7417,8 +7417,8 @@ jsc */
       'tinymce.ui.Control',
       'tinymce.core.util.Delay'
     ],
-    function($, Control, Delay) {
-      'use strict';
+    function ($, Control, Delay) {
+      'use strict'
 
       /**
      * Constructs a new throbber.
@@ -7427,11 +7427,11 @@ jsc */
      * @param {Element} elm DOM Html element to display throbber in.
      * @param {Boolean} inline Optional true/false state if the throbber should be appended to end of element for infinite scroll.
      */
-      return function(elm, inline) {
+      return function (elm, inline) {
         let self = this,
           state,
           classPrefix = Control.classPrefix,
-          timer;
+          timer
 
         /**
        * Shows the throbber.
@@ -7441,31 +7441,31 @@ jsc */
        * @param {function} [callback] Optional callback to execute when the throbber is shown.
        * @return {tinymce.ui.Throbber} Current throbber instance.
        */
-        self.show = function(time, callback) {
-          function render() {
+        self.show = function (time, callback) {
+          function render () {
             if (state) {
               $(elm).append(
                 '<div class="' + classPrefix + 'throbber' + (inline ? ' ' + classPrefix + 'throbber-inline' : '') + '"></div>'
-              );
+              )
 
               if (callback) {
-                callback();
+                callback()
               }
             }
           }
 
-          self.hide();
+          self.hide()
 
-          state = true;
+          state = true
 
           if (time) {
-            timer = Delay.setTimeout(render, time);
+            timer = Delay.setTimeout(render, time)
           } else {
-            render();
+            render()
           }
 
-          return self;
-        };
+          return self
+        }
 
         /**
        * Hides the throbber.
@@ -7473,22 +7473,22 @@ jsc */
        * @method hide
        * @return {tinymce.ui.Throbber} Current throbber instance.
        */
-        self.hide = function() {
-          const child = elm.lastChild;
+        self.hide = function () {
+          const child = elm.lastChild
 
-          Delay.clearTimeout(timer);
+          Delay.clearTimeout(timer)
 
           if (child && child.className.indexOf('throbber') != -1) {
-            child.parentNode.removeChild(child);
+            child.parentNode.removeChild(child)
           }
 
-          state = false;
+          state = false
 
-          return self;
-        };
-      };
+          return self
+        }
+      }
     }
-  );
+  )
 
   /**
  * ProgressState.js
@@ -7505,26 +7505,26 @@ jsc */
     [
       'tinymce.ui.Throbber'
     ],
-    function(Throbber) {
-      const setup = function(editor, theme) {
-        let throbber;
+    function (Throbber) {
+      const setup = function (editor, theme) {
+        let throbber
 
-        editor.on('ProgressState', function(e) {
-          throbber = throbber || new Throbber(theme.panel.getEl('body'));
+        editor.on('ProgressState', function (e) {
+          throbber = throbber || new Throbber(theme.panel.getEl('body'))
 
           if (e.state) {
-            throbber.show(e.time);
+            throbber.show(e.time)
           } else {
-            throbber.hide();
+            throbber.hide()
           }
-        });
-      };
+        })
+      }
 
       return {
         setup
-      };
+      }
     }
-  );
+  )
 
   /**
  * Render.js
@@ -7545,27 +7545,27 @@ jsc */
       'tinymce.themes.modern.modes.Inline',
       'tinymce.themes.modern.ui.ProgressState'
     ],
-    function(EditorManager, Settings, Iframe, Inline, ProgressState) {
-      const renderUI = function(editor, theme, args) {
-        const skinUrl = Settings.getSkinUrl(editor);
+    function (EditorManager, Settings, Iframe, Inline, ProgressState) {
+      const renderUI = function (editor, theme, args) {
+        const skinUrl = Settings.getSkinUrl(editor)
 
         if (skinUrl) {
-          args.skinUiCss = skinUrl + '/skin.min.css';
-          editor.contentCSS.push(skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css');
+          args.skinUiCss = skinUrl + '/skin.min.css'
+          editor.contentCSS.push(skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css')
         }
 
-        ProgressState.setup(editor, theme);
+        ProgressState.setup(editor, theme)
 
-        return Settings.isInline(editor) ? Inline.render(editor, theme, args) : Iframe.render(editor, theme, args);
-      };
+        return Settings.isInline(editor) ? Inline.render(editor, theme, args) : Iframe.render(editor, theme, args)
+      }
 
       return {
         renderUI
-      };
+      }
     }
-  );
+  )
 
-  defineGlobal('global!setTimeout', setTimeout);
+  defineGlobal('global!setTimeout', setTimeout)
   /**
  * Tooltip.js
  *
@@ -7590,7 +7590,7 @@ jsc */
       'tinymce.ui.Control',
       'tinymce.ui.Movable'
     ],
-    function(Control, Movable) {
+    function (Control, Movable) {
       return Control.extend({
         Mixins: [Movable],
 
@@ -7604,26 +7604,26 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '" role="presentation">' +
           '<div class="' + prefix + 'tooltip-arrow"></div>' +
           '<div class="' + prefix + 'tooltip-inner">' + self.encode(self.state.get('text')) + '</div>' +
           '</div>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:text', function(e) {
-            self.getEl().lastChild.innerHTML = self.encode(e.value);
-          });
+          self.state.on('change:text', function (e) {
+            self.getEl().lastChild.innerHTML = self.encode(e.value)
+          })
 
-          return self._super();
+          return self._super()
         },
 
         /**
@@ -7631,21 +7631,21 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             style,
-            rect;
+            rect
 
-          style = self.getEl().style;
-          rect = self._layoutRect;
+          style = self.getEl().style
+          rect = self._layoutRect
 
-          style.left = rect.x + 'px';
-          style.top = rect.y + 'px';
-          style.zIndex = 0xFFFF + 0xFFFF;
+          style.left = rect.x + 'px'
+          style.top = rect.y + 'px'
+          style.zIndex = 0xFFFF + 0xFFFF
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Widget.js
  *
@@ -7668,10 +7668,10 @@ jsc */
       'tinymce.ui.Control',
       'tinymce.ui.Tooltip'
     ],
-    function(Control, Tooltip) {
-      'use strict';
+    function (Control, Tooltip) {
+      'use strict'
 
-      let tooltip;
+      let tooltip
 
       var Widget = Control.extend({
       /**
@@ -7683,36 +7683,36 @@ jsc */
        * @setting {Boolean} autofocus True if the control should be focused when rendered.
        * @setting {String} text Text to display inside widget.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          settings = self.settings;
-          self.canFocus = true;
+          self._super(settings)
+          settings = self.settings
+          self.canFocus = true
 
           if (settings.tooltip && Widget.tooltips !== false) {
-            self.on('mouseenter', function(e) {
-              const tooltip = self.tooltip().moveTo(-0xFFFF);
+            self.on('mouseenter', function (e) {
+              const tooltip = self.tooltip().moveTo(-0xFFFF)
 
               if (e.control == self) {
-                const rel = tooltip.text(settings.tooltip).show().testMoveRel(self.getEl(), ['bc-tc', 'bc-tl', 'bc-tr']);
+                const rel = tooltip.text(settings.tooltip).show().testMoveRel(self.getEl(), ['bc-tc', 'bc-tl', 'bc-tr'])
 
-                tooltip.classes.toggle('tooltip-n', rel == 'bc-tc');
-                tooltip.classes.toggle('tooltip-nw', rel == 'bc-tl');
-                tooltip.classes.toggle('tooltip-ne', rel == 'bc-tr');
+                tooltip.classes.toggle('tooltip-n', rel == 'bc-tc')
+                tooltip.classes.toggle('tooltip-nw', rel == 'bc-tl')
+                tooltip.classes.toggle('tooltip-ne', rel == 'bc-tr')
 
-                tooltip.moveRel(self.getEl(), rel);
+                tooltip.moveRel(self.getEl(), rel)
               } else {
-                tooltip.hide();
+                tooltip.hide()
               }
-            });
+            })
 
-            self.on('mouseleave mousedown click', function() {
-              self.tooltip().hide();
-            });
+            self.on('mouseleave mousedown click', function () {
+              self.tooltip().hide()
+            })
           }
 
-          self.aria('label', settings.ariaLabel || settings.tooltip);
+          self.aria('label', settings.ariaLabel || settings.tooltip)
         },
 
         /**
@@ -7721,13 +7721,13 @@ jsc */
        * @method tooltip
        * @return {tinymce.ui.Tooltip} Tooltip instance.
        */
-        tooltip() {
+        tooltip () {
           if (!tooltip) {
-            tooltip = new Tooltip({ type: 'tooltip' });
-            tooltip.renderTo();
+            tooltip = new Tooltip({ type: 'tooltip' })
+            tooltip.renderTo()
           }
 
-          return tooltip;
+          return tooltip
         },
 
         /**
@@ -7735,52 +7735,52 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
+        postRender () {
           let self = this,
-            settings = self.settings;
+            settings = self.settings
 
-          self._super();
+          self._super()
 
           if (!self.parent() && (settings.width || settings.height)) {
-            self.initLayoutRect();
-            self.repaint();
+            self.initLayoutRect()
+            self.repaint()
           }
 
           if (settings.autofocus) {
-            self.focus();
+            self.focus()
           }
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          function disable(state) {
-            self.aria('disabled', state);
-            self.classes.toggle('disabled', state);
+          function disable (state) {
+            self.aria('disabled', state)
+            self.classes.toggle('disabled', state)
           }
 
-          function active(state) {
-            self.aria('pressed', state);
-            self.classes.toggle('active', state);
+          function active (state) {
+            self.aria('pressed', state)
+            self.classes.toggle('active', state)
           }
 
-          self.state.on('change:disabled', function(e) {
-            disable(e.value);
-          });
+          self.state.on('change:disabled', function (e) {
+            disable(e.value)
+          })
 
-          self.state.on('change:active', function(e) {
-            active(e.value);
-          });
+          self.state.on('change:active', function (e) {
+            active(e.value)
+          })
 
           if (self.state.get('disabled')) {
-            disable(true);
+            disable(true)
           }
 
           if (self.state.get('active')) {
-            active(true);
+            active(true)
           }
 
-          return self._super();
+          return self._super()
         },
 
         /**
@@ -7789,19 +7789,19 @@ jsc */
        * @method remove
        * @return {tinymce.ui.Control} Current control instance.
        */
-        remove() {
-          this._super();
+        remove () {
+          this._super()
 
           if (tooltip) {
-            tooltip.remove();
-            tooltip = null;
+            tooltip.remove()
+            tooltip = null
           }
         }
-      });
+      })
 
-      return Widget;
+      return Widget
     }
-  );
+  )
 
   /**
  * Progress.js
@@ -7825,31 +7825,31 @@ jsc */
     [
       'tinymce.ui.Widget'
     ],
-    function(Widget) {
-      'use strict';
+    function (Widget) {
+      'use strict'
 
       return Widget.extend({
         Defaults: {
           value: 0
         },
 
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          self.classes.add('progress');
+          self._super(settings)
+          self.classes.add('progress')
 
           if (!self.settings.filter) {
-            self.settings.filter = function(value) {
-              return Math.round(value);
-            };
+            self.settings.filter = function (value) {
+              return Math.round(value)
+            }
           }
         },
 
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
-            prefix = this.classPrefix;
+            prefix = this.classPrefix
 
           return (
             '<div id="' + id + '" class="' + self.classes + '">' +
@@ -7858,38 +7858,38 @@ jsc */
           '</div>' +
           '<div class="' + prefix + 'text">0%</div>' +
           '</div>'
-          );
+          )
         },
 
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self._super();
-          self.value(self.settings.value);
+          self._super()
+          self.value(self.settings.value)
 
-          return self;
+          return self
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          function setValue(value) {
-            value = self.settings.filter(value);
-            self.getEl().lastChild.innerHTML = value + '%';
-            self.getEl().firstChild.firstChild.style.width = value + '%';
+          function setValue (value) {
+            value = self.settings.filter(value)
+            self.getEl().lastChild.innerHTML = value + '%'
+            self.getEl().firstChild.firstChild.style.width = value + '%'
           }
 
-          self.state.on('change:value', function(e) {
-            setValue(e.value);
-          });
+          self.state.on('change:value', function (e) {
+            setValue(e.value)
+          })
 
-          setValue(self.state.get('value'));
+          setValue(self.state.get('value'))
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Notification.js
  *
@@ -7916,10 +7916,10 @@ jsc */
       'tinymce.ui.Progress',
       'tinymce.core.util.Delay'
     ],
-    function(Control, Movable, Progress, Delay) {
-      const updateLiveRegion = function(ctx, text) {
-        ctx.getEl().lastChild.textContent = text + (ctx.progressBar ? ' ' + ctx.progressBar.value() + '%' : '');
-      };
+    function (Control, Movable, Progress, Delay) {
+      const updateLiveRegion = function (ctx, text) {
+        ctx.getEl().lastChild.textContent = text + (ctx.progressBar ? ' ' + ctx.progressBar.value() + '%' : '')
+      }
 
       return Control.extend({
         Mixins: [Movable],
@@ -7928,45 +7928,45 @@ jsc */
           classes: 'widget notification'
         },
 
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
+          self._super(settings)
 
-          self.maxWidth = settings.maxWidth;
+          self.maxWidth = settings.maxWidth
 
           if (settings.text) {
-            self.text(settings.text);
+            self.text(settings.text)
           }
 
           if (settings.icon) {
-            self.icon = settings.icon;
+            self.icon = settings.icon
           }
 
           if (settings.color) {
-            self.color = settings.color;
+            self.color = settings.color
           }
 
           if (settings.type) {
-            self.classes.add('notification-' + settings.type);
+            self.classes.add('notification-' + settings.type)
           }
 
           if (settings.timeout && (settings.timeout < 0 || settings.timeout > 0) && !settings.closeButton) {
-            self.closeButton = false;
+            self.closeButton = false
           } else {
-            self.classes.add('has-close');
-            self.closeButton = true;
+            self.classes.add('has-close')
+            self.closeButton = true
           }
 
           if (settings.progressBar) {
-            self.progressBar = new Progress();
+            self.progressBar = new Progress()
           }
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             if (e.target.className.indexOf(self.classPrefix + 'close') != -1) {
-              self.close();
+              self.close()
             }
-          });
+          })
         },
 
         /**
@@ -7975,26 +7975,26 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             prefix = self.classPrefix,
             icon = '',
             closeButton = '',
             progressBar = '',
-            notificationStyle = '';
+            notificationStyle = ''
 
           if (self.icon) {
-            icon = '<i class="' + prefix + 'ico' + ' ' + prefix + 'i-' + self.icon + '"></i>';
+            icon = '<i class="' + prefix + 'ico' + ' ' + prefix + 'i-' + self.icon + '"></i>'
           }
 
-          notificationStyle = ' style="max-width: ' + self.maxWidth + 'px;' + (self.color ? 'background-color: ' + self.color + ';"' : '"');
+          notificationStyle = ' style="max-width: ' + self.maxWidth + 'px;' + (self.color ? 'background-color: ' + self.color + ';"' : '"')
 
           if (self.closeButton) {
-            closeButton = '<button type="button" class="' + prefix + 'close" aria-hidden="true">\u00d7</button>';
+            closeButton = '<button type="button" class="' + prefix + 'close" aria-hidden="true">\u00d7</button>'
           }
 
           if (self.progressBar) {
-            progressBar = self.progressBar.renderHtml();
+            progressBar = self.progressBar.renderHtml()
           }
 
           return (
@@ -8006,44 +8006,44 @@ jsc */
           '<div style="clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;width: 1px;"' +
           ' aria-live="assertive" aria-relevant="additions" aria-atomic="true"></div>' +
           '</div>'
-          );
+          )
         },
 
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          Delay.setTimeout(function() {
-            self.$el.addClass(self.classPrefix + 'in');
-            updateLiveRegion(self, self.state.get('text'));
-          }, 100);
+          Delay.setTimeout(function () {
+            self.$el.addClass(self.classPrefix + 'in')
+            updateLiveRegion(self, self.state.get('text'))
+          }, 100)
 
-          return self._super();
+          return self._super()
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:text', function(e) {
-            self.getEl().firstChild.innerHTML = e.value;
-            updateLiveRegion(self, e.value);
-          });
+          self.state.on('change:text', function (e) {
+            self.getEl().firstChild.innerHTML = e.value
+            updateLiveRegion(self, e.value)
+          })
           if (self.progressBar) {
-            self.progressBar.bindStates();
-            self.progressBar.state.on('change:value', function(e) {
-              updateLiveRegion(self, self.state.get('text'));
-            });
+            self.progressBar.bindStates()
+            self.progressBar.state.on('change:value', function (e) {
+              updateLiveRegion(self, self.state.get('text'))
+            })
           }
-          return self._super();
+          return self._super()
         },
 
-        close() {
-          const self = this;
+        close () {
+          const self = this
 
           if (!self.fire('close').isDefaultPrevented()) {
-            self.remove();
+            self.remove()
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -8051,24 +8051,24 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             style,
-            rect;
+            rect
 
-          style = self.getEl().style;
-          rect = self._layoutRect;
+          style = self.getEl().style
+          rect = self._layoutRect
 
-          style.left = rect.x + 'px';
-          style.top = rect.y + 'px';
+          style.left = rect.x + 'px'
+          style.top = rect.y + 'px'
 
           // Hardcoded arbitrary z-value because we want the
           // notifications under the other windows
-          style.zIndex = 0xFFFF - 1;
+          style.zIndex = 0xFFFF - 1
         }
-      });
+      })
     }
-  );
+  )
   /**
  * NotificationManagerImpl.js
  *
@@ -8088,82 +8088,82 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.ui.Notification'
     ],
-    function(Arr, setTimeout, Tools, DomUtils, Notification) {
-      return function(editor) {
-        const getEditorContainer = function(editor) {
-          return editor.inline ? editor.getElement() : editor.getContentAreaContainer();
-        };
+    function (Arr, setTimeout, Tools, DomUtils, Notification) {
+      return function (editor) {
+        const getEditorContainer = function (editor) {
+          return editor.inline ? editor.getElement() : editor.getContentAreaContainer()
+        }
 
-        const getContainerWidth = function() {
-          const container = getEditorContainer(editor);
-          return DomUtils.getSize(container).width;
-        };
+        const getContainerWidth = function () {
+          const container = getEditorContainer(editor)
+          return DomUtils.getSize(container).width
+        }
 
         // Since the viewport will change based on the present notifications, we need to move them all to the
         // top left of the viewport to give an accurate size measurement so we can position them later.
-        const prePositionNotifications = function(notifications) {
-          Arr.each(notifications, function(notification) {
-            notification.moveTo(0, 0);
-          });
-        };
+        const prePositionNotifications = function (notifications) {
+          Arr.each(notifications, function (notification) {
+            notification.moveTo(0, 0)
+          })
+        }
 
-        const positionNotifications = function(notifications) {
+        const positionNotifications = function (notifications) {
           if (notifications.length > 0) {
-            const firstItem = notifications.slice(0, 1)[0];
-            const container = getEditorContainer(editor);
-            firstItem.moveRel(container, 'tc-tc');
-            Arr.each(notifications, function(notification, index) {
+            const firstItem = notifications.slice(0, 1)[0]
+            const container = getEditorContainer(editor)
+            firstItem.moveRel(container, 'tc-tc')
+            Arr.each(notifications, function (notification, index) {
               if (index > 0) {
-                notification.moveRel(notifications[index - 1].getEl(), 'bc-tc');
+                notification.moveRel(notifications[index - 1].getEl(), 'bc-tc')
               }
-            });
+            })
           }
-        };
+        }
 
-        const reposition = function(notifications) {
-          prePositionNotifications(notifications);
-          positionNotifications(notifications);
-        };
+        const reposition = function (notifications) {
+          prePositionNotifications(notifications)
+          positionNotifications(notifications)
+        }
 
-        const open = function(args, closeCallback) {
-          const extendedArgs = Tools.extend(args, { maxWidth: getContainerWidth() });
-          const notif = new Notification(extendedArgs);
-          notif.args = extendedArgs;
+        const open = function (args, closeCallback) {
+          const extendedArgs = Tools.extend(args, { maxWidth: getContainerWidth() })
+          const notif = new Notification(extendedArgs)
+          notif.args = extendedArgs
 
           // If we have a timeout value
           if (extendedArgs.timeout > 0) {
-            notif.timer = setTimeout(function() {
-              notif.close();
-              closeCallback();
-            }, extendedArgs.timeout);
+            notif.timer = setTimeout(function () {
+              notif.close()
+              closeCallback()
+            }, extendedArgs.timeout)
           }
 
-          notif.on('close', function() {
-            closeCallback();
-          });
+          notif.on('close', function () {
+            closeCallback()
+          })
 
-          notif.renderTo();
+          notif.renderTo()
 
-          return notif;
-        };
+          return notif
+        }
 
-        const close = function(notification) {
-          notification.close();
-        };
+        const close = function (notification) {
+          notification.close()
+        }
 
-        const getArgs = function(notification) {
-          return notification.args;
-        };
+        const getArgs = function (notification) {
+          return notification.args
+        }
 
         return {
           open,
           close,
           reposition,
           getArgs
-        };
-      };
+        }
+      }
     }
-  );
+  )
 
   /**
  * Window.js
@@ -8197,88 +8197,88 @@ jsc */
       'tinymce.ui.FloatPanel',
       'tinymce.ui.Panel'
     ],
-    function(document, setTimeout, window, DomQuery, Env, Delay, BoxUtils, DomUtils, DragHelper, FloatPanel, Panel) {
-      'use strict';
+    function (document, setTimeout, window, DomQuery, Env, Delay, BoxUtils, DomUtils, DragHelper, FloatPanel, Panel) {
+      'use strict'
 
       let windows = [],
-        oldMetaValue = '';
+        oldMetaValue = ''
 
-      function toggleFullScreenState(state) {
+      function toggleFullScreenState (state) {
         let noScaleMetaValue = 'width=device-width,initial-scale=1.0,user-scalable=0,minimum-scale=1.0,maximum-scale=1.0',
           viewport = DomQuery('meta[name=viewport]')[0],
-          contentValue;
+          contentValue
 
         if (Env.overrideViewPort === false) {
-          return;
+          return
         }
 
         if (!viewport) {
-          viewport = document.createElement('meta');
-          viewport.setAttribute('name', 'viewport');
-          document.getElementsByTagName('head')[0].appendChild(viewport);
+          viewport = document.createElement('meta')
+          viewport.setAttribute('name', 'viewport')
+          document.getElementsByTagName('head')[0].appendChild(viewport)
         }
 
-        contentValue = viewport.getAttribute('content');
+        contentValue = viewport.getAttribute('content')
         if (contentValue && typeof oldMetaValue !== 'undefined') {
-          oldMetaValue = contentValue;
+          oldMetaValue = contentValue
         }
 
-        viewport.setAttribute('content', state ? noScaleMetaValue : oldMetaValue);
+        viewport.setAttribute('content', state ? noScaleMetaValue : oldMetaValue)
       }
 
-      function toggleBodyFullScreenClasses(classPrefix, state) {
+      function toggleBodyFullScreenClasses (classPrefix, state) {
         if (checkFullscreenWindows() && state === false) {
-          DomQuery([document.documentElement, document.body]).removeClass(classPrefix + 'fullscreen');
+          DomQuery([document.documentElement, document.body]).removeClass(classPrefix + 'fullscreen')
         }
       }
 
-      function checkFullscreenWindows() {
+      function checkFullscreenWindows () {
         for (let i = 0; i < windows.length; i++) {
           if (windows[i]._fullscreen) {
-            return true;
+            return true
           }
         }
-        return false;
+        return false
       }
 
-      function handleWindowResize() {
+      function handleWindowResize () {
         if (!Env.desktop) {
           let lastSize = {
             w: window.innerWidth,
             h: window.innerHeight
-          };
+          }
 
-          Delay.setInterval(function() {
+          Delay.setInterval(function () {
             let w = window.innerWidth,
-              h = window.innerHeight;
+              h = window.innerHeight
 
             if (lastSize.w != w || lastSize.h != h) {
               lastSize = {
                 w,
                 h
-              };
+              }
 
-              DomQuery(window).trigger('resize');
+              DomQuery(window).trigger('resize')
             }
-          }, 100);
+          }, 100)
         }
 
-        function reposition() {
+        function reposition () {
           let i,
             rect = DomUtils.getWindowSize(),
-            layoutRect;
+            layoutRect
 
           for (i = 0; i < windows.length; i++) {
-            layoutRect = windows[i].layoutRect();
+            layoutRect = windows[i].layoutRect()
 
             windows[i].moveTo(
               windows[i].settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2),
               windows[i].settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2)
-            );
+            )
           }
         }
 
-        DomQuery(window).on('resize', reposition);
+        DomQuery(window).on('resize', reposition)
       }
 
       const Window = FloatPanel.extend({
@@ -8290,12 +8290,12 @@ jsc */
           containerCls: 'panel',
           role: 'dialog',
           callbacks: {
-            submit() {
-              this.fire('submit', { data: this.toJSON() });
+            submit () {
+              this.fire('submit', { data: this.toJSON() })
             },
 
-            close() {
-              this.close();
+            close () {
+              this.close()
             }
           }
         },
@@ -8306,18 +8306,18 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
+          self._super(settings)
 
           if (self.isRtl()) {
-            self.classes.add('rtl');
+            self.classes.add('rtl')
           }
 
-          self.classes.add('window');
-          self.bodyClasses.add('window-body');
-          self.state.set('fixed', true);
+          self.classes.add('window')
+          self.bodyClasses.add('window-body')
+          self.state.set('fixed', true)
 
           // Create statusbar
           if (settings.buttons) {
@@ -8332,27 +8332,27 @@ jsc */
                 type: 'button'
               },
               items: settings.buttons
-            });
+            })
 
-            self.statusbar.classes.add('foot');
-            self.statusbar.parent(self);
+            self.statusbar.classes.add('foot')
+            self.statusbar.parent(self)
           }
 
-          self.on('click', function(e) {
-            const closeClass = self.classPrefix + 'close';
+          self.on('click', function (e) {
+            const closeClass = self.classPrefix + 'close'
 
             if (DomUtils.hasClass(e.target, closeClass) || DomUtils.hasClass(e.target.parentNode, closeClass)) {
-              self.close();
+              self.close()
             }
-          });
+          })
 
-          self.on('cancel', function() {
-            self.close();
-          });
+          self.on('cancel', function () {
+            self.close()
+          })
 
-          self.aria('describedby', self.describedBy || self._id + '-none');
-          self.aria('label', settings.title);
-          self._fullscreen = false;
+          self.aria('describedby', self.describedBy || self._id + '-none')
+          self.aria('label', settings.title)
+          self._fullscreen = false
         },
 
         /**
@@ -8361,48 +8361,48 @@ jsc */
        *
        * @method recalc
        */
-        recalc() {
+        recalc () {
           let self = this,
             statusbar = self.statusbar,
             layoutRect,
             width,
             x,
-            needsRecalc;
+            needsRecalc
 
           if (self._fullscreen) {
-            self.layoutRect(DomUtils.getWindowSize());
-            self.layoutRect().contentH = self.layoutRect().innerH;
+            self.layoutRect(DomUtils.getWindowSize())
+            self.layoutRect().contentH = self.layoutRect().innerH
           }
 
-          self._super();
+          self._super()
 
-          layoutRect = self.layoutRect();
+          layoutRect = self.layoutRect()
 
           // Resize window based on title width
           if (self.settings.title && !self._fullscreen) {
-            width = layoutRect.headerW;
+            width = layoutRect.headerW
             if (width > layoutRect.w) {
-              x = layoutRect.x - Math.max(0, width / 2);
-              self.layoutRect({ w: width, x });
-              needsRecalc = true;
+              x = layoutRect.x - Math.max(0, width / 2)
+              self.layoutRect({ w: width, x })
+              needsRecalc = true
             }
           }
 
           // Resize window based on statusbar width
           if (statusbar) {
-            statusbar.layoutRect({ w: self.layoutRect().innerW }).recalc();
+            statusbar.layoutRect({ w: self.layoutRect().innerW }).recalc()
 
-            width = statusbar.layoutRect().minW + layoutRect.deltaW;
+            width = statusbar.layoutRect().minW + layoutRect.deltaW
             if (width > layoutRect.w) {
-              x = layoutRect.x - Math.max(0, width - layoutRect.w);
-              self.layoutRect({ w: width, x });
-              needsRecalc = true;
+              x = layoutRect.x - Math.max(0, width - layoutRect.w)
+              self.layoutRect({ w: width, x })
+              needsRecalc = true
             }
           }
 
           // Recalc body and disable auto resize
           if (needsRecalc) {
-            self.recalc();
+            self.recalc()
           }
         },
 
@@ -8414,40 +8414,40 @@ jsc */
        * @method initLayoutRect
        * @return {Object} Layout rect instance.
        */
-        initLayoutRect() {
+        initLayoutRect () {
           let self = this,
             layoutRect = self._super(),
             deltaH = 0,
-            headEl;
+            headEl
 
           // Reserve vertical space for title
           if (self.settings.title && !self._fullscreen) {
-            headEl = self.getEl('head');
+            headEl = self.getEl('head')
 
-            const size = DomUtils.getSize(headEl);
+            const size = DomUtils.getSize(headEl)
 
-            layoutRect.headerW = size.width;
-            layoutRect.headerH = size.height;
+            layoutRect.headerW = size.width
+            layoutRect.headerH = size.height
 
-            deltaH += layoutRect.headerH;
+            deltaH += layoutRect.headerH
           }
 
           // Reserve vertical space for statusbar
           if (self.statusbar) {
-            deltaH += self.statusbar.layoutRect().h;
+            deltaH += self.statusbar.layoutRect().h
           }
 
-          layoutRect.deltaH += deltaH;
-          layoutRect.minH += deltaH;
+          layoutRect.deltaH += deltaH
+          layoutRect.minH += deltaH
           // layoutRect.innerH -= deltaH;
-          layoutRect.h += deltaH;
+          layoutRect.h += deltaH
 
-          const rect = DomUtils.getWindowSize();
+          const rect = DomUtils.getWindowSize()
 
-          layoutRect.x = self.settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2);
-          layoutRect.y = self.settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2);
+          layoutRect.x = self.settings.x || Math.max(0, rect.w / 2 - layoutRect.w / 2)
+          layoutRect.y = self.settings.y || Math.max(0, rect.h / 2 - layoutRect.h / 2)
 
-          return layoutRect;
+          return layoutRect
         },
 
         /**
@@ -8456,18 +8456,18 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
             id = self._id,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
           let settings = self.settings,
             headerHtml = '',
             footerHtml = '',
-            html = settings.html;
+            html = settings.html
 
-          self.preRender();
-          layout.preRender(self);
+          self.preRender()
+          layout.preRender(self)
 
           if (settings.title) {
             headerHtml = (
@@ -8478,19 +8478,19 @@ jsc */
             '<i class="mce-ico mce-i-remove"></i>' +
             '</button>' +
             '</div>'
-            );
+            )
           }
 
           if (settings.url) {
-            html = '<iframe src="' + settings.url + '" tabindex="-1"></iframe>';
+            html = '<iframe src="' + settings.url + '" tabindex="-1"></iframe>'
           }
 
           if (typeof html === 'undefined') {
-            html = layout.renderHtml(self);
+            html = layout.renderHtml(self)
           }
 
           if (self.statusbar) {
-            footerHtml = self.statusbar.renderHtml();
+            footerHtml = self.statusbar.renderHtml()
           }
 
           return (
@@ -8503,7 +8503,7 @@ jsc */
           footerHtml +
           '</div>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -8513,66 +8513,66 @@ jsc */
        * @param {Boolean} state True/false state.
        * @return {tinymce.ui.Window} Current window instance.
        */
-        fullscreen(state) {
+        fullscreen (state) {
           let self = this,
             documentElement = document.documentElement,
             slowRendering,
             prefix = self.classPrefix,
-            layoutRect;
+            layoutRect
 
           if (state != self._fullscreen) {
-            DomQuery(window).on('resize', function() {
-              let time;
+            DomQuery(window).on('resize', function () {
+              let time
 
               if (self._fullscreen) {
               // Time the layout time if it's to slow use a timeout to not hog the CPU
                 if (!slowRendering) {
-                  time = new Date().getTime();
+                  time = new Date().getTime()
 
-                  const rect = DomUtils.getWindowSize();
-                  self.moveTo(0, 0).resizeTo(rect.w, rect.h);
+                  const rect = DomUtils.getWindowSize()
+                  self.moveTo(0, 0).resizeTo(rect.w, rect.h)
 
                   if ((new Date().getTime()) - time > 50) {
-                    slowRendering = true;
+                    slowRendering = true
                   }
                 } else {
                   if (!self._timer) {
-                    self._timer = Delay.setTimeout(function() {
-                      const rect = DomUtils.getWindowSize();
-                      self.moveTo(0, 0).resizeTo(rect.w, rect.h);
+                    self._timer = Delay.setTimeout(function () {
+                      const rect = DomUtils.getWindowSize()
+                      self.moveTo(0, 0).resizeTo(rect.w, rect.h)
 
-                      self._timer = 0;
-                    }, 50);
+                      self._timer = 0
+                    }, 50)
                   }
                 }
               }
-            });
+            })
 
-            layoutRect = self.layoutRect();
-            self._fullscreen = state;
+            layoutRect = self.layoutRect()
+            self._fullscreen = state
 
             if (!state) {
-              self.borderBox = BoxUtils.parseBox(self.settings.border);
-              self.getEl('head').style.display = '';
-              layoutRect.deltaH += layoutRect.headerH;
-              DomQuery([documentElement, document.body]).removeClass(prefix + 'fullscreen');
-              self.classes.remove('fullscreen');
-              self.moveTo(self._initial.x, self._initial.y).resizeTo(self._initial.w, self._initial.h);
+              self.borderBox = BoxUtils.parseBox(self.settings.border)
+              self.getEl('head').style.display = ''
+              layoutRect.deltaH += layoutRect.headerH
+              DomQuery([documentElement, document.body]).removeClass(prefix + 'fullscreen')
+              self.classes.remove('fullscreen')
+              self.moveTo(self._initial.x, self._initial.y).resizeTo(self._initial.w, self._initial.h)
             } else {
-              self._initial = { x: layoutRect.x, y: layoutRect.y, w: layoutRect.w, h: layoutRect.h };
+              self._initial = { x: layoutRect.x, y: layoutRect.y, w: layoutRect.w, h: layoutRect.h }
 
-              self.borderBox = BoxUtils.parseBox('0');
-              self.getEl('head').style.display = 'none';
-              layoutRect.deltaH -= layoutRect.headerH + 2;
-              DomQuery([documentElement, document.body]).addClass(prefix + 'fullscreen');
-              self.classes.add('fullscreen');
+              self.borderBox = BoxUtils.parseBox('0')
+              self.getEl('head').style.display = 'none'
+              layoutRect.deltaH -= layoutRect.headerH + 2
+              DomQuery([documentElement, document.body]).addClass(prefix + 'fullscreen')
+              self.classes.add('fullscreen')
 
-              const rect = DomUtils.getWindowSize();
-              self.moveTo(0, 0).resizeTo(rect.w, rect.h);
+              const rect = DomUtils.getWindowSize()
+              self.moveTo(0, 0).resizeTo(rect.w, rect.h)
             }
           }
 
-          return self.reflow();
+          return self.reflow()
         },
 
         /**
@@ -8580,44 +8580,44 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
+        postRender () {
           let self = this,
-            startPos;
+            startPos
 
-          setTimeout(function() {
-            self.classes.add('in');
-            self.fire('open');
-          }, 0);
+          setTimeout(function () {
+            self.classes.add('in')
+            self.fire('open')
+          }, 0)
 
-          self._super();
+          self._super()
 
           if (self.statusbar) {
-            self.statusbar.postRender();
+            self.statusbar.postRender()
           }
 
-          self.focus();
+          self.focus()
 
           this.dragHelper = new DragHelper(self._id + '-dragh', {
-            start() {
+            start () {
               startPos = {
                 x: self.layoutRect().x,
                 y: self.layoutRect().y
-              };
+              }
             },
 
-            drag(e) {
-              self.moveTo(startPos.x + e.deltaX, startPos.y + e.deltaY);
+            drag (e) {
+              self.moveTo(startPos.x + e.deltaX, startPos.y + e.deltaY)
             }
-          });
+          })
 
-          self.on('submit', function(e) {
+          self.on('submit', function (e) {
             if (!e.isDefaultPrevented()) {
-              self.close();
+              self.close()
             }
-          });
+          })
 
-          windows.push(self);
-          toggleFullScreenState(true);
+          windows.push(self)
+          toggleFullScreenState(true)
         },
 
         /**
@@ -8626,8 +8626,8 @@ jsc */
        * @method submit
        * @return {Object} Event arguments object.
        */
-        submit() {
-          return this.fire('submit', { data: this.toJSON() });
+        submit () {
+          return this.fire('submit', { data: this.toJSON() })
         },
 
         /**
@@ -8636,27 +8636,27 @@ jsc */
        * @method remove
        * @return {tinymce.ui.Control} Current control instance.
        */
-        remove() {
+        remove () {
           let self = this,
-            i;
+            i
 
-          self.dragHelper.destroy();
-          self._super();
+          self.dragHelper.destroy()
+          self._super()
 
           if (self.statusbar) {
-            this.statusbar.remove();
+            this.statusbar.remove()
           }
 
-          toggleBodyFullScreenClasses(self.classPrefix, false);
+          toggleBodyFullScreenClasses(self.classPrefix, false)
 
-          i = windows.length;
+          i = windows.length
           while (i--) {
             if (windows[i] === self) {
-              windows.splice(i, 1);
+              windows.splice(i, 1)
             }
           }
 
-          toggleFullScreenState(windows.length > 0);
+          toggleFullScreenState(windows.length > 0)
         },
 
         /**
@@ -8665,17 +8665,17 @@ jsc */
        * @method getContentWindow
        * @return {Window} window object or null.
        */
-        getContentWindow() {
-          const ifr = this.getEl().getElementsByTagName('iframe')[0];
-          return ifr ? ifr.contentWindow : null;
+        getContentWindow () {
+          const ifr = this.getEl().getElementsByTagName('iframe')[0]
+          return ifr ? ifr.contentWindow : null
         }
-      });
+      })
 
-      handleWindowResize();
+      handleWindowResize()
 
-      return Window;
+      return Window
     }
-  );
+  )
   /**
  * MessageBox.js
  *
@@ -8698,8 +8698,8 @@ jsc */
       'global!document',
       'tinymce.ui.Window'
     ],
-    function(document, Window) {
-      'use strict';
+    function (document, Window) {
+      'use strict'
 
       var MessageBox = Window.extend({
       /**
@@ -8708,7 +8708,7 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
+        init (settings) {
           settings = {
             border: 1,
             padding: 20,
@@ -8724,9 +8724,9 @@ jsc */
               maxWidth: 500,
               maxHeight: 200
             }
-          };
+          }
 
-          this._super(settings);
+          this._super(settings)
         },
 
         Statics: {
@@ -8773,20 +8773,20 @@ jsc */
          * @method msgBox
          * @param {Object} settings Name/value object with settings.
          */
-          msgBox(settings) {
+          msgBox (settings) {
             let buttons,
-              callback = settings.callback || function() { };
+              callback = settings.callback || function () { }
 
-            function createButton(text, status, primary) {
+            function createButton (text, status, primary) {
               return {
                 type: 'button',
                 text,
                 subtype: primary ? 'primary' : '',
-                onClick(e) {
-                  e.control.parents()[1].close();
-                  callback(status);
+                onClick (e) {
+                  e.control.parents()[1].close()
+                  callback(status)
                 }
-              };
+              }
             }
 
             switch (settings.buttons) {
@@ -8794,26 +8794,26 @@ jsc */
                 buttons = [
                   createButton('Ok', true, true),
                   createButton('Cancel', false)
-                ];
-                break;
+                ]
+                break
 
               case MessageBox.YES_NO:
               case MessageBox.YES_NO_CANCEL:
                 buttons = [
                   createButton('Yes', 1, true),
                   createButton('No', 0)
-                ];
+                ]
 
                 if (settings.buttons == MessageBox.YES_NO_CANCEL) {
-                  buttons.push(createButton('Cancel', -1));
+                  buttons.push(createButton('Cancel', -1))
                 }
-                break;
+                break
 
               default:
                 buttons = [
                   createButton('Ok', true, true)
-                ];
-                break;
+                ]
+                break
             }
 
             return new Window({
@@ -8835,14 +8835,14 @@ jsc */
                 maxHeight: 200,
                 text: settings.text
               },
-              onPostRender() {
-                this.aria('describedby', this.items()[0]._id);
+              onPostRender () {
+                this.aria('describedby', this.items()[0]._id)
               },
               onClose: settings.onClose,
-              onCancel() {
-                callback(false);
+              onCancel () {
+                callback(false)
               }
-            }).renderTo(document.body).reflow();
+            }).renderTo(document.body).reflow()
           },
 
           /**
@@ -8852,13 +8852,13 @@ jsc */
          * @param {Object} settings Settings for the alert dialog.
          * @param {function} [callback] Callback to execute when the user makes a choice.
          */
-          alert(settings, callback) {
+          alert (settings, callback) {
             if (typeof settings === 'string') {
-              settings = { text: settings };
+              settings = { text: settings }
             }
 
-            settings.callback = callback;
-            return MessageBox.msgBox(settings);
+            settings.callback = callback
+            return MessageBox.msgBox(settings)
           },
 
           /**
@@ -8868,22 +8868,22 @@ jsc */
          * @param {Object} settings Settings for the confirm dialog.
          * @param {function} [callback] Callback to execute when the user makes a choice.
          */
-          confirm(settings, callback) {
+          confirm (settings, callback) {
             if (typeof settings === 'string') {
-              settings = { text: settings };
+              settings = { text: settings }
             }
 
-            settings.callback = callback;
-            settings.buttons = MessageBox.OK_CANCEL;
+            settings.callback = callback
+            settings.buttons = MessageBox.OK_CANCEL
 
-            return MessageBox.msgBox(settings);
+            return MessageBox.msgBox(settings)
           }
         }
-      });
+      })
 
-      return MessageBox;
+      return MessageBox
     }
-  );
+  )
 
   /**
  * WindowManagerImpl.js
@@ -8901,18 +8901,18 @@ jsc */
       'tinymce.ui.Window',
       'tinymce.ui.MessageBox'
     ],
-    function(Window, MessageBox) {
-      return function(editor) {
-        const open = function(args, params, closeCallback) {
-          let win;
+    function (Window, MessageBox) {
+      return function (editor) {
+        const open = function (args, params, closeCallback) {
+          let win
 
-          args.title = args.title || ' ';
+          args.title = args.title || ' '
 
           // Handle URL
-          args.url = args.url || args.file; // Legacy
+          args.url = args.url || args.file // Legacy
           if (args.url) {
-            args.width = parseInt(args.width || 320, 10);
-            args.height = parseInt(args.height || 240, 10);
+            args.width = parseInt(args.width || 320, 10)
+            args.height = parseInt(args.height || 240, 10)
           }
 
           // Handle body
@@ -8923,7 +8923,7 @@ jsc */
               items: args.body,
               data: args.data,
               callbacks: args.commands
-            };
+            }
           }
 
           if (!args.url && !args.buttons) {
@@ -8931,87 +8931,87 @@ jsc */
               {
                 text: 'Ok',
                 subtype: 'primary',
-                onclick() {
-                  win.find('form')[0].submit();
+                onclick () {
+                  win.find('form')[0].submit()
                 }
               },
 
               {
                 text: 'Cancel',
-                onclick() {
-                  win.close();
+                onclick () {
+                  win.close()
                 }
               }
-            ];
+            ]
           }
 
-          win = new Window(args);
+          win = new Window(args)
 
-          win.on('close', function() {
-            closeCallback(win);
-          });
+          win.on('close', function () {
+            closeCallback(win)
+          })
 
           // Handle data
           if (args.data) {
-            win.on('postRender', function() {
-              this.find('*').each(function(ctrl) {
-                const name = ctrl.name();
+            win.on('postRender', function () {
+              this.find('*').each(function (ctrl) {
+                const name = ctrl.name()
 
                 if (name in args.data) {
-                  ctrl.value(args.data[name]);
+                  ctrl.value(args.data[name])
                 }
-              });
-            });
+              })
+            })
           }
 
           // store args and parameters
-          win.features = args || {};
-          win.params = params || {};
+          win.features = args || {}
+          win.params = params || {}
 
-          win = win.renderTo().reflow();
+          win = win.renderTo().reflow()
 
-          return win;
-        };
+          return win
+        }
 
-        const alert = function(message, choiceCallback, closeCallback) {
-          let win;
+        const alert = function (message, choiceCallback, closeCallback) {
+          let win
 
-          win = MessageBox.alert(message, function() {
-            choiceCallback();
-          });
+          win = MessageBox.alert(message, function () {
+            choiceCallback()
+          })
 
-          win.on('close', function() {
-            closeCallback(win);
-          });
+          win.on('close', function () {
+            closeCallback(win)
+          })
 
-          return win;
-        };
+          return win
+        }
 
-        const confirm = function(message, choiceCallback, closeCallback) {
-          let win;
+        const confirm = function (message, choiceCallback, closeCallback) {
+          let win
 
-          win = MessageBox.confirm(message, function(state) {
-            choiceCallback(state);
-          });
+          win = MessageBox.confirm(message, function (state) {
+            choiceCallback(state)
+          })
 
-          win.on('close', function() {
-            closeCallback(win);
-          });
+          win.on('close', function () {
+            closeCallback(win)
+          })
 
-          return win;
-        };
+          return win
+        }
 
-        const close = function(window) {
-          window.close();
-        };
+        const close = function (window) {
+          window.close()
+        }
 
-        const getParams = function(window) {
-          return window.params;
-        };
+        const getParams = function (window) {
+          return window.params
+        }
 
-        const setParams = function(window, params) {
-          window.params = params;
-        };
+        const setParams = function (window, params) {
+          window.params = params
+        }
 
         return {
           open,
@@ -9020,10 +9020,10 @@ jsc */
           close,
           getParams,
           setParams
-        };
-      };
+        }
+      }
     }
-  );
+  )
 
   /**
  * ThemeApi.js
@@ -9043,27 +9043,27 @@ jsc */
       'tinymce.ui.NotificationManagerImpl',
       'tinymce.ui.WindowManagerImpl'
     ],
-    function(Render, Resize, NotificationManagerImpl, WindowManagerImpl) {
-      const get = function(editor) {
-        const renderUI = function(args) {
-          return Render.renderUI(editor, this, args);
-        };
+    function (Render, Resize, NotificationManagerImpl, WindowManagerImpl) {
+      const get = function (editor) {
+        const renderUI = function (args) {
+          return Render.renderUI(editor, this, args)
+        }
 
-        const resizeTo = function(w, h) {
-          return Resize.resizeTo(editor, w, h);
-        };
+        const resizeTo = function (w, h) {
+          return Resize.resizeTo(editor, w, h)
+        }
 
-        const resizeBy = function(dw, dh) {
-          return Resize.resizeBy(editor, dw, dh);
-        };
+        const resizeBy = function (dw, dh) {
+          return Resize.resizeBy(editor, dw, dh)
+        }
 
-        const getNotificationManagerImpl = function() {
-          return NotificationManagerImpl(editor);
-        };
+        const getNotificationManagerImpl = function () {
+          return NotificationManagerImpl(editor)
+        }
 
-        const getWindowManagerImpl = function() {
-          return WindowManagerImpl(editor);
-        };
+        const getWindowManagerImpl = function () {
+          return WindowManagerImpl(editor)
+        }
 
         return {
           renderUI,
@@ -9071,14 +9071,14 @@ jsc */
           resizeBy,
           getNotificationManagerImpl,
           getWindowManagerImpl
-        };
-      };
+        }
+      }
 
       return {
         get
-      };
+      }
     }
-  );
+  )
 
   /**
  * Layout.js
@@ -9101,8 +9101,8 @@ jsc */
       'tinymce.core.util.Class',
       'tinymce.core.util.Tools'
     ],
-    function(Class, Tools) {
-      'use strict';
+    function (Class, Tools) {
+      'use strict'
 
       return Class.extend({
         Defaults: {
@@ -9116,8 +9116,8 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          this.settings = Tools.extend({}, this.Defaults, settings);
+        init (settings) {
+          this.settings = Tools.extend({}, this.Defaults, settings)
         },
 
         /**
@@ -9126,8 +9126,8 @@ jsc */
        * @method preRender
        * @param {tinymce.ui.Container} container Container instance to preRender.
        */
-        preRender(container) {
-          container.bodyClasses.add(this.settings.containerClass);
+        preRender (container) {
+          container.bodyClasses.add(this.settings.containerClass)
         },
 
         /**
@@ -9135,35 +9135,35 @@ jsc */
        *
        * @private
        */
-        applyClasses(items) {
+        applyClasses (items) {
           let self = this,
             settings = self.settings,
             firstClass,
             lastClass,
             firstItem,
-            lastItem;
+            lastItem
 
-          firstClass = settings.firstControlClass;
-          lastClass = settings.lastControlClass;
+          firstClass = settings.firstControlClass
+          lastClass = settings.lastControlClass
 
-          items.each(function(item) {
-            item.classes.remove(firstClass).remove(lastClass).add(settings.controlClass);
+          items.each(function (item) {
+            item.classes.remove(firstClass).remove(lastClass).add(settings.controlClass)
 
             if (item.visible()) {
               if (!firstItem) {
-                firstItem = item;
+                firstItem = item
               }
 
-              lastItem = item;
+              lastItem = item
             }
-          });
+          })
 
           if (firstItem) {
-            firstItem.classes.add(firstClass);
+            firstItem.classes.add(firstClass)
           }
 
           if (lastItem) {
-            lastItem.classes.add(lastClass);
+            lastItem.classes.add(lastClass)
           }
         },
 
@@ -9173,17 +9173,17 @@ jsc */
        * @method renderHtml
        * @param {tinymce.ui.Container} container Container to render HTML for.
        */
-        renderHtml(container) {
+        renderHtml (container) {
           let self = this,
-            html = '';
+            html = ''
 
-          self.applyClasses(container.items());
+          self.applyClasses(container.items())
 
-          container.items().each(function(item) {
-            html += item.renderHtml();
-          });
+          container.items().each(function (item) {
+            html += item.renderHtml()
+          })
 
-          return html;
+          return html
         },
 
         /**
@@ -9192,7 +9192,7 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc() {
+        recalc () {
         },
 
         /**
@@ -9201,15 +9201,15 @@ jsc */
        * @method postRender
        * @param {tinymce.ui.Container} container Container instance to postRender.
        */
-        postRender() {
+        postRender () {
         },
 
-        isNative() {
-          return false;
+        isNative () {
+          return false
         }
-      });
+      })
     }
-  );
+  )
   /**
  * AbsoluteLayout.js
  *
@@ -9233,8 +9233,8 @@ jsc */
     [
       'tinymce.ui.Layout'
     ],
-    function(Layout) {
-      'use strict';
+    function (Layout) {
+      'use strict'
 
       return Layout.extend({
         Defaults: {
@@ -9248,21 +9248,21 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc(container) {
-          container.items().filter(':visible').each(function(ctrl) {
-            const settings = ctrl.settings;
+        recalc (container) {
+          container.items().filter(':visible').each(function (ctrl) {
+            const settings = ctrl.settings
 
             ctrl.layoutRect({
               x: settings.x,
               y: settings.y,
               w: settings.w,
               h: settings.h
-            });
+            })
 
             if (ctrl.recalc) {
-              ctrl.recalc();
+              ctrl.recalc()
             }
-          });
+          })
         },
 
         /**
@@ -9271,12 +9271,12 @@ jsc */
        * @method renderHtml
        * @param {tinymce.ui.Container} container Container to render HTML for.
        */
-        renderHtml(container) {
-          return '<div id="' + container._id + '-absend" class="' + container.classPrefix + 'abs-end"></div>' + this._super(container);
+        renderHtml (container) {
+          return '<div id="' + container._id + '-absend" class="' + container.classPrefix + 'abs-end"></div>' + this._super(container)
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Button.js
  *
@@ -9308,8 +9308,8 @@ jsc */
       'global!window',
       'tinymce.ui.Widget'
     ],
-    function(document, window, Widget) {
-      'use strict';
+    function (document, window, Widget) {
+      'use strict'
 
       return Widget.extend({
         Defaults: {
@@ -9326,34 +9326,34 @@ jsc */
        * @setting {String} image Image to use for icon.
        * @setting {String} icon Icon to use for button.
        */
-        init(settings) {
+        init (settings) {
           let self = this,
-            size;
+            size
 
-          self._super(settings);
-          settings = self.settings;
+          self._super(settings)
+          settings = self.settings
 
-          size = self.settings.size;
+          size = self.settings.size
 
-          self.on('click mousedown', function(e) {
-            e.preventDefault();
-          });
+          self.on('click mousedown', function (e) {
+            e.preventDefault()
+          })
 
-          self.on('touchstart', function(e) {
-            self.fire('click', e);
-            e.preventDefault();
-          });
+          self.on('touchstart', function (e) {
+            self.fire('click', e)
+            e.preventDefault()
+          })
 
           if (settings.subtype) {
-            self.classes.add(settings.subtype);
+            self.classes.add(settings.subtype)
           }
 
           if (size) {
-            self.classes.add('btn-' + size);
+            self.classes.add('btn-' + size)
           }
 
           if (settings.icon) {
-            self.icon(settings.icon);
+            self.icon(settings.icon)
           }
         },
 
@@ -9364,14 +9364,14 @@ jsc */
        * @param {String} [icon] New icon identifier.
        * @return {String|tinymce.ui.MenuButton} Current icon or current MenuButton instance.
        */
-        icon(icon) {
+        icon (icon) {
           if (!arguments.length) {
-            return this.state.get('icon');
+            return this.state.get('icon')
           }
 
-          this.state.set('icon', icon);
+          this.state.set('icon', icon)
 
-          return this;
+          return this
         },
 
         /**
@@ -9379,16 +9379,16 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let btnElm = this.getEl().firstChild,
-            btnStyle;
+            btnStyle
 
           if (btnElm) {
-            btnStyle = btnElm.style;
-            btnStyle.width = btnStyle.height = '100%';
+            btnStyle = btnElm.style
+            btnStyle.width = btnStyle.height = '100%'
           }
 
-          this._super();
+          this._super()
         },
 
         /**
@@ -9397,35 +9397,35 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
           let icon = self.state.get('icon'),
             image,
             text = self.state.get('text'),
-            textHtml = '';
+            textHtml = ''
 
-          image = self.settings.image;
+          image = self.settings.image
           if (image) {
-            icon = 'none';
+            icon = 'none'
 
             // Support for [high dpi, low dpi] image sources
             if (typeof image !== 'string') {
-              image = window.getSelection ? image[0] : image[1];
+              image = window.getSelection ? image[0] : image[1]
             }
 
-            image = ' style="background-image: url(\'' + image + '\')"';
+            image = ' style="background-image: url(\'' + image + '\')"'
           } else {
-            image = '';
+            image = ''
           }
 
           if (text) {
-            self.classes.add('btn-has-text');
-            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+            self.classes.add('btn-has-text')
+            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>'
           }
 
-          icon = icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
+          icon = icon ? prefix + 'ico ' + prefix + 'i-' + icon : ''
 
           return (
             '<div id="' + id + '" class="' + self.classes + '" tabindex="-1">' +
@@ -9434,66 +9434,66 @@ jsc */
           textHtml +
           '</button>' +
           '</div>'
-          );
+          )
         },
 
-        bindStates() {
+        bindStates () {
           let self = this,
             $ = self.$,
-            textCls = self.classPrefix + 'txt';
+            textCls = self.classPrefix + 'txt'
 
-          function setButtonText(text) {
-            let $span = $('span.' + textCls, self.getEl());
+          function setButtonText (text) {
+            let $span = $('span.' + textCls, self.getEl())
 
             if (text) {
               if (!$span[0]) {
-                $('button:first', self.getEl()).append('<span class="' + textCls + '"></span>');
-                $span = $('span.' + textCls, self.getEl());
+                $('button:first', self.getEl()).append('<span class="' + textCls + '"></span>')
+                $span = $('span.' + textCls, self.getEl())
               }
 
-              $span.html(self.encode(text));
+              $span.html(self.encode(text))
             } else {
-              $span.remove();
+              $span.remove()
             }
 
-            self.classes.toggle('btn-has-text', !!text);
+            self.classes.toggle('btn-has-text', !!text)
           }
 
-          self.state.on('change:text', function(e) {
-            setButtonText(e.value);
-          });
+          self.state.on('change:text', function (e) {
+            setButtonText(e.value)
+          })
 
-          self.state.on('change:icon', function(e) {
+          self.state.on('change:icon', function (e) {
             let icon = e.value,
-              prefix = self.classPrefix;
+              prefix = self.classPrefix
 
-            self.settings.icon = icon;
-            icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
+            self.settings.icon = icon
+            icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : ''
 
             let btnElm = self.getEl().firstChild,
-              iconElm = btnElm.getElementsByTagName('i')[0];
+              iconElm = btnElm.getElementsByTagName('i')[0]
 
             if (icon) {
               if (!iconElm || iconElm != btnElm.firstChild) {
-                iconElm = document.createElement('i');
-                btnElm.insertBefore(iconElm, btnElm.firstChild);
+                iconElm = document.createElement('i')
+                btnElm.insertBefore(iconElm, btnElm.firstChild)
               }
 
-              iconElm.className = icon;
+              iconElm.className = icon
             } else if (iconElm) {
-              btnElm.removeChild(iconElm);
+              btnElm.removeChild(iconElm)
             }
 
-            setButtonText(self.state.get('text'));
-          });
+            setButtonText(self.state.get('text'))
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
-  defineGlobal('global!RegExp', RegExp);
+  defineGlobal('global!RegExp', RegExp)
   /**
  * BrowseButton.js
  *
@@ -9520,7 +9520,7 @@ jsc */
       'tinymce.core.dom.DomQuery',
       'global!RegExp'
     ],
-    function(Button, Tools, DomUtils, $, RegExp) {
+    function (Button, Tools, DomUtils, $, RegExp) {
       return Button.extend({
       /**
        * Constructs a instance with the specified settings.
@@ -9531,21 +9531,21 @@ jsc */
        * @setting {Number} maxLength Max length for the dropzone.
        * @setting {Number} size Size of the dropzone in characters.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
           settings = Tools.extend({
             text: 'Browse...',
             multiple: false,
             accept: null // by default accept any files
-          }, settings);
+          }, settings)
 
-          self._super(settings);
+          self._super(settings)
 
-          self.classes.add('browsebutton');
+          self.classes.add('browsebutton')
 
           if (settings.multiple) {
-            self.classes.add('multiple');
+            self.classes.add('multiple')
           }
         },
 
@@ -9554,61 +9554,61 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
           const input = DomUtils.create('input', {
             type: 'file',
             id: self._id + '-browse',
             accept: self.settings.accept
-          });
+          })
 
-          self._super();
+          self._super()
 
-          $(input).on('change', function(e) {
-            const files = e.target.files;
+          $(input).on('change', function (e) {
+            const files = e.target.files
 
-            self.value = function() {
+            self.value = function () {
               if (!files.length) {
-                return null;
+                return null
               } else if (self.settings.multiple) {
-                return files;
+                return files
               } else {
-                return files[0];
+                return files[0]
               }
-            };
+            }
 
-            e.preventDefault();
+            e.preventDefault()
 
             if (files.length) {
-              self.fire('change', e);
+              self.fire('change', e)
             }
-          });
+          })
 
           // ui.Button prevents default on click, so we shouldn't let the click to propagate up to it
-          $(input).on('click', function(e) {
-            e.stopPropagation();
-          });
+          $(input).on('click', function (e) {
+            e.stopPropagation()
+          })
 
-          $(self.getEl('button')).on('click', function(e) {
-            e.stopPropagation();
-            input.click();
-          });
+          $(self.getEl('button')).on('click', function (e) {
+            e.stopPropagation()
+            input.click()
+          })
 
           // in newer browsers input doesn't have to be attached to dom to trigger browser dialog
           // however older IE11 (< 11.1358.14393.0) still requires this
-          self.getEl().appendChild(input);
+          self.getEl().appendChild(input)
         },
 
-        remove() {
-          $(this.getEl('button')).off();
-          $(this.getEl('input')).off();
+        remove () {
+          $(this.getEl('button')).off()
+          $(this.getEl('input')).off()
 
-          this._super();
+          this._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * ButtonGroup.js
@@ -9643,8 +9643,8 @@ jsc */
     [
       'tinymce.ui.Container'
     ],
-    function(Container) {
-      'use strict';
+    function (Container) {
+      'use strict'
 
       return Container.extend({
         Defaults: {
@@ -9658,13 +9658,13 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
-            layout = self._layout;
+            layout = self._layout
 
-          self.classes.add('btn-group');
-          self.preRender();
-          layout.preRender(self);
+          self.classes.add('btn-group')
+          self.preRender()
+          layout.preRender(self)
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '">' +
@@ -9672,11 +9672,11 @@ jsc */
           (self.settings.html || '') + layout.renderHtml(self) +
           '</div>' +
           '</div>'
-          );
+          )
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Checkbox.js
  *
@@ -9708,8 +9708,8 @@ jsc */
       'global!document',
       'tinymce.ui.Widget'
     ],
-    function(document, Widget) {
-      'use strict';
+    function (document, Widget) {
+      'use strict'
 
       return Widget.extend({
         Defaults: {
@@ -9725,24 +9725,24 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Boolean} checked True if the checkbox should be checked by default.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
+          self._super(settings)
 
-          self.on('click mousedown', function(e) {
-            e.preventDefault();
-          });
+          self.on('click mousedown', function (e) {
+            e.preventDefault()
+          })
 
-          self.on('click', function(e) {
-            e.preventDefault();
+          self.on('click', function (e) {
+            e.preventDefault()
 
             if (!self.disabled()) {
-              self.checked(!self.checked());
+              self.checked(!self.checked())
             }
-          });
+          })
 
-          self.checked(self.settings.checked);
+          self.checked(self.settings.checked)
         },
 
         /**
@@ -9752,14 +9752,14 @@ jsc */
        * @param {Boolean} [state] State to be set.
        * @return {Boolean|tinymce.ui.Checkbox} True/false or checkbox if it's a set operation.
        */
-        checked(state) {
+        checked (state) {
           if (!arguments.length) {
-            return this.state.get('checked');
+            return this.state.get('checked')
           }
 
-          this.state.set('checked', state);
+          this.state.set('checked', state)
 
-          return this;
+          return this
         },
 
         /**
@@ -9769,12 +9769,12 @@ jsc */
        * @param {Boolean} [state] State to be set.
        * @return {Boolean|tinymce.ui.Checkbox} True/false or checkbox if it's a set operation.
        */
-        value(state) {
+        value (state) {
           if (!arguments.length) {
-            return this.checked();
+            return this.checked()
           }
 
-          return this.checked(state);
+          return this.checked(state)
         },
 
         /**
@@ -9783,71 +9783,71 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
           return (
             '<div id="' + id + '" class="' + self.classes + '" unselectable="on" aria-labelledby="' + id + '-al" tabindex="-1">' +
           '<i class="' + prefix + 'ico ' + prefix + 'i-checkbox"></i>' +
           '<span id="' + id + '-al" class="' + prefix + 'label">' + self.encode(self.state.get('text')) + '</span>' +
           '</div>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          function checked(state) {
-            self.classes.toggle('checked', state);
-            self.aria('checked', state);
+          function checked (state) {
+            self.classes.toggle('checked', state)
+            self.aria('checked', state)
           }
 
-          self.state.on('change:text', function(e) {
-            self.getEl('al').firstChild.data = self.translate(e.value);
-          });
+          self.state.on('change:text', function (e) {
+            self.getEl('al').firstChild.data = self.translate(e.value)
+          })
 
-          self.state.on('change:checked change:value', function(e) {
-            self.fire('change');
-            checked(e.value);
-          });
+          self.state.on('change:checked change:value', function (e) {
+            self.fire('change')
+            checked(e.value)
+          })
 
-          self.state.on('change:icon', function(e) {
+          self.state.on('change:icon', function (e) {
             let icon = e.value,
-              prefix = self.classPrefix;
+              prefix = self.classPrefix
 
             if (typeof icon === 'undefined') {
-              return self.settings.icon;
+              return self.settings.icon
             }
 
-            self.settings.icon = icon;
-            icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
+            self.settings.icon = icon
+            icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : ''
 
             let btnElm = self.getEl().firstChild,
-              iconElm = btnElm.getElementsByTagName('i')[0];
+              iconElm = btnElm.getElementsByTagName('i')[0]
 
             if (icon) {
               if (!iconElm || iconElm != btnElm.firstChild) {
-                iconElm = document.createElement('i');
-                btnElm.insertBefore(iconElm, btnElm.firstChild);
+                iconElm = document.createElement('i')
+                btnElm.insertBefore(iconElm, btnElm.firstChild)
               }
 
-              iconElm.className = icon;
+              iconElm.className = icon
             } else if (iconElm) {
-              btnElm.removeChild(iconElm);
+              btnElm.removeChild(iconElm)
             }
-          });
+          })
 
           if (self.state.get('checked')) {
-            checked(true);
+            checked(true)
           }
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * ResolveGlobal.js
  *
@@ -9863,10 +9863,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.VK');
+    function (resolve) {
+      return resolve('tinymce.util.VK')
     }
-  );
+  )
 
   /**
  * ComboBox.js
@@ -9897,8 +9897,8 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.ui.Widget'
     ],
-    function(document, DomQuery, Factory, Tools, VK, DomUtils, Widget) {
-      'use strict';
+    function (document, DomQuery, Factory, Tools, VK, DomUtils, Widget) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -9908,160 +9908,160 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {String} placeholder Placeholder text to display.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          settings = self.settings;
+          self._super(settings)
+          settings = self.settings
 
-          self.classes.add('combobox');
-          self.subinput = true;
-          self.ariaTarget = 'inp'; // TODO: Figure out a better way
+          self.classes.add('combobox')
+          self.subinput = true
+          self.ariaTarget = 'inp' // TODO: Figure out a better way
 
-          settings.menu = settings.menu || settings.values;
+          settings.menu = settings.menu || settings.values
 
           if (settings.menu) {
-            settings.icon = 'caret';
+            settings.icon = 'caret'
           }
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             let elm = e.target,
-              root = self.getEl();
+              root = self.getEl()
 
             if (!DomQuery.contains(root, elm) && elm != root) {
-              return;
+              return
             }
 
             while (elm && elm != root) {
               if (elm.id && elm.id.indexOf('-open') != -1) {
-                self.fire('action');
+                self.fire('action')
 
                 if (settings.menu) {
-                  self.showMenu();
+                  self.showMenu()
 
                   if (e.aria) {
-                    self.menu.items()[0].focus();
+                    self.menu.items()[0].focus()
                   }
                 }
               }
 
-              elm = elm.parentNode;
+              elm = elm.parentNode
             }
-          });
+          })
 
           // TODO: Rework this
-          self.on('keydown', function(e) {
-            let rootControl;
+          self.on('keydown', function (e) {
+            let rootControl
 
             if (e.keyCode == 13 && e.target.nodeName === 'INPUT') {
-              e.preventDefault();
+              e.preventDefault()
 
               // Find root control that we can do toJSON on
-              self.parents().reverse().each(function(ctrl) {
+              self.parents().reverse().each(function (ctrl) {
                 if (ctrl.toJSON) {
-                  rootControl = ctrl;
-                  return false;
+                  rootControl = ctrl
+                  return false
                 }
-              });
+              })
 
               // Fire event on current text box with the serialized data of the whole form
-              self.fire('submit', { data: rootControl.toJSON() });
+              self.fire('submit', { data: rootControl.toJSON() })
             }
-          });
+          })
 
-          self.on('keyup', function(e) {
+          self.on('keyup', function (e) {
             if (e.target.nodeName == 'INPUT') {
-              const oldValue = self.state.get('value');
-              const newValue = e.target.value;
+              const oldValue = self.state.get('value')
+              const newValue = e.target.value
 
               if (newValue !== oldValue) {
-                self.state.set('value', newValue);
-                self.fire('autocomplete', e);
+                self.state.set('value', newValue)
+                self.fire('autocomplete', e)
               }
             }
-          });
+          })
 
-          self.on('mouseover', function(e) {
-            const tooltip = self.tooltip().moveTo(-0xFFFF);
+          self.on('mouseover', function (e) {
+            const tooltip = self.tooltip().moveTo(-0xFFFF)
 
             if (self.statusLevel() && e.target.className.indexOf(self.classPrefix + 'status') !== -1) {
-              const statusMessage = self.statusMessage() || 'Ok';
-              const rel = tooltip.text(statusMessage).show().testMoveRel(e.target, ['bc-tc', 'bc-tl', 'bc-tr']);
+              const statusMessage = self.statusMessage() || 'Ok'
+              const rel = tooltip.text(statusMessage).show().testMoveRel(e.target, ['bc-tc', 'bc-tl', 'bc-tr'])
 
-              tooltip.classes.toggle('tooltip-n', rel == 'bc-tc');
-              tooltip.classes.toggle('tooltip-nw', rel == 'bc-tl');
-              tooltip.classes.toggle('tooltip-ne', rel == 'bc-tr');
+              tooltip.classes.toggle('tooltip-n', rel == 'bc-tc')
+              tooltip.classes.toggle('tooltip-nw', rel == 'bc-tl')
+              tooltip.classes.toggle('tooltip-ne', rel == 'bc-tr')
 
-              tooltip.moveRel(e.target, rel);
+              tooltip.moveRel(e.target, rel)
             }
-          });
+          })
         },
 
-        statusLevel(value) {
+        statusLevel (value) {
           if (arguments.length > 0) {
-            this.state.set('statusLevel', value);
+            this.state.set('statusLevel', value)
           }
 
-          return this.state.get('statusLevel');
+          return this.state.get('statusLevel')
         },
 
-        statusMessage(value) {
+        statusMessage (value) {
           if (arguments.length > 0) {
-            this.state.set('statusMessage', value);
+            this.state.set('statusMessage', value)
           }
 
-          return this.state.get('statusMessage');
+          return this.state.get('statusMessage')
         },
 
-        showMenu() {
+        showMenu () {
           let self = this,
             settings = self.settings,
-            menu;
+            menu
 
           if (!self.menu) {
-            menu = settings.menu || [];
+            menu = settings.menu || []
 
             // Is menu array then auto constuct menu control
             if (menu.length) {
               menu = {
                 type: 'menu',
                 items: menu
-              };
+              }
             } else {
-              menu.type = menu.type || 'menu';
+              menu.type = menu.type || 'menu'
             }
 
-            self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm());
-            self.fire('createmenu');
-            self.menu.reflow();
-            self.menu.on('cancel', function(e) {
+            self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm())
+            self.fire('createmenu')
+            self.menu.reflow()
+            self.menu.on('cancel', function (e) {
               if (e.control === self.menu) {
-                self.focus();
+                self.focus()
               }
-            });
+            })
 
-            self.menu.on('show hide', function(e) {
-              e.control.items().each(function(ctrl) {
-                ctrl.active(ctrl.value() == self.value());
-              });
-            }).fire('show');
+            self.menu.on('show hide', function (e) {
+              e.control.items().each(function (ctrl) {
+                ctrl.active(ctrl.value() == self.value())
+              })
+            }).fire('show')
 
-            self.menu.on('select', function(e) {
-              self.value(e.control.value());
-            });
+            self.menu.on('select', function (e) {
+              self.value(e.control.value())
+            })
 
-            self.on('focusin', function(e) {
+            self.on('focusin', function (e) {
               if (e.target.tagName.toUpperCase() == 'INPUT') {
-                self.menu.hide();
+                self.menu.hide()
               }
-            });
+            })
 
-            self.aria('expanded', true);
+            self.aria('expanded', true)
           }
 
-          self.menu.show();
-          self.menu.layoutRect({ w: self.layoutRect().w });
-          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl']);
+          self.menu.show()
+          self.menu.layoutRect({ w: self.layoutRect().w })
+          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl'])
         },
 
         /**
@@ -10069,8 +10069,8 @@ jsc */
        *
        * @method focus
        */
-        focus() {
-          this.getEl('inp').focus();
+        focus () {
+          this.getEl('inp').focus()
         },
 
         /**
@@ -10078,43 +10078,43 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             elm = self.getEl(),
             openElm = self.getEl('open'),
-            rect = self.layoutRect();
+            rect = self.layoutRect()
           let width,
             lineHeight,
             innerPadding = 0,
-            inputElm = elm.firstChild;
+            inputElm = elm.firstChild
 
           if (self.statusLevel() && self.statusLevel() !== 'none') {
             innerPadding = (
               parseInt(DomUtils.getRuntimeStyle(inputElm, 'padding-right'), 10) -
             parseInt(DomUtils.getRuntimeStyle(inputElm, 'padding-left'), 10)
-            );
+            )
           }
 
           if (openElm) {
-            width = rect.w - DomUtils.getSize(openElm).width - 10;
+            width = rect.w - DomUtils.getSize(openElm).width - 10
           } else {
-            width = rect.w - 10;
+            width = rect.w - 10
           }
 
           // Detect old IE 7+8 add lineHeight to align caret vertically in the middle
-          const doc = document;
+          const doc = document
           if (doc.all && (!doc.documentMode || doc.documentMode <= 8)) {
-            lineHeight = (self.layoutRect().h - 2) + 'px';
+            lineHeight = (self.layoutRect().h - 2) + 'px'
           }
 
           DomQuery(inputElm).css({
             width: width - innerPadding,
             lineHeight
-          });
+          })
 
-          self._super();
+          self._super()
 
-          return self;
+          return self
         },
 
         /**
@@ -10123,15 +10123,15 @@ jsc */
        * @method postRender
        * @return {tinymce.ui.ComboBox} Current combobox instance.
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          DomQuery(this.getEl('inp')).on('change', function(e) {
-            self.state.set('value', e.target.value);
-            self.fire('change', e);
-          });
+          DomQuery(this.getEl('inp')).on('change', function (e) {
+            self.state.set('value', e.target.value)
+            self.fire('change', e)
+          })
 
-          return self._super();
+          return self._super()
         },
 
         /**
@@ -10140,46 +10140,46 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
             settings = self.settings,
-            prefix = self.classPrefix;
-          const value = self.state.get('value') || '';
+            prefix = self.classPrefix
+          const value = self.state.get('value') || ''
           let icon,
             text,
             openBtnHtml = '',
             extraAttrs = '',
-            statusHtml = '';
+            statusHtml = ''
 
           if ('spellcheck' in settings) {
-            extraAttrs += ' spellcheck="' + settings.spellcheck + '"';
+            extraAttrs += ' spellcheck="' + settings.spellcheck + '"'
           }
 
           if (settings.maxLength) {
-            extraAttrs += ' maxlength="' + settings.maxLength + '"';
+            extraAttrs += ' maxlength="' + settings.maxLength + '"'
           }
 
           if (settings.size) {
-            extraAttrs += ' size="' + settings.size + '"';
+            extraAttrs += ' size="' + settings.size + '"'
           }
 
           if (settings.subtype) {
-            extraAttrs += ' type="' + settings.subtype + '"';
+            extraAttrs += ' type="' + settings.subtype + '"'
           }
 
-          statusHtml = '<i id="' + id + '-status" class="mce-status mce-ico" style="display: none"></i>';
+          statusHtml = '<i id="' + id + '-status" class="mce-status mce-ico" style="display: none"></i>'
 
           if (self.disabled()) {
-            extraAttrs += ' disabled="disabled"';
+            extraAttrs += ' disabled="disabled"'
           }
 
-          icon = settings.icon;
+          icon = settings.icon
           if (icon && icon != 'caret') {
-            icon = prefix + 'ico ' + prefix + 'i-' + settings.icon;
+            icon = prefix + 'ico ' + prefix + 'i-' + settings.icon
           }
 
-          text = self.state.get('text');
+          text = self.state.get('text')
 
           if (icon || text) {
             openBtnHtml = (
@@ -10189,9 +10189,9 @@ jsc */
             (text ? (icon ? ' ' : '') + text : '') +
             '</button>' +
             '</div>'
-            );
+            )
 
-            self.classes.add('has-open');
+            self.classes.add('has-open')
           }
 
           return (
@@ -10202,161 +10202,161 @@ jsc */
           statusHtml +
           openBtnHtml +
           '</div>'
-          );
+          )
         },
 
-        value(value) {
+        value (value) {
           if (arguments.length) {
-            this.state.set('value', value);
-            return this;
+            this.state.set('value', value)
+            return this
           }
 
           // Make sure the real state is in sync
           if (this.state.get('rendered')) {
-            this.state.set('value', this.getEl('inp').value);
+            this.state.set('value', this.getEl('inp').value)
           }
 
-          return this.state.get('value');
+          return this.state.get('value')
         },
 
-        showAutoComplete(items, term) {
-          const self = this;
+        showAutoComplete (items, term) {
+          const self = this
 
           if (items.length === 0) {
-            self.hideMenu();
-            return;
+            self.hideMenu()
+            return
           }
 
-          const insert = function(value, title) {
-            return function() {
+          const insert = function (value, title) {
+            return function () {
               self.fire('selectitem', {
                 title,
                 value
-              });
-            };
-          };
+              })
+            }
+          }
 
           if (self.menu) {
-            self.menu.items().remove();
+            self.menu.items().remove()
           } else {
             self.menu = Factory.create({
               type: 'menu',
               classes: 'combobox-menu',
               layout: 'flow'
-            }).parent(self).renderTo();
+            }).parent(self).renderTo()
           }
 
-          Tools.each(items, function(item) {
+          Tools.each(items, function (item) {
             self.menu.add({
               text: item.title,
               url: item.previewUrl,
               match: term,
               classes: 'menu-item-ellipsis',
               onclick: insert(item.value, item.title)
-            });
-          });
+            })
+          })
 
-          self.menu.renderNew();
-          self.hideMenu();
+          self.menu.renderNew()
+          self.hideMenu()
 
-          self.menu.on('cancel', function(e) {
+          self.menu.on('cancel', function (e) {
             if (e.control.parent() === self.menu) {
-              e.stopPropagation();
-              self.focus();
-              self.hideMenu();
+              e.stopPropagation()
+              self.focus()
+              self.hideMenu()
             }
-          });
+          })
 
-          self.menu.on('select', function() {
-            self.focus();
-          });
+          self.menu.on('select', function () {
+            self.focus()
+          })
 
-          const maxW = self.layoutRect().w;
-          self.menu.layoutRect({ w: maxW, minW: 0, maxW });
-          self.menu.reflow();
-          self.menu.show();
-          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl']);
+          const maxW = self.layoutRect().w
+          self.menu.layoutRect({ w: maxW, minW: 0, maxW })
+          self.menu.reflow()
+          self.menu.show()
+          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl'])
         },
 
-        hideMenu() {
+        hideMenu () {
           if (this.menu) {
-            this.menu.hide();
+            this.menu.hide()
           }
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:value', function(e) {
+          self.state.on('change:value', function (e) {
             if (self.getEl('inp').value != e.value) {
-              self.getEl('inp').value = e.value;
+              self.getEl('inp').value = e.value
             }
-          });
+          })
 
-          self.state.on('change:disabled', function(e) {
-            self.getEl('inp').disabled = e.value;
-          });
+          self.state.on('change:disabled', function (e) {
+            self.getEl('inp').disabled = e.value
+          })
 
-          self.state.on('change:statusLevel', function(e) {
-            const statusIconElm = self.getEl('status');
+          self.state.on('change:statusLevel', function (e) {
+            const statusIconElm = self.getEl('status')
             let prefix = self.classPrefix,
-              value = e.value;
+              value = e.value
 
-            DomUtils.css(statusIconElm, 'display', value === 'none' ? 'none' : '');
-            DomUtils.toggleClass(statusIconElm, prefix + 'i-checkmark', value === 'ok');
-            DomUtils.toggleClass(statusIconElm, prefix + 'i-warning', value === 'warn');
-            DomUtils.toggleClass(statusIconElm, prefix + 'i-error', value === 'error');
-            self.classes.toggle('has-status', value !== 'none');
-            self.repaint();
-          });
+            DomUtils.css(statusIconElm, 'display', value === 'none' ? 'none' : '')
+            DomUtils.toggleClass(statusIconElm, prefix + 'i-checkmark', value === 'ok')
+            DomUtils.toggleClass(statusIconElm, prefix + 'i-warning', value === 'warn')
+            DomUtils.toggleClass(statusIconElm, prefix + 'i-error', value === 'error')
+            self.classes.toggle('has-status', value !== 'none')
+            self.repaint()
+          })
 
-          DomUtils.on(self.getEl('status'), 'mouseleave', function() {
-            self.tooltip().hide();
-          });
+          DomUtils.on(self.getEl('status'), 'mouseleave', function () {
+            self.tooltip().hide()
+          })
 
-          self.on('cancel', function(e) {
+          self.on('cancel', function (e) {
             if (self.menu && self.menu.visible()) {
-              e.stopPropagation();
-              self.hideMenu();
+              e.stopPropagation()
+              self.hideMenu()
             }
-          });
+          })
 
-          const focusIdx = function(idx, menu) {
+          const focusIdx = function (idx, menu) {
             if (menu && menu.items().length > 0) {
-              menu.items().eq(idx)[0].focus();
+              menu.items().eq(idx)[0].focus()
             }
-          };
+          }
 
-          self.on('keydown', function(e) {
-            const keyCode = e.keyCode;
+          self.on('keydown', function (e) {
+            const keyCode = e.keyCode
 
             if (e.target.nodeName === 'INPUT') {
               if (keyCode === VK.DOWN) {
-                e.preventDefault();
-                self.fire('autocomplete');
-                focusIdx(0, self.menu);
+                e.preventDefault()
+                self.fire('autocomplete')
+                focusIdx(0, self.menu)
               } else if (keyCode === VK.UP) {
-                e.preventDefault();
-                focusIdx(-1, self.menu);
+                e.preventDefault()
+                focusIdx(-1, self.menu)
               }
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         },
 
-        remove() {
-          DomQuery(this.getEl('inp')).off();
+        remove () {
+          DomQuery(this.getEl('inp')).off()
 
           if (this.menu) {
-            this.menu.remove();
+            this.menu.remove()
           }
 
-          this._super();
+          this._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * ColorBox.js
  *
@@ -10380,8 +10380,8 @@ jsc */
     [
       'tinymce.ui.ComboBox'
     ],
-    function(ComboBox) {
-      'use strict';
+    function (ComboBox) {
+      'use strict'
 
       return ComboBox.extend({
       /**
@@ -10390,50 +10390,50 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          settings.spellcheck = false;
+          settings.spellcheck = false
 
           if (settings.onaction) {
-            settings.icon = 'none';
+            settings.icon = 'none'
           }
 
-          self._super(settings);
+          self._super(settings)
 
-          self.classes.add('colorbox');
-          self.on('change keyup postrender', function() {
-            self.repaintColor(self.value());
-          });
+          self.classes.add('colorbox')
+          self.on('change keyup postrender', function () {
+            self.repaintColor(self.value())
+          })
         },
 
-        repaintColor(value) {
-          const openElm = this.getEl('open');
-          const elm = openElm ? openElm.getElementsByTagName('i')[0] : null;
+        repaintColor (value) {
+          const openElm = this.getEl('open')
+          const elm = openElm ? openElm.getElementsByTagName('i')[0] : null
 
           if (elm) {
             try {
-              elm.style.background = value;
+              elm.style.background = value
             } catch (ex) {
             // Ignore
             }
           }
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:value', function(e) {
+          self.state.on('change:value', function (e) {
             if (self.state.get('rendered')) {
-              self.repaintColor(e.value);
+              self.repaintColor(e.value)
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * PanelButton.js
  *
@@ -10456,8 +10456,8 @@ jsc */
       'tinymce.ui.Button',
       'tinymce.ui.FloatPanel'
     ],
-    function(Button, FloatPanel) {
-      'use strict';
+    function (Button, FloatPanel) {
+      'use strict'
 
       return Button.extend({
       /**
@@ -10465,14 +10465,14 @@ jsc */
        *
        * @method showPanel
        */
-        showPanel() {
+        showPanel () {
           let self = this,
-            settings = self.settings;
+            settings = self.settings
 
-          self.classes.add('opened');
+          self.classes.add('opened')
 
           if (!self.panel) {
-            let panelSettings = settings.panel;
+            let panelSettings = settings.panel
 
             // Wrap panel in grid layout if type if specified
             // This makes it possible to add forms or other containers directly in the panel option
@@ -10480,36 +10480,36 @@ jsc */
               panelSettings = {
                 layout: 'grid',
                 items: panelSettings
-              };
+              }
             }
 
-            panelSettings.role = panelSettings.role || 'dialog';
-            panelSettings.popover = true;
-            panelSettings.autohide = true;
-            panelSettings.ariaRoot = true;
+            panelSettings.role = panelSettings.role || 'dialog'
+            panelSettings.popover = true
+            panelSettings.autohide = true
+            panelSettings.ariaRoot = true
 
-            self.panel = new FloatPanel(panelSettings).on('hide', function() {
-              self.classes.remove('opened');
-            }).on('cancel', function(e) {
-              e.stopPropagation();
-              self.focus();
-              self.hidePanel();
+            self.panel = new FloatPanel(panelSettings).on('hide', function () {
+              self.classes.remove('opened')
+            }).on('cancel', function (e) {
+              e.stopPropagation()
+              self.focus()
+              self.hidePanel()
             })
               .parent(self)
-              .renderTo(self.getContainerElm());
+              .renderTo(self.getContainerElm())
 
-            self.panel.fire('show');
-            self.panel.reflow();
+            self.panel.fire('show')
+            self.panel.reflow()
           } else {
-            self.panel.show();
+            self.panel.show()
           }
 
-          const rel = self.panel.testMoveRel(self.getEl(), settings.popoverAlign || (self.isRtl() ? ['bc-tc', 'bc-tl', 'bc-tr'] : ['bc-tc', 'bc-tr', 'bc-tl']));
+          const rel = self.panel.testMoveRel(self.getEl(), settings.popoverAlign || (self.isRtl() ? ['bc-tc', 'bc-tl', 'bc-tr'] : ['bc-tc', 'bc-tr', 'bc-tl']))
 
-          self.panel.classes.toggle('start', rel === 'bc-tl');
-          self.panel.classes.toggle('end', rel === 'bc-tr');
+          self.panel.classes.toggle('start', rel === 'bc-tl')
+          self.panel.classes.toggle('end', rel === 'bc-tr')
 
-          self.panel.moveRel(self.getEl(), rel);
+          self.panel.moveRel(self.getEl(), rel)
         },
 
         /**
@@ -10517,11 +10517,11 @@ jsc */
        *
        * @method hidePanel
        */
-        hidePanel() {
-          const self = this;
+        hidePanel () {
+          const self = this
 
           if (self.panel) {
-            self.panel.hide();
+            self.panel.hide()
           }
         },
 
@@ -10530,36 +10530,36 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self.aria('haspopup', true);
+          self.aria('haspopup', true)
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             if (e.control === self) {
               if (self.panel && self.panel.visible()) {
-                self.hidePanel();
+                self.hidePanel()
               } else {
-                self.showPanel();
-                self.panel.focus(!!e.aria);
+                self.showPanel()
+                self.panel.focus(!!e.aria)
               }
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         },
 
-        remove() {
+        remove () {
           if (this.panel) {
-            this.panel.remove();
-            this.panel = null;
+            this.panel.remove()
+            this.panel = null
           }
 
-          return this._super();
+          return this._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * ColorButton.js
  *
@@ -10585,10 +10585,10 @@ jsc */
       'tinymce.ui.PanelButton',
       'tinymce.core.dom.DOMUtils'
     ],
-    function(PanelButton, DomUtils) {
-      'use strict';
+    function (PanelButton, DomUtils) {
+      'use strict'
 
-      const DOM = DomUtils.DOM;
+      const DOM = DomUtils.DOM
 
       return PanelButton.extend({
       /**
@@ -10597,10 +10597,10 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          this._super(settings);
-          this.classes.add('splitbtn');
-          this.classes.add('colorbutton');
+        init (settings) {
+          this._super(settings)
+          this.classes.add('splitbtn')
+          this.classes.add('colorbutton')
         },
 
         /**
@@ -10610,14 +10610,14 @@ jsc */
        * @param {String} [color] Color to set.
        * @return {String|tinymce.ui.ColorButton} Current color or current instance.
        */
-        color(color) {
+        color (color) {
           if (color) {
-            this._color = color;
-            this.getEl('preview').style.backgroundColor = color;
-            return this;
+            this._color = color
+            this.getEl('preview').style.backgroundColor = color
+            return this
           }
 
-          return this._color;
+          return this._color
         },
 
         /**
@@ -10626,10 +10626,10 @@ jsc */
        * @method resetColor
        * @return {tinymce.ui.ColorButton} Current instance.
        */
-        resetColor() {
-          this._color = null;
-          this.getEl('preview').style.backgroundColor = null;
-          return this;
+        resetColor () {
+          this._color = null
+          this.getEl('preview').style.backgroundColor = null
+          return this
         },
 
         /**
@@ -10638,18 +10638,18 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
             prefix = self.classPrefix,
-            text = self.state.get('text');
-          const icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
+            text = self.state.get('text')
+          const icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : ''
           let image = self.settings.image ? ' style="background-image: url(\'' + self.settings.image + '\')"' : '',
-            textHtml = '';
+            textHtml = ''
 
           if (text) {
-            self.classes.add('btn-has-text');
-            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+            self.classes.add('btn-has-text')
+            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>'
           }
 
           return (
@@ -10663,7 +10663,7 @@ jsc */
           ' <i class="' + prefix + 'caret"></i>' +
           '</button>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -10671,28 +10671,28 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
+        postRender () {
           let self = this,
-            onClickHandler = self.settings.onclick;
+            onClickHandler = self.settings.onclick
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             if (e.aria && e.aria.key === 'down') {
-              return;
+              return
             }
 
             if (e.control == self && !DOM.getParent(e.target, '.' + self.classPrefix + 'open')) {
-              e.stopImmediatePropagation();
-              onClickHandler.call(self, e);
+              e.stopImmediatePropagation()
+              onClickHandler.call(self, e)
             }
-          });
+          })
 
-          delete self.settings.onclick;
+          delete self.settings.onclick
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * ResolveGlobal.js
@@ -10709,10 +10709,10 @@ jsc */
     [
       'global!tinymce.util.Tools.resolve'
     ],
-    function(resolve) {
-      return resolve('tinymce.util.Color');
+    function (resolve) {
+      return resolve('tinymce.util.Color')
     }
-  );
+  )
 
   /**
  * ColorPicker.js
@@ -10739,8 +10739,8 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.core.util.Color'
     ],
-    function(Widget, DragHelper, DomUtils, Color) {
-      'use strict';
+    function (Widget, DragHelper, DomUtils, Color) {
+      'use strict'
 
       return Widget.extend({
         Defaults: {
@@ -10754,124 +10754,124 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {String} color Initial color value.
        */
-        init(settings) {
-          this._super(settings);
+        init (settings) {
+          this._super(settings)
         },
 
-        postRender() {
+        postRender () {
           let self = this,
             color = self.color(),
             hsv,
             hueRootElm,
             huePointElm,
             svRootElm,
-            svPointElm;
+            svPointElm
 
-          hueRootElm = self.getEl('h');
-          huePointElm = self.getEl('hp');
-          svRootElm = self.getEl('sv');
-          svPointElm = self.getEl('svp');
+          hueRootElm = self.getEl('h')
+          huePointElm = self.getEl('hp')
+          svRootElm = self.getEl('sv')
+          svPointElm = self.getEl('svp')
 
-          function getPos(elm, event) {
+          function getPos (elm, event) {
             let pos = DomUtils.getPos(elm),
               x,
-              y;
+              y
 
-            x = event.pageX - pos.x;
-            y = event.pageY - pos.y;
+            x = event.pageX - pos.x
+            y = event.pageY - pos.y
 
-            x = Math.max(0, Math.min(x / elm.clientWidth, 1));
-            y = Math.max(0, Math.min(y / elm.clientHeight, 1));
+            x = Math.max(0, Math.min(x / elm.clientWidth, 1))
+            y = Math.max(0, Math.min(y / elm.clientHeight, 1))
 
             return {
               x,
               y
-            };
+            }
           }
 
-          function updateColor(hsv, hueUpdate) {
-            const hue = (360 - hsv.h) / 360;
+          function updateColor (hsv, hueUpdate) {
+            const hue = (360 - hsv.h) / 360
 
             DomUtils.css(huePointElm, {
               top: (hue * 100) + '%'
-            });
+            })
 
             if (!hueUpdate) {
               DomUtils.css(svPointElm, {
                 left: hsv.s + '%',
                 top: (100 - hsv.v) + '%'
-              });
+              })
             }
 
-            svRootElm.style.background = new Color({ s: 100, v: 100, h: hsv.h }).toHex();
-            self.color().parse({ s: hsv.s, v: hsv.v, h: hsv.h });
+            svRootElm.style.background = new Color({ s: 100, v: 100, h: hsv.h }).toHex()
+            self.color().parse({ s: hsv.s, v: hsv.v, h: hsv.h })
           }
 
-          function updateSaturationAndValue(e) {
-            let pos;
+          function updateSaturationAndValue (e) {
+            let pos
 
-            pos = getPos(svRootElm, e);
-            hsv.s = pos.x * 100;
-            hsv.v = (1 - pos.y) * 100;
+            pos = getPos(svRootElm, e)
+            hsv.s = pos.x * 100
+            hsv.v = (1 - pos.y) * 100
 
-            updateColor(hsv);
-            self.fire('change');
+            updateColor(hsv)
+            self.fire('change')
           }
 
-          function updateHue(e) {
-            let pos;
+          function updateHue (e) {
+            let pos
 
-            pos = getPos(hueRootElm, e);
-            hsv = color.toHsv();
-            hsv.h = (1 - pos.y) * 360;
-            updateColor(hsv, true);
-            self.fire('change');
+            pos = getPos(hueRootElm, e)
+            hsv = color.toHsv()
+            hsv.h = (1 - pos.y) * 360
+            updateColor(hsv, true)
+            self.fire('change')
           }
 
-          self._repaint = function() {
-            hsv = color.toHsv();
-            updateColor(hsv);
-          };
+          self._repaint = function () {
+            hsv = color.toHsv()
+            updateColor(hsv)
+          }
 
-          self._super();
+          self._super()
 
           self._svdraghelper = new DragHelper(self._id + '-sv', {
             start: updateSaturationAndValue,
             drag: updateSaturationAndValue
-          });
+          })
 
           self._hdraghelper = new DragHelper(self._id + '-h', {
             start: updateHue,
             drag: updateHue
-          });
+          })
 
-          self._repaint();
+          self._repaint()
         },
 
-        rgb() {
-          return this.color().toRgb();
+        rgb () {
+          return this.color().toRgb()
         },
 
-        value(value) {
-          const self = this;
+        value (value) {
+          const self = this
 
           if (arguments.length) {
-            self.color().parse(value);
+            self.color().parse(value)
 
             if (self._rendered) {
-              self._repaint();
+              self._repaint()
             }
           } else {
-            return self.color().toHex();
+            return self.color().toHex()
           }
         },
 
-        color() {
+        color () {
           if (!this._color) {
-            this._color = new Color();
+            this._color = new Color()
           }
 
-          return this._color;
+          return this._color
         },
 
         /**
@@ -10880,22 +10880,22 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
             prefix = self.classPrefix,
-            hueHtml;
-          const stops = '#ff0000,#ff0080,#ff00ff,#8000ff,#0000ff,#0080ff,#00ffff,#00ff80,#00ff00,#80ff00,#ffff00,#ff8000,#ff0000';
+            hueHtml
+          const stops = '#ff0000,#ff0080,#ff00ff,#8000ff,#0000ff,#0080ff,#00ffff,#00ff80,#00ff00,#80ff00,#ffff00,#ff8000,#ff0000'
 
-          function getOldIeFallbackHtml() {
+          function getOldIeFallbackHtml () {
             let i,
               l,
               html = '',
               gradientPrefix,
-              stopsList;
+              stopsList
 
-            gradientPrefix = 'filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=';
-            stopsList = stops.split(',');
+            gradientPrefix = 'filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='
+            stopsList = stops.split(',')
             for (i = 0, l = stopsList.length - 1; i < l; i++) {
               html += (
                 '<div class="' + prefix + 'colorpicker-h-chunk" style="' +
@@ -10903,23 +10903,23 @@ jsc */
               gradientPrefix + stopsList[i] + ',endColorstr=' + stopsList[i + 1] + ');' +
               '-ms-' + gradientPrefix + stopsList[i] + ',endColorstr=' + stopsList[i + 1] + ')' +
               '"></div>'
-              );
+              )
             }
 
-            return html;
+            return html
           }
 
           const gradientCssText = (
             'background: -ms-linear-gradient(top,' + stops + ');' +
           'background: linear-gradient(to bottom,' + stops + ');'
-          );
+          )
 
           hueHtml = (
             '<div id="' + id + '-h" class="' + prefix + 'colorpicker-h" style="' + gradientCssText + '">' +
           getOldIeFallbackHtml() +
           '<div id="' + id + '-hp" class="' + prefix + 'colorpicker-h-marker"></div>' +
           '</div>'
-          );
+          )
 
           return (
             '<div id="' + id + '" class="' + self.classes + '">' +
@@ -10934,11 +10934,11 @@ jsc */
           '</div>' +
           hueHtml +
           '</div>'
-          );
+          )
         }
-      });
+      })
     }
-  );
+  )
   /**
  * DropZone.js
  *
@@ -10964,7 +10964,7 @@ jsc */
       'tinymce.ui.DomUtils',
       'global!RegExp'
     ],
-    function(Widget, Tools, DomUtils, RegExp) {
+    function (Widget, Tools, DomUtils, RegExp) {
       return Widget.extend({
       /**
        * Constructs a instance with the specified settings.
@@ -10975,22 +10975,22 @@ jsc */
        * @setting {Number} maxLength Max length for the dropzone.
        * @setting {Number} size Size of the dropzone in characters.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
           settings = Tools.extend({
             height: 100,
             text: 'Drop an image here',
             multiple: false,
             accept: null // by default accept any files
-          }, settings);
+          }, settings)
 
-          self._super(settings);
+          self._super(settings)
 
-          self.classes.add('dropzone');
+          self.classes.add('dropzone')
 
           if (settings.multiple) {
-            self.classes.add('multiple');
+            self.classes.add('multiple')
           }
         },
 
@@ -11000,30 +11000,30 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             attrs,
-            elm;
-          const cfg = self.settings;
+            elm
+          const cfg = self.settings
 
           attrs = {
             id: self._id,
             hidefocus: '1'
-          };
+          }
 
-          elm = DomUtils.create('div', attrs, '<span>' + this.translate(cfg.text) + '</span>');
+          elm = DomUtils.create('div', attrs, '<span>' + this.translate(cfg.text) + '</span>')
 
           if (cfg.height) {
-            DomUtils.css(elm, 'height', cfg.height + 'px');
+            DomUtils.css(elm, 'height', cfg.height + 'px')
           }
 
           if (cfg.width) {
-            DomUtils.css(elm, 'width', cfg.width + 'px');
+            DomUtils.css(elm, 'width', cfg.width + 'px')
           }
 
-          elm.className = self.classes;
+          elm.className = self.classes
 
-          return elm.outerHTML;
+          return elm.outerHTML
         },
 
         /**
@@ -11031,68 +11031,68 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          const toggleDragClass = function(e) {
-            e.preventDefault();
-            self.classes.toggle('dragenter');
-            self.getEl().className = self.classes;
-          };
+          const toggleDragClass = function (e) {
+            e.preventDefault()
+            self.classes.toggle('dragenter')
+            self.getEl().className = self.classes
+          }
 
-          const filter = function(files) {
-            const accept = self.settings.accept;
+          const filter = function (files) {
+            const accept = self.settings.accept
             if (typeof accept !== 'string') {
-              return files;
+              return files
             }
 
-            const re = new RegExp('(' + accept.split(/\s*,\s*/).join('|') + ')$', 'i');
-            return Tools.grep(files, function(file) {
-              return re.test(file.name);
-            });
-          };
+            const re = new RegExp('(' + accept.split(/\s*,\s*/).join('|') + ')$', 'i')
+            return Tools.grep(files, function (file) {
+              return re.test(file.name)
+            })
+          }
 
-          self._super();
+          self._super()
 
-          self.$el.on('dragover', function(e) {
-            e.preventDefault();
-          });
+          self.$el.on('dragover', function (e) {
+            e.preventDefault()
+          })
 
-          self.$el.on('dragenter', toggleDragClass);
-          self.$el.on('dragleave', toggleDragClass);
+          self.$el.on('dragenter', toggleDragClass)
+          self.$el.on('dragleave', toggleDragClass)
 
-          self.$el.on('drop', function(e) {
-            e.preventDefault();
+          self.$el.on('drop', function (e) {
+            e.preventDefault()
 
             if (self.state.get('disabled')) {
-              return;
+              return
             }
 
-            const files = filter(e.dataTransfer.files);
+            const files = filter(e.dataTransfer.files)
 
-            self.value = function() {
+            self.value = function () {
               if (!files.length) {
-                return null;
+                return null
               } else if (self.settings.multiple) {
-                return files;
+                return files
               } else {
-                return files[0];
+                return files[0]
               }
-            };
+            }
 
             if (files.length) {
-              self.fire('change', e);
+              self.fire('change', e)
             }
-          });
+          })
         },
 
-        remove() {
-          this.$el.off();
-          this._super();
+        remove () {
+          this.$el.off()
+          this._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Path.js
@@ -11116,8 +11116,8 @@ jsc */
     [
       'tinymce.ui.Widget'
     ],
-    function(Widget) {
-      'use strict';
+    function (Widget) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -11127,27 +11127,27 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {String} delimiter Delimiter to display between row in path.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
           if (!settings.delimiter) {
-            settings.delimiter = '\u00BB';
+            settings.delimiter = '\u00BB'
           }
 
-          self._super(settings);
-          self.classes.add('path');
-          self.canFocus = true;
+          self._super(settings)
+          self.classes.add('path')
+          self.canFocus = true
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             let index,
-              target = e.target;
+              target = e.target
 
             if ((index = target.getAttribute('data-index'))) {
-              self.fire('select', { value: self.row()[index], index });
+              self.fire('select', { value: self.row()[index], index })
             }
-          });
+          })
 
-          self.row(self.settings.row);
+          self.row(self.settings.row)
         },
 
         /**
@@ -11156,12 +11156,12 @@ jsc */
        * @method focus
        * @return {tinymce.ui.Control} Current control instance.
        */
-        focus() {
-          const self = this;
+        focus () {
+          const self = this
 
-          self.getEl().firstChild.focus();
+          self.getEl().firstChild.focus()
 
-          return self;
+          return self
         },
 
         /**
@@ -11170,14 +11170,14 @@ jsc */
        * @method row
        * @param {Array} row Array with row name is rendered to path.
        */
-        row(row) {
+        row (row) {
           if (!arguments.length) {
-            return this.state.get('row');
+            return this.state.get('row')
           }
 
-          this.state.set('row', row);
+          this.state.set('row', row)
 
-          return this;
+          return this
         },
 
         /**
@@ -11186,51 +11186,51 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
-          const self = this;
+        renderHtml () {
+          const self = this
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '">' +
           self._getDataPathHtml(self.state.get('row')) +
           '</div>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:row', function(e) {
-            self.innerHtml(self._getDataPathHtml(e.value));
-          });
+          self.state.on('change:row', function (e) {
+            self.innerHtml(self._getDataPathHtml(e.value))
+          })
 
-          return self._super();
+          return self._super()
         },
 
-        _getDataPathHtml(data) {
+        _getDataPathHtml (data) {
           let self = this,
             parts = data || [],
             i,
             l,
             html = '',
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
           for (i = 0, l = parts.length; i < l; i++) {
             html += (
               (i > 0 ? '<div class="' + prefix + 'divider" aria-hidden="true"> ' + self.settings.delimiter + ' </div>' : '') +
             '<div role="button" class="' + prefix + 'path-item' + (i == l - 1 ? ' ' + prefix + 'last' : '') + '" data-index="' +
             i + '" tabindex="-1" id="' + self._id + '-' + i + '" aria-level="' + (i + 1) + '">' + parts[i].name + '</div>'
-            );
+            )
           }
 
           if (!html) {
-            html = '<div class="' + prefix + 'path-item">\u00a0</div>';
+            html = '<div class="' + prefix + 'path-item">\u00a0</div>'
           }
 
-          return html;
+          return html
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * ElementPath.js
@@ -11253,7 +11253,7 @@ jsc */
     [
       'tinymce.ui.Path'
     ],
-    function(Path) {
+    function (Path) {
       return Path.extend({
       /**
        * Post render method. Called after the control has been rendered to the target.
@@ -11261,62 +11261,62 @@ jsc */
        * @method postRender
        * @return {tinymce.ui.ElementPath} Current combobox instance.
        */
-        postRender() {
+        postRender () {
           let self = this,
-            editor = self.settings.editor;
+            editor = self.settings.editor
 
-          function isHidden(elm) {
+          function isHidden (elm) {
             if (elm.nodeType === 1) {
               if (elm.nodeName == 'BR' || !!elm.getAttribute('data-mce-bogus')) {
-                return true;
+                return true
               }
 
               if (elm.getAttribute('data-mce-type') === 'bookmark') {
-                return true;
+                return true
               }
             }
 
-            return false;
+            return false
           }
 
           if (editor.settings.elementpath !== false) {
-            self.on('select', function(e) {
-              editor.focus();
-              editor.selection.select(this.row()[e.index].element);
-              editor.nodeChanged();
-            });
+            self.on('select', function (e) {
+              editor.focus()
+              editor.selection.select(this.row()[e.index].element)
+              editor.nodeChanged()
+            })
 
-            editor.on('nodeChange', function(e) {
+            editor.on('nodeChange', function (e) {
               let outParents = [],
                 parents = e.parents,
-                i = parents.length;
+                i = parents.length
 
               while (i--) {
                 if (parents[i].nodeType == 1 && !isHidden(parents[i])) {
                   const args = editor.fire('ResolveName', {
                     name: parents[i].nodeName.toLowerCase(),
                     target: parents[i]
-                  });
+                  })
 
                   if (!args.isDefaultPrevented()) {
-                    outParents.push({ name: args.name, element: parents[i] });
+                    outParents.push({ name: args.name, element: parents[i] })
                   }
 
                   if (args.isPropagationStopped()) {
-                    break;
+                    break
                   }
                 }
               }
 
-              self.row(outParents);
-            });
+              self.row(outParents)
+            })
           }
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * FormItem.js
  *
@@ -11340,8 +11340,8 @@ jsc */
     [
       'tinymce.ui.Container'
     ],
-    function(Container) {
-      'use strict';
+    function (Container) {
+      'use strict'
 
       return Container.extend({
         Defaults: {
@@ -11358,13 +11358,13 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
-          self.classes.add('formitem');
-          layout.preRender(self);
+          self.classes.add('formitem')
+          layout.preRender(self)
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '" hidefocus="1" tabindex="-1">' +
@@ -11374,11 +11374,11 @@ jsc */
           (self.settings.html || '') + layout.renderHtml(self) +
           '</div>' +
           '</div>'
-          );
+          )
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Form.js
  *
@@ -11413,8 +11413,8 @@ jsc */
       'tinymce.ui.FormItem',
       'tinymce.core.util.Tools'
     ],
-    function(Container, FormItem, Tools) {
-      'use strict';
+    function (Container, FormItem, Tools) {
+      'use strict'
 
       return Container.extend({
         Defaults: {
@@ -11427,8 +11427,8 @@ jsc */
           labelGap: 30,
           spacing: 10,
           callbacks: {
-            submit() {
-              this.submit();
+            submit () {
+              this.submit()
             }
           }
         },
@@ -11438,22 +11438,22 @@ jsc */
        *
        * @method preRender
        */
-        preRender() {
+        preRender () {
           let self = this,
-            items = self.items();
+            items = self.items()
 
           if (!self.settings.formItemDefaults) {
             self.settings.formItemDefaults = {
               layout: 'flex',
               autoResize: 'overflow',
               defaults: { flex: 1 }
-            };
+            }
           }
 
           // Wrap any labeled items in FormItems
-          items.each(function(ctrl) {
+          items.each(function (ctrl) {
             let formItem,
-              label = ctrl.settings.label;
+              label = ctrl.settings.label
 
             if (label) {
               formItem = new FormItem(Tools.extend({
@@ -11465,19 +11465,19 @@ jsc */
                   forId: ctrl._id,
                   disabled: ctrl.disabled()
                 }
-              }, self.settings.formItemDefaults));
+              }, self.settings.formItemDefaults))
 
-              formItem.type = 'formitem';
-              ctrl.aria('labelledby', ctrl._id + '-l');
+              formItem.type = 'formitem'
+              ctrl.aria('labelledby', ctrl._id + '-l')
 
               if (typeof ctrl.settings.flex === 'undefined') {
-                ctrl.settings.flex = 1;
+                ctrl.settings.flex = 1
               }
 
-              self.replace(ctrl, formItem);
-              formItem.add(ctrl);
+              self.replace(ctrl, formItem)
+              formItem.add(ctrl)
             }
-          });
+          })
         },
 
         /**
@@ -11486,8 +11486,8 @@ jsc */
        * @method submit
        * @return {Object} Event arguments object.
        */
-        submit() {
-          return this.fire('submit', { data: this.toJSON() });
+        submit () {
+          return this.fire('submit', { data: this.toJSON() })
         },
 
         /**
@@ -11496,57 +11496,57 @@ jsc */
        * @method postRender
        * @return {tinymce.ui.ComboBox} Current combobox instance.
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self._super();
-          self.fromJSON(self.settings.data);
+          self._super()
+          self.fromJSON(self.settings.data)
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self._super();
+          self._super()
 
-          function recalcLabels() {
+          function recalcLabels () {
             let maxLabelWidth = 0,
               labels = [],
               i,
               labelGap,
-              items;
+              items
 
             if (self.settings.labelGapCalc === false) {
-              return;
+              return
             }
 
             if (self.settings.labelGapCalc == 'children') {
-              items = self.find('formitem');
+              items = self.find('formitem')
             } else {
-              items = self.items();
+              items = self.items()
             }
 
-            items.filter('formitem').each(function(item) {
+            items.filter('formitem').each(function (item) {
               let labelCtrl = item.items()[0],
-                labelWidth = labelCtrl.getEl().clientWidth;
+                labelWidth = labelCtrl.getEl().clientWidth
 
-              maxLabelWidth = labelWidth > maxLabelWidth ? labelWidth : maxLabelWidth;
-              labels.push(labelCtrl);
-            });
+              maxLabelWidth = labelWidth > maxLabelWidth ? labelWidth : maxLabelWidth
+              labels.push(labelCtrl)
+            })
 
-            labelGap = self.settings.labelGap || 0;
+            labelGap = self.settings.labelGap || 0
 
-            i = labels.length;
+            i = labels.length
             while (i--) {
-              labels[i].settings.minWidth = maxLabelWidth + labelGap;
+              labels[i].settings.minWidth = maxLabelWidth + labelGap
             }
           }
 
-          self.on('show', recalcLabels);
-          recalcLabels();
+          self.on('show', recalcLabels)
+          recalcLabels()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * FieldSet.js
  *
@@ -11569,8 +11569,8 @@ jsc */
     [
       'tinymce.ui.Form'
     ],
-    function(Form) {
-      'use strict';
+    function (Form) {
+      'use strict'
 
       return Form.extend({
         Defaults: {
@@ -11591,13 +11591,13 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
-          self.preRender();
-          layout.preRender(self);
+          self.preRender()
+          layout.preRender(self)
 
           return (
             '<fieldset id="' + self._id + '" class="' + self.classes + '" hidefocus="1" tabindex="-1">' +
@@ -11607,13 +11607,13 @@ jsc */
           (self.settings.html || '') + layout.renderHtml(self) +
           '</div>' +
           '</fieldset>'
-          );
+          )
         }
-      });
+      })
     }
-  );
-  defineGlobal('global!Date', Date);
-  defineGlobal('global!Math', Math);
+  )
+  defineGlobal('global!Date', Date)
+  defineGlobal('global!Math', Math)
   define(
     'ephox.katamari.api.Id',
     [
@@ -11622,7 +11622,7 @@ jsc */
       'global!String'
     ],
 
-    function(Date, Math, String) {
+    function (Date, Math, String) {
     /**
      * Generate a unique identifier.
      *
@@ -11634,25 +11634,25 @@ jsc */
      *
      * generate :: String -> String
      */
-      let unique = 0;
+      let unique = 0
 
-      const generate = function(prefix) {
-        const date = new Date();
-        const time = date.getTime();
-        const random = Math.floor(Math.random() * 1000000000);
+      const generate = function (prefix) {
+        const date = new Date()
+        const time = date.getTime()
+        const random = Math.floor(Math.random() * 1000000000)
 
-        unique++;
+        unique++
 
-        return prefix + '_' + random + unique + String(time);
-      };
+        return prefix + '_' + random + unique + String(time)
+      }
 
       return {
         generate
-      };
+      }
     }
-  );
+  )
 
-  define('global!console', [], function() { if (typeof console === 'undefined') console = { log() {} }; return console; });
+  define('global!console', [], function () { if (typeof console === 'undefined') console = { log () {} }; return console })
   define(
     'ephox.sugar.api.node.Element',
 
@@ -11663,45 +11663,45 @@ jsc */
       'global!document'
     ],
 
-    function(Fun, Error, console, document) {
-      const fromHtml = function(html, scope) {
-        const doc = scope || document;
-        const div = doc.createElement('div');
-        div.innerHTML = html;
+    function (Fun, Error, console, document) {
+      const fromHtml = function (html, scope) {
+        const doc = scope || document
+        const div = doc.createElement('div')
+        div.innerHTML = html
         if (!div.hasChildNodes() || div.childNodes.length > 1) {
-          console.error('HTML does not have a single root node', html);
-          throw 'HTML must have a single root node';
+          console.error('HTML does not have a single root node', html)
+          throw 'HTML must have a single root node'
         }
-        return fromDom(div.childNodes[0]);
-      };
+        return fromDom(div.childNodes[0])
+      }
 
-      const fromTag = function(tag, scope) {
-        const doc = scope || document;
-        const node = doc.createElement(tag);
-        return fromDom(node);
-      };
+      const fromTag = function (tag, scope) {
+        const doc = scope || document
+        const node = doc.createElement(tag)
+        return fromDom(node)
+      }
 
-      const fromText = function(text, scope) {
-        const doc = scope || document;
-        const node = doc.createTextNode(text);
-        return fromDom(node);
-      };
+      const fromText = function (text, scope) {
+        const doc = scope || document
+        const node = doc.createTextNode(text)
+        return fromDom(node)
+      }
 
-      var fromDom = function(node) {
-        if (node === null || node === undefined) throw new Error('Node cannot be null or undefined');
+      var fromDom = function (node) {
+        if (node === null || node === undefined) throw new Error('Node cannot be null or undefined')
         return {
           dom: Fun.constant(node)
-        };
-      };
+        }
+      }
 
       return {
         fromHtml,
         fromTag,
         fromText,
         fromDom
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.katamari.api.Thunk',
@@ -11709,24 +11709,24 @@ jsc */
     [
     ],
 
-    function() {
-      const cached = function(f) {
-        let called = false;
-        let r;
-        return function() {
+    function () {
+      const cached = function (f) {
+        let called = false
+        let r
+        return function () {
           if (!called) {
-            called = true;
-            r = f.apply(null, arguments);
+            called = true
+            r = f.apply(null, arguments)
           }
-          return r;
-        };
-      };
+          return r
+        }
+      }
 
       return {
         cached
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.node.NodeTypes',
@@ -11735,7 +11735,7 @@ jsc */
 
     ],
 
-    function() {
+    function () {
       return {
         ATTRIBUTE: 2,
         CDATA_SECTION: 4,
@@ -11749,9 +11749,9 @@ jsc */
         ENTITY_REFERENCE: 5,
         ENTITY: 6,
         NOTATION: 12
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sugar.api.node.Node',
 
@@ -11759,33 +11759,33 @@ jsc */
       'ephox.sugar.api.node.NodeTypes'
     ],
 
-    function(NodeTypes) {
-      const name = function(element) {
-        const r = element.dom().nodeName;
-        return r.toLowerCase();
-      };
+    function (NodeTypes) {
+      const name = function (element) {
+        const r = element.dom().nodeName
+        return r.toLowerCase()
+      }
 
-      const type = function(element) {
-        return element.dom().nodeType;
-      };
+      const type = function (element) {
+        return element.dom().nodeType
+      }
 
-      const value = function(element) {
-        return element.dom().nodeValue;
-      };
+      const value = function (element) {
+        return element.dom().nodeValue
+      }
 
-      const isType = function(t) {
-        return function(element) {
-          return type(element) === t;
-        };
-      };
+      const isType = function (t) {
+        return function (element) {
+          return type(element) === t
+        }
+      }
 
-      const isComment = function(element) {
-        return type(element) === NodeTypes.COMMENT || name(element) === '#comment';
-      };
+      const isComment = function (element) {
+        return type(element) === NodeTypes.COMMENT || name(element) === '#comment'
+      }
 
-      const isElement = isType(NodeTypes.ELEMENT);
-      const isText = isType(NodeTypes.TEXT);
-      const isDocument = isType(NodeTypes.DOCUMENT);
+      const isElement = isType(NodeTypes.ELEMENT)
+      const isText = isType(NodeTypes.TEXT)
+      const isDocument = isType(NodeTypes.DOCUMENT)
 
       return {
         name,
@@ -11795,9 +11795,9 @@ jsc */
         isText,
         isDocument,
         isComment
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.node.Body',
@@ -11809,36 +11809,36 @@ jsc */
       'global!document'
     ],
 
-    function(Thunk, Element, Node, document) {
+    function (Thunk, Element, Node, document) {
     // Node.contains() is very, very, very good performance
     // http://jsperf.com/closest-vs-contains/5
-      const inBody = function(element) {
+      const inBody = function (element) {
       // Technically this is only required on IE, where contains() returns false for text nodes.
       // But it's cheap enough to run everywhere and Sugar doesn't have platform detection (yet).
-        const dom = Node.isText(element) ? element.dom().parentNode : element.dom();
+        const dom = Node.isText(element) ? element.dom().parentNode : element.dom()
 
         // use ownerDocument.body to ensure this works inside iframes.
         // Normally contains is bad because an element "contains" itself, but here we want that.
-        return dom !== undefined && dom !== null && dom.ownerDocument.body.contains(dom);
-      };
+        return dom !== undefined && dom !== null && dom.ownerDocument.body.contains(dom)
+      }
 
-      const body = Thunk.cached(function() {
-        return getBody(Element.fromDom(document));
-      });
+      const body = Thunk.cached(function () {
+        return getBody(Element.fromDom(document))
+      })
 
-      var getBody = function(doc) {
-        const body = doc.dom().body;
-        if (body === null || body === undefined) throw 'Body is not available yet';
-        return Element.fromDom(body);
-      };
+      var getBody = function (doc) {
+        const body = doc.dom().body
+        if (body === null || body === undefined) throw 'Body is not available yet'
+        return Element.fromDom(body)
+      }
 
       return {
         body,
         getBody,
         inBody
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.katamari.api.Type',
@@ -11848,20 +11848,20 @@ jsc */
       'global!String'
     ],
 
-    function(Array, String) {
-      const typeOf = function(x) {
-        if (x === null) return 'null';
-        const t = typeof x;
-        if (t === 'object' && Array.prototype.isPrototypeOf(x)) return 'array';
-        if (t === 'object' && String.prototype.isPrototypeOf(x)) return 'string';
-        return t;
-      };
+    function (Array, String) {
+      const typeOf = function (x) {
+        if (x === null) return 'null'
+        const t = typeof x
+        if (t === 'object' && Array.prototype.isPrototypeOf(x)) return 'array'
+        if (t === 'object' && String.prototype.isPrototypeOf(x)) return 'string'
+        return t
+      }
 
-      const isType = function(type) {
-        return function(value) {
-          return typeOf(value) === type;
-        };
-      };
+      const isType = function (type) {
+        return function (value) {
+          return typeOf(value) === type
+        }
+      }
 
       return {
         isString: isType('string'),
@@ -11872,9 +11872,9 @@ jsc */
         isUndefined: isType('undefined'),
         isFunction: isType('function'),
         isNumber: isType('number')
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.katamari.data.Immutable',
@@ -11886,25 +11886,25 @@ jsc */
       'global!Error'
     ],
 
-    function(Arr, Fun, Array, Error) {
-      return function() {
-        const fields = arguments;
-        return function(/* values */) {
+    function (Arr, Fun, Array, Error) {
+      return function () {
+        const fields = arguments
+        return function (/* values */) {
         //  Don't use array slice(arguments), makes the whole function unoptimisable on Chrome
-          const values = new Array(arguments.length);
-          for (let i = 0; i < values.length; i++) values[i] = arguments[i];
+          const values = new Array(arguments.length)
+          for (let i = 0; i < values.length; i++) values[i] = arguments[i]
 
-          if (fields.length !== values.length) { throw new Error('Wrong number of arguments to struct. Expected "[' + fields.length + ']", got ' + values.length + ' arguments'); }
+          if (fields.length !== values.length) { throw new Error('Wrong number of arguments to struct. Expected "[' + fields.length + ']", got ' + values.length + ' arguments') }
 
-          const struct = {};
-          Arr.each(fields, function(name, i) {
-            struct[name] = Fun.constant(values[i]);
-          });
-          return struct;
-        };
-      };
+          const struct = {}
+          Arr.each(fields, function (name, i) {
+            struct[name] = Fun.constant(values[i])
+          })
+          return struct
+        }
+      }
     }
-  );
+  )
 
   define(
     'ephox.katamari.api.Obj',
@@ -11914,105 +11914,105 @@ jsc */
       'global!Object'
     ],
 
-    function(Option, Object) {
+    function (Option, Object) {
     // There are many variations of Object iteration that are faster than the 'for-in' style:
     // http://jsperf.com/object-keys-iteration/107
     //
     // Use the native keys if it is available (IE9+), otherwise fall back to manually filtering
-      const keys = (function() {
-        const fastKeys = Object.keys;
+      const keys = (function () {
+        const fastKeys = Object.keys
 
         // This technically means that 'each' and 'find' on IE8 iterate through the object twice.
         // This code doesn't run on IE8 much, so it's an acceptable tradeoff.
         // If it becomes a problem we can always duplicate the feature detection inside each and find as well.
-        const slowKeys = function(o) {
-          const r = [];
+        const slowKeys = function (o) {
+          const r = []
           for (const i in o) {
             if (o.hasOwnProperty(i)) {
-              r.push(i);
+              r.push(i)
             }
           }
-          return r;
-        };
-
-        return fastKeys === undefined ? slowKeys : fastKeys;
-      })();
-
-      const each = function(obj, f) {
-        const props = keys(obj);
-        for (let k = 0, len = props.length; k < len; k++) {
-          const i = props[k];
-          const x = obj[i];
-          f(x, i, obj);
+          return r
         }
-      };
+
+        return fastKeys === undefined ? slowKeys : fastKeys
+      })()
+
+      const each = function (obj, f) {
+        const props = keys(obj)
+        for (let k = 0, len = props.length; k < len; k++) {
+          const i = props[k]
+          const x = obj[i]
+          f(x, i, obj)
+        }
+      }
 
       /** objectMap :: (JsObj(k, v), (v, k, JsObj(k, v) -> x)) -> JsObj(k, x) */
-      const objectMap = function(obj, f) {
-        return tupleMap(obj, function(x, i, obj) {
+      const objectMap = function (obj, f) {
+        return tupleMap(obj, function (x, i, obj) {
           return {
             k: i,
             v: f(x, i, obj)
-          };
-        });
-      };
+          }
+        })
+      }
 
       /** tupleMap :: (JsObj(k, v), (v, k, JsObj(k, v) -> { k: x, v: y })) -> JsObj(x, y) */
-      var tupleMap = function(obj, f) {
-        const r = {};
-        each(obj, function(x, i) {
-          const tuple = f(x, i, obj);
-          r[tuple.k] = tuple.v;
-        });
-        return r;
-      };
+      var tupleMap = function (obj, f) {
+        const r = {}
+        each(obj, function (x, i) {
+          const tuple = f(x, i, obj)
+          r[tuple.k] = tuple.v
+        })
+        return r
+      }
 
       /** bifilter :: (JsObj(k, v), (v, k -> Bool)) -> { t: JsObj(k, v), f: JsObj(k, v) } */
-      const bifilter = function(obj, pred) {
-        const t = {};
-        const f = {};
-        each(obj, function(x, i) {
-          const branch = pred(x, i) ? t : f;
-          branch[i] = x;
-        });
+      const bifilter = function (obj, pred) {
+        const t = {}
+        const f = {}
+        each(obj, function (x, i) {
+          const branch = pred(x, i) ? t : f
+          branch[i] = x
+        })
         return {
           t,
           f
-        };
-      };
+        }
+      }
 
       /** mapToArray :: (JsObj(k, v), (v, k -> a)) -> [a] */
-      const mapToArray = function(obj, f) {
-        const r = [];
-        each(obj, function(value, name) {
-          r.push(f(value, name));
-        });
-        return r;
-      };
+      const mapToArray = function (obj, f) {
+        const r = []
+        each(obj, function (value, name) {
+          r.push(f(value, name))
+        })
+        return r
+      }
 
       /** find :: (JsObj(k, v), (v, k, JsObj(k, v) -> Bool)) -> Option v */
-      const find = function(obj, pred) {
-        const props = keys(obj);
+      const find = function (obj, pred) {
+        const props = keys(obj)
         for (let k = 0, len = props.length; k < len; k++) {
-          const i = props[k];
-          const x = obj[i];
+          const i = props[k]
+          const x = obj[i]
           if (pred(x, i, obj)) {
-            return Option.some(x);
+            return Option.some(x)
           }
         }
-        return Option.none();
-      };
+        return Option.none()
+      }
 
       /** values :: JsObj(k, v) -> [v] */
-      const values = function(obj) {
-        return mapToArray(obj, function(v) {
-          return v;
-        });
-      };
+      const values = function (obj) {
+        return mapToArray(obj, function (v) {
+          return v
+        })
+      }
 
-      const size = function(obj) {
-        return values(obj).length;
-      };
+      const size = function (obj) {
+        return values(obj).length
+      }
 
       return {
         bifilter,
@@ -12024,9 +12024,9 @@ jsc */
         keys,
         values,
         size
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.util.BagUtils',
 
@@ -12036,40 +12036,40 @@ jsc */
       'global!Error'
     ],
 
-    function(Arr, Type, Error) {
-      const sort = function(arr) {
-        return arr.slice(0).sort();
-      };
+    function (Arr, Type, Error) {
+      const sort = function (arr) {
+        return arr.slice(0).sort()
+      }
 
-      const reqMessage = function(required, keys) {
-        throw new Error('All required keys (' + sort(required).join(', ') + ') were not specified. Specified keys were: ' + sort(keys).join(', ') + '.');
-      };
+      const reqMessage = function (required, keys) {
+        throw new Error('All required keys (' + sort(required).join(', ') + ') were not specified. Specified keys were: ' + sort(keys).join(', ') + '.')
+      }
 
-      const unsuppMessage = function(unsupported) {
-        throw new Error('Unsupported keys for object: ' + sort(unsupported).join(', '));
-      };
+      const unsuppMessage = function (unsupported) {
+        throw new Error('Unsupported keys for object: ' + sort(unsupported).join(', '))
+      }
 
-      const validateStrArr = function(label, array) {
-        if (!Type.isArray(array)) throw new Error('The ' + label + ' fields must be an array. Was: ' + array + '.');
-        Arr.each(array, function(a) {
-          if (!Type.isString(a)) throw new Error('The value ' + a + ' in the ' + label + ' fields was not a string.');
-        });
-      };
+      const validateStrArr = function (label, array) {
+        if (!Type.isArray(array)) throw new Error('The ' + label + ' fields must be an array. Was: ' + array + '.')
+        Arr.each(array, function (a) {
+          if (!Type.isString(a)) throw new Error('The value ' + a + ' in the ' + label + ' fields was not a string.')
+        })
+      }
 
-      const invalidTypeMessage = function(incorrect, type) {
-        throw new Error('All values need to be of type: ' + type + '. Keys (' + sort(incorrect).join(', ') + ') were not.');
-      };
+      const invalidTypeMessage = function (incorrect, type) {
+        throw new Error('All values need to be of type: ' + type + '. Keys (' + sort(incorrect).join(', ') + ') were not.')
+      }
 
-      const checkDupes = function(everything) {
-        const sorted = sort(everything);
-        const dupe = Arr.find(sorted, function(s, i) {
-          return i < sorted.length - 1 && s === sorted[i + 1];
-        });
+      const checkDupes = function (everything) {
+        const sorted = sort(everything)
+        const dupe = Arr.find(sorted, function (s, i) {
+          return i < sorted.length - 1 && s === sorted[i + 1]
+        })
 
-        dupe.each(function(d) {
-          throw new Error('The field: ' + d + ' occurs more than once in the combined fields: [' + sorted.join(', ') + '].');
-        });
-      };
+        dupe.each(function (d) {
+          throw new Error('The field: ' + d + ' occurs more than once in the combined fields: [' + sorted.join(', ') + '].')
+        })
+      }
 
       return {
         sort,
@@ -12078,9 +12078,9 @@ jsc */
         validateStrArr,
         invalidTypeMessage,
         checkDupes
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.data.MixedBag',
 
@@ -12094,46 +12094,46 @@ jsc */
       'global!Object'
     ],
 
-    function(Arr, Fun, Obj, Option, BagUtils, Error, Object) {
-      return function(required, optional) {
-        const everything = required.concat(optional);
-        if (everything.length === 0) throw new Error('You must specify at least one required or optional field.');
+    function (Arr, Fun, Obj, Option, BagUtils, Error, Object) {
+      return function (required, optional) {
+        const everything = required.concat(optional)
+        if (everything.length === 0) throw new Error('You must specify at least one required or optional field.')
 
-        BagUtils.validateStrArr('required', required);
-        BagUtils.validateStrArr('optional', optional);
+        BagUtils.validateStrArr('required', required)
+        BagUtils.validateStrArr('optional', optional)
 
-        BagUtils.checkDupes(everything);
+        BagUtils.checkDupes(everything)
 
-        return function(obj) {
-          const keys = Obj.keys(obj);
+        return function (obj) {
+          const keys = Obj.keys(obj)
 
           // Ensure all required keys are present.
-          const allReqd = Arr.forall(required, function(req) {
-            return Arr.contains(keys, req);
-          });
+          const allReqd = Arr.forall(required, function (req) {
+            return Arr.contains(keys, req)
+          })
 
-          if (!allReqd) BagUtils.reqMessage(required, keys);
+          if (!allReqd) BagUtils.reqMessage(required, keys)
 
-          const unsupported = Arr.filter(keys, function(key) {
-            return !Arr.contains(everything, key);
-          });
+          const unsupported = Arr.filter(keys, function (key) {
+            return !Arr.contains(everything, key)
+          })
 
-          if (unsupported.length > 0) BagUtils.unsuppMessage(unsupported);
+          if (unsupported.length > 0) BagUtils.unsuppMessage(unsupported)
 
-          const r = {};
-          Arr.each(required, function(req) {
-            r[req] = Fun.constant(obj[req]);
-          });
+          const r = {}
+          Arr.each(required, function (req) {
+            r[req] = Fun.constant(obj[req])
+          })
 
-          Arr.each(optional, function(opt) {
-            r[opt] = Fun.constant(Object.prototype.hasOwnProperty.call(obj, opt) ? Option.some(obj[opt]) : Option.none());
-          });
+          Arr.each(optional, function (opt) {
+            r[opt] = Fun.constant(Object.prototype.hasOwnProperty.call(obj, opt) ? Option.some(obj[opt]) : Option.none())
+          })
 
-          return r;
-        };
-      };
+          return r
+        }
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.api.Struct',
 
@@ -12142,13 +12142,13 @@ jsc */
       'ephox.katamari.data.MixedBag'
     ],
 
-    function(Immutable, MixedBag) {
+    function (Immutable, MixedBag) {
       return {
         immutable: Immutable,
         immutableBag: MixedBag
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.alien.Recurse',
@@ -12157,7 +12157,7 @@ jsc */
 
     ],
 
-    function() {
+    function () {
     /**
      * Applies f repeatedly until it completes (by returning Option.none()).
      *
@@ -12165,42 +12165,42 @@ jsc */
      *
      * This is what recursion looks like when manually unravelled :)
      */
-      const toArray = function(target, f) {
-        const r = [];
+      const toArray = function (target, f) {
+        const r = []
 
-        const recurse = function(e) {
-          r.push(e);
-          return f(e);
-        };
+        const recurse = function (e) {
+          r.push(e)
+          return f(e)
+        }
 
-        let cur = f(target);
+        let cur = f(target)
         do {
-          cur = cur.bind(recurse);
-        } while (cur.isSome());
+          cur = cur.bind(recurse)
+        } while (cur.isSome())
 
-        return r;
-      };
+        return r
+      }
 
       return {
         toArray
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.api.Global',
 
     [
     ],
 
-    function() {
+    function () {
     // Use window object as the global if it's available since CSP will block script evals
       if (typeof window !== 'undefined') {
-        return window;
+        return window
       } else {
-        return Function('return this;')();
+        return Function('return this;')()
       }
     }
-  );
+  )
 
   define(
     'ephox.katamari.api.Resolve',
@@ -12209,47 +12209,47 @@ jsc */
       'ephox.katamari.api.Global'
     ],
 
-    function(Global) {
+    function (Global) {
     /** path :: ([String], JsObj?) -> JsObj */
-      const path = function(parts, scope) {
-        let o = scope !== undefined ? scope : Global;
-        for (let i = 0; i < parts.length && o !== undefined && o !== null; ++i) { o = o[parts[i]]; }
-        return o;
-      };
+      const path = function (parts, scope) {
+        let o = scope !== undefined ? scope : Global
+        for (let i = 0; i < parts.length && o !== undefined && o !== null; ++i) { o = o[parts[i]] }
+        return o
+      }
 
       /** resolve :: (String, JsObj?) -> JsObj */
-      const resolve = function(p, scope) {
-        const parts = p.split('.');
-        return path(parts, scope);
-      };
+      const resolve = function (p, scope) {
+        const parts = p.split('.')
+        return path(parts, scope)
+      }
 
       /** step :: (JsObj, String) -> JsObj */
-      const step = function(o, part) {
-        if (o[part] === undefined || o[part] === null) { o[part] = {}; }
-        return o[part];
-      };
+      const step = function (o, part) {
+        if (o[part] === undefined || o[part] === null) { o[part] = {} }
+        return o[part]
+      }
 
       /** forge :: ([String], JsObj?) -> JsObj */
-      const forge = function(parts, target) {
-        let o = target !== undefined ? target : Global;
-        for (let i = 0; i < parts.length; ++i) { o = step(o, parts[i]); }
-        return o;
-      };
+      const forge = function (parts, target) {
+        let o = target !== undefined ? target : Global
+        for (let i = 0; i < parts.length; ++i) { o = step(o, parts[i]) }
+        return o
+      }
 
       /** namespace :: (String, JsObj?) -> JsObj */
-      const namespace = function(name, target) {
-        const parts = name.split('.');
-        return forge(parts, target);
-      };
+      const namespace = function (name, target) {
+        const parts = name.split('.')
+        return forge(parts, target)
+      }
 
       return {
         path,
         resolve,
         forge,
         namespace
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sand.util.Global',
@@ -12258,23 +12258,23 @@ jsc */
       'ephox.katamari.api.Resolve'
     ],
 
-    function(Resolve) {
-      const unsafe = function(name, scope) {
-        return Resolve.resolve(name, scope);
-      };
+    function (Resolve) {
+      const unsafe = function (name, scope) {
+        return Resolve.resolve(name, scope)
+      }
 
-      const getOrDie = function(name, scope) {
-        const actual = unsafe(name, scope);
+      const getOrDie = function (name, scope) {
+        const actual = unsafe(name, scope)
 
-        if (actual === undefined) throw name + ' not available on this browser';
-        return actual;
-      };
+        if (actual === undefined) throw name + ' not available on this browser'
+        return actual
+      }
 
       return {
         getOrDie
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sand.api.Node',
 
@@ -12282,14 +12282,14 @@ jsc */
       'ephox.sand.util.Global'
     ],
 
-    function(Global) {
+    function (Global) {
     /*
      * MDN says (yes) for IE, but it's undefined on IE8
      */
-      const node = function() {
-        const f = Global.getOrDie('Node');
-        return f;
-      };
+      const node = function () {
+        const f = Global.getOrDie('Node')
+        return f
+      }
 
       /*
      * Most of numerosity doesn't alter the methods on the object.
@@ -12298,28 +12298,28 @@ jsc */
      * Might be nice to ADT this at some point instead of having individual methods.
      */
 
-      const compareDocumentPosition = function(a, b, match) {
+      const compareDocumentPosition = function (a, b, match) {
       // Returns: 0 if e1 and e2 are the same node, or a bitmask comparing the positions
       // of nodes e1 and e2 in their documents. See the URL below for bitmask interpretation
       // https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
-        return (a.compareDocumentPosition(b) & match) !== 0;
-      };
+        return (a.compareDocumentPosition(b) & match) !== 0
+      }
 
-      const documentPositionPreceding = function(a, b) {
-        return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_PRECEDING);
-      };
+      const documentPositionPreceding = function (a, b) {
+        return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_PRECEDING)
+      }
 
-      const documentPositionContainedBy = function(a, b) {
-        return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_CONTAINED_BY);
-      };
+      const documentPositionContainedBy = function (a, b) {
+        return compareDocumentPosition(a, b, node().DOCUMENT_POSITION_CONTAINED_BY)
+      }
 
       return {
         documentPositionPreceding,
         documentPositionContainedBy
-      };
+      }
     }
-  );
-  defineGlobal('global!Number', Number);
+  )
+  defineGlobal('global!Number', Number)
   define(
     'ephox.sand.detect.Version',
 
@@ -12329,46 +12329,46 @@ jsc */
       'global!String'
     ],
 
-    function(Arr, Number, String) {
-      const firstMatch = function(regexes, s) {
+    function (Arr, Number, String) {
+      const firstMatch = function (regexes, s) {
         for (let i = 0; i < regexes.length; i++) {
-          const x = regexes[i];
-          if (x.test(s)) return x;
+          const x = regexes[i]
+          if (x.test(s)) return x
         }
-        return undefined;
-      };
+        return undefined
+      }
 
-      const find = function(regexes, agent) {
-        const r = firstMatch(regexes, agent);
-        if (!r) return { major: 0, minor: 0 };
-        const group = function(i) {
-          return Number(agent.replace(r, '$' + i));
-        };
-        return nu(group(1), group(2));
-      };
+      const find = function (regexes, agent) {
+        const r = firstMatch(regexes, agent)
+        if (!r) return { major: 0, minor: 0 }
+        const group = function (i) {
+          return Number(agent.replace(r, '$' + i))
+        }
+        return nu(group(1), group(2))
+      }
 
-      const detect = function(versionRegexes, agent) {
-        const cleanedAgent = String(agent).toLowerCase();
+      const detect = function (versionRegexes, agent) {
+        const cleanedAgent = String(agent).toLowerCase()
 
-        if (versionRegexes.length === 0) return unknown();
-        return find(versionRegexes, cleanedAgent);
-      };
+        if (versionRegexes.length === 0) return unknown()
+        return find(versionRegexes, cleanedAgent)
+      }
 
-      var unknown = function() {
-        return nu(0, 0);
-      };
+      var unknown = function () {
+        return nu(0, 0)
+      }
 
-      var nu = function(major, minor) {
-        return { major, minor };
-      };
+      var nu = function (major, minor) {
+        return { major, minor }
+      }
 
       return {
         nu,
         detect,
         unknown
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sand.core.Browser',
 
@@ -12377,30 +12377,30 @@ jsc */
       'ephox.sand.detect.Version'
     ],
 
-    function(Fun, Version) {
-      const edge = 'Edge';
-      const chrome = 'Chrome';
-      const ie = 'IE';
-      const opera = 'Opera';
-      const firefox = 'Firefox';
-      const safari = 'Safari';
+    function (Fun, Version) {
+      const edge = 'Edge'
+      const chrome = 'Chrome'
+      const ie = 'IE'
+      const opera = 'Opera'
+      const firefox = 'Firefox'
+      const safari = 'Safari'
 
-      const isBrowser = function(name, current) {
-        return function() {
-          return current === name;
-        };
-      };
+      const isBrowser = function (name, current) {
+        return function () {
+          return current === name
+        }
+      }
 
-      const unknown = function() {
+      const unknown = function () {
         return nu({
           current: undefined,
           version: Version.unknown()
-        });
-      };
+        })
+      }
 
-      var nu = function(info) {
-        const current = info.current;
-        const version = info.version;
+      var nu = function (info) {
+        const current = info.current
+        const version = info.version
 
         return {
           current,
@@ -12414,8 +12414,8 @@ jsc */
           isOpera: isBrowser(opera, current),
           isFirefox: isBrowser(firefox, current),
           isSafari: isBrowser(safari, current)
-        };
-      };
+        }
+      }
 
       return {
         unknown,
@@ -12426,9 +12426,9 @@ jsc */
         opera: Fun.constant(opera),
         firefox: Fun.constant(firefox),
         safari: Fun.constant(safari)
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sand.core.OperatingSystem',
 
@@ -12437,33 +12437,33 @@ jsc */
       'ephox.sand.detect.Version'
     ],
 
-    function(Fun, Version) {
-      const windows = 'Windows';
-      const ios = 'iOS';
-      const android = 'Android';
-      const linux = 'Linux';
-      const osx = 'OSX';
-      const solaris = 'Solaris';
-      const freebsd = 'FreeBSD';
+    function (Fun, Version) {
+      const windows = 'Windows'
+      const ios = 'iOS'
+      const android = 'Android'
+      const linux = 'Linux'
+      const osx = 'OSX'
+      const solaris = 'Solaris'
+      const freebsd = 'FreeBSD'
 
       // Though there is a bit of dupe with this and Browser, trying to
       // reuse code makes it much harder to follow and change.
-      const isOS = function(name, current) {
-        return function() {
-          return current === name;
-        };
-      };
+      const isOS = function (name, current) {
+        return function () {
+          return current === name
+        }
+      }
 
-      const unknown = function() {
+      const unknown = function () {
         return nu({
           current: undefined,
           version: Version.unknown()
-        });
-      };
+        })
+      }
 
-      var nu = function(info) {
-        const current = info.current;
-        const version = info.version;
+      var nu = function (info) {
+        const current = info.current
+        const version = info.version
 
         return {
           current,
@@ -12477,8 +12477,8 @@ jsc */
           isLinux: isOS(linux, current),
           isSolaris: isOS(solaris, current),
           isFreeBSD: isOS(freebsd, current)
-        };
-      };
+        }
+      }
 
       return {
         unknown,
@@ -12491,9 +12491,9 @@ jsc */
         osx: Fun.constant(osx),
         solaris: Fun.constant(solaris),
         freebsd: Fun.constant(freebsd)
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sand.detect.DeviceType',
 
@@ -12501,17 +12501,17 @@ jsc */
       'ephox.katamari.api.Fun'
     ],
 
-    function(Fun) {
-      return function(os, browser, userAgent) {
-        const isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
-        const isiPhone = os.isiOS() && !isiPad;
-        const isAndroid3 = os.isAndroid() && os.version.major === 3;
-        const isAndroid4 = os.isAndroid() && os.version.major === 4;
-        const isTablet = isiPad || isAndroid3 || (isAndroid4 && /mobile/i.test(userAgent) === true);
-        const isTouch = os.isiOS() || os.isAndroid();
-        const isPhone = isTouch && !isTablet;
+    function (Fun) {
+      return function (os, browser, userAgent) {
+        const isiPad = os.isiOS() && /ipad/i.test(userAgent) === true
+        const isiPhone = os.isiOS() && !isiPad
+        const isAndroid3 = os.isAndroid() && os.version.major === 3
+        const isAndroid4 = os.isAndroid() && os.version.major === 4
+        const isTablet = isiPad || isAndroid3 || (isAndroid4 && /mobile/i.test(userAgent) === true)
+        const isTouch = os.isiOS() || os.isAndroid()
+        const isPhone = isTouch && !isTablet
 
-        const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+        const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false
 
         return {
           isiPad: Fun.constant(isiPad),
@@ -12522,10 +12522,10 @@ jsc */
           isAndroid: os.isAndroid,
           isiOS: os.isiOS,
           isWebView: Fun.constant(iOSwebview)
-        };
-      };
+        }
+      }
     }
-  );
+  )
   define(
     'ephox.sand.detect.UaString',
 
@@ -12535,42 +12535,42 @@ jsc */
       'global!String'
     ],
 
-    function(Arr, Version, String) {
-      const detect = function(candidates, userAgent) {
-        const agent = String(userAgent).toLowerCase();
-        return Arr.find(candidates, function(candidate) {
-          return candidate.search(agent);
-        });
-      };
+    function (Arr, Version, String) {
+      const detect = function (candidates, userAgent) {
+        const agent = String(userAgent).toLowerCase()
+        return Arr.find(candidates, function (candidate) {
+          return candidate.search(agent)
+        })
+      }
 
       // They (browser and os) are the same at the moment, but they might
       // not stay that way.
-      const detectBrowser = function(browsers, userAgent) {
-        return detect(browsers, userAgent).map(function(browser) {
-          const version = Version.detect(browser.versionRegexes, userAgent);
+      const detectBrowser = function (browsers, userAgent) {
+        return detect(browsers, userAgent).map(function (browser) {
+          const version = Version.detect(browser.versionRegexes, userAgent)
           return {
             current: browser.name,
             version
-          };
-        });
-      };
+          }
+        })
+      }
 
-      const detectOs = function(oses, userAgent) {
-        return detect(oses, userAgent).map(function(os) {
-          const version = Version.detect(os.versionRegexes, userAgent);
+      const detectOs = function (oses, userAgent) {
+        return detect(oses, userAgent).map(function (os) {
+          const version = Version.detect(os.versionRegexes, userAgent)
           return {
             current: os.name,
             version
-          };
-        });
-      };
+          }
+        })
+      }
 
       return {
         detectBrowser,
         detectOs
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.str.StrAppend',
 
@@ -12578,31 +12578,31 @@ jsc */
 
     ],
 
-    function() {
-      const addToStart = function(str, prefix) {
-        return prefix + str;
-      };
+    function () {
+      const addToStart = function (str, prefix) {
+        return prefix + str
+      }
 
-      const addToEnd = function(str, suffix) {
-        return str + suffix;
-      };
+      const addToEnd = function (str, suffix) {
+        return str + suffix
+      }
 
-      const removeFromStart = function(str, numChars) {
-        return str.substring(numChars);
-      };
+      const removeFromStart = function (str, numChars) {
+        return str.substring(numChars)
+      }
 
-      const removeFromEnd = function(str, numChars) {
-        return str.substring(0, str.length - numChars);
-      };
+      const removeFromEnd = function (str, numChars) {
+        return str.substring(0, str.length - numChars)
+      }
 
       return {
         addToStart,
         addToEnd,
         removeFromStart,
         removeFromEnd
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.str.StringParts',
 
@@ -12611,37 +12611,37 @@ jsc */
       'global!Error'
     ],
 
-    function(Option, Error) {
+    function (Option, Error) {
     /** Return the first 'count' letters from 'str'.
 -     *  e.g. first("abcde", 2) === "ab"
 -     */
-      const first = function(str, count) {
-        return str.substr(0, count);
-      };
+      const first = function (str, count) {
+        return str.substr(0, count)
+      }
 
       /** Return the last 'count' letters from 'str'.
     *  e.g. last("abcde", 2) === "de"
     */
-      const last = function(str, count) {
-        return str.substr(str.length - count, str.length);
-      };
+      const last = function (str, count) {
+        return str.substr(str.length - count, str.length)
+      }
 
-      const head = function(str) {
-        return str === '' ? Option.none() : Option.some(str.substr(0, 1));
-      };
+      const head = function (str) {
+        return str === '' ? Option.none() : Option.some(str.substr(0, 1))
+      }
 
-      const tail = function(str) {
-        return str === '' ? Option.none() : Option.some(str.substring(1));
-      };
+      const tail = function (str) {
+        return str === '' ? Option.none() : Option.some(str.substring(1))
+      }
 
       return {
         first,
         last,
         head,
         tail
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.katamari.api.Strings',
 
@@ -12651,90 +12651,90 @@ jsc */
       'global!Error'
     ],
 
-    function(StrAppend, StringParts, Error) {
-      const checkRange = function(str, substr, start) {
-        if (substr === '') return true;
-        if (str.length < substr.length) return false;
-        const x = str.substr(start, start + substr.length);
-        return x === substr;
-      };
+    function (StrAppend, StringParts, Error) {
+      const checkRange = function (str, substr, start) {
+        if (substr === '') return true
+        if (str.length < substr.length) return false
+        const x = str.substr(start, start + substr.length)
+        return x === substr
+      }
 
       /** Given a string and object, perform template-replacements on the string, as specified by the object.
      * Any template fields of the form ${name} are replaced by the string or number specified as obj["name"]
      * Based on Douglas Crockford's 'supplant' method for template-replace of strings. Uses different template format.
      */
-      const supplant = function(str, obj) {
-        const isStringOrNumber = function(a) {
-          const t = typeof a;
-          return t === 'string' || t === 'number';
-        };
+      const supplant = function (str, obj) {
+        const isStringOrNumber = function (a) {
+          const t = typeof a
+          return t === 'string' || t === 'number'
+        }
 
         return str.replace(/\${([^{}]*)}/g,
-          function(a, b) {
-            const value = obj[b];
-            return isStringOrNumber(value) ? value : a;
+          function (a, b) {
+            const value = obj[b]
+            return isStringOrNumber(value) ? value : a
           }
-        );
-      };
+        )
+      }
 
-      const removeLeading = function(str, prefix) {
-        return startsWith(str, prefix) ? StrAppend.removeFromStart(str, prefix.length) : str;
-      };
+      const removeLeading = function (str, prefix) {
+        return startsWith(str, prefix) ? StrAppend.removeFromStart(str, prefix.length) : str
+      }
 
-      const removeTrailing = function(str, prefix) {
-        return endsWith(str, prefix) ? StrAppend.removeFromEnd(str, prefix.length) : str;
-      };
+      const removeTrailing = function (str, prefix) {
+        return endsWith(str, prefix) ? StrAppend.removeFromEnd(str, prefix.length) : str
+      }
 
-      const ensureLeading = function(str, prefix) {
-        return startsWith(str, prefix) ? str : StrAppend.addToStart(str, prefix);
-      };
+      const ensureLeading = function (str, prefix) {
+        return startsWith(str, prefix) ? str : StrAppend.addToStart(str, prefix)
+      }
 
-      const ensureTrailing = function(str, prefix) {
-        return endsWith(str, prefix) ? str : StrAppend.addToEnd(str, prefix);
-      };
+      const ensureTrailing = function (str, prefix) {
+        return endsWith(str, prefix) ? str : StrAppend.addToEnd(str, prefix)
+      }
 
-      const contains = function(str, substr) {
-        return str.indexOf(substr) !== -1;
-      };
+      const contains = function (str, substr) {
+        return str.indexOf(substr) !== -1
+      }
 
-      const capitalize = function(str) {
-        return StringParts.head(str).bind(function(head) {
-          return StringParts.tail(str).map(function(tail) {
-            return head.toUpperCase() + tail;
-          });
-        }).getOr(str);
-      };
+      const capitalize = function (str) {
+        return StringParts.head(str).bind(function (head) {
+          return StringParts.tail(str).map(function (tail) {
+            return head.toUpperCase() + tail
+          })
+        }).getOr(str)
+      }
 
       /** Does 'str' start with 'prefix'?
      *  Note: all strings start with the empty string.
      *        More formally, for all strings x, startsWith(x, "").
      *        This is so that for all strings x and y, startsWith(y + x, y)
      */
-      var startsWith = function(str, prefix) {
-        return checkRange(str, prefix, 0);
-      };
+      var startsWith = function (str, prefix) {
+        return checkRange(str, prefix, 0)
+      }
 
       /** Does 'str' end with 'suffix'?
      *  Note: all strings end with the empty string.
      *        More formally, for all strings x, endsWith(x, "").
      *        This is so that for all strings x and y, endsWith(x + y, y)
      */
-      var endsWith = function(str, suffix) {
-        return checkRange(str, suffix, str.length - suffix.length);
-      };
+      var endsWith = function (str, suffix) {
+        return checkRange(str, suffix, str.length - suffix.length)
+      }
 
       /** removes all leading and trailing spaces */
-      const trim = function(str) {
-        return str.replace(/^\s+|\s+$/g, '');
-      };
+      const trim = function (str) {
+        return str.replace(/^\s+|\s+$/g, '')
+      }
 
-      const lTrim = function(str) {
-        return str.replace(/^\s+/g, '');
-      };
+      const lTrim = function (str) {
+        return str.replace(/^\s+/g, '')
+      }
 
-      const rTrim = function(str) {
-        return str.replace(/\s+$/g, '');
-      };
+      const rTrim = function (str) {
+        return str.replace(/\s+$/g, '')
+      }
 
       return {
         supplant,
@@ -12749,9 +12749,9 @@ jsc */
         lTrim,
         rTrim,
         capitalize
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sand.info.PlatformInfo',
@@ -12761,36 +12761,36 @@ jsc */
       'ephox.katamari.api.Strings'
     ],
 
-    function(Fun, Strings) {
-      const normalVersionRegex = /.*?version\/\ ?([0-9]+)\.([0-9]+).*/;
+    function (Fun, Strings) {
+      const normalVersionRegex = /.*?version\/\ ?([0-9]+)\.([0-9]+).*/
 
-      const checkContains = function(target) {
-        return function(uastring) {
-          return Strings.contains(uastring, target);
-        };
-      };
+      const checkContains = function (target) {
+        return function (uastring) {
+          return Strings.contains(uastring, target)
+        }
+      }
 
       const browsers = [
         {
           name: 'Edge',
           versionRegexes: [/.*?edge\/ ?([0-9]+)\.([0-9]+)$/],
-          search(uastring) {
-            const monstrosity = Strings.contains(uastring, 'edge/') && Strings.contains(uastring, 'chrome') && Strings.contains(uastring, 'safari') && Strings.contains(uastring, 'applewebkit');
-            return monstrosity;
+          search (uastring) {
+            const monstrosity = Strings.contains(uastring, 'edge/') && Strings.contains(uastring, 'chrome') && Strings.contains(uastring, 'safari') && Strings.contains(uastring, 'applewebkit')
+            return monstrosity
           }
         },
         {
           name: 'Chrome',
           versionRegexes: [/.*?chrome\/([0-9]+)\.([0-9]+).*/, normalVersionRegex],
-          search(uastring) {
-            return Strings.contains(uastring, 'chrome') && !Strings.contains(uastring, 'chromeframe');
+          search (uastring) {
+            return Strings.contains(uastring, 'chrome') && !Strings.contains(uastring, 'chromeframe')
           }
         },
         {
           name: 'IE',
           versionRegexes: [/.*?msie\ ?([0-9]+)\.([0-9]+).*/, /.*?rv:([0-9]+)\.([0-9]+).*/],
-          search(uastring) {
-            return Strings.contains(uastring, 'msie') || Strings.contains(uastring, 'trident');
+          search (uastring) {
+            return Strings.contains(uastring, 'msie') || Strings.contains(uastring, 'trident')
           }
         },
         // INVESTIGATE: Is this still the Opera user agent?
@@ -12807,11 +12807,11 @@ jsc */
         {
           name: 'Safari',
           versionRegexes: [normalVersionRegex, /.*?cpu os ([0-9]+)_([0-9]+).*/],
-          search(uastring) {
-            return (Strings.contains(uastring, 'safari') || Strings.contains(uastring, 'mobile/')) && Strings.contains(uastring, 'applewebkit');
+          search (uastring) {
+            return (Strings.contains(uastring, 'safari') || Strings.contains(uastring, 'mobile/')) && Strings.contains(uastring, 'applewebkit')
           }
         }
-      ];
+      ]
 
       const oses = [
         {
@@ -12821,8 +12821,8 @@ jsc */
         },
         {
           name: 'iOS',
-          search(uastring) {
-            return Strings.contains(uastring, 'iphone') || Strings.contains(uastring, 'ipad');
+          search (uastring) {
+            return Strings.contains(uastring, 'iphone') || Strings.contains(uastring, 'ipad')
           },
           versionRegexes: [/.*?version\/\ ?([0-9]+)\.([0-9]+).*/, /.*cpu os ([0-9]+)_([0-9]+).*/, /.*cpu iphone os ([0-9]+)_([0-9]+).*/]
         },
@@ -12850,14 +12850,14 @@ jsc */
           search: checkContains('freebsd'),
           versionRegexes: [ ]
         }
-      ];
+      ]
 
       return {
         browsers: Fun.constant(browsers),
         oses: Fun.constant(oses)
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sand.core.PlatformDetection',
 
@@ -12869,34 +12869,34 @@ jsc */
       'ephox.sand.info.PlatformInfo'
     ],
 
-    function(Browser, OperatingSystem, DeviceType, UaString, PlatformInfo) {
-      const detect = function(userAgent) {
-        const browsers = PlatformInfo.browsers();
-        const oses = PlatformInfo.oses();
+    function (Browser, OperatingSystem, DeviceType, UaString, PlatformInfo) {
+      const detect = function (userAgent) {
+        const browsers = PlatformInfo.browsers()
+        const oses = PlatformInfo.oses()
 
         const browser = UaString.detectBrowser(browsers, userAgent).fold(
           Browser.unknown,
           Browser.nu
-        );
+        )
         const os = UaString.detectOs(oses, userAgent).fold(
           OperatingSystem.unknown,
           OperatingSystem.nu
-        );
-        const deviceType = DeviceType(os, browser, userAgent);
+        )
+        const deviceType = DeviceType(os, browser, userAgent)
 
         return {
           browser,
           os,
           deviceType
-        };
-      };
+        }
+      }
 
       return {
         detect
-      };
+      }
     }
-  );
-  defineGlobal('global!navigator', navigator);
+  )
+  defineGlobal('global!navigator', navigator)
   define(
     'ephox.sand.api.PlatformDetection',
 
@@ -12906,17 +12906,17 @@ jsc */
       'global!navigator'
     ],
 
-    function(Thunk, PlatformDetection, navigator) {
-      const detect = Thunk.cached(function() {
-        const userAgent = navigator.userAgent;
-        return PlatformDetection.detect(userAgent);
-      });
+    function (Thunk, PlatformDetection, navigator) {
+      const detect = Thunk.cached(function () {
+        const userAgent = navigator.userAgent
+        return PlatformDetection.detect(userAgent)
+      })
 
       return {
         detect
-      };
+      }
     }
-  );
+  )
   define(
     'ephox.sugar.api.search.Selectors',
 
@@ -12929,67 +12929,67 @@ jsc */
       'global!document'
     ],
 
-    function(Arr, Option, Element, NodeTypes, Error, document) {
+    function (Arr, Option, Element, NodeTypes, Error, document) {
     /*
      * There's a lot of code here; the aim is to allow the browser to optimise constant comparisons,
      * instead of doing object lookup feature detection on every call
      */
-      const STANDARD = 0;
-      const MSSTANDARD = 1;
-      const WEBKITSTANDARD = 2;
-      const FIREFOXSTANDARD = 3;
+      const STANDARD = 0
+      const MSSTANDARD = 1
+      const WEBKITSTANDARD = 2
+      const FIREFOXSTANDARD = 3
 
-      const selectorType = (function() {
-        const test = document.createElement('span');
+      const selectorType = (function () {
+        const test = document.createElement('span')
         // As of Chrome 34 / Safari 7.1 / FireFox 34, everyone except IE has the unprefixed function.
         // Still check for the others, but do it last.
         return test.matches !== undefined ? STANDARD
           : test.msMatchesSelector !== undefined ? MSSTANDARD
             : test.webkitMatchesSelector !== undefined ? WEBKITSTANDARD
               : test.mozMatchesSelector !== undefined ? FIREFOXSTANDARD
-                : -1;
-      })();
+                : -1
+      })()
 
-      const ELEMENT = NodeTypes.ELEMENT;
-      const DOCUMENT = NodeTypes.DOCUMENT;
+      const ELEMENT = NodeTypes.ELEMENT
+      const DOCUMENT = NodeTypes.DOCUMENT
 
-      const is = function(element, selector) {
-        const elem = element.dom();
-        if (elem.nodeType !== ELEMENT) return false; // documents have querySelector but not matches
+      const is = function (element, selector) {
+        const elem = element.dom()
+        if (elem.nodeType !== ELEMENT) return false // documents have querySelector but not matches
 
         // As of Chrome 34 / Safari 7.1 / FireFox 34, everyone except IE has the unprefixed function.
         // Still check for the others, but do it last.
-        else if (selectorType === STANDARD) return elem.matches(selector);
-        else if (selectorType === MSSTANDARD) return elem.msMatchesSelector(selector);
-        else if (selectorType === WEBKITSTANDARD) return elem.webkitMatchesSelector(selector);
-        else if (selectorType === FIREFOXSTANDARD) return elem.mozMatchesSelector(selector);
-        else throw new Error('Browser lacks native selectors'); // unfortunately we can't throw this on startup :(
-      };
+        else if (selectorType === STANDARD) return elem.matches(selector)
+        else if (selectorType === MSSTANDARD) return elem.msMatchesSelector(selector)
+        else if (selectorType === WEBKITSTANDARD) return elem.webkitMatchesSelector(selector)
+        else if (selectorType === FIREFOXSTANDARD) return elem.mozMatchesSelector(selector)
+        else throw new Error('Browser lacks native selectors') // unfortunately we can't throw this on startup :(
+      }
 
-      const bypassSelector = function(dom) {
+      const bypassSelector = function (dom) {
       // Only elements and documents support querySelector
         return dom.nodeType !== ELEMENT && dom.nodeType !== DOCUMENT ||
               // IE fix for complex queries on empty nodes: http://jsfiddle.net/spyder/fv9ptr5L/
-              dom.childElementCount === 0;
-      };
+              dom.childElementCount === 0
+      }
 
-      const all = function(selector, scope) {
-        const base = scope === undefined ? document : scope.dom();
-        return bypassSelector(base) ? [] : Arr.map(base.querySelectorAll(selector), Element.fromDom);
-      };
+      const all = function (selector, scope) {
+        const base = scope === undefined ? document : scope.dom()
+        return bypassSelector(base) ? [] : Arr.map(base.querySelectorAll(selector), Element.fromDom)
+      }
 
-      const one = function(selector, scope) {
-        const base = scope === undefined ? document : scope.dom();
-        return bypassSelector(base) ? Option.none() : Option.from(base.querySelector(selector)).map(Element.fromDom);
-      };
+      const one = function (selector, scope) {
+        const base = scope === undefined ? document : scope.dom()
+        return bypassSelector(base) ? Option.none() : Option.from(base.querySelector(selector)).map(Element.fromDom)
+      }
 
       return {
         all,
         is,
         one
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.dom.Compare',
@@ -13002,40 +13002,40 @@ jsc */
       'ephox.sugar.api.search.Selectors'
     ],
 
-    function(Arr, Fun, Node, PlatformDetection, Selectors) {
-      const eq = function(e1, e2) {
-        return e1.dom() === e2.dom();
-      };
+    function (Arr, Fun, Node, PlatformDetection, Selectors) {
+      const eq = function (e1, e2) {
+        return e1.dom() === e2.dom()
+      }
 
-      const isEqualNode = function(e1, e2) {
-        return e1.dom().isEqualNode(e2.dom());
-      };
+      const isEqualNode = function (e1, e2) {
+        return e1.dom().isEqualNode(e2.dom())
+      }
 
-      const member = function(element, elements) {
-        return Arr.exists(elements, Fun.curry(eq, element));
-      };
+      const member = function (element, elements) {
+        return Arr.exists(elements, Fun.curry(eq, element))
+      }
 
       // DOM contains() method returns true if e1===e2, we define our contains() to return false (a node does not contain itself).
-      const regularContains = function(e1, e2) {
+      const regularContains = function (e1, e2) {
         let d1 = e1.dom(),
-          d2 = e2.dom();
-        return d1 === d2 ? false : d1.contains(d2);
-      };
+          d2 = e2.dom()
+        return d1 === d2 ? false : d1.contains(d2)
+      }
 
-      const ieContains = function(e1, e2) {
+      const ieContains = function (e1, e2) {
       // IE only implements the contains() method for Element nodes.
       // It fails for Text nodes, so implement it using compareDocumentPosition()
       // https://connect.microsoft.com/IE/feedback/details/780874/node-contains-is-incorrect
       // Note that compareDocumentPosition returns CONTAINED_BY if 'e2 *is_contained_by* e1':
       // Also, compareDocumentPosition defines a node containing itself as false.
-        return Node.documentPositionContainedBy(e1.dom(), e2.dom());
-      };
+        return Node.documentPositionContainedBy(e1.dom(), e2.dom())
+      }
 
-      const browser = PlatformDetection.detect().browser;
+      const browser = PlatformDetection.detect().browser
 
       // Returns: true if node e1 contains e2, otherwise false.
       // (returns false if e1===e2: A node does not contain itself).
-      const contains = browser.isIE() ? ieContains : regularContains;
+      const contains = browser.isIE() ? ieContains : regularContains
 
       return {
         eq,
@@ -13045,9 +13045,9 @@ jsc */
 
         // Only used by DomUniverse. Remove (or should Selectors.is move here?)
         is: Selectors.is
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.search.Traverse',
@@ -13063,121 +13063,121 @@ jsc */
       'ephox.sugar.api.node.Element'
     ],
 
-    function(Type, Arr, Fun, Option, Struct, Recurse, Compare, Element) {
+    function (Type, Arr, Fun, Option, Struct, Recurse, Compare, Element) {
     // The document associated with the current element
-      const owner = function(element) {
-        return Element.fromDom(element.dom().ownerDocument);
-      };
+      const owner = function (element) {
+        return Element.fromDom(element.dom().ownerDocument)
+      }
 
-      const documentElement = function(element) {
+      const documentElement = function (element) {
       // TODO: Avoid unnecessary wrap/unwrap here
-        const doc = owner(element);
-        return Element.fromDom(doc.dom().documentElement);
-      };
+        const doc = owner(element)
+        return Element.fromDom(doc.dom().documentElement)
+      }
 
       // The window element associated with the element
-      const defaultView = function(element) {
-        const el = element.dom();
-        const defaultView = el.ownerDocument.defaultView;
-        return Element.fromDom(defaultView);
-      };
+      const defaultView = function (element) {
+        const el = element.dom()
+        const defaultView = el.ownerDocument.defaultView
+        return Element.fromDom(defaultView)
+      }
 
-      const parent = function(element) {
-        const dom = element.dom();
-        return Option.from(dom.parentNode).map(Element.fromDom);
-      };
+      const parent = function (element) {
+        const dom = element.dom()
+        return Option.from(dom.parentNode).map(Element.fromDom)
+      }
 
-      const findIndex = function(element) {
-        return parent(element).bind(function(p) {
+      const findIndex = function (element) {
+        return parent(element).bind(function (p) {
         // TODO: Refactor out children so we can avoid the constant unwrapping
-          const kin = children(p);
-          return Arr.findIndex(kin, function(elem) {
-            return Compare.eq(element, elem);
-          });
-        });
-      };
+          const kin = children(p)
+          return Arr.findIndex(kin, function (elem) {
+            return Compare.eq(element, elem)
+          })
+        })
+      }
 
-      const parents = function(element, isRoot) {
-        const stop = Type.isFunction(isRoot) ? isRoot : Fun.constant(false);
+      const parents = function (element, isRoot) {
+        const stop = Type.isFunction(isRoot) ? isRoot : Fun.constant(false)
 
         // This is used a *lot* so it needs to be performant, not recursive
-        let dom = element.dom();
-        const ret = [];
+        let dom = element.dom()
+        const ret = []
 
         while (dom.parentNode !== null && dom.parentNode !== undefined) {
-          const rawParent = dom.parentNode;
-          const parent = Element.fromDom(rawParent);
-          ret.push(parent);
+          const rawParent = dom.parentNode
+          const parent = Element.fromDom(rawParent)
+          ret.push(parent)
 
-          if (stop(parent) === true) break;
-          else dom = rawParent;
+          if (stop(parent) === true) break
+          else dom = rawParent
         }
-        return ret;
-      };
+        return ret
+      }
 
-      const siblings = function(element) {
+      const siblings = function (element) {
       // TODO: Refactor out children so we can just not add self instead of filtering afterwards
-        const filterSelf = function(elements) {
-          return Arr.filter(elements, function(x) {
-            return !Compare.eq(element, x);
-          });
-        };
+        const filterSelf = function (elements) {
+          return Arr.filter(elements, function (x) {
+            return !Compare.eq(element, x)
+          })
+        }
 
         return parent(element).map(children).map(filterSelf)
-          .getOr([]);
-      };
+          .getOr([])
+      }
 
-      const offsetParent = function(element) {
-        const dom = element.dom();
-        return Option.from(dom.offsetParent).map(Element.fromDom);
-      };
+      const offsetParent = function (element) {
+        const dom = element.dom()
+        return Option.from(dom.offsetParent).map(Element.fromDom)
+      }
 
-      const prevSibling = function(element) {
-        const dom = element.dom();
-        return Option.from(dom.previousSibling).map(Element.fromDom);
-      };
+      const prevSibling = function (element) {
+        const dom = element.dom()
+        return Option.from(dom.previousSibling).map(Element.fromDom)
+      }
 
-      const nextSibling = function(element) {
-        const dom = element.dom();
-        return Option.from(dom.nextSibling).map(Element.fromDom);
-      };
+      const nextSibling = function (element) {
+        const dom = element.dom()
+        return Option.from(dom.nextSibling).map(Element.fromDom)
+      }
 
-      const prevSiblings = function(element) {
+      const prevSiblings = function (element) {
       // This one needs to be reversed, so they're still in DOM order
-        return Arr.reverse(Recurse.toArray(element, prevSibling));
-      };
+        return Arr.reverse(Recurse.toArray(element, prevSibling))
+      }
 
-      const nextSiblings = function(element) {
-        return Recurse.toArray(element, nextSibling);
-      };
+      const nextSiblings = function (element) {
+        return Recurse.toArray(element, nextSibling)
+      }
 
-      var children = function(element) {
-        const dom = element.dom();
-        return Arr.map(dom.childNodes, Element.fromDom);
-      };
+      var children = function (element) {
+        const dom = element.dom()
+        return Arr.map(dom.childNodes, Element.fromDom)
+      }
 
-      const child = function(element, index) {
-        const children = element.dom().childNodes;
-        return Option.from(children[index]).map(Element.fromDom);
-      };
+      const child = function (element, index) {
+        const children = element.dom().childNodes
+        return Option.from(children[index]).map(Element.fromDom)
+      }
 
-      const firstChild = function(element) {
-        return child(element, 0);
-      };
+      const firstChild = function (element) {
+        return child(element, 0)
+      }
 
-      const lastChild = function(element) {
-        return child(element, element.dom().childNodes.length - 1);
-      };
+      const lastChild = function (element) {
+        return child(element, element.dom().childNodes.length - 1)
+      }
 
-      const childNodesCount = function(element, index) {
-        return element.dom().childNodes.length;
-      };
+      const childNodesCount = function (element, index) {
+        return element.dom().childNodes.length
+      }
 
-      const spot = Struct.immutable('element', 'offset');
-      const leaf = function(element, offset) {
-        const cs = children(element);
-        return cs.length > 0 && offset < cs.length ? spot(cs[offset], 0) : spot(element, offset);
-      };
+      const spot = Struct.immutable('element', 'offset')
+      const leaf = function (element, offset) {
+        const cs = children(element)
+        return cs.length > 0 && offset < cs.length ? spot(cs[offset], 0) : spot(element, offset)
+      }
 
       return {
         owner,
@@ -13198,9 +13198,9 @@ jsc */
         lastChild,
         childNodesCount,
         leaf
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.search.PredicateFilter',
@@ -13211,37 +13211,37 @@ jsc */
       'ephox.sugar.api.search.Traverse'
     ],
 
-    function(Arr, Body, Traverse) {
+    function (Arr, Body, Traverse) {
     // maybe TraverseWith, similar to traverse but with a predicate?
 
-      const all = function(predicate) {
-        return descendants(Body.body(), predicate);
-      };
+      const all = function (predicate) {
+        return descendants(Body.body(), predicate)
+      }
 
-      const ancestors = function(scope, predicate, isRoot) {
-        return Arr.filter(Traverse.parents(scope, isRoot), predicate);
-      };
+      const ancestors = function (scope, predicate, isRoot) {
+        return Arr.filter(Traverse.parents(scope, isRoot), predicate)
+      }
 
-      const siblings = function(scope, predicate) {
-        return Arr.filter(Traverse.siblings(scope), predicate);
-      };
+      const siblings = function (scope, predicate) {
+        return Arr.filter(Traverse.siblings(scope), predicate)
+      }
 
-      const children = function(scope, predicate) {
-        return Arr.filter(Traverse.children(scope), predicate);
-      };
+      const children = function (scope, predicate) {
+        return Arr.filter(Traverse.children(scope), predicate)
+      }
 
-      var descendants = function(scope, predicate) {
-        let result = [];
+      var descendants = function (scope, predicate) {
+        let result = []
 
         // Recurse.toArray() might help here
-        Arr.each(Traverse.children(scope), function(x) {
+        Arr.each(Traverse.children(scope), function (x) {
           if (predicate(x)) {
-            result = result.concat([ x ]);
+            result = result.concat([ x ])
           }
-          result = result.concat(descendants(x, predicate));
-        });
-        return result;
-      };
+          result = result.concat(descendants(x, predicate))
+        })
+        return result
+      }
 
       return {
         all,
@@ -13249,9 +13249,9 @@ jsc */
         siblings,
         children,
         descendants
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.search.SelectorFilter',
@@ -13261,10 +13261,10 @@ jsc */
       'ephox.sugar.api.search.Selectors'
     ],
 
-    function(PredicateFilter, Selectors) {
-      const all = function(selector) {
-        return Selectors.all(selector);
-      };
+    function (PredicateFilter, Selectors) {
+      const all = function (selector) {
+        return Selectors.all(selector)
+      }
 
       // For all of the following:
       //
@@ -13272,33 +13272,33 @@ jsc */
       // Traverse should also do this (but probably not by default).
       //
 
-      const ancestors = function(scope, selector, isRoot) {
+      const ancestors = function (scope, selector, isRoot) {
       // It may surprise you to learn this is exactly what JQuery does
       // TODO: Avoid all this wrapping and unwrapping
-        return PredicateFilter.ancestors(scope, function(e) {
-          return Selectors.is(e, selector);
-        }, isRoot);
-      };
+        return PredicateFilter.ancestors(scope, function (e) {
+          return Selectors.is(e, selector)
+        }, isRoot)
+      }
 
-      const siblings = function(scope, selector) {
+      const siblings = function (scope, selector) {
       // It may surprise you to learn this is exactly what JQuery does
       // TODO: Avoid all the wrapping and unwrapping
-        return PredicateFilter.siblings(scope, function(e) {
-          return Selectors.is(e, selector);
-        });
-      };
+        return PredicateFilter.siblings(scope, function (e) {
+          return Selectors.is(e, selector)
+        })
+      }
 
-      const children = function(scope, selector) {
+      const children = function (scope, selector) {
       // It may surprise you to learn this is exactly what JQuery does
       // TODO: Avoid all the wrapping and unwrapping
-        return PredicateFilter.children(scope, function(e) {
-          return Selectors.is(e, selector);
-        });
-      };
+        return PredicateFilter.children(scope, function (e) {
+          return Selectors.is(e, selector)
+        })
+      }
 
-      const descendants = function(scope, selector) {
-        return Selectors.all(selector, scope);
-      };
+      const descendants = function (scope, selector) {
+        return Selectors.all(selector, scope)
+      }
 
       return {
         all,
@@ -13306,9 +13306,9 @@ jsc */
         siblings,
         children,
         descendants
-      };
+      }
     }
-  );
+  )
 
   /**
  * LinkTargets.js
@@ -13337,130 +13337,130 @@ jsc */
       'tinymce.core.dom.DOMUtils',
       'tinymce.core.util.Tools'
     ],
-    function(Arr, Fun, Id, Element, SelectorFilter, DOMUtils, Tools) {
-      const trim = Tools.trim;
-      const hasContentEditableState = function(value) {
-        return function(node) {
+    function (Arr, Fun, Id, Element, SelectorFilter, DOMUtils, Tools) {
+      const trim = Tools.trim
+      const hasContentEditableState = function (value) {
+        return function (node) {
           if (node && node.nodeType === 1) {
             if (node.contentEditable === value) {
-              return true;
+              return true
             }
 
             if (node.getAttribute('data-mce-contenteditable') === value) {
-              return true;
+              return true
             }
           }
 
-          return false;
-        };
-      };
+          return false
+        }
+      }
 
-      const isContentEditableTrue = hasContentEditableState('true');
-      const isContentEditableFalse = hasContentEditableState('false');
+      const isContentEditableTrue = hasContentEditableState('true')
+      const isContentEditableFalse = hasContentEditableState('false')
 
-      const create = function(type, title, url, level, attach) {
+      const create = function (type, title, url, level, attach) {
         return {
           type,
           title,
           url,
           level,
           attach
-        };
-      };
+        }
+      }
 
-      const isChildOfContentEditableTrue = function(node) {
+      const isChildOfContentEditableTrue = function (node) {
         while ((node = node.parentNode)) {
-          const value = node.contentEditable;
+          const value = node.contentEditable
           if (value && value !== 'inherit') {
-            return isContentEditableTrue(node);
+            return isContentEditableTrue(node)
           }
         }
 
-        return false;
-      };
+        return false
+      }
 
-      const select = function(selector, root) {
-        return Arr.map(SelectorFilter.descendants(Element.fromDom(root), selector), function(element) {
-          return element.dom();
-        });
-      };
+      const select = function (selector, root) {
+        return Arr.map(SelectorFilter.descendants(Element.fromDom(root), selector), function (element) {
+          return element.dom()
+        })
+      }
 
-      const getElementText = function(elm) {
-        return elm.innerText || elm.textContent;
-      };
+      const getElementText = function (elm) {
+        return elm.innerText || elm.textContent
+      }
 
-      const getOrGenerateId = function(elm) {
-        return elm.id ? elm.id : Id.generate('h');
-      };
+      const getOrGenerateId = function (elm) {
+        return elm.id ? elm.id : Id.generate('h')
+      }
 
-      const isAnchor = function(elm) {
-        return elm && elm.nodeName === 'A' && (elm.id || elm.name);
-      };
+      const isAnchor = function (elm) {
+        return elm && elm.nodeName === 'A' && (elm.id || elm.name)
+      }
 
-      const isValidAnchor = function(elm) {
-        return isAnchor(elm) && isEditable(elm);
-      };
+      const isValidAnchor = function (elm) {
+        return isAnchor(elm) && isEditable(elm)
+      }
 
-      const isHeader = function(elm) {
-        return elm && /^(H[1-6])$/.test(elm.nodeName);
-      };
+      const isHeader = function (elm) {
+        return elm && /^(H[1-6])$/.test(elm.nodeName)
+      }
 
-      var isEditable = function(elm) {
-        return isChildOfContentEditableTrue(elm) && !isContentEditableFalse(elm);
-      };
+      var isEditable = function (elm) {
+        return isChildOfContentEditableTrue(elm) && !isContentEditableFalse(elm)
+      }
 
-      const isValidHeader = function(elm) {
-        return isHeader(elm) && isEditable(elm);
-      };
+      const isValidHeader = function (elm) {
+        return isHeader(elm) && isEditable(elm)
+      }
 
-      const getLevel = function(elm) {
-        return isHeader(elm) ? parseInt(elm.nodeName.substr(1), 10) : 0;
-      };
+      const getLevel = function (elm) {
+        return isHeader(elm) ? parseInt(elm.nodeName.substr(1), 10) : 0
+      }
 
-      const headerTarget = function(elm) {
-        const headerId = getOrGenerateId(elm);
+      const headerTarget = function (elm) {
+        const headerId = getOrGenerateId(elm)
 
-        const attach = function() {
-          elm.id = headerId;
-        };
+        const attach = function () {
+          elm.id = headerId
+        }
 
-        return create('header', getElementText(elm), '#' + headerId, getLevel(elm), attach);
-      };
+        return create('header', getElementText(elm), '#' + headerId, getLevel(elm), attach)
+      }
 
-      const anchorTarget = function(elm) {
-        const anchorId = elm.id || elm.name;
-        const anchorText = getElementText(elm);
+      const anchorTarget = function (elm) {
+        const anchorId = elm.id || elm.name
+        const anchorText = getElementText(elm)
 
-        return create('anchor', anchorText || '#' + anchorId, '#' + anchorId, 0, Fun.noop);
-      };
+        return create('anchor', anchorText || '#' + anchorId, '#' + anchorId, 0, Fun.noop)
+      }
 
-      const getHeaderTargets = function(elms) {
-        return Arr.map(Arr.filter(elms, isValidHeader), headerTarget);
-      };
+      const getHeaderTargets = function (elms) {
+        return Arr.map(Arr.filter(elms, isValidHeader), headerTarget)
+      }
 
-      const getAnchorTargets = function(elms) {
-        return Arr.map(Arr.filter(elms, isValidAnchor), anchorTarget);
-      };
+      const getAnchorTargets = function (elms) {
+        return Arr.map(Arr.filter(elms, isValidAnchor), anchorTarget)
+      }
 
-      const getTargetElements = function(elm) {
-        const elms = select('h1,h2,h3,h4,h5,h6,a:not([href])', elm);
-        return elms;
-      };
+      const getTargetElements = function (elm) {
+        const elms = select('h1,h2,h3,h4,h5,h6,a:not([href])', elm)
+        return elms
+      }
 
-      const hasTitle = function(target) {
-        return trim(target.title).length > 0;
-      };
+      const hasTitle = function (target) {
+        return trim(target.title).length > 0
+      }
 
-      const find = function(elm) {
-        const elms = getTargetElements(elm);
-        return Arr.filter(getHeaderTargets(elms).concat(getAnchorTargets(elms)), hasTitle);
-      };
+      const find = function (elm) {
+        const elms = getTargetElements(elm)
+        return Arr.filter(getHeaderTargets(elms).concat(getAnchorTargets(elms)), hasTitle)
+      }
 
       return {
         find
-      };
+      }
     }
-  );
+  )
 
   /**
  * FilePicker.js
@@ -13489,21 +13489,21 @@ jsc */
       'tinymce.ui.ComboBox',
       'tinymce.core.util.Tools'
     ],
-    function(Arr, Fun, window, LinkTargets, EditorManager, ComboBox, Tools) {
-      'use strict';
+    function (Arr, Fun, window, LinkTargets, EditorManager, ComboBox, Tools) {
+      'use strict'
 
-      const getActiveEditor = function() {
-        return window.tinymce ? window.tinymce.activeEditor : EditorManager.activeEditor;
-      };
+      const getActiveEditor = function () {
+        return window.tinymce ? window.tinymce.activeEditor : EditorManager.activeEditor
+      }
 
-      let history = {};
-      const HISTORY_LENGTH = 5;
+      let history = {}
+      const HISTORY_LENGTH = 5
 
-      const clearHistory = function() {
-        history = {};
-      };
+      const clearHistory = function () {
+        history = {}
+      }
 
-      const toMenuItem = function(target) {
+      const toMenuItem = function (target) {
         return {
           title: target.title,
           value: {
@@ -13511,14 +13511,14 @@ jsc */
             url: target.url,
             attach: target.attach
           }
-        };
-      };
+        }
+      }
 
-      const toMenuItems = function(targets) {
-        return Tools.map(targets, toMenuItem);
-      };
+      const toMenuItems = function (targets) {
+        return Tools.map(targets, toMenuItem)
+      }
 
-      const staticMenuItem = function(title, url) {
+      const staticMenuItem = function (title, url) {
         return {
           title,
           value: {
@@ -13526,32 +13526,32 @@ jsc */
             url,
             attach: Fun.noop
           }
-        };
-      };
+        }
+      }
 
-      const isUniqueUrl = function(url, targets) {
-        const foundTarget = Arr.exists(targets, function(target) {
-          return target.url === url;
-        });
+      const isUniqueUrl = function (url, targets) {
+        const foundTarget = Arr.exists(targets, function (target) {
+          return target.url === url
+        })
 
-        return !foundTarget;
-      };
+        return !foundTarget
+      }
 
-      const getSetting = function(editorSettings, name, defaultValue) {
-        const value = name in editorSettings ? editorSettings[name] : defaultValue;
-        return value === false ? null : value;
-      };
+      const getSetting = function (editorSettings, name, defaultValue) {
+        const value = name in editorSettings ? editorSettings[name] : defaultValue
+        return value === false ? null : value
+      }
 
-      const createMenuItems = function(term, targets, fileType, editorSettings) {
-        const separator = { title: '-' };
+      const createMenuItems = function (term, targets, fileType, editorSettings) {
+        const separator = { title: '-' }
 
-        const fromHistoryMenuItems = function(history) {
-          const historyItems = history.hasOwnProperty(fileType) ? history[fileType] : [ ];
-          const uniqueHistory = Arr.filter(historyItems, function(url) {
-            return isUniqueUrl(url, targets);
-          });
+        const fromHistoryMenuItems = function (history) {
+          const historyItems = history.hasOwnProperty(fileType) ? history[fileType] : [ ]
+          const uniqueHistory = Arr.filter(historyItems, function (url) {
+            return isUniqueUrl(url, targets)
+          })
 
-          return Tools.map(uniqueHistory, function(url) {
+          return Tools.map(uniqueHistory, function (url) {
             return {
               title: url,
               value: {
@@ -13559,163 +13559,163 @@ jsc */
                 url,
                 attach: Fun.noop
               }
-            };
-          });
-        };
+            }
+          })
+        }
 
-        const fromMenuItems = function(type) {
-          const filteredTargets = Arr.filter(targets, function(target) {
-            return target.type === type;
-          });
+        const fromMenuItems = function (type) {
+          const filteredTargets = Arr.filter(targets, function (target) {
+            return target.type === type
+          })
 
-          return toMenuItems(filteredTargets);
-        };
+          return toMenuItems(filteredTargets)
+        }
 
-        const anchorMenuItems = function() {
-          const anchorMenuItems = fromMenuItems('anchor');
-          const topAnchor = getSetting(editorSettings, 'anchor_top', '#top');
-          const bottomAchor = getSetting(editorSettings, 'anchor_bottom', '#bottom');
+        const anchorMenuItems = function () {
+          const anchorMenuItems = fromMenuItems('anchor')
+          const topAnchor = getSetting(editorSettings, 'anchor_top', '#top')
+          const bottomAchor = getSetting(editorSettings, 'anchor_bottom', '#bottom')
 
           if (topAnchor !== null) {
-            anchorMenuItems.unshift(staticMenuItem('<top>', topAnchor));
+            anchorMenuItems.unshift(staticMenuItem('<top>', topAnchor))
           }
 
           if (bottomAchor !== null) {
-            anchorMenuItems.push(staticMenuItem('<bottom>', bottomAchor));
+            anchorMenuItems.push(staticMenuItem('<bottom>', bottomAchor))
           }
 
-          return anchorMenuItems;
-        };
+          return anchorMenuItems
+        }
 
-        const join = function(items) {
-          return Arr.foldl(items, function(a, b) {
-            const bothEmpty = a.length === 0 || b.length === 0;
-            return bothEmpty ? a.concat(b) : a.concat(separator, b);
-          }, []);
-        };
+        const join = function (items) {
+          return Arr.foldl(items, function (a, b) {
+            const bothEmpty = a.length === 0 || b.length === 0
+            return bothEmpty ? a.concat(b) : a.concat(separator, b)
+          }, [])
+        }
 
         if (editorSettings.typeahead_urls === false) {
-          return [];
+          return []
         }
 
         return fileType === 'file' ? join([
           filterByQuery(term, fromHistoryMenuItems(history)),
           filterByQuery(term, fromMenuItems('header')),
           filterByQuery(term, anchorMenuItems())
-        ]) : filterByQuery(term, fromHistoryMenuItems(history));
-      };
+        ]) : filterByQuery(term, fromHistoryMenuItems(history))
+      }
 
-      const addToHistory = function(url, fileType) {
-        const items = history[fileType];
+      const addToHistory = function (url, fileType) {
+        const items = history[fileType]
 
         if (!/^https?/.test(url)) {
-          return;
+          return
         }
 
         if (items) {
           if (Arr.indexOf(items, url) === -1) {
-            history[fileType] = items.slice(0, HISTORY_LENGTH).concat(url);
+            history[fileType] = items.slice(0, HISTORY_LENGTH).concat(url)
           }
         } else {
-          history[fileType] = [url];
+          history[fileType] = [url]
         }
-      };
+      }
 
-      var filterByQuery = function(term, menuItems) {
-        const lowerCaseTerm = term.toLowerCase();
-        const result = Tools.grep(menuItems, function(item) {
-          return item.title.toLowerCase().indexOf(lowerCaseTerm) !== -1;
-        });
+      var filterByQuery = function (term, menuItems) {
+        const lowerCaseTerm = term.toLowerCase()
+        const result = Tools.grep(menuItems, function (item) {
+          return item.title.toLowerCase().indexOf(lowerCaseTerm) !== -1
+        })
 
-        return result.length === 1 && result[0].title === term ? [] : result;
-      };
+        return result.length === 1 && result[0].title === term ? [] : result
+      }
 
-      const getTitle = function(linkDetails) {
-        const title = linkDetails.title;
-        return title.raw ? title.raw : title;
-      };
+      const getTitle = function (linkDetails) {
+        const title = linkDetails.title
+        return title.raw ? title.raw : title
+      }
 
-      const setupAutoCompleteHandler = function(ctrl, editorSettings, bodyElm, fileType) {
-        const autocomplete = function(term) {
-          const linkTargets = LinkTargets.find(bodyElm);
-          const menuItems = createMenuItems(term, linkTargets, fileType, editorSettings);
-          ctrl.showAutoComplete(menuItems, term);
-        };
+      const setupAutoCompleteHandler = function (ctrl, editorSettings, bodyElm, fileType) {
+        const autocomplete = function (term) {
+          const linkTargets = LinkTargets.find(bodyElm)
+          const menuItems = createMenuItems(term, linkTargets, fileType, editorSettings)
+          ctrl.showAutoComplete(menuItems, term)
+        }
 
-        ctrl.on('autocomplete', function() {
-          autocomplete(ctrl.value());
-        });
+        ctrl.on('autocomplete', function () {
+          autocomplete(ctrl.value())
+        })
 
-        ctrl.on('selectitem', function(e) {
-          const linkDetails = e.value;
+        ctrl.on('selectitem', function (e) {
+          const linkDetails = e.value
 
-          ctrl.value(linkDetails.url);
-          const title = getTitle(linkDetails);
+          ctrl.value(linkDetails.url)
+          const title = getTitle(linkDetails)
 
           if (fileType === 'image') {
-            ctrl.fire('change', { meta: { alt: title, attach: linkDetails.attach } });
+            ctrl.fire('change', { meta: { alt: title, attach: linkDetails.attach } })
           } else {
-            ctrl.fire('change', { meta: { text: title, attach: linkDetails.attach } });
+            ctrl.fire('change', { meta: { text: title, attach: linkDetails.attach } })
           }
 
-          ctrl.focus();
-        });
+          ctrl.focus()
+        })
 
-        ctrl.on('click', function(e) {
+        ctrl.on('click', function (e) {
           if (ctrl.value().length === 0 && e.target.nodeName === 'INPUT') {
-            autocomplete('');
+            autocomplete('')
           }
-        });
+        })
 
-        ctrl.on('PostRender', function() {
-          ctrl.getRoot().on('submit', function(e) {
+        ctrl.on('PostRender', function () {
+          ctrl.getRoot().on('submit', function (e) {
             if (!e.isDefaultPrevented()) {
-              addToHistory(ctrl.value(), fileType);
+              addToHistory(ctrl.value(), fileType)
             }
-          });
-        });
-      };
+          })
+        })
+      }
 
-      const statusToUiState = function(result) {
+      const statusToUiState = function (result) {
         let status = result.status,
-          message = result.message;
+          message = result.message
 
         if (status === 'valid') {
-          return { status: 'ok', message };
+          return { status: 'ok', message }
         } else if (status === 'unknown') {
-          return { status: 'warn', message };
+          return { status: 'warn', message }
         } else if (status === 'invalid') {
-          return { status: 'warn', message };
+          return { status: 'warn', message }
         } else {
-          return { status: 'none', message: '' };
+          return { status: 'none', message: '' }
         }
-      };
+      }
 
-      const setupLinkValidatorHandler = function(ctrl, editorSettings, fileType) {
-        const validatorHandler = editorSettings.filepicker_validator_handler;
+      const setupLinkValidatorHandler = function (ctrl, editorSettings, fileType) {
+        const validatorHandler = editorSettings.filepicker_validator_handler
         if (validatorHandler) {
-          const validateUrl = function(url) {
+          const validateUrl = function (url) {
             if (url.length === 0) {
-              ctrl.statusLevel('none');
-              return;
+              ctrl.statusLevel('none')
+              return
             }
 
             validatorHandler({
               url,
               type: fileType
-            }, function(result) {
-              const uiState = statusToUiState(result);
+            }, function (result) {
+              const uiState = statusToUiState(result)
 
-              ctrl.statusMessage(uiState.message);
-              ctrl.statusLevel(uiState.status);
-            });
-          };
+              ctrl.statusMessage(uiState.message)
+              ctrl.statusLevel(uiState.status)
+            })
+          }
 
-          ctrl.state.on('change:value', function(e) {
-            validateUrl(e.value);
-          });
+          ctrl.state.on('change:value', function (e) {
+            validateUrl(e.value)
+          })
         }
-      };
+      }
 
       return ComboBox.extend({
         Statics: {
@@ -13728,69 +13728,69 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
+        init (settings) {
           let self = this,
             editor = getActiveEditor(),
-            editorSettings = editor.settings;
+            editorSettings = editor.settings
           let actionCallback,
             fileBrowserCallback,
-            fileBrowserCallbackTypes;
-          const fileType = settings.filetype;
+            fileBrowserCallbackTypes
+          const fileType = settings.filetype
 
-          settings.spellcheck = false;
+          settings.spellcheck = false
 
-          fileBrowserCallbackTypes = editorSettings.file_picker_types || editorSettings.file_browser_callback_types;
+          fileBrowserCallbackTypes = editorSettings.file_picker_types || editorSettings.file_browser_callback_types
           if (fileBrowserCallbackTypes) {
-            fileBrowserCallbackTypes = Tools.makeMap(fileBrowserCallbackTypes, /[, ]/);
+            fileBrowserCallbackTypes = Tools.makeMap(fileBrowserCallbackTypes, /[, ]/)
           }
 
           if (!fileBrowserCallbackTypes || fileBrowserCallbackTypes[fileType]) {
-            fileBrowserCallback = editorSettings.file_picker_callback;
+            fileBrowserCallback = editorSettings.file_picker_callback
             if (fileBrowserCallback && (!fileBrowserCallbackTypes || fileBrowserCallbackTypes[fileType])) {
-              actionCallback = function() {
-                let meta = self.fire('beforecall').meta;
+              actionCallback = function () {
+                let meta = self.fire('beforecall').meta
 
-                meta = Tools.extend({ filetype: fileType }, meta);
+                meta = Tools.extend({ filetype: fileType }, meta)
 
                 // file_picker_callback(callback, currentValue, metaData)
                 fileBrowserCallback.call(
                   editor,
-                  function(value, meta) {
-                    self.value(value).fire('change', { meta });
+                  function (value, meta) {
+                    self.value(value).fire('change', { meta })
                   },
                   self.value(),
                   meta
-                );
-              };
+                )
+              }
             } else {
             // Legacy callback: file_picker_callback(id, currentValue, filetype, window)
-              fileBrowserCallback = editorSettings.file_browser_callback;
+              fileBrowserCallback = editorSettings.file_browser_callback
               if (fileBrowserCallback && (!fileBrowserCallbackTypes || fileBrowserCallbackTypes[fileType])) {
-                actionCallback = function() {
+                actionCallback = function () {
                   fileBrowserCallback(
                     self.getEl('inp').id,
                     self.value(),
                     fileType,
                     window
-                  );
-                };
+                  )
+                }
               }
             }
           }
 
           if (actionCallback) {
-            settings.icon = 'browse';
-            settings.onaction = actionCallback;
+            settings.icon = 'browse'
+            settings.onaction = actionCallback
           }
 
-          self._super(settings);
+          self._super(settings)
 
-          setupAutoCompleteHandler(self, editorSettings, editor.getBody(), fileType);
-          setupLinkValidatorHandler(self, editorSettings, fileType);
+          setupAutoCompleteHandler(self, editorSettings, editor.getBody(), fileType)
+          setupLinkValidatorHandler(self, editorSettings, fileType)
         }
-      });
+      })
     }
-  );
+  )
   /**
  * FitLayout.js
  *
@@ -13814,8 +13814,8 @@ jsc */
     [
       'tinymce.ui.AbsoluteLayout'
     ],
-    function(AbsoluteLayout) {
-      'use strict';
+    function (AbsoluteLayout) {
+      'use strict'
 
       return AbsoluteLayout.extend({
       /**
@@ -13824,26 +13824,26 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc(container) {
+        recalc (container) {
           let contLayoutRect = container.layoutRect(),
-            paddingBox = container.paddingBox;
+            paddingBox = container.paddingBox
 
-          container.items().filter(':visible').each(function(ctrl) {
+          container.items().filter(':visible').each(function (ctrl) {
             ctrl.layoutRect({
               x: paddingBox.left,
               y: paddingBox.top,
               w: contLayoutRect.innerW - paddingBox.right - paddingBox.left,
               h: contLayoutRect.innerH - paddingBox.top - paddingBox.bottom
-            });
+            })
 
             if (ctrl.recalc) {
-              ctrl.recalc();
+              ctrl.recalc()
             }
-          });
+          })
         }
-      });
+      })
     }
-  );
+  )
   /**
  * FlexLayout.js
  *
@@ -13870,8 +13870,8 @@ jsc */
     [
       'tinymce.ui.AbsoluteLayout'
     ],
-    function(AbsoluteLayout) {
-      'use strict';
+    function (AbsoluteLayout) {
+      'use strict'
 
       return AbsoluteLayout.extend({
       /**
@@ -13880,7 +13880,7 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc(container) {
+        recalc (container) {
         // A ton of variables, needs to be in the same scope for performance
           let i,
             l,
@@ -13893,7 +13893,7 @@ jsc */
             spacing,
             totalFlex,
             availableSpace,
-            direction;
+            direction
           let ctrl,
             ctrlLayoutRect,
             ctrlSettings,
@@ -13904,7 +13904,7 @@ jsc */
             ratio,
             rect,
             pos,
-            maxAlignEndPos;
+            maxAlignEndPos
           let sizeName,
             minSizeName,
             posName,
@@ -13912,223 +13912,223 @@ jsc */
             beforeName,
             innerSizeName,
             deltaSizeName,
-            contentSizeName;
+            contentSizeName
           let alignAxisName,
             alignInnerSizeName,
             alignSizeName,
             alignMinSizeName,
             alignBeforeName,
-            alignAfterName;
+            alignAfterName
           let alignDeltaSizeName,
-            alignContentSizeName;
+            alignContentSizeName
           let max = Math.max,
-            min = Math.min;
+            min = Math.min
 
           // Get container items, properties and settings
-          items = container.items().filter(':visible');
-          contLayoutRect = container.layoutRect();
-          contPaddingBox = container.paddingBox;
-          contSettings = container.settings;
-          direction = container.isRtl() ? (contSettings.direction || 'row-reversed') : contSettings.direction;
-          align = contSettings.align;
-          pack = container.isRtl() ? (contSettings.pack || 'end') : contSettings.pack;
-          spacing = contSettings.spacing || 0;
+          items = container.items().filter(':visible')
+          contLayoutRect = container.layoutRect()
+          contPaddingBox = container.paddingBox
+          contSettings = container.settings
+          direction = container.isRtl() ? (contSettings.direction || 'row-reversed') : contSettings.direction
+          align = contSettings.align
+          pack = container.isRtl() ? (contSettings.pack || 'end') : contSettings.pack
+          spacing = contSettings.spacing || 0
 
           if (direction == 'row-reversed' || direction == 'column-reverse') {
-            items = items.set(items.toArray().reverse());
-            direction = direction.split('-')[0];
+            items = items.set(items.toArray().reverse())
+            direction = direction.split('-')[0]
           }
 
           // Setup axis variable name for row/column direction since the calculations is the same
           if (direction == 'column') {
-            posName = 'y';
-            sizeName = 'h';
-            minSizeName = 'minH';
-            maxSizeName = 'maxH';
-            innerSizeName = 'innerH';
-            beforeName = 'top';
-            deltaSizeName = 'deltaH';
-            contentSizeName = 'contentH';
+            posName = 'y'
+            sizeName = 'h'
+            minSizeName = 'minH'
+            maxSizeName = 'maxH'
+            innerSizeName = 'innerH'
+            beforeName = 'top'
+            deltaSizeName = 'deltaH'
+            contentSizeName = 'contentH'
 
-            alignBeforeName = 'left';
-            alignSizeName = 'w';
-            alignAxisName = 'x';
-            alignInnerSizeName = 'innerW';
-            alignMinSizeName = 'minW';
-            alignAfterName = 'right';
-            alignDeltaSizeName = 'deltaW';
-            alignContentSizeName = 'contentW';
+            alignBeforeName = 'left'
+            alignSizeName = 'w'
+            alignAxisName = 'x'
+            alignInnerSizeName = 'innerW'
+            alignMinSizeName = 'minW'
+            alignAfterName = 'right'
+            alignDeltaSizeName = 'deltaW'
+            alignContentSizeName = 'contentW'
           } else {
-            posName = 'x';
-            sizeName = 'w';
-            minSizeName = 'minW';
-            maxSizeName = 'maxW';
-            innerSizeName = 'innerW';
-            beforeName = 'left';
-            deltaSizeName = 'deltaW';
-            contentSizeName = 'contentW';
+            posName = 'x'
+            sizeName = 'w'
+            minSizeName = 'minW'
+            maxSizeName = 'maxW'
+            innerSizeName = 'innerW'
+            beforeName = 'left'
+            deltaSizeName = 'deltaW'
+            contentSizeName = 'contentW'
 
-            alignBeforeName = 'top';
-            alignSizeName = 'h';
-            alignAxisName = 'y';
-            alignInnerSizeName = 'innerH';
-            alignMinSizeName = 'minH';
-            alignAfterName = 'bottom';
-            alignDeltaSizeName = 'deltaH';
-            alignContentSizeName = 'contentH';
+            alignBeforeName = 'top'
+            alignSizeName = 'h'
+            alignAxisName = 'y'
+            alignInnerSizeName = 'innerH'
+            alignMinSizeName = 'minH'
+            alignAfterName = 'bottom'
+            alignDeltaSizeName = 'deltaH'
+            alignContentSizeName = 'contentH'
           }
 
           // Figure out total flex, availableSpace and collect any max size elements
-          availableSpace = contLayoutRect[innerSizeName] - contPaddingBox[beforeName] - contPaddingBox[beforeName];
-          maxAlignEndPos = totalFlex = 0;
+          availableSpace = contLayoutRect[innerSizeName] - contPaddingBox[beforeName] - contPaddingBox[beforeName]
+          maxAlignEndPos = totalFlex = 0
           for (i = 0, l = items.length; i < l; i++) {
-            ctrl = items[i];
-            ctrlLayoutRect = ctrl.layoutRect();
-            ctrlSettings = ctrl.settings;
-            flex = ctrlSettings.flex;
-            availableSpace -= (i < l - 1 ? spacing : 0);
+            ctrl = items[i]
+            ctrlLayoutRect = ctrl.layoutRect()
+            ctrlSettings = ctrl.settings
+            flex = ctrlSettings.flex
+            availableSpace -= (i < l - 1 ? spacing : 0)
 
             if (flex > 0) {
-              totalFlex += flex;
+              totalFlex += flex
 
               // Flexed item has a max size then we need to check if we will hit that size
               if (ctrlLayoutRect[maxSizeName]) {
-                maxSizeItems.push(ctrl);
+                maxSizeItems.push(ctrl)
               }
 
-              ctrlLayoutRect.flex = flex;
+              ctrlLayoutRect.flex = flex
             }
 
-            availableSpace -= ctrlLayoutRect[minSizeName];
+            availableSpace -= ctrlLayoutRect[minSizeName]
 
             // Calculate the align end position to be used to check for overflow/underflow
-            size = contPaddingBox[alignBeforeName] + ctrlLayoutRect[alignMinSizeName] + contPaddingBox[alignAfterName];
+            size = contPaddingBox[alignBeforeName] + ctrlLayoutRect[alignMinSizeName] + contPaddingBox[alignAfterName]
             if (size > maxAlignEndPos) {
-              maxAlignEndPos = size;
+              maxAlignEndPos = size
             }
           }
 
           // Calculate minW/minH
-          rect = {};
+          rect = {}
           if (availableSpace < 0) {
-            rect[minSizeName] = contLayoutRect[minSizeName] - availableSpace + contLayoutRect[deltaSizeName];
+            rect[minSizeName] = contLayoutRect[minSizeName] - availableSpace + contLayoutRect[deltaSizeName]
           } else {
-            rect[minSizeName] = contLayoutRect[innerSizeName] - availableSpace + contLayoutRect[deltaSizeName];
+            rect[minSizeName] = contLayoutRect[innerSizeName] - availableSpace + contLayoutRect[deltaSizeName]
           }
 
-          rect[alignMinSizeName] = maxAlignEndPos + contLayoutRect[alignDeltaSizeName];
+          rect[alignMinSizeName] = maxAlignEndPos + contLayoutRect[alignDeltaSizeName]
 
-          rect[contentSizeName] = contLayoutRect[innerSizeName] - availableSpace;
-          rect[alignContentSizeName] = maxAlignEndPos;
-          rect.minW = min(rect.minW, contLayoutRect.maxW);
-          rect.minH = min(rect.minH, contLayoutRect.maxH);
-          rect.minW = max(rect.minW, contLayoutRect.startMinWidth);
-          rect.minH = max(rect.minH, contLayoutRect.startMinHeight);
+          rect[contentSizeName] = contLayoutRect[innerSizeName] - availableSpace
+          rect[alignContentSizeName] = maxAlignEndPos
+          rect.minW = min(rect.minW, contLayoutRect.maxW)
+          rect.minH = min(rect.minH, contLayoutRect.maxH)
+          rect.minW = max(rect.minW, contLayoutRect.startMinWidth)
+          rect.minH = max(rect.minH, contLayoutRect.startMinHeight)
 
           // Resize container container if minSize was changed
           if (contLayoutRect.autoResize && (rect.minW != contLayoutRect.minW || rect.minH != contLayoutRect.minH)) {
-            rect.w = rect.minW;
-            rect.h = rect.minH;
+            rect.w = rect.minW
+            rect.h = rect.minH
 
-            container.layoutRect(rect);
-            this.recalc(container);
+            container.layoutRect(rect)
+            this.recalc(container)
 
             // Forced recalc for example if items are hidden/shown
             if (container._lastRect === null) {
-              const parentCtrl = container.parent();
+              const parentCtrl = container.parent()
               if (parentCtrl) {
-                parentCtrl._lastRect = null;
-                parentCtrl.recalc();
+                parentCtrl._lastRect = null
+                parentCtrl.recalc()
               }
             }
 
-            return;
+            return
           }
 
           // Handle max size elements, check if they will become to wide with current options
-          ratio = availableSpace / totalFlex;
+          ratio = availableSpace / totalFlex
           for (i = 0, l = maxSizeItems.length; i < l; i++) {
-            ctrl = maxSizeItems[i];
-            ctrlLayoutRect = ctrl.layoutRect();
-            maxSize = ctrlLayoutRect[maxSizeName];
-            size = ctrlLayoutRect[minSizeName] + ctrlLayoutRect.flex * ratio;
+            ctrl = maxSizeItems[i]
+            ctrlLayoutRect = ctrl.layoutRect()
+            maxSize = ctrlLayoutRect[maxSizeName]
+            size = ctrlLayoutRect[minSizeName] + ctrlLayoutRect.flex * ratio
 
             if (size > maxSize) {
-              availableSpace -= (ctrlLayoutRect[maxSizeName] - ctrlLayoutRect[minSizeName]);
-              totalFlex -= ctrlLayoutRect.flex;
-              ctrlLayoutRect.flex = 0;
-              ctrlLayoutRect.maxFlexSize = maxSize;
+              availableSpace -= (ctrlLayoutRect[maxSizeName] - ctrlLayoutRect[minSizeName])
+              totalFlex -= ctrlLayoutRect.flex
+              ctrlLayoutRect.flex = 0
+              ctrlLayoutRect.maxFlexSize = maxSize
             } else {
-              ctrlLayoutRect.maxFlexSize = 0;
+              ctrlLayoutRect.maxFlexSize = 0
             }
           }
 
           // Setup new ratio, target layout rect, start position
-          ratio = availableSpace / totalFlex;
-          pos = contPaddingBox[beforeName];
-          rect = {};
+          ratio = availableSpace / totalFlex
+          pos = contPaddingBox[beforeName]
+          rect = {}
 
           // Handle pack setting moves the start position to end, center
           if (totalFlex === 0) {
             if (pack == 'end') {
-              pos = availableSpace + contPaddingBox[beforeName];
+              pos = availableSpace + contPaddingBox[beforeName]
             } else if (pack == 'center') {
               pos = Math.round(
                 (contLayoutRect[innerSizeName] / 2) - ((contLayoutRect[innerSizeName] - availableSpace) / 2)
-              ) + contPaddingBox[beforeName];
+              ) + contPaddingBox[beforeName]
 
               if (pos < 0) {
-                pos = contPaddingBox[beforeName];
+                pos = contPaddingBox[beforeName]
               }
             } else if (pack == 'justify') {
-              pos = contPaddingBox[beforeName];
-              spacing = Math.floor(availableSpace / (items.length - 1));
+              pos = contPaddingBox[beforeName]
+              spacing = Math.floor(availableSpace / (items.length - 1))
             }
           }
 
           // Default aligning (start) the other ones needs to be calculated while doing the layout
-          rect[alignAxisName] = contPaddingBox[alignBeforeName];
+          rect[alignAxisName] = contPaddingBox[alignBeforeName]
 
           // Start laying out controls
           for (i = 0, l = items.length; i < l; i++) {
-            ctrl = items[i];
-            ctrlLayoutRect = ctrl.layoutRect();
-            size = ctrlLayoutRect.maxFlexSize || ctrlLayoutRect[minSizeName];
+            ctrl = items[i]
+            ctrlLayoutRect = ctrl.layoutRect()
+            size = ctrlLayoutRect.maxFlexSize || ctrlLayoutRect[minSizeName]
 
             // Align the control on the other axis
             if (align === 'center') {
-              rect[alignAxisName] = Math.round((contLayoutRect[alignInnerSizeName] / 2) - (ctrlLayoutRect[alignSizeName] / 2));
+              rect[alignAxisName] = Math.round((contLayoutRect[alignInnerSizeName] / 2) - (ctrlLayoutRect[alignSizeName] / 2))
             } else if (align === 'stretch') {
               rect[alignSizeName] = max(
                 ctrlLayoutRect[alignMinSizeName] || 0,
                 contLayoutRect[alignInnerSizeName] - contPaddingBox[alignBeforeName] - contPaddingBox[alignAfterName]
-              );
-              rect[alignAxisName] = contPaddingBox[alignBeforeName];
+              )
+              rect[alignAxisName] = contPaddingBox[alignBeforeName]
             } else if (align === 'end') {
-              rect[alignAxisName] = contLayoutRect[alignInnerSizeName] - ctrlLayoutRect[alignSizeName] - contPaddingBox.top;
+              rect[alignAxisName] = contLayoutRect[alignInnerSizeName] - ctrlLayoutRect[alignSizeName] - contPaddingBox.top
             }
 
             // Calculate new size based on flex
             if (ctrlLayoutRect.flex > 0) {
-              size += ctrlLayoutRect.flex * ratio;
+              size += ctrlLayoutRect.flex * ratio
             }
 
-            rect[sizeName] = size;
-            rect[posName] = pos;
-            ctrl.layoutRect(rect);
+            rect[sizeName] = size
+            rect[posName] = pos
+            ctrl.layoutRect(rect)
 
             // Recalculate containers
             if (ctrl.recalc) {
-              ctrl.recalc();
+              ctrl.recalc()
             }
 
             // Move x/y position
-            pos += size + spacing;
+            pos += size + spacing
           }
         }
-      });
+      })
     }
-  );
+  )
   /**
  * FlowLayout.js
  *
@@ -14151,7 +14151,7 @@ jsc */
     [
       'tinymce.ui.Layout'
     ],
-    function(Layout) {
+    function (Layout) {
       return Layout.extend({
         Defaults: {
           containerClass: 'flow-layout',
@@ -14165,20 +14165,20 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc(container) {
-          container.items().filter(':visible').each(function(ctrl) {
+        recalc (container) {
+          container.items().filter(':visible').each(function (ctrl) {
             if (ctrl.recalc) {
-              ctrl.recalc();
+              ctrl.recalc()
             }
-          });
+          })
         },
 
-        isNative() {
-          return true;
+        isNative () {
+          return true
         }
-      });
+      })
     }
-  );
+  )
   define(
     'ephox.sugar.impl.ClosestOrAncestor',
 
@@ -14187,16 +14187,16 @@ jsc */
       'ephox.katamari.api.Option'
     ],
 
-    function(Type, Option) {
-      return function(is, ancestor, scope, a, isRoot) {
+    function (Type, Option) {
+      return function (is, ancestor, scope, a, isRoot) {
         return is(scope, a)
           ? Option.some(scope)
           : Type.isFunction(isRoot) && isRoot(scope)
             ? Option.none()
-            : ancestor(scope, a, isRoot);
-      };
+            : ancestor(scope, a, isRoot)
+      }
     }
-  );
+  )
   define(
     'ephox.sugar.api.search.PredicateFind',
 
@@ -14211,62 +14211,62 @@ jsc */
       'ephox.sugar.impl.ClosestOrAncestor'
     ],
 
-    function(Type, Arr, Fun, Option, Body, Compare, Element, ClosestOrAncestor) {
-      const first = function(predicate) {
-        return descendant(Body.body(), predicate);
-      };
+    function (Type, Arr, Fun, Option, Body, Compare, Element, ClosestOrAncestor) {
+      const first = function (predicate) {
+        return descendant(Body.body(), predicate)
+      }
 
-      const ancestor = function(scope, predicate, isRoot) {
-        let element = scope.dom();
-        const stop = Type.isFunction(isRoot) ? isRoot : Fun.constant(false);
+      const ancestor = function (scope, predicate, isRoot) {
+        let element = scope.dom()
+        const stop = Type.isFunction(isRoot) ? isRoot : Fun.constant(false)
 
         while (element.parentNode) {
-          element = element.parentNode;
-          const el = Element.fromDom(element);
+          element = element.parentNode
+          const el = Element.fromDom(element)
 
-          if (predicate(el)) return Option.some(el);
-          else if (stop(el)) break;
+          if (predicate(el)) return Option.some(el)
+          else if (stop(el)) break
         }
-        return Option.none();
-      };
+        return Option.none()
+      }
 
-      const closest = function(scope, predicate, isRoot) {
+      const closest = function (scope, predicate, isRoot) {
       // This is required to avoid ClosestOrAncestor passing the predicate to itself
-        const is = function(scope) {
-          return predicate(scope);
-        };
-        return ClosestOrAncestor(is, ancestor, scope, predicate, isRoot);
-      };
+        const is = function (scope) {
+          return predicate(scope)
+        }
+        return ClosestOrAncestor(is, ancestor, scope, predicate, isRoot)
+      }
 
-      const sibling = function(scope, predicate) {
-        const element = scope.dom();
-        if (!element.parentNode) return Option.none();
+      const sibling = function (scope, predicate) {
+        const element = scope.dom()
+        if (!element.parentNode) return Option.none()
 
-        return child(Element.fromDom(element.parentNode), function(x) {
-          return !Compare.eq(scope, x) && predicate(x);
-        });
-      };
+        return child(Element.fromDom(element.parentNode), function (x) {
+          return !Compare.eq(scope, x) && predicate(x)
+        })
+      }
 
-      var child = function(scope, predicate) {
+      var child = function (scope, predicate) {
         const result = Arr.find(scope.dom().childNodes,
-          Fun.compose(predicate, Element.fromDom));
-        return result.map(Element.fromDom);
-      };
+          Fun.compose(predicate, Element.fromDom))
+        return result.map(Element.fromDom)
+      }
 
-      var descendant = function(scope, predicate) {
-        var descend = function(element) {
+      var descendant = function (scope, predicate) {
+        var descend = function (element) {
           for (let i = 0; i < element.childNodes.length; i++) {
-            if (predicate(Element.fromDom(element.childNodes[i]))) { return Option.some(Element.fromDom(element.childNodes[i])); }
+            if (predicate(Element.fromDom(element.childNodes[i]))) { return Option.some(Element.fromDom(element.childNodes[i])) }
 
-            const res = descend(element.childNodes[i]);
-            if (res.isSome()) { return res; }
+            const res = descend(element.childNodes[i])
+            if (res.isSome()) { return res }
           }
 
-          return Option.none();
-        };
+          return Option.none()
+        }
 
-        return descend(scope.dom());
-      };
+        return descend(scope.dom())
+      }
 
       return {
         first,
@@ -14275,9 +14275,9 @@ jsc */
         sibling,
         child,
         descendant
-      };
+      }
     }
-  );
+  )
 
   define(
     'ephox.sugar.api.search.SelectorFind',
@@ -14288,39 +14288,39 @@ jsc */
       'ephox.sugar.impl.ClosestOrAncestor'
     ],
 
-    function(PredicateFind, Selectors, ClosestOrAncestor) {
+    function (PredicateFind, Selectors, ClosestOrAncestor) {
     // TODO: An internal SelectorFilter module that doesn't Element.fromDom() everything
 
-      const first = function(selector) {
-        return Selectors.one(selector);
-      };
+      const first = function (selector) {
+        return Selectors.one(selector)
+      }
 
-      const ancestor = function(scope, selector, isRoot) {
-        return PredicateFind.ancestor(scope, function(e) {
-          return Selectors.is(e, selector);
-        }, isRoot);
-      };
+      const ancestor = function (scope, selector, isRoot) {
+        return PredicateFind.ancestor(scope, function (e) {
+          return Selectors.is(e, selector)
+        }, isRoot)
+      }
 
-      const sibling = function(scope, selector) {
-        return PredicateFind.sibling(scope, function(e) {
-          return Selectors.is(e, selector);
-        });
-      };
+      const sibling = function (scope, selector) {
+        return PredicateFind.sibling(scope, function (e) {
+          return Selectors.is(e, selector)
+        })
+      }
 
-      const child = function(scope, selector) {
-        return PredicateFind.child(scope, function(e) {
-          return Selectors.is(e, selector);
-        });
-      };
+      const child = function (scope, selector) {
+        return PredicateFind.child(scope, function (e) {
+          return Selectors.is(e, selector)
+        })
+      }
 
-      const descendant = function(scope, selector) {
-        return Selectors.one(selector, scope);
-      };
+      const descendant = function (scope, selector) {
+        return Selectors.one(selector, scope)
+      }
 
       // Returns Some(closest ancestor element (sugared)) matching 'selector' up to isRoot, or None() otherwise
-      const closest = function(scope, selector, isRoot) {
-        return ClosestOrAncestor(Selectors.is, ancestor, scope, selector, isRoot);
-      };
+      const closest = function (scope, selector, isRoot) {
+        return ClosestOrAncestor(Selectors.is, ancestor, scope, selector, isRoot)
+      }
 
       return {
         first,
@@ -14329,9 +14329,9 @@ jsc */
         child,
         descendant,
         closest
-      };
+      }
     }
-  );
+  )
 
   /**
  * FormatUtils.js
@@ -14347,38 +14347,38 @@ jsc */
     'tinymce.ui.editorui.FormatUtils',
     [
     ],
-    function() {
-      const toggleFormat = function(editor, fmt) {
-        return function() {
-          editor.execCommand('mceToggleFormat', false, fmt);
-        };
-      };
+    function () {
+      const toggleFormat = function (editor, fmt) {
+        return function () {
+          editor.execCommand('mceToggleFormat', false, fmt)
+        }
+      }
 
-      const postRenderFormat = function(editor, name) {
-        return function() {
-          const self = this;
+      const postRenderFormat = function (editor, name) {
+        return function () {
+          const self = this
 
           // TODO: Fix this
           if (editor.formatter) {
-            editor.formatter.formatChanged(name, function(state) {
-              self.active(state);
-            });
+            editor.formatter.formatChanged(name, function (state) {
+              self.active(state)
+            })
           } else {
-            editor.on('init', function() {
-              editor.formatter.formatChanged(name, function(state) {
-                self.active(state);
-              });
-            });
+            editor.on('init', function () {
+              editor.formatter.formatChanged(name, function (state) {
+                self.active(state)
+              })
+            })
           }
-        };
-      };
+        }
+      }
 
       return {
         toggleFormat,
         postRenderFormat
-      };
+      }
     }
-  );
+  )
 
   /**
  * Align.js
@@ -14396,8 +14396,8 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.editorui.FormatUtils'
     ],
-    function(Tools, FormatUtils) {
-      const register = function(editor) {
+    function (Tools, FormatUtils) {
+      const register = function (editor) {
         editor.addMenuItem('align', {
           text: 'Align',
           menu: [
@@ -14406,7 +14406,7 @@ jsc */
             { text: 'Right', icon: 'alignright', onclick: FormatUtils.toggleFormat(editor, 'alignright') },
             { text: 'Justify', icon: 'alignjustify', onclick: FormatUtils.toggleFormat(editor, 'alignjustify') }
           ]
-        });
+        })
 
         Tools.each({
           alignleft: ['Align left', 'JustifyLeft'],
@@ -14414,20 +14414,20 @@ jsc */
           alignright: ['Align right', 'JustifyRight'],
           alignjustify: ['Justify', 'JustifyFull'],
           alignnone: ['No alignment', 'JustifyNone']
-        }, function(item, name) {
+        }, function (item, name) {
           editor.addButton(name, {
             tooltip: item[0],
             cmd: item[1],
             onPostRender: FormatUtils.postRenderFormat(editor, name)
-          });
-        });
-      };
+          })
+        })
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * FontInfo.js
@@ -14454,55 +14454,55 @@ jsc */
       'ephox.sugar.api.node.Node',
       'tinymce.core.dom.DOMUtils'
     ],
-    function(Fun, Option, Element, Node, DOMUtils) {
-      const getSpecifiedFontProp = function(propName, rootElm, elm) {
+    function (Fun, Option, Element, Node, DOMUtils) {
+      const getSpecifiedFontProp = function (propName, rootElm, elm) {
         while (elm !== rootElm) {
           if (elm.style[propName]) {
-            const foundStyle = elm.style[propName];
-            return foundStyle !== '' ? Option.some(foundStyle) : Option.none();
+            const foundStyle = elm.style[propName]
+            return foundStyle !== '' ? Option.some(foundStyle) : Option.none()
           }
-          elm = elm.parentNode;
+          elm = elm.parentNode
         }
-        return Option.none();
-      };
+        return Option.none()
+      }
 
-      const toPt = function(fontSize) {
+      const toPt = function (fontSize) {
         if (/[0-9.]+px$/.test(fontSize)) {
-          return Math.round(parseInt(fontSize, 10) * 72 / 96) + 'pt';
+          return Math.round(parseInt(fontSize, 10) * 72 / 96) + 'pt'
         }
 
-        return fontSize;
-      };
+        return fontSize
+      }
 
-      const normalizeFontFamily = function(fontFamily) {
+      const normalizeFontFamily = function (fontFamily) {
       // 'Font name', Font -> Font name,Font
-        return fontFamily.replace(/[\'\"]/g, '').replace(/,\s+/g, ',');
-      };
+        return fontFamily.replace(/[\'\"]/g, '').replace(/,\s+/g, ',')
+      }
 
-      const getComputedFontProp = function(propName, elm) {
-        return Option.from(DOMUtils.DOM.getStyle(elm, propName, true));
-      };
+      const getComputedFontProp = function (propName, elm) {
+        return Option.from(DOMUtils.DOM.getStyle(elm, propName, true))
+      }
 
-      const getFontProp = function(propName) {
-        return function(rootElm, elm) {
+      const getFontProp = function (propName) {
+        return function (rootElm, elm) {
           return Option.from(elm)
             .map(Element.fromDom)
             .filter(Node.isElement)
-            .bind(function(element) {
+            .bind(function (element) {
               return getSpecifiedFontProp(propName, rootElm, element.dom())
-                .or(getComputedFontProp(propName, element.dom()));
+                .or(getComputedFontProp(propName, element.dom()))
             })
-            .getOr('');
-        };
-      };
+            .getOr('')
+        }
+      }
 
       return {
         getFontSize: getFontProp('fontSize'),
         getFontFamily: Fun.compose(normalizeFontFamily, getFontProp('fontFamily')),
         toPt
-      };
+      }
     }
-  );
+  )
 
   /**
  * FontSelect.js
@@ -14520,58 +14520,58 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.fmt.FontInfo'
     ],
-    function(Tools, FontInfo) {
-      const getFirstFont = function(fontFamily) {
-        return fontFamily ? fontFamily.split(',')[0] : '';
-      };
+    function (Tools, FontInfo) {
+      const getFirstFont = function (fontFamily) {
+        return fontFamily ? fontFamily.split(',')[0] : ''
+      }
 
-      const findMatchingValue = function(items, fontFamily) {
-        let value;
+      const findMatchingValue = function (items, fontFamily) {
+        let value
 
-        Tools.each(items, function(item) {
+        Tools.each(items, function (item) {
           if (item.value.toLowerCase() === fontFamily.toLowerCase()) {
-            value = item.value;
+            value = item.value
           }
-        });
+        })
 
-        Tools.each(items, function(item) {
+        Tools.each(items, function (item) {
           if (!value && getFirstFont(item.value).toLowerCase() === getFirstFont(fontFamily).toLowerCase()) {
-            value = item.value;
+            value = item.value
           }
-        });
+        })
 
-        return value;
-      };
+        return value
+      }
 
-      const createFontNameListBoxChangeHandler = function(editor, items) {
-        return function() {
-          const self = this;
+      const createFontNameListBoxChangeHandler = function (editor, items) {
+        return function () {
+          const self = this
 
-          editor.on('init nodeChange', function(e) {
-            const fontFamily = FontInfo.getFontFamily(editor.getBody(), e.element);
-            const match = findMatchingValue(items, fontFamily);
+          editor.on('init nodeChange', function (e) {
+            const fontFamily = FontInfo.getFontFamily(editor.getBody(), e.element)
+            const match = findMatchingValue(items, fontFamily)
 
-            self.value(match || null);
+            self.value(match || null)
 
             if (!match && fontFamily) {
-              self.text(getFirstFont(fontFamily));
+              self.text(getFirstFont(fontFamily))
             }
-          });
-        };
-      };
+          })
+        }
+      }
 
-      const createFormats = function(formats) {
-        formats = formats.replace(/;$/, '').split(';');
+      const createFormats = function (formats) {
+        formats = formats.replace(/;$/, '').split(';')
 
-        let i = formats.length;
+        let i = formats.length
         while (i--) {
-          formats[i] = formats[i].split('=');
+          formats[i] = formats[i].split('=')
         }
 
-        return formats;
-      };
+        return formats
+      }
 
-      const getFontItems = function(editor) {
+      const getFontItems = function (editor) {
         const defaultFontsFormats = (
           'Andale Mono=andale mono,monospace;' +
         'Arial=arial,helvetica,sans-serif;' +
@@ -14590,22 +14590,22 @@ jsc */
         'Verdana=verdana,geneva,sans-serif;' +
         'Webdings=webdings;' +
         'Wingdings=wingdings,zapf dingbats'
-        );
+        )
 
-        const fonts = createFormats(editor.settings.font_formats || defaultFontsFormats);
+        const fonts = createFormats(editor.settings.font_formats || defaultFontsFormats)
 
-        return Tools.map(fonts, function(font) {
+        return Tools.map(fonts, function (font) {
           return {
             text: { raw: font[0] },
             value: font[1],
             textStyle: font[1].indexOf('dings') === -1 ? 'font-family:' + font[1] : ''
-          };
-        });
-      };
+          }
+        })
+      }
 
-      const registerButtons = function(editor) {
-        editor.addButton('fontselect', function() {
-          const items = getFontItems(editor);
+      const registerButtons = function (editor) {
+        editor.addButton('fontselect', function () {
+          const items = getFontItems(editor)
 
           return {
             type: 'listbox',
@@ -14614,24 +14614,24 @@ jsc */
             values: items,
             fixedWidth: true,
             onPostRender: createFontNameListBoxChangeHandler(editor, items),
-            onselect(e) {
+            onselect (e) {
               if (e.control.settings.value) {
-                editor.execCommand('FontName', false, e.control.settings.value);
+                editor.execCommand('FontName', false, e.control.settings.value)
               }
             }
-          };
-        });
-      };
+          }
+        })
+      }
 
-      const register = function(editor) {
-        registerButtons(editor);
-      };
+      const register = function (editor) {
+        registerButtons(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * FontSizeSelect.js
@@ -14649,63 +14649,63 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.fmt.FontInfo'
     ],
-    function(Tools, FontInfo) {
-      const findMatchingValue = function(items, pt, px) {
-        let value;
+    function (Tools, FontInfo) {
+      const findMatchingValue = function (items, pt, px) {
+        let value
 
-        Tools.each(items, function(item) {
+        Tools.each(items, function (item) {
           if (item.value === px) {
-            value = px;
+            value = px
           } else if (item.value === pt) {
-            value = pt;
+            value = pt
           }
-        });
+        })
 
-        return value;
-      };
+        return value
+      }
 
-      const createFontSizeListBoxChangeHandler = function(editor, items) {
-        return function() {
-          const self = this;
+      const createFontSizeListBoxChangeHandler = function (editor, items) {
+        return function () {
+          const self = this
 
-          editor.on('init nodeChange', function(e) {
+          editor.on('init nodeChange', function (e) {
             let px,
-              pt;
+              pt
 
-            px = FontInfo.getFontSize(editor.getBody(), e.element);
-            pt = FontInfo.toPt(px);
+            px = FontInfo.getFontSize(editor.getBody(), e.element)
+            pt = FontInfo.toPt(px)
 
-            const match = findMatchingValue(items, pt, px);
-            self.value(match || null);
+            const match = findMatchingValue(items, pt, px)
+            self.value(match || null)
 
             if (!match) {
-              self.text(pt);
+              self.text(pt)
             }
-          });
-        };
-      };
+          })
+        }
+      }
 
-      const getFontSizeItems = function(editor) {
-        const defaultFontsizeFormats = '8pt 10pt 12pt 14pt 18pt 24pt 36pt';
-        const fontsizeFormats = editor.settings.fontsize_formats || defaultFontsizeFormats;
+      const getFontSizeItems = function (editor) {
+        const defaultFontsizeFormats = '8pt 10pt 12pt 14pt 18pt 24pt 36pt'
+        const fontsizeFormats = editor.settings.fontsize_formats || defaultFontsizeFormats
 
-        return Tools.map(fontsizeFormats.split(' '), function(item) {
+        return Tools.map(fontsizeFormats.split(' '), function (item) {
           let text = item,
-            value = item;
+            value = item
           // Allow text=value font sizes.
-          const values = item.split('=');
+          const values = item.split('=')
           if (values.length > 1) {
-            text = values[0];
-            value = values[1];
+            text = values[0]
+            value = values[1]
           }
 
-          return { text, value };
-        });
-      };
+          return { text, value }
+        })
+      }
 
-      const registerButtons = function(editor) {
-        editor.addButton('fontsizeselect', function() {
-          const items = getFontSizeItems(editor);
+      const registerButtons = function (editor) {
+        editor.addButton('fontsizeselect', function () {
+          const items = getFontSizeItems(editor)
 
           return {
             type: 'listbox',
@@ -14714,24 +14714,24 @@ jsc */
             values: items,
             fixedWidth: true,
             onPostRender: createFontSizeListBoxChangeHandler(editor, items),
-            onclick(e) {
+            onclick (e) {
               if (e.control.settings.value) {
-                editor.execCommand('FontSize', false, e.control.settings.value);
+                editor.execCommand('FontSize', false, e.control.settings.value)
               }
             }
-          };
-        });
-      };
+          }
+        })
+      }
 
-      const register = function(editor) {
-        registerButtons(editor);
-      };
+      const register = function (editor) {
+        registerButtons(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * FormatSelect.js
@@ -14749,7 +14749,7 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.editorui.FormatUtils'
     ],
-    function(Tools, FormatUtils) {
+    function (Tools, FormatUtils) {
       const defaultBlocks = (
         'Paragraph=p;' +
       'Heading 1=h1;' +
@@ -14759,112 +14759,112 @@ jsc */
       'Heading 5=h5;' +
       'Heading 6=h6;' +
       'Preformatted=pre'
-      );
+      )
 
-      const createFormats = function(formats) {
-        formats = formats.replace(/;$/, '').split(';');
+      const createFormats = function (formats) {
+        formats = formats.replace(/;$/, '').split(';')
 
-        let i = formats.length;
+        let i = formats.length
         while (i--) {
-          formats[i] = formats[i].split('=');
+          formats[i] = formats[i].split('=')
         }
 
-        return formats;
-      };
+        return formats
+      }
 
-      const createListBoxChangeHandler = function(editor, items, formatName) {
-        return function() {
-          const self = this;
+      const createListBoxChangeHandler = function (editor, items, formatName) {
+        return function () {
+          const self = this
 
-          editor.on('nodeChange', function(e) {
-            const formatter = editor.formatter;
-            let value = null;
+          editor.on('nodeChange', function (e) {
+            const formatter = editor.formatter
+            let value = null
 
-            Tools.each(e.parents, function(node) {
-              Tools.each(items, function(item) {
+            Tools.each(e.parents, function (node) {
+              Tools.each(items, function (item) {
                 if (formatName) {
                   if (formatter.matchNode(node, formatName, { value: item.value })) {
-                    value = item.value;
+                    value = item.value
                   }
                 } else {
                   if (formatter.matchNode(node, item.value)) {
-                    value = item.value;
+                    value = item.value
                   }
                 }
 
                 if (value) {
-                  return false;
+                  return false
                 }
-              });
+              })
 
               if (value) {
-                return false;
+                return false
               }
-            });
+            })
 
-            self.value(value);
-          });
-        };
-      };
+            self.value(value)
+          })
+        }
+      }
 
-      const lazyFormatSelectBoxItems = function(editor, blocks) {
-        return function() {
-          const items = [];
+      const lazyFormatSelectBoxItems = function (editor, blocks) {
+        return function () {
+          const items = []
 
-          Tools.each(blocks, function(block) {
+          Tools.each(blocks, function (block) {
             items.push({
               text: block[0],
               value: block[1],
-              textStyle() {
-                return editor.formatter.getCssText(block[1]);
+              textStyle () {
+                return editor.formatter.getCssText(block[1])
               }
-            });
-          });
+            })
+          })
 
           return {
             type: 'listbox',
             text: blocks[0][0],
             values: items,
             fixedWidth: true,
-            onselect(e) {
+            onselect (e) {
               if (e.control) {
-                const fmt = e.control.value();
-                FormatUtils.toggleFormat(editor, fmt)();
+                const fmt = e.control.value()
+                FormatUtils.toggleFormat(editor, fmt)()
               }
             },
             onPostRender: createListBoxChangeHandler(editor, items)
-          };
-        };
-      };
+          }
+        }
+      }
 
-      const buildMenuItems = function(editor, blocks) {
-        return Tools.map(blocks, function(block) {
+      const buildMenuItems = function (editor, blocks) {
+        return Tools.map(blocks, function (block) {
           return {
             text: block[0],
             onclick: FormatUtils.toggleFormat(editor, block[1]),
-            textStyle() {
-              return editor.formatter.getCssText(block[1]);
+            textStyle () {
+              return editor.formatter.getCssText(block[1])
             }
-          };
-        });
-      };
+          }
+        })
+      }
 
-      const register = function(editor) {
-        const blocks = createFormats(editor.settings.block_formats || defaultBlocks);
+      const register = function (editor) {
+        const blocks = createFormats(editor.settings.block_formats || defaultBlocks)
 
         editor.addMenuItem('blockformats', {
           text: 'Blocks',
           menu: buildMenuItems(editor, blocks)
-        });
+        })
 
-        editor.addButton('formatselect', lazyFormatSelectBoxItems(editor, blocks));
-      };
+        editor.addButton('formatselect', lazyFormatSelectBoxItems(editor, blocks))
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * Formats.js
@@ -14882,56 +14882,56 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.editorui.FormatUtils'
     ],
-    function(Tools, FormatUtils) {
-      var hideMenuObjects = function(editor, menu) {
-        let count = menu.length;
+    function (Tools, FormatUtils) {
+      var hideMenuObjects = function (editor, menu) {
+        let count = menu.length
 
-        Tools.each(menu, function(item) {
+        Tools.each(menu, function (item) {
           if (item.menu) {
-            item.hidden = hideMenuObjects(editor, item.menu) === 0;
+            item.hidden = hideMenuObjects(editor, item.menu) === 0
           }
 
-          const formatName = item.format;
+          const formatName = item.format
           if (formatName) {
-            item.hidden = !editor.formatter.canApply(formatName);
+            item.hidden = !editor.formatter.canApply(formatName)
           }
 
           if (item.hidden) {
-            count--;
+            count--
           }
-        });
+        })
 
-        return count;
-      };
+        return count
+      }
 
-      var hideFormatMenuItems = function(editor, menu) {
-        let count = menu.items().length;
+      var hideFormatMenuItems = function (editor, menu) {
+        let count = menu.items().length
 
-        menu.items().each(function(item) {
+        menu.items().each(function (item) {
           if (item.menu) {
-            item.visible(hideFormatMenuItems(editor, item.menu) > 0);
+            item.visible(hideFormatMenuItems(editor, item.menu) > 0)
           }
 
           if (!item.menu && item.settings.menu) {
-            item.visible(hideMenuObjects(editor, item.settings.menu) > 0);
+            item.visible(hideMenuObjects(editor, item.settings.menu) > 0)
           }
 
-          const formatName = item.settings.format;
+          const formatName = item.settings.format
           if (formatName) {
-            item.visible(editor.formatter.canApply(formatName));
+            item.visible(editor.formatter.canApply(formatName))
           }
 
           if (!item.visible()) {
-            count--;
+            count--
           }
-        });
+        })
 
-        return count;
-      };
+        return count
+      }
 
-      const createFormatMenu = function(editor) {
+      const createFormatMenu = function (editor) {
         let count = 0,
-          newFormats = [];
+          newFormats = []
 
         const defaultStyleFormats = [
           {
@@ -14978,143 +14978,143 @@ jsc */
               { title: 'Justify', icon: 'alignjustify', format: 'alignjustify' }
             ]
           }
-        ];
+        ]
 
-        var createMenu = function(formats) {
-          const menu = [];
+        var createMenu = function (formats) {
+          const menu = []
 
           if (!formats) {
-            return;
+            return
           }
 
-          Tools.each(formats, function(format) {
+          Tools.each(formats, function (format) {
             const menuItem = {
               text: format.title,
               icon: format.icon
-            };
-
-            if (format.items) {
-              menuItem.menu = createMenu(format.items);
-            } else {
-              const formatName = format.format || 'custom' + count++;
-
-              if (!format.format) {
-                format.name = formatName;
-                newFormats.push(format);
-              }
-
-              menuItem.format = formatName;
-              menuItem.cmd = format.cmd;
             }
 
-            menu.push(menuItem);
-          });
+            if (format.items) {
+              menuItem.menu = createMenu(format.items)
+            } else {
+              const formatName = format.format || 'custom' + count++
 
-          return menu;
-        };
+              if (!format.format) {
+                format.name = formatName
+                newFormats.push(format)
+              }
 
-        const createStylesMenu = function() {
-          let menu;
+              menuItem.format = formatName
+              menuItem.cmd = format.cmd
+            }
+
+            menu.push(menuItem)
+          })
+
+          return menu
+        }
+
+        const createStylesMenu = function () {
+          let menu
 
           if (editor.settings.style_formats_merge) {
             if (editor.settings.style_formats) {
-              menu = createMenu(defaultStyleFormats.concat(editor.settings.style_formats));
+              menu = createMenu(defaultStyleFormats.concat(editor.settings.style_formats))
             } else {
-              menu = createMenu(defaultStyleFormats);
+              menu = createMenu(defaultStyleFormats)
             }
           } else {
-            menu = createMenu(editor.settings.style_formats || defaultStyleFormats);
+            menu = createMenu(editor.settings.style_formats || defaultStyleFormats)
           }
 
-          return menu;
-        };
+          return menu
+        }
 
-        editor.on('init', function() {
-          Tools.each(newFormats, function(format) {
-            editor.formatter.register(format.name, format);
-          });
-        });
+        editor.on('init', function () {
+          Tools.each(newFormats, function (format) {
+            editor.formatter.register(format.name, format)
+          })
+        })
 
         return {
           type: 'menu',
           items: createStylesMenu(),
-          onPostRender(e) {
-            editor.fire('renderFormatsMenu', { control: e.control });
+          onPostRender (e) {
+            editor.fire('renderFormatsMenu', { control: e.control })
           },
           itemDefaults: {
             preview: true,
 
-            textStyle() {
+            textStyle () {
               if (this.settings.format) {
-                return editor.formatter.getCssText(this.settings.format);
+                return editor.formatter.getCssText(this.settings.format)
               }
             },
 
-            onPostRender() {
-              const self = this;
+            onPostRender () {
+              const self = this
 
-              self.parent().on('show', function() {
+              self.parent().on('show', function () {
                 let formatName,
-                  command;
+                  command
 
-                formatName = self.settings.format;
+                formatName = self.settings.format
                 if (formatName) {
-                  self.disabled(!editor.formatter.canApply(formatName));
-                  self.active(editor.formatter.match(formatName));
+                  self.disabled(!editor.formatter.canApply(formatName))
+                  self.active(editor.formatter.match(formatName))
                 }
 
-                command = self.settings.cmd;
+                command = self.settings.cmd
                 if (command) {
-                  self.active(editor.queryCommandState(command));
+                  self.active(editor.queryCommandState(command))
                 }
-              });
+              })
             },
 
-            onclick() {
+            onclick () {
               if (this.settings.format) {
-                FormatUtils.toggleFormat(editor, this.settings.format)();
+                FormatUtils.toggleFormat(editor, this.settings.format)()
               }
 
               if (this.settings.cmd) {
-                editor.execCommand(this.settings.cmd);
+                editor.execCommand(this.settings.cmd)
               }
             }
           }
-        };
-      };
+        }
+      }
 
-      const registerMenuItems = function(editor, formatMenu) {
+      const registerMenuItems = function (editor, formatMenu) {
         editor.addMenuItem('formats', {
           text: 'Formats',
           menu: formatMenu
-        });
-      };
+        })
+      }
 
-      const registerButtons = function(editor, formatMenu) {
+      const registerButtons = function (editor, formatMenu) {
         editor.addButton('styleselect', {
           type: 'menubutton',
           text: 'Formats',
           menu: formatMenu,
-          onShowMenu() {
+          onShowMenu () {
             if (editor.settings.style_formats_autohide) {
-              hideFormatMenuItems(editor, this.menu);
+              hideFormatMenuItems(editor, this.menu)
             }
           }
-        });
-      };
+        })
+      }
 
-      const register = function(editor) {
-        const formatMenu = createFormatMenu(editor);
+      const register = function (editor) {
+        const formatMenu = createFormatMenu(editor)
 
-        registerMenuItems(editor, formatMenu);
-        registerButtons(editor, formatMenu);
-      };
+        registerMenuItems(editor, formatMenu)
+        registerButtons(editor, formatMenu)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * InsertButton.js
@@ -15132,98 +15132,98 @@ jsc */
       'ephox.katamari.api.Arr',
       'tinymce.core.util.Tools'
     ],
-    function(Arr, Tools) {
-      var createCustomMenuItems = function(editor, names) {
+    function (Arr, Tools) {
+      var createCustomMenuItems = function (editor, names) {
         let items,
-          nameList;
+          nameList
 
         if (typeof names === 'string') {
-          nameList = names.split(' ');
+          nameList = names.split(' ')
         } else if (Tools.isArray(names)) {
-          return Arr.flatten(Tools.map(names, function(names) {
-            return createCustomMenuItems(editor, names);
-          }));
+          return Arr.flatten(Tools.map(names, function (names) {
+            return createCustomMenuItems(editor, names)
+          }))
         }
 
-        items = Tools.grep(nameList, function(name) {
-          return name === '|' || name in editor.menuItems;
-        });
+        items = Tools.grep(nameList, function (name) {
+          return name === '|' || name in editor.menuItems
+        })
 
-        return Tools.map(items, function(name) {
-          return name === '|' ? { text: '-' } : editor.menuItems[name];
-        });
-      };
+        return Tools.map(items, function (name) {
+          return name === '|' ? { text: '-' } : editor.menuItems[name]
+        })
+      }
 
-      const isSeparator = function(menuItem) {
-        return menuItem && menuItem.text === '-';
-      };
+      const isSeparator = function (menuItem) {
+        return menuItem && menuItem.text === '-'
+      }
 
-      const trimMenuItems = function(menuItems) {
-        const menuItems2 = Arr.filter(menuItems, function(menuItem, i, menuItems) {
-          return !isSeparator(menuItem) || !isSeparator(menuItems[i - 1]);
-        });
+      const trimMenuItems = function (menuItems) {
+        const menuItems2 = Arr.filter(menuItems, function (menuItem, i, menuItems) {
+          return !isSeparator(menuItem) || !isSeparator(menuItems[i - 1])
+        })
 
-        return Arr.filter(menuItems2, function(menuItem, i, menuItems) {
-          return !isSeparator(menuItem) || i > 0 && i < menuItems.length - 1;
-        });
-      };
+        return Arr.filter(menuItems2, function (menuItem, i, menuItems) {
+          return !isSeparator(menuItem) || i > 0 && i < menuItems.length - 1
+        })
+      }
 
-      const createContextMenuItems = function(editor, context) {
-        const outputMenuItems = [{ text: '-' }];
-        const menuItems = Tools.grep(editor.menuItems, function(menuItem) {
-          return menuItem.context === context;
-        });
+      const createContextMenuItems = function (editor, context) {
+        const outputMenuItems = [{ text: '-' }]
+        const menuItems = Tools.grep(editor.menuItems, function (menuItem) {
+          return menuItem.context === context
+        })
 
-        Tools.each(menuItems, function(menuItem) {
+        Tools.each(menuItems, function (menuItem) {
           if (menuItem.separator === 'before') {
-            outputMenuItems.push({ text: '|' });
+            outputMenuItems.push({ text: '|' })
           }
 
           if (menuItem.prependToContext) {
-            outputMenuItems.unshift(menuItem);
+            outputMenuItems.unshift(menuItem)
           } else {
-            outputMenuItems.push(menuItem);
+            outputMenuItems.push(menuItem)
           }
 
           if (menuItem.separator === 'after') {
-            outputMenuItems.push({ text: '|' });
+            outputMenuItems.push({ text: '|' })
           }
-        });
+        })
 
-        return outputMenuItems;
-      };
+        return outputMenuItems
+      }
 
-      const createInsertMenu = function(editor) {
-        const insertButtonItems = editor.settings.insert_button_items;
+      const createInsertMenu = function (editor) {
+        const insertButtonItems = editor.settings.insert_button_items
 
         if (insertButtonItems) {
-          return trimMenuItems(createCustomMenuItems(editor, insertButtonItems));
+          return trimMenuItems(createCustomMenuItems(editor, insertButtonItems))
         } else {
-          return trimMenuItems(createContextMenuItems(editor, 'insert'));
+          return trimMenuItems(createContextMenuItems(editor, 'insert'))
         }
-      };
+      }
 
-      const registerButtons = function(editor) {
+      const registerButtons = function (editor) {
         editor.addButton('insert', {
           type: 'menubutton',
           icon: 'insert',
           menu: [],
-          oncreatemenu() {
-            this.menu.add(createInsertMenu(editor));
-            this.menu.renderNew();
+          oncreatemenu () {
+            this.menu.add(createInsertMenu(editor))
+            this.menu.renderNew()
           }
-        });
-      };
+        })
+      }
 
-      const register = function(editor) {
-        registerButtons(editor);
-      };
+      const register = function (editor) {
+        registerButtons(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * SimpleControls.js
@@ -15241,8 +15241,8 @@ jsc */
       'tinymce.core.util.Tools',
       'tinymce.ui.editorui.FormatUtils'
     ],
-    function(Tools, FormatUtils) {
-      const registerFormatButtons = function(editor) {
+    function (Tools, FormatUtils) {
+      const registerFormatButtons = function (editor) {
         Tools.each({
           bold: 'Bold',
           italic: 'Italic',
@@ -15250,16 +15250,16 @@ jsc */
           strikethrough: 'Strikethrough',
           subscript: 'Subscript',
           superscript: 'Superscript'
-        }, function(text, name) {
+        }, function (text, name) {
           editor.addButton(name, {
             tooltip: text,
             onPostRender: FormatUtils.postRenderFormat(editor, name),
             onclick: FormatUtils.toggleFormat(editor, name)
-          });
-        });
-      };
+          })
+        })
+      }
 
-      const registerCommandButtons = function(editor) {
+      const registerCommandButtons = function (editor) {
         Tools.each({
           outdent: ['Decrease indent', 'Outdent'],
           indent: ['Increase indent', 'Indent'],
@@ -15272,35 +15272,35 @@ jsc */
           newdocument: ['New document', 'mceNewDocument'],
           removeformat: ['Clear formatting', 'RemoveFormat'],
           remove: ['Remove', 'Delete']
-        }, function(item, name) {
+        }, function (item, name) {
           editor.addButton(name, {
             tooltip: item[0],
             cmd: item[1]
-          });
-        });
-      };
+          })
+        })
+      }
 
-      const registerCommandToggleButtons = function(editor) {
+      const registerCommandToggleButtons = function (editor) {
         Tools.each({
           blockquote: ['Blockquote', 'mceBlockQuote'],
           subscript: ['Subscript', 'Subscript'],
           superscript: ['Superscript', 'Superscript']
-        }, function(item, name) {
+        }, function (item, name) {
           editor.addButton(name, {
             tooltip: item[0],
             cmd: item[1],
             onPostRender: FormatUtils.postRenderFormat(editor, name)
-          });
-        });
-      };
+          })
+        })
+      }
 
-      const registerButtons = function(editor) {
-        registerFormatButtons(editor);
-        registerCommandButtons(editor);
-        registerCommandToggleButtons(editor);
-      };
+      const registerButtons = function (editor) {
+        registerFormatButtons(editor)
+        registerCommandButtons(editor)
+        registerCommandToggleButtons(editor)
+      }
 
-      const registerMenuItems = function(editor) {
+      const registerMenuItems = function (editor) {
         Tools.each({
           bold: ['Bold', 'Bold', 'Meta+B'],
           italic: ['Italic', 'Italic', 'Meta+I'],
@@ -15314,32 +15314,32 @@ jsc */
           copy: ['Copy', 'Copy', 'Meta+C'],
           paste: ['Paste', 'Paste', 'Meta+V'],
           selectall: ['Select all', 'SelectAll', 'Meta+A']
-        }, function(item, name) {
+        }, function (item, name) {
           editor.addMenuItem(name, {
             text: item[0],
             icon: name,
             shortcut: item[2],
             cmd: item[1]
-          });
-        });
+          })
+        })
 
         editor.addMenuItem('codeformat', {
           text: 'Code',
           icon: 'code',
           onclick: FormatUtils.toggleFormat(editor, 'code')
-        });
-      };
+        })
+      }
 
-      const register = function(editor) {
-        registerButtons(editor);
-        registerMenuItems(editor);
-      };
+      const register = function (editor) {
+        registerButtons(editor)
+        registerMenuItems(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * UndoRedo.js
@@ -15355,31 +15355,31 @@ jsc */
     'tinymce.ui.editorui.UndoRedo',
     [
     ],
-    function() {
-      const toggleUndoRedoState = function(editor, type) {
-        return function() {
-          const self = this;
+    function () {
+      const toggleUndoRedoState = function (editor, type) {
+        return function () {
+          const self = this
 
-          const checkState = function() {
-            const typeFn = type === 'redo' ? 'hasRedo' : 'hasUndo';
-            return editor.undoManager ? editor.undoManager[typeFn]() : false;
-          };
+          const checkState = function () {
+            const typeFn = type === 'redo' ? 'hasRedo' : 'hasUndo'
+            return editor.undoManager ? editor.undoManager[typeFn]() : false
+          }
 
-          self.disabled(!checkState());
-          editor.on('Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', function() {
-            self.disabled(editor.readonly || !checkState());
-          });
-        };
-      };
+          self.disabled(!checkState())
+          editor.on('Undo Redo AddUndo TypingUndo ClearUndos SwitchMode', function () {
+            self.disabled(editor.readonly || !checkState())
+          })
+        }
+      }
 
-      const registerMenuItems = function(editor) {
+      const registerMenuItems = function (editor) {
         editor.addMenuItem('undo', {
           text: 'Undo',
           icon: 'undo',
           shortcut: 'Meta+Z',
           onPostRender: toggleUndoRedoState(editor, 'undo'),
           cmd: 'undo'
-        });
+        })
 
         editor.addMenuItem('redo', {
           text: 'Redo',
@@ -15387,33 +15387,33 @@ jsc */
           shortcut: 'Meta+Y',
           onPostRender: toggleUndoRedoState(editor, 'redo'),
           cmd: 'redo'
-        });
-      };
+        })
+      }
 
-      const registerButtons = function(editor) {
+      const registerButtons = function (editor) {
         editor.addButton('undo', {
           tooltip: 'Undo',
           onPostRender: toggleUndoRedoState(editor, 'undo'),
           cmd: 'undo'
-        });
+        })
 
         editor.addButton('redo', {
           tooltip: 'Redo',
           onPostRender: toggleUndoRedoState(editor, 'redo'),
           cmd: 'redo'
-        });
-      };
+        })
+      }
 
-      const register = function(editor) {
-        registerMenuItems(editor);
-        registerButtons(editor);
-      };
+      const register = function (editor) {
+        registerMenuItems(editor)
+        registerButtons(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * VisualAid.js
@@ -15429,37 +15429,37 @@ jsc */
     'tinymce.ui.editorui.VisualAid',
     [
     ],
-    function() {
-      const toggleVisualAidState = function(editor) {
-        return function() {
-          const self = this;
+    function () {
+      const toggleVisualAidState = function (editor) {
+        return function () {
+          const self = this
 
-          editor.on('VisualAid', function(e) {
-            self.active(e.hasVisual);
-          });
+          editor.on('VisualAid', function (e) {
+            self.active(e.hasVisual)
+          })
 
-          self.active(editor.hasVisual);
-        };
-      };
+          self.active(editor.hasVisual)
+        }
+      }
 
-      const registerMenuItems = function(editor) {
+      const registerMenuItems = function (editor) {
         editor.addMenuItem('visualaid', {
           text: 'Visual aids',
           selectable: true,
           onPostRender: toggleVisualAidState(editor),
           cmd: 'mceToggleVisualAid'
-        });
-      };
+        })
+      }
 
-      const register = function(editor) {
-        registerMenuItems(editor);
-      };
+      const register = function (editor) {
+        registerMenuItems(editor)
+      }
 
       return {
         register
-      };
+      }
     }
-  );
+  )
 
   /**
  * FormatControls.js
@@ -15493,60 +15493,60 @@ jsc */
       'tinymce.ui.editorui.UndoRedo',
       'tinymce.ui.editorui.VisualAid'
     ],
-    function(
+    function (
       Fun, Element, SelectorFind, document, EditorManager, Env, Control, FloatPanel, Widget, Align, FontSelect, FontSizeSelect, FormatSelect, Formats, InsertButton,
       SimpleControls, UndoRedo, VisualAid
     ) {
-      const setupEnvironment = function() {
-        Widget.tooltips = !Env.iOS;
+      const setupEnvironment = function () {
+        Widget.tooltips = !Env.iOS
 
-        Control.translate = function(text) {
-          return EditorManager.translate(text);
-        };
-      };
+        Control.translate = function (text) {
+          return EditorManager.translate(text)
+        }
+      }
 
-      const setupUiContainer = function(editor) {
+      const setupUiContainer = function (editor) {
         if (editor.settings.ui_container) {
-          Env.container = SelectorFind.descendant(Element.fromDom(document.body), editor.settings.ui_container).fold(Fun.constant(null), function(elm) {
-            return elm.dom();
-          });
+          Env.container = SelectorFind.descendant(Element.fromDom(document.body), editor.settings.ui_container).fold(Fun.constant(null), function (elm) {
+            return elm.dom()
+          })
         }
-      };
+      }
 
-      const setupRtlMode = function(editor) {
+      const setupRtlMode = function (editor) {
         if (editor.rtl) {
-          Control.rtl = true;
+          Control.rtl = true
         }
-      };
+      }
 
-      const setupHideFloatPanels = function(editor) {
-        editor.on('mousedown', function() {
-          FloatPanel.hideAll();
-        });
-      };
+      const setupHideFloatPanels = function (editor) {
+        editor.on('mousedown', function () {
+          FloatPanel.hideAll()
+        })
+      }
 
-      const setup = function(editor) {
-        setupRtlMode(editor);
-        setupHideFloatPanels(editor);
-        setupUiContainer(editor);
-        setupEnvironment(editor);
+      const setup = function (editor) {
+        setupRtlMode(editor)
+        setupHideFloatPanels(editor)
+        setupUiContainer(editor)
+        setupEnvironment(editor)
 
-        FormatSelect.register(editor);
-        Align.register(editor);
-        SimpleControls.register(editor);
-        UndoRedo.register(editor);
-        FontSizeSelect.register(editor);
-        FontSelect.register(editor);
-        Formats.register(editor);
-        VisualAid.register(editor);
-        InsertButton.register(editor);
-      };
+        FormatSelect.register(editor)
+        Align.register(editor)
+        SimpleControls.register(editor)
+        UndoRedo.register(editor)
+        FontSizeSelect.register(editor)
+        FontSelect.register(editor)
+        Formats.register(editor)
+        VisualAid.register(editor)
+        InsertButton.register(editor)
+      }
 
       return {
         setup
-      };
+      }
     }
-  );
+  )
 
   /**
  * GridLayout.js
@@ -15577,8 +15577,8 @@ jsc */
     [
       'tinymce.ui.AbsoluteLayout'
     ],
-    function(AbsoluteLayout) {
-      'use strict';
+    function (AbsoluteLayout) {
+      'use strict'
 
       return AbsoluteLayout.extend({
       /**
@@ -15587,7 +15587,7 @@ jsc */
        * @method recalc
        * @param {tinymce.ui.Container} container Container instance to recalc.
        */
-        recalc(container) {
+        recalc (container) {
           let settings,
             rows,
             cols,
@@ -15618,201 +15618,201 @@ jsc */
             availableWidth,
             availableHeight,
             reverseRows,
-            idx;
+            idx
 
           // Get layout settings
-          settings = container.settings;
-          items = container.items().filter(':visible');
-          contLayoutRect = container.layoutRect();
-          cols = settings.columns || Math.ceil(Math.sqrt(items.length));
-          rows = Math.ceil(items.length / cols);
-          spacingH = settings.spacingH || settings.spacing || 0;
-          spacingV = settings.spacingV || settings.spacing || 0;
-          alignH = settings.alignH || settings.align;
-          alignV = settings.alignV || settings.align;
-          contPaddingBox = container.paddingBox;
-          reverseRows = 'reverseRows' in settings ? settings.reverseRows : container.isRtl();
+          settings = container.settings
+          items = container.items().filter(':visible')
+          contLayoutRect = container.layoutRect()
+          cols = settings.columns || Math.ceil(Math.sqrt(items.length))
+          rows = Math.ceil(items.length / cols)
+          spacingH = settings.spacingH || settings.spacing || 0
+          spacingV = settings.spacingV || settings.spacing || 0
+          alignH = settings.alignH || settings.align
+          alignV = settings.alignV || settings.align
+          contPaddingBox = container.paddingBox
+          reverseRows = 'reverseRows' in settings ? settings.reverseRows : container.isRtl()
 
           if (alignH && typeof alignH === 'string') {
-            alignH = [alignH];
+            alignH = [alignH]
           }
 
           if (alignV && typeof alignV === 'string') {
-            alignV = [alignV];
+            alignV = [alignV]
           }
 
           // Zero padd columnWidths
           for (x = 0; x < cols; x++) {
-            colWidths.push(0);
+            colWidths.push(0)
           }
 
           // Zero padd rowHeights
           for (y = 0; y < rows; y++) {
-            rowHeights.push(0);
+            rowHeights.push(0)
           }
 
           // Calculate columnWidths and rowHeights
           for (y = 0; y < rows; y++) {
             for (x = 0; x < cols; x++) {
-              ctrl = items[y * cols + x];
+              ctrl = items[y * cols + x]
 
               // Out of bounds
               if (!ctrl) {
-                break;
+                break
               }
 
-              ctrlLayoutRect = ctrl.layoutRect();
-              ctrlMinWidth = ctrlLayoutRect.minW;
-              ctrlMinHeight = ctrlLayoutRect.minH;
+              ctrlLayoutRect = ctrl.layoutRect()
+              ctrlMinWidth = ctrlLayoutRect.minW
+              ctrlMinHeight = ctrlLayoutRect.minH
 
-              colWidths[x] = ctrlMinWidth > colWidths[x] ? ctrlMinWidth : colWidths[x];
-              rowHeights[y] = ctrlMinHeight > rowHeights[y] ? ctrlMinHeight : rowHeights[y];
+              colWidths[x] = ctrlMinWidth > colWidths[x] ? ctrlMinWidth : colWidths[x]
+              rowHeights[y] = ctrlMinHeight > rowHeights[y] ? ctrlMinHeight : rowHeights[y]
             }
           }
 
           // Calculate maxX
-          availableWidth = contLayoutRect.innerW - contPaddingBox.left - contPaddingBox.right;
+          availableWidth = contLayoutRect.innerW - contPaddingBox.left - contPaddingBox.right
           for (maxX = 0, x = 0; x < cols; x++) {
-            maxX += colWidths[x] + (x > 0 ? spacingH : 0);
-            availableWidth -= (x > 0 ? spacingH : 0) + colWidths[x];
+            maxX += colWidths[x] + (x > 0 ? spacingH : 0)
+            availableWidth -= (x > 0 ? spacingH : 0) + colWidths[x]
           }
 
           // Calculate maxY
-          availableHeight = contLayoutRect.innerH - contPaddingBox.top - contPaddingBox.bottom;
+          availableHeight = contLayoutRect.innerH - contPaddingBox.top - contPaddingBox.bottom
           for (maxY = 0, y = 0; y < rows; y++) {
-            maxY += rowHeights[y] + (y > 0 ? spacingV : 0);
-            availableHeight -= (y > 0 ? spacingV : 0) + rowHeights[y];
+            maxY += rowHeights[y] + (y > 0 ? spacingV : 0)
+            availableHeight -= (y > 0 ? spacingV : 0) + rowHeights[y]
           }
 
-          maxX += contPaddingBox.left + contPaddingBox.right;
-          maxY += contPaddingBox.top + contPaddingBox.bottom;
+          maxX += contPaddingBox.left + contPaddingBox.right
+          maxY += contPaddingBox.top + contPaddingBox.bottom
 
           // Calculate minW/minH
-          rect = {};
-          rect.minW = maxX + (contLayoutRect.w - contLayoutRect.innerW);
-          rect.minH = maxY + (contLayoutRect.h - contLayoutRect.innerH);
+          rect = {}
+          rect.minW = maxX + (contLayoutRect.w - contLayoutRect.innerW)
+          rect.minH = maxY + (contLayoutRect.h - contLayoutRect.innerH)
 
-          rect.contentW = rect.minW - contLayoutRect.deltaW;
-          rect.contentH = rect.minH - contLayoutRect.deltaH;
-          rect.minW = Math.min(rect.minW, contLayoutRect.maxW);
-          rect.minH = Math.min(rect.minH, contLayoutRect.maxH);
-          rect.minW = Math.max(rect.minW, contLayoutRect.startMinWidth);
-          rect.minH = Math.max(rect.minH, contLayoutRect.startMinHeight);
+          rect.contentW = rect.minW - contLayoutRect.deltaW
+          rect.contentH = rect.minH - contLayoutRect.deltaH
+          rect.minW = Math.min(rect.minW, contLayoutRect.maxW)
+          rect.minH = Math.min(rect.minH, contLayoutRect.maxH)
+          rect.minW = Math.max(rect.minW, contLayoutRect.startMinWidth)
+          rect.minH = Math.max(rect.minH, contLayoutRect.startMinHeight)
 
           // Resize container container if minSize was changed
           if (contLayoutRect.autoResize && (rect.minW != contLayoutRect.minW || rect.minH != contLayoutRect.minH)) {
-            rect.w = rect.minW;
-            rect.h = rect.minH;
+            rect.w = rect.minW
+            rect.h = rect.minH
 
-            container.layoutRect(rect);
-            this.recalc(container);
+            container.layoutRect(rect)
+            this.recalc(container)
 
             // Forced recalc for example if items are hidden/shown
             if (container._lastRect === null) {
-              const parentCtrl = container.parent();
+              const parentCtrl = container.parent()
               if (parentCtrl) {
-                parentCtrl._lastRect = null;
-                parentCtrl.recalc();
+                parentCtrl._lastRect = null
+                parentCtrl.recalc()
               }
             }
 
-            return;
+            return
           }
 
           // Update contentW/contentH so absEnd moves correctly
           if (contLayoutRect.autoResize) {
-            rect = container.layoutRect(rect);
-            rect.contentW = rect.minW - contLayoutRect.deltaW;
-            rect.contentH = rect.minH - contLayoutRect.deltaH;
+            rect = container.layoutRect(rect)
+            rect.contentW = rect.minW - contLayoutRect.deltaW
+            rect.contentH = rect.minH - contLayoutRect.deltaH
           }
 
-          let flexV;
+          let flexV
 
           if (settings.packV == 'start') {
-            flexV = 0;
+            flexV = 0
           } else {
-            flexV = availableHeight > 0 ? Math.floor(availableHeight / rows) : 0;
+            flexV = availableHeight > 0 ? Math.floor(availableHeight / rows) : 0
           }
 
           // Calculate totalFlex
-          let totalFlex = 0;
-          const flexWidths = settings.flexWidths;
+          let totalFlex = 0
+          const flexWidths = settings.flexWidths
           if (flexWidths) {
             for (x = 0; x < flexWidths.length; x++) {
-              totalFlex += flexWidths[x];
+              totalFlex += flexWidths[x]
             }
           } else {
-            totalFlex = cols;
+            totalFlex = cols
           }
 
           // Calculate new column widths based on flex values
-          const ratio = availableWidth / totalFlex;
+          const ratio = availableWidth / totalFlex
           for (x = 0; x < cols; x++) {
-            colWidths[x] += flexWidths ? flexWidths[x] * ratio : ratio;
+            colWidths[x] += flexWidths ? flexWidths[x] * ratio : ratio
           }
 
           // Move/resize controls
-          posY = contPaddingBox.top;
+          posY = contPaddingBox.top
           for (y = 0; y < rows; y++) {
-            posX = contPaddingBox.left;
-            height = rowHeights[y] + flexV;
+            posX = contPaddingBox.left
+            height = rowHeights[y] + flexV
 
             for (x = 0; x < cols; x++) {
               if (reverseRows) {
-                idx = y * cols + cols - 1 - x;
+                idx = y * cols + cols - 1 - x
               } else {
-                idx = y * cols + x;
+                idx = y * cols + x
               }
 
-              ctrl = items[idx];
+              ctrl = items[idx]
 
               // No more controls to render then break
               if (!ctrl) {
-                break;
+                break
               }
 
               // Get control settings and calculate x, y
-              ctrlSettings = ctrl.settings;
-              ctrlLayoutRect = ctrl.layoutRect();
-              width = Math.max(colWidths[x], ctrlLayoutRect.startMinWidth);
-              ctrlLayoutRect.x = posX;
-              ctrlLayoutRect.y = posY;
+              ctrlSettings = ctrl.settings
+              ctrlLayoutRect = ctrl.layoutRect()
+              width = Math.max(colWidths[x], ctrlLayoutRect.startMinWidth)
+              ctrlLayoutRect.x = posX
+              ctrlLayoutRect.y = posY
 
               // Align control horizontal
-              align = ctrlSettings.alignH || (alignH ? (alignH[x] || alignH[0]) : null);
+              align = ctrlSettings.alignH || (alignH ? (alignH[x] || alignH[0]) : null)
               if (align == 'center') {
-                ctrlLayoutRect.x = posX + (width / 2) - (ctrlLayoutRect.w / 2);
+                ctrlLayoutRect.x = posX + (width / 2) - (ctrlLayoutRect.w / 2)
               } else if (align == 'right') {
-                ctrlLayoutRect.x = posX + width - ctrlLayoutRect.w;
+                ctrlLayoutRect.x = posX + width - ctrlLayoutRect.w
               } else if (align == 'stretch') {
-                ctrlLayoutRect.w = width;
+                ctrlLayoutRect.w = width
               }
 
               // Align control vertical
-              align = ctrlSettings.alignV || (alignV ? (alignV[x] || alignV[0]) : null);
+              align = ctrlSettings.alignV || (alignV ? (alignV[x] || alignV[0]) : null)
               if (align == 'center') {
-                ctrlLayoutRect.y = posY + (height / 2) - (ctrlLayoutRect.h / 2);
+                ctrlLayoutRect.y = posY + (height / 2) - (ctrlLayoutRect.h / 2)
               } else if (align == 'bottom') {
-                ctrlLayoutRect.y = posY + height - ctrlLayoutRect.h;
+                ctrlLayoutRect.y = posY + height - ctrlLayoutRect.h
               } else if (align == 'stretch') {
-                ctrlLayoutRect.h = height;
+                ctrlLayoutRect.h = height
               }
 
-              ctrl.layoutRect(ctrlLayoutRect);
+              ctrl.layoutRect(ctrlLayoutRect)
 
-              posX += width + spacingH;
+              posX += width + spacingH
 
               if (ctrl.recalc) {
-                ctrl.recalc();
+                ctrl.recalc()
               }
             }
 
-            posY += height + spacingV;
+            posY += height + spacingV
           }
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Iframe.js
@@ -15841,8 +15841,8 @@ jsc */
       'tinymce.ui.Widget',
       'tinymce.core.util.Delay'
     ],
-    function(Widget, Delay) {
-      'use strict';
+    function (Widget, Delay) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -15851,17 +15851,17 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
-          const self = this;
+        renderHtml () {
+          const self = this
 
-          self.classes.add('iframe');
-          self.canFocus = false;
+          self.classes.add('iframe')
+          self.canFocus = false
 
           /* eslint no-script-url:0 */
           return (
             '<iframe id="' + self._id + '" class="' + self.classes + '" tabindex="-1" src="' +
           (self.settings.url || 'javascript:\'\'') + '" frameborder="0"></iframe>'
-          );
+          )
         },
 
         /**
@@ -15870,8 +15870,8 @@ jsc */
        * @method src
        * @param {String} src Source URL for iframe.
        */
-        src(src) {
-          this.getEl().src = src;
+        src (src) {
+          this.getEl().src = src
         },
 
         /**
@@ -15882,28 +15882,28 @@ jsc */
        * @param {function} callback Optional callback to execute when the iframe body is filled with contents.
        * @return {tinymce.ui.Iframe} Current iframe control.
        */
-        html(html, callback) {
+        html (html, callback) {
           let self = this,
-            body = this.getEl().contentWindow.document.body;
+            body = this.getEl().contentWindow.document.body
 
           // Wait for iframe to initialize IE 10 takes time
           if (!body) {
-            Delay.setTimeout(function() {
-              self.html(html);
-            });
+            Delay.setTimeout(function () {
+              self.html(html)
+            })
           } else {
-            body.innerHTML = html;
+            body.innerHTML = html
 
             if (callback) {
-              callback();
+              callback()
             }
           }
 
-          return this;
+          return this
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * InfoBox.js
@@ -15927,8 +15927,8 @@ jsc */
     [
       'tinymce.ui.Widget'
     ],
-    function(Widget) {
-      'use strict';
+    function (Widget) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -15938,23 +15938,23 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Boolean} multiline Multiline label.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          self.classes.add('widget').add('infobox');
-          self.canFocus = false;
+          self._super(settings)
+          self.classes.add('widget').add('infobox')
+          self.canFocus = false
         },
 
-        severity(level) {
-          this.classes.remove('error');
-          this.classes.remove('warning');
-          this.classes.remove('success');
-          this.classes.add(level);
+        severity (level) {
+          this.classes.remove('error')
+          this.classes.remove('warning')
+          this.classes.remove('success')
+          this.classes.add(level)
         },
 
-        help(state) {
-          this.state.set('help', state);
+        help (state) {
+          this.state.set('help', state)
         },
 
         /**
@@ -15963,9 +15963,9 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '">' +
@@ -15976,33 +15976,33 @@ jsc */
           '</button>' +
           '</div>' +
           '</div>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:text', function(e) {
-            self.getEl('body').firstChild.data = self.encode(e.value);
-
-            if (self.state.get('rendered')) {
-              self.updateLayoutRect();
-            }
-          });
-
-          self.state.on('change:help', function(e) {
-            self.classes.toggle('has-help', e.value);
+          self.state.on('change:text', function (e) {
+            self.getEl('body').firstChild.data = self.encode(e.value)
 
             if (self.state.get('rendered')) {
-              self.updateLayoutRect();
+              self.updateLayoutRect()
             }
-          });
+          })
 
-          return self._super();
+          self.state.on('change:help', function (e) {
+            self.classes.toggle('has-help', e.value)
+
+            if (self.state.get('rendered')) {
+              self.updateLayoutRect()
+            }
+          })
+
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Label.js
@@ -16028,8 +16028,8 @@ jsc */
       'tinymce.ui.Widget',
       'tinymce.ui.DomUtils'
     ],
-    function(Widget, DomUtils) {
-      'use strict';
+    function (Widget, DomUtils) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -16039,19 +16039,19 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Boolean} multiline Multiline label.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          self.classes.add('widget').add('label');
-          self.canFocus = false;
+          self._super(settings)
+          self.classes.add('widget').add('label')
+          self.canFocus = false
 
           if (settings.multiline) {
-            self.classes.add('autoscroll');
+            self.classes.add('autoscroll')
           }
 
           if (settings.strong) {
-            self.classes.add('strong');
+            self.classes.add('strong')
           }
         },
 
@@ -16063,24 +16063,24 @@ jsc */
        * @method initLayoutRect
        * @return {Object} Layout rect instance.
        */
-        initLayoutRect() {
+        initLayoutRect () {
           let self = this,
-            layoutRect = self._super();
+            layoutRect = self._super()
 
           if (self.settings.multiline) {
-            const size = DomUtils.getSize(self.getEl());
+            const size = DomUtils.getSize(self.getEl())
 
             // Check if the text fits within maxW if not then try word wrapping it
             if (size.width > layoutRect.maxW) {
-              layoutRect.minW = layoutRect.maxW;
-              self.classes.add('multiline');
+              layoutRect.minW = layoutRect.maxW
+              self.classes.add('multiline')
             }
 
-            self.getEl().style.width = layoutRect.minW + 'px';
-            layoutRect.startMinH = layoutRect.h = layoutRect.minH = Math.min(layoutRect.maxH, DomUtils.getSize(self.getEl()).height);
+            self.getEl().style.width = layoutRect.minW + 'px'
+            layoutRect.startMinH = layoutRect.h = layoutRect.minH = Math.min(layoutRect.maxH, DomUtils.getSize(self.getEl()).height)
           }
 
-          return layoutRect;
+          return layoutRect
         },
 
         /**
@@ -16088,21 +16088,21 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
-          const self = this;
+        repaint () {
+          const self = this
 
           if (!self.settings.multiline) {
-            self.getEl().style.lineHeight = self.layoutRect().h + 'px';
+            self.getEl().style.lineHeight = self.layoutRect().h + 'px'
           }
 
-          return self._super();
+          return self._super()
         },
 
-        severity(level) {
-          this.classes.remove('error');
-          this.classes.remove('warning');
-          this.classes.remove('success');
-          this.classes.add(level);
+        severity (level) {
+          this.classes.remove('error')
+          this.classes.remove('warning')
+          this.classes.remove('success')
+          this.classes.add(level)
         },
 
         /**
@@ -16111,18 +16111,18 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             targetCtrl,
             forName,
-            forId = self.settings.forId;
-          const text = self.settings.html ? self.settings.html : self.encode(self.state.get('text'));
+            forId = self.settings.forId
+          const text = self.settings.html ? self.settings.html : self.encode(self.state.get('text'))
 
           if (!forId && (forName = self.settings.forName)) {
-            targetCtrl = self.getRoot().find('#' + forName)[0];
+            targetCtrl = self.getRoot().find('#' + forName)[0]
 
             if (targetCtrl) {
-              forId = targetCtrl._id;
+              forId = targetCtrl._id
             }
           }
 
@@ -16131,32 +16131,32 @@ jsc */
               '<label id="' + self._id + '" class="' + self.classes + '"' + (forId ? ' for="' + forId + '"' : '') + '>' +
             text +
             '</label>'
-            );
+            )
           }
 
           return (
             '<span id="' + self._id + '" class="' + self.classes + '">' +
           text +
           '</span>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:text', function(e) {
-            self.innerHtml(self.encode(e.value));
+          self.state.on('change:text', function (e) {
+            self.innerHtml(self.encode(e.value))
 
             if (self.state.get('rendered')) {
-              self.updateLayoutRect();
+              self.updateLayoutRect()
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Toolbar.js
@@ -16179,8 +16179,8 @@ jsc */
     [
       'tinymce.ui.Container'
     ],
-    function(Container) {
-      'use strict';
+    function (Container) {
+      'use strict'
 
       return Container.extend({
         Defaults: {
@@ -16194,11 +16194,11 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
-          self.classes.add('toolbar');
+          self._super(settings)
+          self.classes.add('toolbar')
         },
 
         /**
@@ -16206,18 +16206,18 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self.items().each(function(ctrl) {
-            ctrl.classes.add('toolbar-item');
-          });
+          self.items().each(function (ctrl) {
+            ctrl.classes.add('toolbar-item')
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * MenuBar.js
  *
@@ -16240,8 +16240,8 @@ jsc */
     [
       'tinymce.ui.Toolbar'
     ],
-    function(Toolbar) {
-      'use strict';
+    function (Toolbar) {
+      'use strict'
 
       return Toolbar.extend({
         Defaults: {
@@ -16252,9 +16252,9 @@ jsc */
             type: 'menubutton'
           }
         }
-      });
+      })
     }
-  );
+  )
   /**
  * MenuButton.js
  *
@@ -16280,20 +16280,20 @@ jsc */
       'tinymce.ui.Button',
       'tinymce.ui.MenuBar'
     ],
-    function(window, Factory, Button, MenuBar) {
-      'use strict';
+    function (window, Factory, Button, MenuBar) {
+      'use strict'
 
       // TODO: Maybe add as some global function
-      function isChildOf(node, parent) {
+      function isChildOf (node, parent) {
         while (node) {
           if (parent === node) {
-            return true;
+            return true
           }
 
-          node = node.parentNode;
+          node = node.parentNode
         }
 
-        return false;
+        return false
       }
 
       var MenuButton = Button.extend({
@@ -16303,23 +16303,23 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._renderOpen = true;
+          self._renderOpen = true
 
-          self._super(settings);
-          settings = self.settings;
+          self._super(settings)
+          settings = self.settings
 
-          self.classes.add('menubtn');
+          self.classes.add('menubtn')
 
           if (settings.fixedWidth) {
-            self.classes.add('fixed-width');
+            self.classes.add('fixed-width')
           }
 
-          self.aria('haspopup', true);
+          self.aria('haspopup', true)
 
-          self.state.set('menu', settings.menu || self.render());
+          self.state.set('menu', settings.menu || self.render())
         },
 
         /**
@@ -16327,17 +16327,17 @@ jsc */
        *
        * @method showMenu
        */
-        showMenu(toggle) {
+        showMenu (toggle) {
           let self = this,
-            menu;
+            menu
 
           if (self.menu && self.menu.visible() && toggle !== false) {
-            return self.hideMenu();
+            return self.hideMenu()
           }
 
           if (!self.menu) {
-            menu = self.state.get('menu') || [];
-            self.classes.add('opened');
+            menu = self.state.get('menu') || []
+            self.classes.add('opened')
 
             // Is menu array then auto constuct menu control
             if (menu.length) {
@@ -16345,47 +16345,47 @@ jsc */
                 type: 'menu',
                 animate: true,
                 items: menu
-              };
+              }
             } else {
-              menu.type = menu.type || 'menu';
-              menu.animate = true;
+              menu.type = menu.type || 'menu'
+              menu.animate = true
             }
 
             if (!menu.renderTo) {
-              self.menu = Factory.create(menu).parent(self).renderTo();
+              self.menu = Factory.create(menu).parent(self).renderTo()
             } else {
-              self.menu = menu.parent(self).show().renderTo();
+              self.menu = menu.parent(self).show().renderTo()
             }
 
-            self.fire('createmenu');
-            self.menu.reflow();
-            self.menu.on('cancel', function(e) {
+            self.fire('createmenu')
+            self.menu.reflow()
+            self.menu.on('cancel', function (e) {
               if (e.control.parent() === self.menu) {
-                e.stopPropagation();
-                self.focus();
-                self.hideMenu();
+                e.stopPropagation()
+                self.focus()
+                self.hideMenu()
               }
-            });
+            })
 
             // Move focus to button when a menu item is selected/clicked
-            self.menu.on('select', function() {
-              self.focus();
-            });
+            self.menu.on('select', function () {
+              self.focus()
+            })
 
-            self.menu.on('show hide', function(e) {
+            self.menu.on('show hide', function (e) {
               if (e.control === self.menu) {
-                self.activeMenu(e.type == 'show');
-                self.classes.toggle('opened', e.type == 'show');
+                self.activeMenu(e.type == 'show')
+                self.classes.toggle('opened', e.type == 'show')
               }
 
-              self.aria('expanded', e.type == 'show');
-            }).fire('show');
+              self.aria('expanded', e.type == 'show')
+            }).fire('show')
           }
 
-          self.menu.show();
-          self.menu.layoutRect({ w: self.layoutRect().w });
-          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl']);
-          self.fire('showmenu');
+          self.menu.show()
+          self.menu.layoutRect({ w: self.layoutRect().w })
+          self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl'])
+          self.fire('showmenu')
         },
 
         /**
@@ -16393,17 +16393,17 @@ jsc */
        *
        * @method hideMenu
        */
-        hideMenu() {
-          const self = this;
+        hideMenu () {
+          const self = this
 
           if (self.menu) {
-            self.menu.items().each(function(item) {
+            self.menu.items().each(function (item) {
               if (item.hideMenu) {
-                item.hideMenu();
+                item.hideMenu()
               }
-            });
+            })
 
-            self.menu.hide();
+            self.menu.hide()
           }
         },
 
@@ -16412,8 +16412,8 @@ jsc */
        *
        * @private
        */
-        activeMenu(state) {
-          this.classes.toggle('active', state);
+        activeMenu (state) {
+          this.classes.toggle('active', state)
         },
 
         /**
@@ -16422,37 +16422,37 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
           let icon = self.settings.icon,
             image,
             text = self.state.get('text'),
-            textHtml = '';
+            textHtml = ''
 
-          image = self.settings.image;
+          image = self.settings.image
           if (image) {
-            icon = 'none';
+            icon = 'none'
 
             // Support for [high dpi, low dpi] image sources
             if (typeof image !== 'string') {
-              image = window.getSelection ? image[0] : image[1];
+              image = window.getSelection ? image[0] : image[1]
             }
 
-            image = ' style="background-image: url(\'' + image + '\')"';
+            image = ' style="background-image: url(\'' + image + '\')"'
           } else {
-            image = '';
+            image = ''
           }
 
           if (text) {
-            self.classes.add('btn-has-text');
-            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+            self.classes.add('btn-has-text')
+            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>'
           }
 
-          icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
+          icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : ''
 
-          self.aria('role', self.parent() instanceof MenuBar ? 'menuitem' : 'button');
+          self.aria('role', self.parent() instanceof MenuBar ? 'menuitem' : 'button')
 
           return (
             '<div id="' + id + '" class="' + self.classes + '" tabindex="-1" aria-labelledby="' + id + '">' +
@@ -16462,7 +16462,7 @@ jsc */
           ' <i class="' + prefix + 'caret"></i>' +
           '</button>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -16470,58 +16470,58 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self.on('click', function(e) {
+          self.on('click', function (e) {
             if (e.control === self && isChildOf(e.target, self.getEl())) {
-              self.focus();
-              self.showMenu(!e.aria);
+              self.focus()
+              self.showMenu(!e.aria)
 
               if (e.aria) {
-                self.menu.items().filter(':visible')[0].focus();
+                self.menu.items().filter(':visible')[0].focus()
               }
             }
-          });
+          })
 
-          self.on('mouseenter', function(e) {
+          self.on('mouseenter', function (e) {
             let overCtrl = e.control,
               parent = self.parent(),
-              hasVisibleSiblingMenu;
+              hasVisibleSiblingMenu
 
             if (overCtrl && parent && overCtrl instanceof MenuButton && overCtrl.parent() == parent) {
-              parent.items().filter('MenuButton').each(function(ctrl) {
+              parent.items().filter('MenuButton').each(function (ctrl) {
                 if (ctrl.hideMenu && ctrl != overCtrl) {
                   if (ctrl.menu && ctrl.menu.visible()) {
-                    hasVisibleSiblingMenu = true;
+                    hasVisibleSiblingMenu = true
                   }
 
-                  ctrl.hideMenu();
+                  ctrl.hideMenu()
                 }
-              });
+              })
 
               if (hasVisibleSiblingMenu) {
-                overCtrl.focus(); // Fix for: #5887
-                overCtrl.showMenu();
+                overCtrl.focus() // Fix for: #5887
+                overCtrl.showMenu()
               }
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:menu', function() {
+          self.state.on('change:menu', function () {
             if (self.menu) {
-              self.menu.remove();
+              self.menu.remove()
             }
 
-            self.menu = null;
-          });
+            self.menu = null
+          })
 
-          return self._super();
+          return self._super()
         },
 
         /**
@@ -16529,18 +16529,18 @@ jsc */
        *
        * @method remove
        */
-        remove() {
-          this._super();
+        remove () {
+          this._super()
 
           if (this.menu) {
-            this.menu.remove();
+            this.menu.remove()
           }
         }
-      });
+      })
 
-      return MenuButton;
+      return MenuButton
     }
-  );
+  )
 
   /**
  * MenuItem.js
@@ -16567,21 +16567,21 @@ jsc */
       'tinymce.core.Env',
       'tinymce.core.util.Delay'
     ],
-    function(Widget, Factory, Env, Delay) {
-      'use strict';
+    function (Widget, Factory, Env, Delay) {
+      'use strict'
 
-      const toggleTextStyle = function(ctrl, state) {
-        const textStyle = ctrl._textStyle;
+      const toggleTextStyle = function (ctrl, state) {
+        const textStyle = ctrl._textStyle
         if (textStyle) {
-          const textElm = ctrl.getEl('text');
-          textElm.setAttribute('style', textStyle);
+          const textElm = ctrl.getEl('text')
+          textElm.setAttribute('style', textStyle)
 
           if (state) {
-            textElm.style.color = '';
-            textElm.style.backgroundColor = '';
+            textElm.style.color = ''
+            textElm.style.backgroundColor = ''
           }
         }
-      };
+      }
 
       return Widget.extend({
         Defaults: {
@@ -16598,47 +16598,47 @@ jsc */
        * @setting {Array} menu Submenu array with items.
        * @setting {String} shortcut Shortcut to display for menu item. Example: Ctrl+X
        */
-        init(settings) {
+        init (settings) {
           let self = this,
-            text;
+            text
 
-          self._super(settings);
+          self._super(settings)
 
-          settings = self.settings;
+          settings = self.settings
 
-          self.classes.add('menu-item');
+          self.classes.add('menu-item')
 
           if (settings.menu) {
-            self.classes.add('menu-item-expand');
+            self.classes.add('menu-item-expand')
           }
 
           if (settings.preview) {
-            self.classes.add('menu-item-preview');
+            self.classes.add('menu-item-preview')
           }
 
-          text = self.state.get('text');
+          text = self.state.get('text')
           if (text === '-' || text === '|') {
-            self.classes.add('menu-item-sep');
-            self.aria('role', 'separator');
-            self.state.set('text', '-');
+            self.classes.add('menu-item-sep')
+            self.aria('role', 'separator')
+            self.state.set('text', '-')
           }
 
           if (settings.selectable) {
-            self.aria('role', 'menuitemcheckbox');
-            self.classes.add('menu-item-checkbox');
-            settings.icon = 'selected';
+            self.aria('role', 'menuitemcheckbox')
+            self.classes.add('menu-item-checkbox')
+            settings.icon = 'selected'
           }
 
           if (!settings.preview && !settings.selectable) {
-            self.classes.add('menu-item-normal');
+            self.classes.add('menu-item-normal')
           }
 
-          self.on('mousedown', function(e) {
-            e.preventDefault();
-          });
+          self.on('mousedown', function (e) {
+            e.preventDefault()
+          })
 
           if (settings.menu && !settings.ariaHideMenu) {
-            self.aria('haspopup', true);
+            self.aria('haspopup', true)
           }
         },
 
@@ -16648,8 +16648,8 @@ jsc */
        * @method hasMenus
        * @return {Boolean} True/false state if it has submenu.
        */
-        hasMenus() {
-          return !!this.settings.menu;
+        hasMenus () {
+          return !!this.settings.menu
         },
 
         /**
@@ -16657,23 +16657,23 @@ jsc */
        *
        * @method showMenu
        */
-        showMenu() {
+        showMenu () {
           let self = this,
             settings = self.settings,
             menu,
-            parent = self.parent();
+            parent = self.parent()
 
-          parent.items().each(function(ctrl) {
+          parent.items().each(function (ctrl) {
             if (ctrl !== self) {
-              ctrl.hideMenu();
+              ctrl.hideMenu()
             }
-          });
+          })
 
           if (settings.menu) {
-            menu = self.menu;
+            menu = self.menu
 
             if (!menu) {
-              menu = settings.menu;
+              menu = settings.menu
 
               // Is menu array then auto constuct menu control
               if (menu.length) {
@@ -16681,60 +16681,60 @@ jsc */
                   type: 'menu',
                   animate: true,
                   items: menu
-                };
+                }
               } else {
-                menu.type = menu.type || 'menu';
-                menu.animate = true;
+                menu.type = menu.type || 'menu'
+                menu.animate = true
               }
 
               if (parent.settings.itemDefaults) {
-                menu.itemDefaults = parent.settings.itemDefaults;
+                menu.itemDefaults = parent.settings.itemDefaults
               }
 
-              menu = self.menu = Factory.create(menu).parent(self).renderTo();
-              menu.reflow();
-              menu.on('cancel', function(e) {
-                e.stopPropagation();
-                self.focus();
-                menu.hide();
-              });
-              menu.on('show hide', function(e) {
+              menu = self.menu = Factory.create(menu).parent(self).renderTo()
+              menu.reflow()
+              menu.on('cancel', function (e) {
+                e.stopPropagation()
+                self.focus()
+                menu.hide()
+              })
+              menu.on('show hide', function (e) {
                 if (e.control.items) {
-                  e.control.items().each(function(ctrl) {
-                    ctrl.active(ctrl.settings.selected);
-                  });
+                  e.control.items().each(function (ctrl) {
+                    ctrl.active(ctrl.settings.selected)
+                  })
                 }
-              }).fire('show');
+              }).fire('show')
 
-              menu.on('hide', function(e) {
+              menu.on('hide', function (e) {
                 if (e.control === menu) {
-                  self.classes.remove('selected');
+                  self.classes.remove('selected')
                 }
-              });
+              })
 
-              menu.submenu = true;
+              menu.submenu = true
             } else {
-              menu.show();
+              menu.show()
             }
 
-            menu._parentMenu = parent;
+            menu._parentMenu = parent
 
-            menu.classes.add('menu-sub');
+            menu.classes.add('menu-sub')
 
             let rel = menu.testMoveRel(
               self.getEl(),
               self.isRtl() ? ['tl-tr', 'bl-br', 'tr-tl', 'br-bl'] : ['tr-tl', 'br-bl', 'tl-tr', 'bl-br']
-            );
+            )
 
-            menu.moveRel(self.getEl(), rel);
-            menu.rel = rel;
+            menu.moveRel(self.getEl(), rel)
+            menu.rel = rel
 
-            rel = 'menu-sub-' + rel;
-            menu.classes.remove(menu._lastRel).add(rel);
-            menu._lastRel = rel;
+            rel = 'menu-sub-' + rel
+            menu.classes.remove(menu._lastRel).add(rel)
+            menu._lastRel = rel
 
-            self.classes.add('selected');
-            self.aria('expanded', true);
+            self.classes.add('selected')
+            self.aria('expanded', true)
           }
         },
 
@@ -16743,21 +16743,21 @@ jsc */
        *
        * @method hideMenu
        */
-        hideMenu() {
-          const self = this;
+        hideMenu () {
+          const self = this
 
           if (self.menu) {
-            self.menu.items().each(function(item) {
+            self.menu.items().each(function (item) {
               if (item.hideMenu) {
-                item.hideMenu();
+                item.hideMenu()
               }
-            });
+            })
 
-            self.menu.hide();
-            self.aria('expanded', false);
+            self.menu.hide()
+            self.aria('expanded', false)
           }
 
-          return self;
+          return self
         },
 
         /**
@@ -16766,23 +16766,23 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
             settings = self.settings,
             prefix = self.classPrefix,
-            text = self.state.get('text');
+            text = self.state.get('text')
           let icon = self.settings.icon,
             image = '',
-            shortcut = settings.shortcut;
+            shortcut = settings.shortcut
           let url = self.encode(settings.url),
-            iconHtml = '';
+            iconHtml = ''
 
           // Converts shortcut format to Mac/PC variants
-          function convertShortcut(shortcut) {
+          function convertShortcut (shortcut) {
             let i,
               value,
-              replace = {};
+              replace = {}
 
             if (Env.mac) {
               replace = {
@@ -16790,61 +16790,61 @@ jsc */
                 ctrl: '&#x2318;',
                 shift: '&#x21E7;',
                 meta: '&#x2318;'
-              };
+              }
             } else {
               replace = {
                 meta: 'Ctrl'
-              };
-            }
-
-            shortcut = shortcut.split('+');
-
-            for (i = 0; i < shortcut.length; i++) {
-              value = replace[shortcut[i].toLowerCase()];
-
-              if (value) {
-                shortcut[i] = value;
               }
             }
 
-            return shortcut.join('+');
+            shortcut = shortcut.split('+')
+
+            for (i = 0; i < shortcut.length; i++) {
+              value = replace[shortcut[i].toLowerCase()]
+
+              if (value) {
+                shortcut[i] = value
+              }
+            }
+
+            return shortcut.join('+')
           }
 
-          function escapeRegExp(str) {
-            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          function escapeRegExp (str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
           }
 
-          function markMatches(text) {
-            const match = settings.match || '';
+          function markMatches (text) {
+            const match = settings.match || ''
 
-            return match ? text.replace(new RegExp(escapeRegExp(match), 'gi'), function(match) {
-              return '!mce~match[' + match + ']mce~match!';
-            }) : text;
+            return match ? text.replace(new RegExp(escapeRegExp(match), 'gi'), function (match) {
+              return '!mce~match[' + match + ']mce~match!'
+            }) : text
           }
 
-          function boldMatches(text) {
+          function boldMatches (text) {
             return text
               .replace(new RegExp(escapeRegExp('!mce~match['), 'g'), '<b>')
-              .replace(new RegExp(escapeRegExp(']mce~match!'), 'g'), '</b>');
+              .replace(new RegExp(escapeRegExp(']mce~match!'), 'g'), '</b>')
           }
 
           if (icon) {
-            self.parent().classes.add('menu-has-icons');
+            self.parent().classes.add('menu-has-icons')
           }
 
           if (settings.image) {
-            image = ' style="background-image: url(\'' + settings.image + '\')"';
+            image = ' style="background-image: url(\'' + settings.image + '\')"'
           }
 
           if (shortcut) {
-            shortcut = convertShortcut(shortcut);
+            shortcut = convertShortcut(shortcut)
           }
 
-          icon = prefix + 'ico ' + prefix + 'i-' + (self.settings.icon || 'none');
-          iconHtml = (text !== '-' ? '<i class="' + icon + '"' + image + '></i>\u00a0' : '');
+          icon = prefix + 'ico ' + prefix + 'i-' + (self.settings.icon || 'none')
+          iconHtml = (text !== '-' ? '<i class="' + icon + '"' + image + '></i>\u00a0' : '')
 
-          text = boldMatches(self.encode(markMatches(text)));
-          url = boldMatches(self.encode(markMatches(url)));
+          text = boldMatches(self.encode(markMatches(text)))
+          url = boldMatches(self.encode(markMatches(url)))
 
           return (
             '<div id="' + id + '" class="' + self.classes + '" tabindex="-1">' +
@@ -16854,7 +16854,7 @@ jsc */
           (settings.menu ? '<div class="' + prefix + 'caret"></div>' : '') +
           (url ? '<div class="' + prefix + 'menu-item-link">' + url + '</div>' : '') +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -16862,67 +16862,67 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
+        postRender () {
           let self = this,
-            settings = self.settings;
+            settings = self.settings
 
-          let textStyle = settings.textStyle;
+          let textStyle = settings.textStyle
           if (typeof textStyle === 'function') {
-            textStyle = textStyle.call(this);
+            textStyle = textStyle.call(this)
           }
 
           if (textStyle) {
-            const textElm = self.getEl('text');
+            const textElm = self.getEl('text')
             if (textElm) {
-              textElm.setAttribute('style', textStyle);
-              self._textStyle = textStyle;
+              textElm.setAttribute('style', textStyle)
+              self._textStyle = textStyle
             }
           }
 
-          self.on('mouseenter click', function(e) {
+          self.on('mouseenter click', function (e) {
             if (e.control === self) {
               if (!settings.menu && e.type === 'click') {
-                self.fire('select');
+                self.fire('select')
 
                 // Edge will crash if you stress it see #2660
-                Delay.requestAnimationFrame(function() {
-                  self.parent().hideAll();
-                });
+                Delay.requestAnimationFrame(function () {
+                  self.parent().hideAll()
+                })
               } else {
-                self.showMenu();
+                self.showMenu()
 
                 if (e.aria) {
-                  self.menu.focus(true);
+                  self.menu.focus(true)
                 }
               }
             }
-          });
+          })
 
-          self._super();
+          self._super()
 
-          return self;
+          return self
         },
 
-        hover() {
-          const self = this;
+        hover () {
+          const self = this
 
-          self.parent().items().each(function(ctrl) {
-            ctrl.classes.remove('selected');
-          });
+          self.parent().items().each(function (ctrl) {
+            ctrl.classes.remove('selected')
+          })
 
-          self.classes.toggle('selected', true);
+          self.classes.toggle('selected', true)
 
-          return self;
+          return self
         },
 
-        active(state) {
-          toggleTextStyle(this, state);
+        active (state) {
+          toggleTextStyle(this, state)
 
           if (typeof state !== 'undefined') {
-            this.aria('checked', state);
+            this.aria('checked', state)
           }
 
-          return this._super(state);
+          return this._super(state)
         },
 
         /**
@@ -16930,16 +16930,16 @@ jsc */
        *
        * @method remove
        */
-        remove() {
-          this._super();
+        remove () {
+          this._super()
 
           if (this.menu) {
-            this.menu.remove();
+            this.menu.remove()
           }
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Menu.js
@@ -16968,8 +16968,8 @@ jsc */
       'tinymce.ui.MenuItem',
       'tinymce.ui.Throbber'
     ],
-    function(Env, Delay, Tools, FloatPanel, MenuItem, Throbber) {
-      'use strict';
+    function (Env, Delay, Tools, FloatPanel, MenuItem, Throbber) {
+      'use strict'
 
       return FloatPanel.extend({
         Defaults: {
@@ -16987,32 +16987,32 @@ jsc */
        * @constructor
        * @param {Object} settings Name/value object with settings.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          settings.autohide = true;
-          settings.constrainToViewport = true;
+          settings.autohide = true
+          settings.constrainToViewport = true
 
           if (typeof settings.items === 'function') {
-            settings.itemsFactory = settings.items;
-            settings.items = [];
+            settings.itemsFactory = settings.items
+            settings.items = []
           }
 
           if (settings.itemDefaults) {
             let items = settings.items,
-              i = items.length;
+              i = items.length
 
             while (i--) {
-              items[i] = Tools.extend({}, settings.itemDefaults, items[i]);
+              items[i] = Tools.extend({}, settings.itemDefaults, items[i])
             }
           }
 
-          self._super(settings);
-          self.classes.add('menu');
+          self._super(settings)
+          self.classes.add('menu')
 
           if (settings.animate && Env.ie !== 11) {
           // IE 11 can't handle transforms it looks horrible and blurry so lets disable that
-            self.classes.add('animate');
+            self.classes.add('animate')
           }
         },
 
@@ -17021,15 +17021,15 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
-          this.classes.toggle('menu-align', true);
+        repaint () {
+          this.classes.toggle('menu-align', true)
 
-          this._super();
+          this._super()
 
-          this.getEl().style.height = '';
-          this.getEl('body').style.height = '';
+          this.getEl().style.height = ''
+          this.getEl('body').style.height = ''
 
-          return this;
+          return this
         },
 
         /**
@@ -17037,11 +17037,11 @@ jsc */
        *
        * @method cancel
        */
-        cancel() {
-          const self = this;
+        cancel () {
+          const self = this
 
-          self.hideAll();
-          self.fire('select');
+          self.hideAll()
+          self.fire('select')
         },
 
         /**
@@ -17049,62 +17049,62 @@ jsc */
        *
        * @method load
        */
-        load() {
+        load () {
           let self = this,
             time,
-            factory;
+            factory
 
-          function hideThrobber() {
+          function hideThrobber () {
             if (self.throbber) {
-              self.throbber.hide();
-              self.throbber = null;
+              self.throbber.hide()
+              self.throbber = null
             }
           }
 
-          factory = self.settings.itemsFactory;
+          factory = self.settings.itemsFactory
           if (!factory) {
-            return;
+            return
           }
 
           if (!self.throbber) {
-            self.throbber = new Throbber(self.getEl('body'), true);
+            self.throbber = new Throbber(self.getEl('body'), true)
 
             if (self.items().length === 0) {
-              self.throbber.show();
-              self.fire('loading');
+              self.throbber.show()
+              self.fire('loading')
             } else {
-              self.throbber.show(100, function() {
-                self.items().remove();
-                self.fire('loading');
-              });
+              self.throbber.show(100, function () {
+                self.items().remove()
+                self.fire('loading')
+              })
             }
 
-            self.on('hide close', hideThrobber);
+            self.on('hide close', hideThrobber)
           }
 
-          self.requestTime = time = new Date().getTime();
+          self.requestTime = time = new Date().getTime()
 
-          self.settings.itemsFactory(function(items) {
+          self.settings.itemsFactory(function (items) {
             if (items.length === 0) {
-              self.hide();
-              return;
+              self.hide()
+              return
             }
 
             if (self.requestTime !== time) {
-              return;
+              return
             }
 
-            self.getEl().style.width = '';
-            self.getEl('body').style.width = '';
+            self.getEl().style.width = ''
+            self.getEl('body').style.width = ''
 
-            hideThrobber();
-            self.items().remove();
-            self.getEl('body').innerHTML = '';
+            hideThrobber()
+            self.items().remove()
+            self.getEl('body').innerHTML = ''
 
-            self.add(items);
-            self.renderNew();
-            self.fire('loaded');
-          });
+            self.add(items)
+            self.renderNew()
+            self.fire('loaded')
+          })
         },
 
         /**
@@ -17112,12 +17112,12 @@ jsc */
        *
        * @method hideAll
        */
-        hideAll() {
-          const self = this;
+        hideAll () {
+          const self = this
 
-          this.find('menuitem').exec('hideMenu');
+          this.find('menuitem').exec('hideMenu')
 
-          return self._super();
+          return self._super()
         },
 
         /**
@@ -17125,43 +17125,43 @@ jsc */
        *
        * @method preRender
        */
-        preRender() {
-          const self = this;
+        preRender () {
+          const self = this
 
-          self.items().each(function(ctrl) {
-            const settings = ctrl.settings;
+          self.items().each(function (ctrl) {
+            const settings = ctrl.settings
 
             if (settings.icon || settings.image || settings.selectable) {
-              self._hasIcons = true;
-              return false;
+              self._hasIcons = true
+              return false
             }
-          });
+          })
 
           if (self.settings.itemsFactory) {
-            self.on('postrender', function() {
+            self.on('postrender', function () {
               if (self.settings.itemsFactory) {
-                self.load();
+                self.load()
               }
-            });
+            })
           }
 
-          self.on('show hide', function(e) {
+          self.on('show hide', function (e) {
             if (e.control === self) {
               if (e.type === 'show') {
-                Delay.setTimeout(function() {
-                  self.classes.add('in');
-                }, 0);
+                Delay.setTimeout(function () {
+                  self.classes.add('in')
+                }, 0)
               } else {
-                self.classes.remove('in');
+                self.classes.remove('in')
               }
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * ListBox.js
@@ -17186,8 +17186,8 @@ jsc */
       'tinymce.ui.MenuButton',
       'tinymce.ui.Menu'
     ],
-    function(MenuButton, Menu) {
-      'use strict';
+    function (MenuButton, Menu) {
+      'use strict'
 
       return MenuButton.extend({
       /**
@@ -17197,70 +17197,70 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Array} values Array with values to add to list box.
        */
-        init(settings) {
+        init (settings) {
           let self = this,
             values,
             selected,
             selectedText,
-            lastItemCtrl;
+            lastItemCtrl
 
-          function setSelected(menuValues) {
+          function setSelected (menuValues) {
           // Try to find a selected value
             for (let i = 0; i < menuValues.length; i++) {
-              selected = menuValues[i].selected || settings.value === menuValues[i].value;
+              selected = menuValues[i].selected || settings.value === menuValues[i].value
 
               if (selected) {
-                selectedText = selectedText || menuValues[i].text;
-                self.state.set('value', menuValues[i].value);
-                return true;
+                selectedText = selectedText || menuValues[i].text
+                self.state.set('value', menuValues[i].value)
+                return true
               }
 
               // If the value has a submenu, try to find the selected values in that menu
               if (menuValues[i].menu) {
                 if (setSelected(menuValues[i].menu)) {
-                  return true;
+                  return true
                 }
               }
             }
           }
 
-          self._super(settings);
-          settings = self.settings;
+          self._super(settings)
+          settings = self.settings
 
-          self._values = values = settings.values;
+          self._values = values = settings.values
           if (values) {
             if (typeof settings.value !== 'undefined') {
-              setSelected(values);
+              setSelected(values)
             }
 
             // Default with first item
             if (!selected && values.length > 0) {
-              selectedText = values[0].text;
-              self.state.set('value', values[0].value);
+              selectedText = values[0].text
+              self.state.set('value', values[0].value)
             }
 
-            self.state.set('menu', values);
+            self.state.set('menu', values)
           }
 
-          self.state.set('text', settings.text || selectedText);
+          self.state.set('text', settings.text || selectedText)
 
-          self.classes.add('listbox');
+          self.classes.add('listbox')
 
-          self.on('select', function(e) {
-            const ctrl = e.control;
+          self.on('select', function (e) {
+            const ctrl = e.control
 
             if (lastItemCtrl) {
-              e.lastControl = lastItemCtrl;
+              e.lastControl = lastItemCtrl
             }
 
             if (settings.multiple) {
-              ctrl.active(!ctrl.active());
+              ctrl.active(!ctrl.active())
             } else {
-              self.value(e.control.value());
+              self.value(e.control.value())
             }
 
-            lastItemCtrl = ctrl;
-          });
+            lastItemCtrl = ctrl
+          })
         },
 
         /**
@@ -17270,59 +17270,59 @@ jsc */
        * @param {String} [value] Value to be set.
        * @return {Boolean/tinymce.ui.ListBox} Value or self if it's a set operation.
        */
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          function activateMenuItemsByValue(menu, value) {
+          function activateMenuItemsByValue (menu, value) {
             if (menu instanceof Menu) {
-              menu.items().each(function(ctrl) {
+              menu.items().each(function (ctrl) {
                 if (!ctrl.hasMenus()) {
-                  ctrl.active(ctrl.value() === value);
+                  ctrl.active(ctrl.value() === value)
                 }
-              });
+              })
             }
           }
 
-          function getSelectedItem(menuValues, value) {
-            let selectedItem;
+          function getSelectedItem (menuValues, value) {
+            let selectedItem
 
             if (!menuValues) {
-              return;
+              return
             }
 
             for (let i = 0; i < menuValues.length; i++) {
               if (menuValues[i].value === value) {
-                return menuValues[i];
+                return menuValues[i]
               }
 
               if (menuValues[i].menu) {
-                selectedItem = getSelectedItem(menuValues[i].menu, value);
+                selectedItem = getSelectedItem(menuValues[i].menu, value)
                 if (selectedItem) {
-                  return selectedItem;
+                  return selectedItem
                 }
               }
             }
           }
 
-          self.on('show', function(e) {
-            activateMenuItemsByValue(e.control, self.value());
-          });
+          self.on('show', function (e) {
+            activateMenuItemsByValue(e.control, self.value())
+          })
 
-          self.state.on('change:value', function(e) {
-            const selectedItem = getSelectedItem(self.state.get('menu'), e.value);
+          self.state.on('change:value', function (e) {
+            const selectedItem = getSelectedItem(self.state.get('menu'), e.value)
 
             if (selectedItem) {
-              self.text(selectedItem.text);
+              self.text(selectedItem.text)
             } else {
-              self.text(self.settings.text);
+              self.text(self.settings.text)
             }
-          });
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Radio.js
@@ -17346,17 +17346,17 @@ jsc */
     [
       'tinymce.ui.Checkbox'
     ],
-    function(Checkbox) {
-      'use strict';
+    function (Checkbox) {
+      'use strict'
 
       return Checkbox.extend({
         Defaults: {
           classes: 'radio',
           role: 'radio'
         }
-      });
+      })
     }
-  );
+  )
   /**
  * ResizeHandle.js
  *
@@ -17380,8 +17380,8 @@ jsc */
       'tinymce.ui.Widget',
       'tinymce.ui.DragHelper'
     ],
-    function(Widget, DragHelper) {
-      'use strict';
+    function (Widget, DragHelper) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -17390,23 +17390,23 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
-          self.classes.add('resizehandle');
+          self.classes.add('resizehandle')
 
           if (self.settings.direction == 'both') {
-            self.classes.add('resizehandle-both');
+            self.classes.add('resizehandle-both')
           }
 
-          self.canFocus = false;
+          self.canFocus = false
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '">' +
           '<i class="' + prefix + 'ico ' + prefix + 'i-resize"></i>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -17414,40 +17414,40 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self._super();
+          self._super()
 
           self.resizeDragHelper = new DragHelper(this._id, {
-            start() {
-              self.fire('ResizeStart');
+            start () {
+              self.fire('ResizeStart')
             },
 
-            drag(e) {
+            drag (e) {
               if (self.settings.direction != 'both') {
-                e.deltaX = 0;
+                e.deltaX = 0
               }
 
-              self.fire('Resize', e);
+              self.fire('Resize', e)
             },
 
-            stop() {
-              self.fire('ResizeEnd');
+            stop () {
+              self.fire('ResizeEnd')
             }
-          });
+          })
         },
 
-        remove() {
+        remove () {
           if (this.resizeDragHelper) {
-            this.resizeDragHelper.destroy();
+            this.resizeDragHelper.destroy()
           }
 
-          return this._super();
+          return this._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * SelectBox.js
@@ -17471,17 +17471,17 @@ jsc */
     [
       'tinymce.ui.Widget'
     ],
-    function(Widget) {
-      'use strict';
+    function (Widget) {
+      'use strict'
 
-      function createOptions(options) {
-        let strOptions = '';
+      function createOptions (options) {
+        let strOptions = ''
         if (options) {
           for (let i = 0; i < options.length; i++) {
-            strOptions += '<option value="' + options[i] + '">' + options[i] + '</option>';
+            strOptions += '<option value="' + options[i] + '">' + options[i] + '</option>'
           }
         }
-        return strOptions;
+        return strOptions
       }
 
       return Widget.extend({
@@ -17497,37 +17497,37 @@ jsc */
        * @param {Object} settings Name/value object with settings.
        * @setting {Array} options Array with options to add to the select box.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
+          self._super(settings)
 
           if (self.settings.size) {
-            self.size = self.settings.size;
+            self.size = self.settings.size
           }
 
           if (self.settings.options) {
-            self._options = self.settings.options;
+            self._options = self.settings.options
           }
 
-          self.on('keydown', function(e) {
-            let rootControl;
+          self.on('keydown', function (e) {
+            let rootControl
 
             if (e.keyCode == 13) {
-              e.preventDefault();
+              e.preventDefault()
 
               // Find root control that we can do toJSON on
-              self.parents().reverse().each(function(ctrl) {
+              self.parents().reverse().each(function (ctrl) {
                 if (ctrl.toJSON) {
-                  rootControl = ctrl;
-                  return false;
+                  rootControl = ctrl
+                  return false
                 }
-              });
+              })
 
               // Fire event on current text box with the serialized data of the whole form
-              self.fire('submit', { data: rootControl.toJSON() });
+              self.fire('submit', { data: rootControl.toJSON() })
             }
-          });
+          })
         },
 
         /**
@@ -17537,46 +17537,46 @@ jsc */
        * @param {Array} [state] State to be set.
        * @return {Array|tinymce.ui.SelectBox} Array of string options.
        */
-        options(state) {
+        options (state) {
           if (!arguments.length) {
-            return this.state.get('options');
+            return this.state.get('options')
           }
 
-          this.state.set('options', state);
+          this.state.set('options', state)
 
-          return this;
+          return this
         },
 
-        renderHtml() {
+        renderHtml () {
           let self = this,
             options,
-            size = '';
+            size = ''
 
-          options = createOptions(self._options);
+          options = createOptions(self._options)
 
           if (self.size) {
-            size = ' size = "' + self.size + '"';
+            size = ' size = "' + self.size + '"'
           }
 
           return (
             '<select id="' + self._id + '" class="' + self.classes + '"' + size + '>' +
           options +
           '</select>'
-          );
+          )
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:options', function(e) {
-            self.getEl().innerHTML = createOptions(e.value);
-          });
+          self.state.on('change:options', function (e) {
+            self.getEl().innerHTML = createOptions(e.value)
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Slider.js
@@ -17602,218 +17602,218 @@ jsc */
       'tinymce.ui.DragHelper',
       'tinymce.ui.DomUtils'
     ],
-    function(Widget, DragHelper, DomUtils) {
-      'use strict';
+    function (Widget, DragHelper, DomUtils) {
+      'use strict'
 
-      function constrain(value, minVal, maxVal) {
+      function constrain (value, minVal, maxVal) {
         if (value < minVal) {
-          value = minVal;
+          value = minVal
         }
 
         if (value > maxVal) {
-          value = maxVal;
+          value = maxVal
         }
 
-        return value;
+        return value
       }
 
-      function setAriaProp(el, name, value) {
-        el.setAttribute('aria-' + name, value);
+      function setAriaProp (el, name, value) {
+        el.setAttribute('aria-' + name, value)
       }
 
-      function updateSliderHandle(ctrl, value) {
+      function updateSliderHandle (ctrl, value) {
         let maxHandlePos,
           shortSizeName,
           sizeName,
           stylePosName,
           styleValue,
-          handleEl;
+          handleEl
 
         if (ctrl.settings.orientation == 'v') {
-          stylePosName = 'top';
-          sizeName = 'height';
-          shortSizeName = 'h';
+          stylePosName = 'top'
+          sizeName = 'height'
+          shortSizeName = 'h'
         } else {
-          stylePosName = 'left';
-          sizeName = 'width';
-          shortSizeName = 'w';
+          stylePosName = 'left'
+          sizeName = 'width'
+          shortSizeName = 'w'
         }
 
-        handleEl = ctrl.getEl('handle');
-        maxHandlePos = (ctrl.layoutRect()[shortSizeName] || 100) - DomUtils.getSize(handleEl)[sizeName];
+        handleEl = ctrl.getEl('handle')
+        maxHandlePos = (ctrl.layoutRect()[shortSizeName] || 100) - DomUtils.getSize(handleEl)[sizeName]
 
-        styleValue = (maxHandlePos * ((value - ctrl._minValue) / (ctrl._maxValue - ctrl._minValue))) + 'px';
-        handleEl.style[stylePosName] = styleValue;
-        handleEl.style.height = ctrl.layoutRect().h + 'px';
+        styleValue = (maxHandlePos * ((value - ctrl._minValue) / (ctrl._maxValue - ctrl._minValue))) + 'px'
+        handleEl.style[stylePosName] = styleValue
+        handleEl.style.height = ctrl.layoutRect().h + 'px'
 
-        setAriaProp(handleEl, 'valuenow', value);
-        setAriaProp(handleEl, 'valuetext', '' + ctrl.settings.previewFilter(value));
-        setAriaProp(handleEl, 'valuemin', ctrl._minValue);
-        setAriaProp(handleEl, 'valuemax', ctrl._maxValue);
+        setAriaProp(handleEl, 'valuenow', value)
+        setAriaProp(handleEl, 'valuetext', '' + ctrl.settings.previewFilter(value))
+        setAriaProp(handleEl, 'valuemin', ctrl._minValue)
+        setAriaProp(handleEl, 'valuemax', ctrl._maxValue)
       }
 
       return Widget.extend({
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
           if (!settings.previewFilter) {
-            settings.previewFilter = function(value) {
-              return Math.round(value * 100) / 100.0;
-            };
+            settings.previewFilter = function (value) {
+              return Math.round(value * 100) / 100.0
+            }
           }
 
-          self._super(settings);
-          self.classes.add('slider');
+          self._super(settings)
+          self.classes.add('slider')
 
           if (settings.orientation == 'v') {
-            self.classes.add('vertical');
+            self.classes.add('vertical')
           }
 
-          self._minValue = settings.minValue || 0;
-          self._maxValue = settings.maxValue || 100;
-          self._initValue = self.state.get('value');
+          self._minValue = settings.minValue || 0
+          self._maxValue = settings.maxValue || 100
+          self._initValue = self.state.get('value')
         },
 
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
           return (
             '<div id="' + id + '" class="' + self.classes + '">' +
           '<div id="' + id + '-handle" class="' + prefix + 'slider-handle" role="slider" tabindex="-1"></div>' +
           '</div>'
-          );
+          )
         },
 
-        reset() {
-          this.value(this._initValue).repaint();
+        reset () {
+          this.value(this._initValue).repaint()
         },
 
-        postRender() {
+        postRender () {
           let self = this,
             minValue,
             maxValue,
             screenCordName,
             stylePosName,
             sizeName,
-            shortSizeName;
+            shortSizeName
 
-          function toFraction(min, max, val) {
-            return (val + min) / (max - min);
+          function toFraction (min, max, val) {
+            return (val + min) / (max - min)
           }
 
-          function fromFraction(min, max, val) {
-            return (val * (max - min)) - min;
+          function fromFraction (min, max, val) {
+            return (val * (max - min)) - min
           }
 
-          function handleKeyboard(minValue, maxValue) {
-            function alter(delta) {
-              let value;
+          function handleKeyboard (minValue, maxValue) {
+            function alter (delta) {
+              let value
 
-              value = self.value();
-              value = fromFraction(minValue, maxValue, toFraction(minValue, maxValue, value) + (delta * 0.05));
-              value = constrain(value, minValue, maxValue);
+              value = self.value()
+              value = fromFraction(minValue, maxValue, toFraction(minValue, maxValue, value) + (delta * 0.05))
+              value = constrain(value, minValue, maxValue)
 
-              self.value(value);
+              self.value(value)
 
-              self.fire('dragstart', { value });
-              self.fire('drag', { value });
-              self.fire('dragend', { value });
+              self.fire('dragstart', { value })
+              self.fire('drag', { value })
+              self.fire('dragend', { value })
             }
 
-            self.on('keydown', function(e) {
+            self.on('keydown', function (e) {
               switch (e.keyCode) {
                 case 37:
                 case 38:
-                  alter(-1);
-                  break;
+                  alter(-1)
+                  break
 
                 case 39:
                 case 40:
-                  alter(1);
-                  break;
+                  alter(1)
+                  break
               }
-            });
+            })
           }
 
-          function handleDrag(minValue, maxValue, handleEl) {
+          function handleDrag (minValue, maxValue, handleEl) {
             let startPos,
               startHandlePos,
               maxHandlePos,
               handlePos,
-              value;
+              value
 
             self._dragHelper = new DragHelper(self._id, {
               handle: self._id + '-handle',
 
-              start(e) {
-                startPos = e[screenCordName];
-                startHandlePos = parseInt(self.getEl('handle').style[stylePosName], 10);
-                maxHandlePos = (self.layoutRect()[shortSizeName] || 100) - DomUtils.getSize(handleEl)[sizeName];
-                self.fire('dragstart', { value });
+              start (e) {
+                startPos = e[screenCordName]
+                startHandlePos = parseInt(self.getEl('handle').style[stylePosName], 10)
+                maxHandlePos = (self.layoutRect()[shortSizeName] || 100) - DomUtils.getSize(handleEl)[sizeName]
+                self.fire('dragstart', { value })
               },
 
-              drag(e) {
-                const delta = e[screenCordName] - startPos;
+              drag (e) {
+                const delta = e[screenCordName] - startPos
 
-                handlePos = constrain(startHandlePos + delta, 0, maxHandlePos);
-                handleEl.style[stylePosName] = handlePos + 'px';
+                handlePos = constrain(startHandlePos + delta, 0, maxHandlePos)
+                handleEl.style[stylePosName] = handlePos + 'px'
 
-                value = minValue + (handlePos / maxHandlePos) * (maxValue - minValue);
-                self.value(value);
+                value = minValue + (handlePos / maxHandlePos) * (maxValue - minValue)
+                self.value(value)
 
                 self.tooltip().text('' + self.settings.previewFilter(value)).show()
-                  .moveRel(handleEl, 'bc tc');
+                  .moveRel(handleEl, 'bc tc')
 
-                self.fire('drag', { value });
+                self.fire('drag', { value })
               },
 
-              stop() {
-                self.tooltip().hide();
-                self.fire('dragend', { value });
+              stop () {
+                self.tooltip().hide()
+                self.fire('dragend', { value })
               }
-            });
+            })
           }
 
-          minValue = self._minValue;
-          maxValue = self._maxValue;
+          minValue = self._minValue
+          maxValue = self._maxValue
 
           if (self.settings.orientation == 'v') {
-            screenCordName = 'screenY';
-            stylePosName = 'top';
-            sizeName = 'height';
-            shortSizeName = 'h';
+            screenCordName = 'screenY'
+            stylePosName = 'top'
+            sizeName = 'height'
+            shortSizeName = 'h'
           } else {
-            screenCordName = 'screenX';
-            stylePosName = 'left';
-            sizeName = 'width';
-            shortSizeName = 'w';
+            screenCordName = 'screenX'
+            stylePosName = 'left'
+            sizeName = 'width'
+            shortSizeName = 'w'
           }
 
-          self._super();
+          self._super()
 
-          handleKeyboard(minValue, maxValue, self.getEl('handle'));
-          handleDrag(minValue, maxValue, self.getEl('handle'));
+          handleKeyboard(minValue, maxValue, self.getEl('handle'))
+          handleDrag(minValue, maxValue, self.getEl('handle'))
         },
 
-        repaint() {
-          this._super();
-          updateSliderHandle(this, this.value());
+        repaint () {
+          this._super()
+          updateSliderHandle(this, this.value())
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:value', function(e) {
-            updateSliderHandle(self, e.value);
-          });
+          self.state.on('change:value', function (e) {
+            updateSliderHandle(self, e.value)
+          })
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * Spacer.js
  *
@@ -17836,8 +17836,8 @@ jsc */
     [
       'tinymce.ui.Widget'
     ],
-    function(Widget) {
-      'use strict';
+    function (Widget) {
+      'use strict'
 
       return Widget.extend({
       /**
@@ -17846,17 +17846,17 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
-          const self = this;
+        renderHtml () {
+          const self = this
 
-          self.classes.add('spacer');
-          self.canFocus = false;
+          self.classes.add('spacer')
+          self.canFocus = false
 
-          return '<div id="' + self._id + '" class="' + self.classes + '"></div>';
+          return '<div id="' + self._id + '" class="' + self.classes + '"></div>'
         }
-      });
+      })
     }
-  );
+  )
   /**
  * SplitButton.js
  *
@@ -17882,7 +17882,7 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.ui.MenuButton'
     ],
-    function(window, DomQuery, DomUtils, MenuButton) {
+    function (window, DomQuery, DomUtils, MenuButton) {
       return MenuButton.extend({
         Defaults: {
           classes: 'widget btn splitbtn',
@@ -17894,28 +17894,28 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             elm = self.getEl(),
             rect = self.layoutRect(),
             mainButtonElm,
-            menuButtonElm;
+            menuButtonElm
 
-          self._super();
+          self._super()
 
-          mainButtonElm = elm.firstChild;
-          menuButtonElm = elm.lastChild;
+          mainButtonElm = elm.firstChild
+          menuButtonElm = elm.lastChild
 
           DomQuery(mainButtonElm).css({
             width: rect.w - DomUtils.getSize(menuButtonElm).width,
             height: rect.h - 2
-          });
+          })
 
           DomQuery(menuButtonElm).css({
             height: rect.h - 2
-          });
+          })
 
-          return self;
+          return self
         },
 
         /**
@@ -17923,10 +17923,10 @@ jsc */
        *
        * @private
        */
-        activeMenu(state) {
-          const self = this;
+        activeMenu (state) {
+          const self = this
 
-          DomQuery(self.getEl().lastChild).toggleClass(self.classPrefix + 'active', state);
+          DomQuery(self.getEl().lastChild).toggleClass(self.classPrefix + 'active', state)
         },
 
         /**
@@ -17935,34 +17935,34 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             id = self._id,
             prefix = self.classPrefix,
-            image;
+            image
           let icon = self.state.get('icon'),
             text = self.state.get('text'),
-            textHtml = '';
+            textHtml = ''
 
-          image = self.settings.image;
+          image = self.settings.image
           if (image) {
-            icon = 'none';
+            icon = 'none'
 
             // Support for [high dpi, low dpi] image sources
             if (typeof image !== 'string') {
-              image = window.getSelection ? image[0] : image[1];
+              image = window.getSelection ? image[0] : image[1]
             }
 
-            image = ' style="background-image: url(\'' + image + '\')"';
+            image = ' style="background-image: url(\'' + image + '\')"'
           } else {
-            image = '';
+            image = ''
           }
 
-          icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
+          icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : ''
 
           if (text) {
-            self.classes.add('btn-has-text');
-            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>';
+            self.classes.add('btn-has-text')
+            textHtml = '<span class="' + prefix + 'txt">' + self.encode(text) + '</span>'
           }
 
           return (
@@ -17977,7 +17977,7 @@ jsc */
           ' <i class="' + prefix + 'caret"></i>' +
           '</button>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -17985,38 +17985,38 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
+        postRender () {
           let self = this,
-            onClickHandler = self.settings.onclick;
+            onClickHandler = self.settings.onclick
 
-          self.on('click', function(e) {
-            let node = e.target;
+          self.on('click', function (e) {
+            let node = e.target
 
             if (e.control == this) {
             // Find clicks that is on the main button
               while (node) {
                 if ((e.aria && e.aria.key != 'down') || (node.nodeName == 'BUTTON' && node.className.indexOf('open') == -1)) {
-                  e.stopImmediatePropagation();
+                  e.stopImmediatePropagation()
 
                   if (onClickHandler) {
-                    onClickHandler.call(this, e);
+                    onClickHandler.call(this, e)
                   }
 
-                  return;
+                  return
                 }
 
-                node = node.parentNode;
+                node = node.parentNode
               }
             }
-          });
+          })
 
-          delete self.settings.onclick;
+          delete self.settings.onclick
 
-          return self._super();
+          return self._super()
         }
-      });
+      })
     }
-  );
+  )
   /**
  * StackLayout.js
  *
@@ -18039,8 +18039,8 @@ jsc */
     [
       'tinymce.ui.FlowLayout'
     ],
-    function(FlowLayout) {
-      'use strict';
+    function (FlowLayout) {
+      'use strict'
 
       return FlowLayout.extend({
         Defaults: {
@@ -18049,12 +18049,12 @@ jsc */
           endClass: 'break'
         },
 
-        isNative() {
-          return true;
+        isNative () {
+          return true
         }
-      });
+      })
     }
-  );
+  )
   /**
  * TabPanel.js
  *
@@ -18081,8 +18081,8 @@ jsc */
       'tinymce.core.dom.DomQuery',
       'tinymce.ui.DomUtils'
     ],
-    function(Panel, $, DomUtils) {
-      'use strict';
+    function (Panel, $, DomUtils) {
+      'use strict'
 
       return Panel.extend({
         Defaults: {
@@ -18098,29 +18098,29 @@ jsc */
        * @method activateTab
        * @param {Number} idx Index of the tab to activate.
        */
-        activateTab(idx) {
-          let activeTabElm;
+        activateTab (idx) {
+          let activeTabElm
 
           if (this.activeTabId) {
-            activeTabElm = this.getEl(this.activeTabId);
-            $(activeTabElm).removeClass(this.classPrefix + 'active');
-            activeTabElm.setAttribute('aria-selected', 'false');
+            activeTabElm = this.getEl(this.activeTabId)
+            $(activeTabElm).removeClass(this.classPrefix + 'active')
+            activeTabElm.setAttribute('aria-selected', 'false')
           }
 
-          this.activeTabId = 't' + idx;
+          this.activeTabId = 't' + idx
 
-          activeTabElm = this.getEl('t' + idx);
-          activeTabElm.setAttribute('aria-selected', 'true');
-          $(activeTabElm).addClass(this.classPrefix + 'active');
+          activeTabElm = this.getEl('t' + idx)
+          activeTabElm.setAttribute('aria-selected', 'true')
+          $(activeTabElm).addClass(this.classPrefix + 'active')
 
-          this.items()[idx].show().fire('showtab');
-          this.reflow();
+          this.items()[idx].show().fire('showtab')
+          this.reflow()
 
-          this.items().each(function(item, i) {
+          this.items().each(function (item, i) {
             if (idx != i) {
-              item.hide();
+              item.hide()
             }
-          });
+          })
         },
 
         /**
@@ -18129,28 +18129,28 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             layout = self._layout,
             tabsHtml = '',
-            prefix = self.classPrefix;
+            prefix = self.classPrefix
 
-          self.preRender();
-          layout.preRender(self);
+          self.preRender()
+          layout.preRender(self)
 
-          self.items().each(function(ctrl, i) {
-            const id = self._id + '-t' + i;
+          self.items().each(function (ctrl, i) {
+            const id = self._id + '-t' + i
 
-            ctrl.aria('role', 'tabpanel');
-            ctrl.aria('labelledby', id);
+            ctrl.aria('role', 'tabpanel')
+            ctrl.aria('labelledby', id)
 
             tabsHtml += (
               '<div id="' + id + '" class="' + prefix + 'tab" ' +
             'unselectable="on" role="tab" aria-controls="' + ctrl._id + '" aria-selected="false" tabIndex="-1">' +
             self.encode(ctrl.settings.title) +
             '</div>'
-            );
-          });
+            )
+          })
 
           return (
             '<div id="' + self._id + '" class="' + self.classes + '" hidefocus="1" tabindex="-1">' +
@@ -18161,7 +18161,7 @@ jsc */
           layout.renderHtml(self) +
           '</div>' +
           '</div>'
-          );
+          )
         },
 
         /**
@@ -18169,27 +18169,27 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self._super();
+          self._super()
 
-          self.settings.activeTab = self.settings.activeTab || 0;
-          self.activateTab(self.settings.activeTab);
+          self.settings.activeTab = self.settings.activeTab || 0
+          self.activateTab(self.settings.activeTab)
 
-          this.on('click', function(e) {
-            const targetParent = e.target.parentNode;
+          this.on('click', function (e) {
+            const targetParent = e.target.parentNode
 
             if (targetParent && targetParent.id == self._id + '-head') {
-              let i = targetParent.childNodes.length;
+              let i = targetParent.childNodes.length
 
               while (i--) {
                 if (targetParent.childNodes[i] == e.target) {
-                  self.activateTab(i);
+                  self.activateTab(i)
                 }
               }
             }
-          });
+          })
         },
 
         /**
@@ -18200,49 +18200,49 @@ jsc */
        * @method initLayoutRect
        * @return {Object} Layout rect instance.
        */
-        initLayoutRect() {
+        initLayoutRect () {
           let self = this,
             rect,
             minW,
-            minH;
+            minH
 
-          minW = DomUtils.getSize(self.getEl('head')).width;
-          minW = minW < 0 ? 0 : minW;
-          minH = 0;
+          minW = DomUtils.getSize(self.getEl('head')).width
+          minW = minW < 0 ? 0 : minW
+          minH = 0
 
-          self.items().each(function(item) {
-            minW = Math.max(minW, item.layoutRect().minW);
-            minH = Math.max(minH, item.layoutRect().minH);
-          });
+          self.items().each(function (item) {
+            minW = Math.max(minW, item.layoutRect().minW)
+            minH = Math.max(minH, item.layoutRect().minH)
+          })
 
-          self.items().each(function(ctrl) {
-            ctrl.settings.x = 0;
-            ctrl.settings.y = 0;
-            ctrl.settings.w = minW;
-            ctrl.settings.h = minH;
+          self.items().each(function (ctrl) {
+            ctrl.settings.x = 0
+            ctrl.settings.y = 0
+            ctrl.settings.w = minW
+            ctrl.settings.h = minH
 
             ctrl.layoutRect({
               x: 0,
               y: 0,
               w: minW,
               h: minH
-            });
-          });
+            })
+          })
 
-          const headH = DomUtils.getSize(self.getEl('head')).height;
+          const headH = DomUtils.getSize(self.getEl('head')).height
 
-          self.settings.minWidth = minW;
-          self.settings.minHeight = minH + headH;
+          self.settings.minWidth = minW
+          self.settings.minHeight = minH + headH
 
-          rect = self._super();
-          rect.deltaH += headH;
-          rect.innerH = rect.h - rect.deltaH;
+          rect = self._super()
+          rect.deltaH += headH
+          rect.innerH = rect.h - rect.deltaH
 
-          return rect;
+          return rect
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * TextBox.js
@@ -18269,7 +18269,7 @@ jsc */
       'tinymce.ui.DomUtils',
       'tinymce.ui.Widget'
     ],
-    function(document, Tools, DomUtils, Widget) {
+    function (document, Tools, DomUtils, Widget) {
       return Widget.extend({
       /**
        * Constructs a instance with the specified settings.
@@ -18280,38 +18280,38 @@ jsc */
        * @setting {Number} maxLength Max length for the textbox.
        * @setting {Number} size Size of the textbox in characters.
        */
-        init(settings) {
-          const self = this;
+        init (settings) {
+          const self = this
 
-          self._super(settings);
+          self._super(settings)
 
-          self.classes.add('textbox');
+          self.classes.add('textbox')
 
           if (settings.multiline) {
-            self.classes.add('multiline');
+            self.classes.add('multiline')
           } else {
-            self.on('keydown', function(e) {
-              let rootControl;
+            self.on('keydown', function (e) {
+              let rootControl
 
               if (e.keyCode == 13) {
-                e.preventDefault();
+                e.preventDefault()
 
                 // Find root control that we can do toJSON on
-                self.parents().reverse().each(function(ctrl) {
+                self.parents().reverse().each(function (ctrl) {
                   if (ctrl.toJSON) {
-                    rootControl = ctrl;
-                    return false;
+                    rootControl = ctrl
+                    return false
                   }
-                });
+                })
 
                 // Fire event on current text box with the serialized data of the whole form
-                self.fire('submit', { data: rootControl.toJSON() });
+                self.fire('submit', { data: rootControl.toJSON() })
               }
-            });
+            })
 
-            self.on('keyup', function(e) {
-              self.state.set('value', e.target.value);
-            });
+            self.on('keyup', function (e) {
+              self.state.set('value', e.target.value)
+            })
           }
         },
 
@@ -18320,53 +18320,53 @@ jsc */
        *
        * @method repaint
        */
-        repaint() {
+        repaint () {
           let self = this,
             style,
             rect,
             borderBox,
             borderW,
             borderH = 0,
-            lastRepaintRect;
+            lastRepaintRect
 
-          style = self.getEl().style;
-          rect = self._layoutRect;
-          lastRepaintRect = self._lastRepaintRect || {};
+          style = self.getEl().style
+          rect = self._layoutRect
+          lastRepaintRect = self._lastRepaintRect || {}
 
           // Detect old IE 7+8 add lineHeight to align caret vertically in the middle
-          const doc = document;
+          const doc = document
           if (!self.settings.multiline && doc.all && (!doc.documentMode || doc.documentMode <= 8)) {
-            style.lineHeight = (rect.h - borderH) + 'px';
+            style.lineHeight = (rect.h - borderH) + 'px'
           }
 
-          borderBox = self.borderBox;
-          borderW = borderBox.left + borderBox.right + 8;
-          borderH = borderBox.top + borderBox.bottom + (self.settings.multiline ? 8 : 0);
+          borderBox = self.borderBox
+          borderW = borderBox.left + borderBox.right + 8
+          borderH = borderBox.top + borderBox.bottom + (self.settings.multiline ? 8 : 0)
 
           if (rect.x !== lastRepaintRect.x) {
-            style.left = rect.x + 'px';
-            lastRepaintRect.x = rect.x;
+            style.left = rect.x + 'px'
+            lastRepaintRect.x = rect.x
           }
 
           if (rect.y !== lastRepaintRect.y) {
-            style.top = rect.y + 'px';
-            lastRepaintRect.y = rect.y;
+            style.top = rect.y + 'px'
+            lastRepaintRect.y = rect.y
           }
 
           if (rect.w !== lastRepaintRect.w) {
-            style.width = (rect.w - borderW) + 'px';
-            lastRepaintRect.w = rect.w;
+            style.width = (rect.w - borderW) + 'px'
+            lastRepaintRect.w = rect.w
           }
 
           if (rect.h !== lastRepaintRect.h) {
-            style.height = (rect.h - borderH) + 'px';
-            lastRepaintRect.h = rect.h;
+            style.height = (rect.h - borderH) + 'px'
+            lastRepaintRect.h = rect.h
           }
 
-          self._lastRepaintRect = lastRepaintRect;
-          self.fire('repaint', {}, false);
+          self._lastRepaintRect = lastRepaintRect
+          self.fire('repaint', {}, false)
 
-          return self;
+          return self
         },
 
         /**
@@ -18375,51 +18375,51 @@ jsc */
        * @method renderHtml
        * @return {String} HTML representing the control.
        */
-        renderHtml() {
+        renderHtml () {
           let self = this,
             settings = self.settings,
             attrs,
-            elm;
+            elm
 
           attrs = {
             id: self._id,
             hidefocus: '1'
-          };
+          }
 
           Tools.each([
             'rows', 'spellcheck', 'maxLength', 'size', 'readonly', 'min',
             'max', 'step', 'list', 'pattern', 'placeholder', 'required', 'multiple'
-          ], function(name) {
-            attrs[name] = settings[name];
-          });
+          ], function (name) {
+            attrs[name] = settings[name]
+          })
 
           if (self.disabled()) {
-            attrs.disabled = 'disabled';
+            attrs.disabled = 'disabled'
           }
 
           if (settings.subtype) {
-            attrs.type = settings.subtype;
+            attrs.type = settings.subtype
           }
 
-          elm = DomUtils.create(settings.multiline ? 'textarea' : 'input', attrs);
-          elm.value = self.state.get('value');
-          elm.className = self.classes;
+          elm = DomUtils.create(settings.multiline ? 'textarea' : 'input', attrs)
+          elm.value = self.state.get('value')
+          elm.className = self.classes
 
-          return elm.outerHTML;
+          return elm.outerHTML
         },
 
-        value(value) {
+        value (value) {
           if (arguments.length) {
-            this.state.set('value', value);
-            return this;
+            this.state.set('value', value)
+            return this
           }
 
           // Make sure the real state is in sync
           if (this.state.get('rendered')) {
-            this.state.set('value', this.getEl().value);
+            this.state.set('value', this.getEl().value)
           }
 
-          return this.state.get('value');
+          return this.state.get('value')
         },
 
         /**
@@ -18427,41 +18427,41 @@ jsc */
        *
        * @method postRender
        */
-        postRender() {
-          const self = this;
+        postRender () {
+          const self = this
 
-          self.getEl().value = self.state.get('value');
-          self._super();
+          self.getEl().value = self.state.get('value')
+          self._super()
 
-          self.$el.on('change', function(e) {
-            self.state.set('value', e.target.value);
-            self.fire('change', e);
-          });
+          self.$el.on('change', function (e) {
+            self.state.set('value', e.target.value)
+            self.fire('change', e)
+          })
         },
 
-        bindStates() {
-          const self = this;
+        bindStates () {
+          const self = this
 
-          self.state.on('change:value', function(e) {
+          self.state.on('change:value', function (e) {
             if (self.getEl().value != e.value) {
-              self.getEl().value = e.value;
+              self.getEl().value = e.value
             }
-          });
+          })
 
-          self.state.on('change:disabled', function(e) {
-            self.getEl().disabled = e.value;
-          });
+          self.state.on('change:disabled', function (e) {
+            self.getEl().disabled = e.value
+          })
 
-          return self._super();
+          return self._super()
         },
 
-        remove() {
-          this.$el.off();
-          this._super();
+        remove () {
+          this.$el.off()
+          this._super()
         }
-      });
+      })
     }
-  );
+  )
 
   /**
  * Api.js
@@ -18539,14 +18539,14 @@ jsc */
       'tinymce.ui.Widget',
       'tinymce.ui.Window'
     ],
-    function(
+    function (
       Factory, Tools, AbsoluteLayout, BrowseButton, Button, ButtonGroup, Checkbox, Collection, ColorBox, ColorButton, ColorPicker, ComboBox, Container, Control,
       DragHelper, DropZone, ElementPath, FieldSet, FilePicker, FitLayout, FlexLayout, FloatPanel, FlowLayout, Form, FormatControls, FormItem, GridLayout, Iframe,
       InfoBox, KeyboardNavigation, Label, Layout, ListBox, Menu, MenuBar, MenuButton, MenuItem, MessageBox, Movable, Notification, Panel, PanelButton, Path, Progress,
       Radio, ReflowQueue, Resizable, ResizeHandle, Scrollable, SelectBox, Selector, Slider, Spacer, SplitButton, StackLayout, TabPanel, TextBox, Throbber, Toolbar,
       Tooltip, Widget, Window
     ) {
-      const getApi = function() {
+      const getApi = function () {
         return {
           Selector,
           Collection,
@@ -18609,33 +18609,33 @@ jsc */
           TextBox,
           DropZone,
           BrowseButton
-        };
-      };
-
-      const appendTo = function(target) {
-        if (target.ui) {
-          Tools.each(getApi(), function(ref, key) {
-            target.ui[key] = ref;
-          });
-        } else {
-          target.ui = getApi();
         }
-      };
+      }
 
-      const registerToFactory = function() {
-        Tools.each(getApi(), function(ref, key) {
-          Factory.add(key, ref);
-        });
-      };
+      const appendTo = function (target) {
+        if (target.ui) {
+          Tools.each(getApi(), function (ref, key) {
+            target.ui[key] = ref
+          })
+        } else {
+          target.ui = getApi()
+        }
+      }
+
+      const registerToFactory = function () {
+        Tools.each(getApi(), function (ref, key) {
+          Factory.add(key, ref)
+        })
+      }
 
       const Api = {
         appendTo,
         registerToFactory
-      };
+      }
 
-      return Api;
+      return Api
     }
-  );
+  )
   /**
  * Theme.js
  *
@@ -18655,18 +18655,18 @@ jsc */
       'tinymce.ui.Api',
       'tinymce.ui.FormatControls'
     ],
-    function(window, ThemeManager, ThemeApi, Api, FormatControls) {
-      Api.registerToFactory();
-      Api.appendTo(window.tinymce ? window.tinymce : {});
+    function (window, ThemeManager, ThemeApi, Api, FormatControls) {
+      Api.registerToFactory()
+      Api.appendTo(window.tinymce ? window.tinymce : {})
 
-      ThemeManager.add('modern', function(editor) {
-        FormatControls.setup(editor);
-        return ThemeApi.get(editor);
-      });
+      ThemeManager.add('modern', function (editor) {
+        FormatControls.setup(editor)
+        return ThemeApi.get(editor)
+      })
 
-      return function() { };
+      return function () { }
     }
-  );
+  )
 
-  dem('tinymce.themes.modern.Theme')();
-})();
+  dem('tinymce.themes.modern.Theme')()
+})()

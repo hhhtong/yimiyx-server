@@ -1,12 +1,13 @@
 {
   "root": true,
-  "extends": "eslint-config-egg",
+  "extends": "eslint-config-standard",
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"
   },
   "rules": {
+    "prefer-promise-reject-errors": "off",
     "arrow-parens": "off",
     "valid-jsdoc": "off",
     "eol-last": "off",

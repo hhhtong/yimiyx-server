@@ -227,4 +227,4 @@ tinymce.addI18n('en_GB', {
   View: 'View',
   Table: 'Table',
   Format: 'Format'
-});
+})

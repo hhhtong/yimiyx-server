@@ -6,4 +6,4 @@ export default [{
   name: 'Login',
   path: '/',
   component: () => import('@/page/home/Login')
-}];
+}]

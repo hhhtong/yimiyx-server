@@ -1,13 +1,13 @@
-import Main from '@/page/Main.vue';
+import Main from '@/page/Main.vue'
 
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 const $import = file => {
   if (process.env.EGG_SERVER_ENV !== 'prod') {
-    return require('@/page/' + file + '.vue').default;
+    return require('@/page/' + file + '.vue').default
   } else {
-    return () => import('@/page/' + file + '.vue');
+    return () => import('@/page/' + file + '.vue')
   }
-};
+}
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -27,7 +27,7 @@ export const loginRouter = {
     title: 'Login - 登录'
   },
   component: $import('login')
-};
+}
 
 export const page404 = {
   path: '/*',
@@ -36,7 +36,7 @@ export const page404 = {
     title: '404-页面不存在'
   },
   component: $import('error-page/404')
-};
+}
 
 export const page403 = {
   path: '/403',
@@ -45,7 +45,7 @@ export const page403 = {
   },
   name: 'error-403',
   component: $import('error-page/403')
-};
+}
 
 export const page500 = {
   path: '/500',
@@ -54,13 +54,13 @@ export const page500 = {
   },
   name: 'error-500',
   component: $import('error-page/500')
-};
+}
 
 export const locking = {
   path: '/locking',
   name: 'locking',
   component: $import('main-components/lockscreen/components/locking-page')
-};
+}
 
 // 作为Main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
 export const otherRouter = {
@@ -73,7 +73,7 @@ export const otherRouter = {
     { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: $import('own-space/own-space') },
     { path: 'message', title: '消息中心', name: 'message_index', component: $import('message/message') }
   ]
-};
+}
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
 export const appRouter = [
@@ -153,7 +153,7 @@ export const appRouter = [
       { path: 'index', title: '错误页面', name: 'errorpage_index', component: $import('error-page/error-page') }
     ]
   }
-];
+]
 
 // 所有上面定义的路由都要写在下面的routers里
 export const routes = [
@@ -164,4 +164,4 @@ export const routes = [
   page500,
   page403,
   page404
-];
+]
