@@ -1,20 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 // import { Category } from "./Category"; // 外键
-import { snakeCase } from 'lodash';
+import { snakeCase as _ } from 'lodash';
+import dateFormat from '../../../libs/tools/dateFormat';
 
-export interface SupplierRowData {
-  principal?: string;
-  tel?: string;
-  area?: string;
-}
-
-@Entity()
+@Entity(_('Supplier'))
 export class Supplier {
-  constructor({ principal, tel, area }: SupplierRowData) {
-    this.principal = principal;
-    this.tel = tel;
-    this.area = area;
-  }
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,68 +12,80 @@ export class Supplier {
   /**
    * 负责人姓名
    */
-  @Column('varchar', { length: 10 })
+  @Column('varchar', { length: 10, default: '' })
   principal: string;
 
   /**
    * 负责人联系方式
    */
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, default: '' })
   tel: string;
 
   /**
-   * 加盟商所在地区 省/市/区/街道
+   * 加盟商所在地区代号 省,市,区,街道
    */
-  @Column('varchar', { length: 150 })
-  area: string;
+  @Column('varchar', { name: _('areaCode'), length: 50, default: '' })
+  areaCode: string;
+
+  /**
+   * 加盟商所在地区名称 省,市,区,街道
+   */
+  @Column('varchar', { name: _('areaName'), length: 100, default: '' })
+  areaName: string;
 
   /**
    * 供货商详细地址
    */
-  @Column('varchar', { length: 50 })
+  @Column('varchar', { length: 50, default: '' })
   address: string;
 
   /**
    * 供货商类型 1:公司 2:个人
    */
-  @Column('int', { name: snakeCase('supplierType'), length: 1 })
+  @Column('int', { name: _('supplierType'), length: 1, default: 0 })
   supplierType: number;
 
   /**
    * 收款方式 bank | ali | wechat
    */
-  @Column('char', { name: snakeCase('payType'), length: 10 })
+  @Column('char', { name: _('payType'), length: 10, default: '' })
   payType: string;
 
   /**
    * 汇款账号
    */
-  @Column('varchar', { name: snakeCase('accountNo'), length: 24 })
+  @Column('varchar', { name: _('accountNo'), length: 24, default: '' })
   accountNo: string;
 
   /**
    * 银行名称
    */
-  @Column('varchar', { name: snakeCase('bankName'), length: 10, nullable: true })
+  @Column('varchar', { name: _('bankName'), length: 10, nullable: true })
   bankName: string;
 
   /**
    * 持卡人姓名
    */
-  @Column('char', { name: snakeCase('bankUsername'), length: 10, nullable: true })
+  @Column('char', { name: _('bankUsername'), length: 10, nullable: true })
   bankUsername: string;
 
   /**
    * 开户行地址
    */
-  @Column('varchar', { name: snakeCase('bankAddress'), length: 50, nullable: true })
+  @Column('varchar', { name: _('bankAddress'), length: 50, nullable: true })
   bankAddress: string;
 
   /**
    * 商品类目
    */
-  @Column('varchar', { length: 150 })
+  @Column('varchar', { length: 150, default: '[]' })
   category: string;
+
+  /**
+   * 商品类目
+   */
+  @Column('datetime', { name: _('createdAt'), default: dateFormat(new Date()) })
+  createdAt: Date;
 
   // @ManyToMany(type => Category)
   // @JoinTable()
