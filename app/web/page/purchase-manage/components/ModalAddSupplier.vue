@@ -8,13 +8,13 @@
       title="添加供货商"
       @on-visible-change="handleVisibleChange">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
-        <FormItem label="负责人" prop="noNull">
+        <FormItem label="负责人" prop="principal">
           <Input v-model="formValidate.principal" placeholder="请输入负责人姓名"></Input>
         </FormItem>
         <FormItem label="联系电话" prop="tel">
-          <Input v-model="formValidate.tel" placeholder="请输入负责人联系电话"></Input>
+          <Input v-model="formValidate.tel" :maxlength="11" placeholder="请输入负责人联系电话"></Input>
         </FormItem>
-        <FormItem label="所在地区" prop="area">
+        <FormItem label="所在地区">
           <al-cascader v-model="formValidate.area" placeholder="请选择供货商所在地区"/>
         </FormItem>
         <FormItem label="详细地址" prop="address">
@@ -36,13 +36,13 @@
             </Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="银行名称" prop="noNull" v-if="_isBank">
+        <FormItem label="银行名称" prop="bankName" v-if="_isBank">
           <Input v-model="formValidate.bankName" placeholder="请输入银行名称"></Input>
         </FormItem>
-        <FormItem label="持卡人姓名" prop="noNull" v-if="_isBank">
+        <FormItem label="持卡人姓名" prop="bankUsername" v-if="_isBank">
           <Input v-model="formValidate.bankUsername" placeholder="请输入持卡人姓名"></Input>
         </FormItem>
-        <FormItem :label="_accountNoLabel" prop="noNull">
+        <FormItem :label="_accountNoLabel" prop="accountNo">
           <Input v-model="formValidate.accountNo" placeholder="该账号为汇款账号，请务必认真填写"></Input>
         </FormItem>
         <FormItem label="开户行地址" prop="address" v-if="_isBank">
@@ -92,6 +92,10 @@ export default {
       }
     }
 
+    const notNull = [
+      { required: true, message: '该项不能为空', trigger: 'blur' }
+    ]
+
     return {
       payTypeRadios,
       formValidate: {
@@ -108,9 +112,10 @@ export default {
         category: []
       },
       ruleValidate: {
-        noNull: [
-          { required: true, message: '该项不能为空', trigger: 'blur' }
-        ],
+        principal: notNull,
+        bankName: notNull,
+        bankUsername: notNull,
+        accountNo: notNull,
         tel: [
           { validator: validateTel, trigger: 'blur' }
         ],
@@ -161,9 +166,12 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          this.$emit('handleSave', this.formValidate)
+          if (this.formValidate.area.length === 0) {
+            return this.$Message.error('请选择供货商所在地区!')
+          }
+          this.$emit('handleSave', { ...this.formValidate })
         } else {
-          this.$Message.error('填写错误，请认真检查!')
+          this.$Message.error('存在不符合格式的内容, 请认真填写!')
         }
       })
     },

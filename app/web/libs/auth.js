@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'saas_admin_userid'
+const TokenKey = 'csrfToken'
 
 export function getToken () {
   return Cookies.get(TokenKey)

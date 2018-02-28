@@ -10,6 +10,12 @@ export class Supplier {
   id: number;
 
   /**
+   * 供货商级别 1: 优 2: 良好 3: 凑合
+   */
+  @Column('int', { length: 1, default: 2 })
+  level: number;
+
+  /**
    * 负责人姓名
    */
   @Column('varchar', { length: 10, default: '' })
@@ -22,7 +28,7 @@ export class Supplier {
   tel: string;
 
   /**
-   * 加盟商所在地区代号 省,市,区,街道
+   * 供货商所在地区代号 省,市,区,街道
    */
   @Column('varchar', { name: _('areaCode'), length: 50, default: '' })
   areaCode: string;
@@ -84,7 +90,7 @@ export class Supplier {
   /**
    * 商品类目
    */
-  @Column('datetime', { name: _('createdAt'), default: dateFormat(new Date()) })
+  @Column('datetime', { name: _('createdAt'), nullable: true })
   createdAt: Date;
 
   // @ManyToMany(type => Category)

@@ -3,7 +3,8 @@ import request from '@/libs/request'
 /**
  * 添加供货商
  */
-export function addSupplier (params) {
+export function supplierAdd(params) {
+  // return request.post('/supplier/add', params)
   return request({
     url: '/supplier/add',
     method: 'post',
@@ -14,7 +15,7 @@ export function addSupplier (params) {
 /**
  * 删除供货商
  */
-export function delSupplier (params) {
+export function supplierDel(params) {
   return request({
     url: '/supplier/delete',
     method: 'post',
@@ -25,7 +26,7 @@ export function delSupplier (params) {
 /**
  * 修改供货商
  */
-export function updateSupplier (params) {
+export function supplierUpdate(params) {
   return request({
     url: '/supplier/update',
     method: 'post',

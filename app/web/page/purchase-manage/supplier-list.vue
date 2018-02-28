@@ -9,7 +9,7 @@
   <Layout class="supplier-con">
     <Header style="background: white">
       <label>城市：</label>
-      <Select v-model="query.cityId" style="width:100px">
+      <Select v-model="query.cityCode" style="width:100px">
         <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <label class="margin-left-20">类别：</label>
@@ -22,7 +22,7 @@
       <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出Excel</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
 
-      <ModalAddSupplier :show.sync="showModal" @handle-save="handleSave"></ModalAddSupplier>
+      <ModalAddSupplier :show.sync="showModal" @handleSave="handleSave"></ModalAddSupplier>
     </Header>
     <Layout>
       <Content>
@@ -45,6 +45,7 @@
 
 <script>
 import ModalAddSupplier from './components/ModalAddSupplier'
+import { supplierAdd, supplierDel, supplierUpdate } from '@/api/supplier'
 
 export default {
   name: 'purchase-manage__supplier-list',
@@ -54,9 +55,9 @@ export default {
   data() {
     return {
       query: {
-        cityId: '', // 城市ID
+        cityCode: '', // 城市ID
         category: '', // 供应商类别
-        supplier: '' // 供应商名称
+        supplier: '' // 供应商名称 | 编号
       },
       showModal: false,
       // showSlder: true,
@@ -86,7 +87,7 @@ export default {
         },
         {
           title: '目/类/项',
-          key: 'address'
+          key: 'category'
         },
         {
           title: '地址',
@@ -155,8 +156,13 @@ export default {
 
     },
     // 添加 | 修改供货商 -> 保存
-    handleSave(formData) {
-      // this
+    async handleSave(formData) {
+      const result = await supplierAdd(formData)
+
+      if (result.code === 50000) {
+        this.$Message.success('操作成功')
+        this.showModal = false
+      }
     }
   }
 }

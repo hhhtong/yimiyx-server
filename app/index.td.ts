@@ -1,4 +1,5 @@
 import HomeController from './controller/home';
+import SupplierController from './controller/supplier';
 import SupplierService from './service/supplier'
 
 declare module 'egg' {
@@ -6,7 +7,8 @@ declare module 'egg' {
   }
 
   export interface IController {
-    home: HomeController
+    home: HomeController,
+    supplier: SupplierController
   }
 
   export interface IService {
