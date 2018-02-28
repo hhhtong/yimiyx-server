@@ -46,6 +46,7 @@
 <script>
 import ModalAddSupplier from './components/ModalAddSupplier'
 import { supplierGet, supplierAdd, supplierDel, supplierUpdate } from '@/api/supplier'
+import { Badge } from 'iview'
 
 export default {
   name: 'purchase-manage__supplier-list',
@@ -74,16 +75,25 @@ export default {
       tableColumns: [
         {
           title: '编号',
-          key: 'supplierId',
+          key: 'id',
           width: 60
         },
         {
           title: '供货商名称',
-          key: 'supplierName'
+          render: (h, {row, column, index }) => (
+            <div>
+              <Badge count="{{ row.level }}"></Badge>
+              <span>{ row.supplierName }</span>
+            </div>
+          )
         },
         {
-          title: '联系人/电话',
-          key: 'linkman'
+          title: '负责人/电话',
+          render: (h, { row, column, index }) => (
+            <div>
+              { `${row.linkmanName}/${row.tel}` }
+            </div>
+          )
         },
         {
           title: '供货商级别',

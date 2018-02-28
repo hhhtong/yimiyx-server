@@ -6,12 +6,10 @@ export default class SupplierService extends Service {
   async query(query) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const repo = db.getRepository(Supplier);
 
     try {
-      const supplier = await repo.createQueryBuilder("supplier")
-        .getMany();
-      log.debug('查询出的数据', 'supplier')
+      const supplier = await db.manager.find(Supplier);
+      log.debug('供货商列表:', supplier)
       await db.close();
       return supplier;
     } catch (e) {

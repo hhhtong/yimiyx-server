@@ -17,8 +17,8 @@ export class Supplier {
   /**
    * 负责人姓名
    */
-  @Column('varchar', { length: 10, default: '' })
-  principal: string;
+  @Column('varchar', { name: _('linkmanName'), length: 10, default: '' })
+  linkmanName: string;
 
   /**
    * 负责人联系方式

@@ -8,8 +8,8 @@
       title="添加供货商"
       @on-visible-change="handleVisibleChange">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
-        <FormItem label="负责人" prop="principal">
-          <Input v-model="formValidate.principal" placeholder="请输入负责人姓名"></Input>
+        <FormItem label="负责人" prop="linkmanName">
+          <Input v-model="formValidate.linkmanName" placeholder="请输入负责人姓名"></Input>
         </FormItem>
         <FormItem label="联系电话" prop="tel">
           <Input v-model="formValidate.tel" :maxlength="11" placeholder="请输入负责人联系电话"></Input>
@@ -99,7 +99,7 @@ export default {
     return {
       payTypeRadios,
       formValidate: {
-        principal: '',
+        linkmanName: '',
         tel: '',
         area: [],
         address: '',
@@ -112,7 +112,7 @@ export default {
         category: []
       },
       ruleValidate: {
-        principal: notNull,
+        linkmanName: notNull,
         bankName: notNull,
         bankUsername: notNull,
         accountNo: notNull,

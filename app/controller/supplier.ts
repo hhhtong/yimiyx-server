@@ -6,7 +6,7 @@ export default class SupplierController extends BaseController {
   async index() {
     const { service, ctx } = this;
     const list = await service.supplier.query(ctx.query);
-    this.success(ctx.query);
+    this.success({ list, total: list.length });
   }
 
   async add() {
