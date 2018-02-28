@@ -1,11 +1,19 @@
 import BaseController from '../core/base-controller';
+import dateFormat from '../../libs/tools/dateFormat';
 
 export default class SupplierController extends BaseController {
 
+  async index() {
+    const { service, ctx } = this;
+    const list = await service.supplier.query(ctx.query);
+    this.success(ctx.query);
+  }
+
   async add() {
     const { service, ctx } = this;
-    await service.supplier.insert(ctx.params);
-    this.success()
+    const params = { ...ctx.request.body, createdAt: dateFormat(new Date()) };
+    await service.supplier.insert(params);
+    this.success();
   }
 
   async delete() {

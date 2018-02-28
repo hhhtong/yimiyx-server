@@ -1,7 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 // import { Category } from "./Category"; // 外键
 import { snakeCase as _ } from 'lodash';
-import dateFormat from '../../../libs/tools/dateFormat';
 
 @Entity(_('Supplier'))
 export class Supplier {
@@ -88,7 +87,7 @@ export class Supplier {
   category: string;
 
   /**
-   * 商品类目
+   * 创建时间
    */
   @Column('datetime', { name: _('createdAt'), nullable: true })
   createdAt: Date;

@@ -9,15 +9,15 @@
   <Layout class="supplier-con">
     <Header style="background: white">
       <label>城市：</label>
-      <Select v-model="query.cityCode" style="width:100px">
+      <Select v-model="listQuery.cityCode" style="width:100px">
         <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <label class="margin-left-20">类别：</label>
-      <Select v-model="query.category" style="width:100px">
+      <Select v-model="listQuery.category" style="width:100px">
         <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
-      <Input v-model="query.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
+      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出Excel</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
@@ -37,7 +37,7 @@
     </Layout>
     <Footer>
       <div style="float: right;">
-        <Page show-total show-sizer show-elevator placement="top" :total="100" :page-size="20" :current="1" @on-change="changePage"></Page>
+        <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="changePage"></Page>
       </div>
     </Footer>
   </Layout>
@@ -45,7 +45,7 @@
 
 <script>
 import ModalAddSupplier from './components/ModalAddSupplier'
-import { supplierAdd, supplierDel, supplierUpdate } from '@/api/supplier'
+import { supplierGet, supplierAdd, supplierDel, supplierUpdate } from '@/api/supplier'
 
 export default {
   name: 'purchase-manage__supplier-list',
@@ -54,7 +54,11 @@ export default {
 
   data() {
     return {
-      query: {
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        rows: 20,
         cityCode: '', // 城市ID
         category: '', // 供应商类别
         supplier: '' // 供应商名称 | 编号
@@ -93,10 +97,6 @@ export default {
           title: '地址',
           key: 'address'
         },
-        // {
-        //   title: '最后一次报价时间',
-        //   key: 'date'
-        // },
         {
           title: '操作',
           key: 'handle',
@@ -110,42 +110,43 @@ export default {
           )
         }
       ],
-      tableData: [
-        {
-          supplierName: 'John Brown',
-          level: 3,
-          address: 'New York No. 1 Lake Park',
-          date: '2016-10-03'
-        },
-        {
-          supplierName: 'Jim Green',
-          level: 3,
-          address: 'London No. 1 Lake Park',
-          date: '2016-10-01'
-        },
-        {
-          supplierName: 'Joe Black',
-          level: 3,
-          address: 'Sydney No. 1 Lake Park',
-          date: '2016-10-02'
-        },
-        {
-          supplierName: 'Jon Snow',
-          level: 3,
-          address: 'Ottawa No. 2 Lake Park',
-          date: '2016-10-04'
-        }
-      ]
+      tableData: []
     }
   },
 
+  created() {
+    this.fetchData()
+  },
+
   methods: {
+    fetchData() {
+      this.listLoading = true
+      supplierGet(this.listQuery).then(result => {
+        if (result.code === 50000) {
+          const { list, total } = result.data
+          this.tableData = list
+          this.total = total
+          this.listLoading = false
+        }
+      })
+    },
+
+    handleSizeChange(val) {
+      this.listQuery.rows = val
+      this.fetchData()
+    },
+
+    handleCurrentChange(val) {
+      this.listQuery.page = val
+      this.fetchData()
+    },
+
     changePage() {
 
     },
     // 查询
     handleQuery() {
-      // this.query
+      // this.listQuery
     },
     // 添加供货商
     handleAddSupplier() {
@@ -160,7 +161,7 @@ export default {
       const result = await supplierAdd(formData)
 
       if (result.code === 50000) {
-        this.$Message.success('操作成功')
+        this.$Message.success(result.msg)
         this.showModal = false
       }
     }

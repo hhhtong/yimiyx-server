@@ -16,6 +16,7 @@ export default (app: Application) => {
   /**
    * SupplierController
    */
+  router.get('/supplier', controller.supplier.index);
   router.post('/supplier/add', controller.supplier.add);
   router.post('/supplier/delete', controller.supplier.delete);
   router.post('/supplier/update', controller.supplier.update);
