@@ -11,19 +11,21 @@ export default class SupplierController extends BaseController {
 
   async add() {
     const { service, ctx } = this;
-    const params = { ...ctx.request.body, createdAt: dateFormat(new Date()) };
-    await service.supplier.insert(params);
+    const rowData = { ...ctx.request.body, createdAt: dateFormat(new Date()) };
+    await service.supplier.insert(rowData);
     this.success();
   }
 
   async delete() {
     const { service, ctx } = this;
-    await service.supplier.delete(ctx.params);
+    const rowData = { ...ctx.request.body, isDelete: 1 };
+    await service.supplier.update(rowData);
     this.success()
   }
 
   async update() {
     const { service, ctx } = this;
-    await service.supplier.update(ctx.params);
+    await service.supplier.update(ctx.request.body);
+    this.success()
   }
 }

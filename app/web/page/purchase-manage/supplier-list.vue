@@ -137,7 +137,7 @@ export default {
                 confirm
                 placement="left"
                 title="您确认删除该供货商吗？"
-                onOnOk={() => this.handleDelete(row)}>
+                on-on-ok={() => this.handleDelete(row)}>
                 <i-button size="small" type="error" class="margin-left-10">删除</i-button>
               </Poptip>
             </div>
@@ -189,7 +189,7 @@ export default {
       supplierDel(row).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
-          this.fetchData()
+          // this.fetchData()
         }
       })
     },

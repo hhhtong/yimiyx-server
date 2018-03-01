@@ -39,34 +39,17 @@ export default class SupplierService extends Service {
     }
   }
 
-  async delete(rowData) {
-    const log = this.app.logger;
-    const db = await this.ctx.db;
-
-    try {
-      await db.manager.update(rowData);
-      log.info('删除一条供货商记录：', rowData);
-      await db.close();
-    } catch (e) {
-      log.error(e.message);
-      await db.close();
-    }
-  }
-
   async update(rowData) {
+    // delete rowData._index
+    // delete rowData._rowKey
+
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const supplier: any = new Supplier();
-
-    for (const key in rowData) {
-      if (rowData.hasOwnProperty(key)) {
-        supplier[key] = rowData[key];
-      }
-    }
-
+    const repo = db.getRepository(Supplier)
+    log.debug('@@@@@@@@@@@', rowData)
     try {
-      await db.manager.save(supplier);
-      log.info('修改一条供货商记录：', supplier);
+      await repo.update(rowData);
+      log.info('更新一条供货商记录：', rowData);
       await db.close();
     } catch (e) {
       log.error(e.message);
