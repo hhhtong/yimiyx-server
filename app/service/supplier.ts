@@ -42,17 +42,10 @@ export default class SupplierService extends Service {
   async delete(rowData) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const supplier: any = new Supplier();
-
-    for (const key in rowData) {
-      if (rowData.hasOwnProperty(key)) {
-        supplier[key] = rowData[key];
-      }
-    }
 
     try {
-      await db.manager.save(supplier);
-      log.info('删除一条供货商记录：', supplier);
+      await db.manager.update(rowData);
+      log.info('删除一条供货商记录：', rowData);
       await db.close();
     } catch (e) {
       log.error(e.message);

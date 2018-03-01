@@ -19,6 +19,7 @@ export default class SupplierController extends BaseController {
   async delete() {
     const { service, ctx } = this;
     await service.supplier.delete(ctx.params);
+    this.success()
   }
 
   async update() {

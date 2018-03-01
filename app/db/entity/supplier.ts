@@ -15,6 +15,12 @@ export class Supplier {
   level: number;
 
   /**
+   * 供货商名称
+   */
+  @Column('varchar', { name: _('supplierName'), length: 50, default: '' })
+  supplierName: string;
+
+  /**
    * 负责人姓名
    */
   @Column('varchar', { name: _('linkmanName'), length: 10, default: '' })
@@ -33,7 +39,7 @@ export class Supplier {
   areaCode: string;
 
   /**
-   * 加盟商所在地区名称 省,市,区,街道
+   * 供货商所在地区名称 省,市,区,街道
    */
   @Column('varchar', { name: _('areaName'), length: 100, default: '' })
   areaName: string;
@@ -91,6 +97,12 @@ export class Supplier {
    */
   @Column('datetime', { name: _('createdAt'), nullable: true })
   createdAt: Date;
+
+  /**
+   * 软删除的标志位 1:删除
+   */
+  @Column('int', { name: _('isDelete'), default: 0 })
+  isDelete: number;
 
   // @ManyToMany(type => Category)
   // @JoinTable()
