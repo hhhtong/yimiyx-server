@@ -105,6 +105,10 @@ export default {
           key: 'category'
         },
         {
+          title: '所在城市',
+          key: 'areaName'
+        },
+        {
           title: '详细地址',
           key: 'address'
         },

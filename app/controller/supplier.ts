@@ -1,31 +1,33 @@
 import BaseController from '../core/base-controller';
-import dateFormat from '../../libs/tools/dateFormat';
+import * as moment from 'moment';
 
 export default class SupplierController extends BaseController {
 
   async index() {
     const { service, ctx } = this;
     const list = await service.supplier.query(ctx.query);
+    // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
     this.success({ list, total: list.length });
   }
 
   async add() {
     const { service, ctx } = this;
-    const rowData = { ...ctx.request.body, createdAt: dateFormat(new Date()) };
+    const rowData = { ...ctx.request.body, createdAt: new Date() };
     await service.supplier.insert(rowData);
     this.success();
   }
 
   async delete() {
     const { service, ctx } = this;
-    const rowData = { ...ctx.request.body, isDelete: 1 };
-    await service.supplier.update(rowData);
+    const rowData: any = ctx.request.body
+    await service.supplier.update(rowData.id, { isDelete: 1 });
     this.success()
   }
 
   async update() {
     const { service, ctx } = this;
-    await service.supplier.update(ctx.request.body);
+    const rowData: any = ctx.request.body
+    await service.supplier.update(rowData.id, rowData);
     this.success()
   }
 }

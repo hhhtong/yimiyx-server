@@ -3,12 +3,19 @@ import { Supplier } from "../db/entity/supplier";
 
 export default class SupplierService extends Service {
 
-  async query(query) {
+  async query({ page, rows }) {
     const log = this.app.logger;
     const db = await this.ctx.db;
+    const repo = db.getRepository(Supplier)
 
     try {
-      const supplier = await db.manager.find(Supplier);
+      const supplier = await repo
+        .createQueryBuilder('supplier')
+        .where("supplier.is_delete != 1")
+        .orderBy("supplier.created_at", "DESC")
+        .skip((page - 1) * rows)
+        .take(rows)
+        .getMany();
       log.debug('供货商列表:', supplier)
       await db.close();
       return supplier;
@@ -39,16 +46,13 @@ export default class SupplierService extends Service {
     }
   }
 
-  async update(rowData) {
-    // delete rowData._index
-    // delete rowData._rowKey
-
+  async update(id, rowData) {
     const log = this.app.logger;
     const db = await this.ctx.db;
     const repo = db.getRepository(Supplier)
-    log.debug('@@@@@@@@@@@', rowData)
+
     try {
-      await repo.update(rowData);
+      await repo.updateById(id, rowData);
       log.info('更新一条供货商记录：', rowData);
       await db.close();
     } catch (e) {
