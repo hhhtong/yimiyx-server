@@ -57,8 +57,8 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="primary" @click="handleSubmit('formValidate')">确 定</Button>
-        <Button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重 置</Button>
+        <Button type="primary" @click="handleSubmit">确 定</Button>
+        <Button type="ghost" @click="handleReset" style="margin-left: 8px">重 置</Button>
       </div>
     </Modal>
   </div>
@@ -66,7 +66,7 @@
 
 <script>
 import { isMobilePhone } from 'validator'
-console.info(require('area-data'))
+
 const payTypeRadios = [
   { text: '银行转账', label: 'bank' },
   { text: '支付宝', label: 'ali' },
@@ -161,22 +161,32 @@ export default {
 
   methods: {
     handleVisibleChange(val) {
-      !val && this.$emit('update:show', false)
+      if (!val) {
+        this.$emit('update:show', false)
+        this.handleReset()
+      }
     },
-    handleSubmit(name) {
-      this.$refs[name].validate((valid) => {
+    handleSubmit() {
+      this.$refs['formValidate'].validate((valid) => {
         if (valid) {
-          if (this.formValidate.area.length === 0) {
+          const formData = this.formValidate
+          const area = formData.area
+
+          if (area.length === 0) {
             return this.$Message.error('请选择供货商所在地区!')
           }
-          this.$emit('handleSave', { ...this.formValidate })
+
+          const areaCode = area.map(item => item.code).toString()
+          const areaName = area.map(item => item.name).toString()
+
+          this.$emit('handleSave', { ...formData, areaCode, areaName })
         } else {
           this.$Message.error('存在不符合格式的内容, 请认真填写!')
         }
       })
     },
-    handleReset(name) {
-      this.$refs[name].resetFields()
+    handleReset() {
+      this.$refs['formValidate'].resetFields()
     }
   }
 }

@@ -136,7 +136,7 @@ export default {
           align: 'center',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button size="small" type="primary">编辑</i-button>
+              <i-button size="small" type="primary" on-click={ () => this.handleEdit(row) }>编辑</i-button>
               <Poptip
                 confirm
                 placement="left"
@@ -185,7 +185,7 @@ export default {
 
     },
     // 编辑供货商
-    handleEdit() {
+    handleEdit(row) {
 
     },
     // 删除供货商
@@ -193,7 +193,7 @@ export default {
       supplierDel(row).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
-          // this.fetchData()
+          this.fetchData()
         }
       })
     },
