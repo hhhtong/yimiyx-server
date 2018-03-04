@@ -1,24 +1,22 @@
 import { Service } from 'egg';
-import { Supplier } from '../db/entity/supplier';
+import { GoodsCategory } from '../db/entity/goods-category';
 
-export default class SupplierService extends Service {
+export default class GoodsCategoryService extends Service {
 
   async query({ page, rows }) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const repo = db.getRepository(Supplier)
+    const repo = db.getRepository(GoodsCategory)
 
     try {
-      const supplier = await repo
-        .createQueryBuilder('supplier')
-        .where('supplier.is_delete != 1')
-        .orderBy('supplier.created_at', 'DESC')
+      const category = await repo
+        .createQueryBuilder('category')
         .skip((page - 1) * rows)
         .take(rows)
         .getMany();
-      log.debug('供货商列表:', supplier)
+      log.debug('分类列表:', category)
       await db.close();
-      return supplier;
+      return category;
     } catch (e) {
       log.error(e.message);
       await db.close();
@@ -28,17 +26,17 @@ export default class SupplierService extends Service {
   async insert(rowData) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const supplier: any = new Supplier();
+    const category: any = new GoodsCategory();
 
     for (const key in rowData) {
       if (rowData.hasOwnProperty(key)) {
-        supplier[key] = rowData[key];
+        category[key] = rowData[key];
       }
     }
 
     try {
-      await db.manager.save(supplier);
-      log.info('新增一条供货商记录：', supplier);
+      await db.manager.save(category);
+      log.info('新增一条分类：', category);
       await db.close();
     } catch (e) {
       log.error(e.message);
@@ -49,11 +47,11 @@ export default class SupplierService extends Service {
   async update(id, rowData) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const repo = db.getRepository(Supplier)
+    const repo = db.getRepository(GoodsCategory)
 
     try {
       await repo.updateById(id, rowData);
-      log.info('更新一条供货商记录：', rowData);
+      log.info('更新一条分类：', rowData);
       await db.close();
     } catch (e) {
       log.error(e.message);

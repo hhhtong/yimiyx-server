@@ -1,33 +1,31 @@
 import BaseController from '../core/base-controller';
-// import * as moment from 'moment';
 
-export default class SupplierController extends BaseController {
+export default class GoodsCategoryController extends BaseController {
 
   async index() {
     const { service, ctx } = this;
-    const list = await service.supplier.query(ctx.query);
-    // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
+    const list = await service.goodsCategory.query(ctx.query);
     this.success({ list, total: list.length });
   }
 
   async add() {
     const { service, ctx } = this;
     const rowData = { ...ctx.request.body, createdAt: new Date() };
-    await service.supplier.insert(rowData);
+    await service.goodsCategory.insert(rowData);
     this.success();
   }
 
   async delete() {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body
-    await service.supplier.update(rowData.id, { isDelete: 1 });
+    await service.goodsCategory.update(rowData.id, { isDelete: 1 });
     this.success()
   }
 
   async update() {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body
-    await service.supplier.update(rowData.id, rowData);
+    await service.goodsCategory.update(rowData.id, rowData);
     this.success()
   }
 }

@@ -20,4 +20,12 @@ export default (app: Application) => {
   router.post('/supplier/add', controller.supplier.add);
   router.post('/supplier/delete', controller.supplier.delete);
   router.post('/supplier/update', controller.supplier.update);
+
+  /**
+   * CategoryController
+   */
+  router.get('/goodsCategory', controller.goodsCategory.index);
+  router.post('/goodsCategory/add', controller.goodsCategory.add);
+  router.post('/goodsCategory/delete', controller.goodsCategory.delete);
+  router.post('/goodsCategory/update', controller.goodsCategory.update);
 };

@@ -14,6 +14,7 @@ artifacts.json
 _site
 logs
 app/controller/**/*.js
+app/core/**/*.js
 app/db/**/*.js
 app/middleware/**/*.js
 app/service/**/*.js

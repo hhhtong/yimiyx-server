@@ -90,48 +90,52 @@ export const appRouter = [
         name: 'purchase-manage__supplier-list',
         title: '供货商管理',
         component: $import('purchase-manage/supplier-list')
-      },
-      {
+      }, {
         path: 'enquiry-list',
         icon: 'ios-list-outline',
         name: 'purchase-manage__enquiry-list',
         title: '询价明细',
         component: $import('purchase-manage/enquiry-list')
-      },
-      {
+      }, {
         path: 'caigou-list',
         icon: 'ios-list-outline',
-        name: 'purchase-manage__caigou-list',
+        name: 'caigou-list',
         title: '采购明细',
         component: $import('purchase-manage/caigou-list')
       }
     ]
-  },
-  // {
-  //   path: '/page',
-  //   icon: 'ios-paper',
-  //   title: 'Page',
-  //   name: 'page',
-  //   component: Main,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       title: 'Page',
-  //       name: 'page_index',
-  //       component: $import('page/page')
-  //     }
-  //   ]
-  // },
-  {
-    path: '/access',
-    icon: 'key',
-    name: 'access',
-    title: '权限管理',
+  }, {
+    path: '/goods-manage',
+    icon: 'ios-folder',
+    name: 'goods-manage',
+    title: '商品管理',
     component: Main,
     children: [
-      { path: 'index', title: '权限管理', name: 'access_index', component: $import('access/access') }
+      {
+        path: 'goods-list',
+        icon: 'ios-paper-outline',
+        name: 'goods-list',
+        title: '商品列表',
+        component: $import('goods-manage/goods-list')
+      }, {
+        path: 'goods-category',
+        icon: 'ios-paper-outline',
+        name: 'goods-category',
+        title: '商品分类',
+        component: $import('goods-manage/goods-category')
+      }
     ]
   },
+  // {
+  //   path: '/access',
+  //   icon: 'key',
+  //   name: 'access',
+  //   title: '权限管理',
+  //   component: Main,
+  //   children: [
+  //     { path: 'index', title: '权限管理', name: 'access_index', component: $import('access/access') }
+  //   ]
+  // },
   // {
   //   path: '/access-test',
   //   icon: 'lock-combination',
@@ -143,16 +147,16 @@ export const appRouter = [
   //     { path: 'index', title: '权限测试页', name: 'accesstest_index', access: 0, component: $import('access/access-test') }
   //   ]
   // },
-  {
-    path: '/error-page',
-    icon: 'android-sad',
-    title: '错误页面',
-    name: 'errorpage',
-    component: Main,
-    children: [
-      { path: 'index', title: '错误页面', name: 'errorpage_index', component: $import('error-page/error-page') }
-    ]
-  }
+  // {
+  //   path: '/error-page',
+  //   icon: 'android-sad',
+  //   title: '错误页面',
+  //   name: 'errorpage',
+  //   component: Main,
+  //   children: [
+  //     { path: 'index', title: '错误页面', name: 'errorpage_index', component: $import('error-page/error-page') }
+  //   ]
+  // }
 ]
 
 // 所有上面定义的路由都要写在下面的routers里

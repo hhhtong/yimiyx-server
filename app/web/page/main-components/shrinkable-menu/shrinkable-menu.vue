@@ -1,5 +1,5 @@
 <style lang="stylus">
-  @import './styles/menu.styl';
+  @import './styles/menu.styl'
 </style>
 
 <template>

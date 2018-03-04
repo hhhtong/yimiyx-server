@@ -1,12 +1,6 @@
-<style lang="stylus">
-.supplier-con {
-  height: 100%;
-}
-</style>
-
 <template>
-  <!-- <h1>供货商</h1> -->
-  <Layout class="supplier-con">
+  <!-- 供货商列表 -->
+  <Layout class="table-con">
     <Header style="background: white">
       <label>城市：</label>
       <Select v-model="listQuery.cityCode" style="width:100px">
@@ -35,10 +29,8 @@
         reverse-arrow
         style="background: white">Sider</Sider> -->
     </Layout>
-    <Footer>
-      <div style="float: right;">
-        <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
-      </div>
+    <Footer class="text-right">
+      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
     </Footer>
   </Layout>
 </template>
@@ -49,7 +41,7 @@ import { supplierGet, supplierAdd, supplierDel, supplierUpdate } from '@/api/sup
 import { Badge, Poptip } from 'iview'
 
 export default {
-  name: 'purchase-manage__supplier-list',
+  name: 'supplier-list',
 
   components: { ModalAddSupplier },
 
@@ -73,13 +65,13 @@ export default {
           label: '蔬'
         }
       ],
+      tableData: [],
       tableColumns: [
         {
           title: '编号',
           key: 'id',
           width: 60
-        },
-        {
+        }, {
           title: '供货商名称',
           render: (h, { row, column, index }) => (
             <div>
@@ -87,32 +79,26 @@ export default {
               <span>{row.supplierName}</span>
             </div>
           )
-        },
-        {
+        }, {
           title: '供货商类型',
           render: (h, { row, column, index }) => (
             <div>{row.supplierType === 1 ? '公司' : '个人'}</div>
           )
-        },
-        {
+        }, {
           title: '负责人/电话',
           render: (h, { row, column, index }) => (
             <div>{`${row.linkmanName}/${row.tel}`}</div>
           )
-        },
-        {
+        }, {
           title: '经营产品', // 目/类
           key: 'category'
-        },
-        {
+        }, {
           title: '所在城市',
           key: 'areaName'
-        },
-        {
+        }, {
           title: '详细地址',
           key: 'address'
-        },
-        {
+        }, {
           title: '收款方式',
           render: (h, { row, column, index }) => {
             let text = ''
@@ -128,27 +114,25 @@ export default {
 
             return (<div>{text}</div>)
           }
-        },
-        {
+        }, {
           title: '操作',
           key: 'handle',
           width: 150,
           align: 'center',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button size="small" type="primary" on-click={ () => this.handleEdit(row) }>编辑</i-button>
+              <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="left"
                 title="您确认删除该供货商吗？"
                 on-on-ok={() => this.handleDelete(row)}>
-                <i-button size="small" type="error" class="margin-left-10">删除</i-button>
+                <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
               </Poptip>
             </div>
           )
         }
-      ],
-      tableData: []
+      ]
     }
   },
 
