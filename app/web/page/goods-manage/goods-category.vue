@@ -3,14 +3,19 @@
   <Layout class="table-con">
     <Header style="background: white">
       <label class="margin-left-20">分类名称：</label>
-      <Input v-model="listQuery.category" clearable placeholder="请输入分类名称" style="width: 160px"></Input>
+      <Input v-model="listQuery.name" clearable placeholder="请输入分类名称" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加分类</Button>
-      <!-- <ModalEditCategory :show.sync="showModal" @handleSave="handleSave"></ModalEditCategory> -->
+      <ModalTreeCategory
+        :title="titleModal"
+        :show.sync="showModal"
+        :treeData.sync="treeData"
+        :idMax.sync="idMax"
+        @handleSave="handleSave">
+      </ModalTreeCategory>
     </Header>
     <Layout>
       <Content>
-        <ZTree/>
         <Table :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
@@ -21,14 +26,14 @@
 </template>
 
 <script>
-// import ModalEditCategory from './components/ModalEditCategory'
-import ZTree from './components/tree'
+import { cloneDeep } from 'lodash'
+import ModalTreeCategory from './components/ModalTreeCategory'
 import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api/goods-category'
 import { Badge, Poptip } from 'iview'
 
 export default {
   name: 'goods-category',
-  components: { ZTree },
+  components: { ModalTreeCategory },
   data() {
     return {
       total: 0,
@@ -36,9 +41,12 @@ export default {
       listQuery: {
         page: 1,
         rows: 20,
-        category: '' // 供应商名称 | 编号
+        name: ''
       },
+      titleModal: '',
       showModal: false,
+      treeData: [],
+      idMax: null,
       tableData: [],
       tableColumns: [
         {
@@ -48,17 +56,29 @@ export default {
         }, {
           title: '分类名称',
           key: 'name',
-          align: 'center'
+          width: 300,
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <div>
+              <i-button type="text" on-click={
+                  () => {
+                    this.treeData = [cloneDeep(row)]
+                    this.showModal = true
+                    this.titleModal = row.name
+                  }
+                }>{row.name}
+              </i-button>
+            </div>
+          )
         }, {
           title: '操作',
           key: 'handle',
-          align: 'center',
           render: (h, { row, column, index }) => (
             <div>
               <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
-                placement="left"
+                placement="top"
                 title="删除此分类后，该分类下的子分类也将消失，您确认此操作？"
                 on-on-ok={() => this.handleDelete(row)}>
                 <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
@@ -79,9 +99,10 @@ export default {
       this.listLoading = true
       categoryGet(this.listQuery).then(result => {
         if (result.code === 50000) {
-          const { list, total } = result.data
+          const { list, total, idMax } = result.data
           this.tableData = list
           this.total = total
+          this.idMax = idMax
           this.listLoading = false
         }
       })
@@ -113,7 +134,7 @@ export default {
     },
     // 添加 | 修改分类 -> 保存
     handleSave(formData) {
-      categoryAdd(formData).then(result => {
+      categoryUpdate(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
           this.showModal = false

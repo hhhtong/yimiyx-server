@@ -75,10 +75,7 @@ const payTypeRadios = [
 
 export default {
   props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
+    show: Boolean
   },
 
   data() {

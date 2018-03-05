@@ -11,6 +11,7 @@ export default class BaseController extends Controller {
       data,
       msg
     };
+    return data;
   }
 
   fail(data = {}, code = 50001, msg = '操作失败') {

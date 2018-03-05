@@ -6,19 +6,19 @@ export default class SupplierService extends Service {
   async query({ page, rows }) {
     const log = this.app.logger;
     const db = await this.ctx.db;
-    const repo = db.getRepository(Supplier)
+    const repo = db.getRepository(Supplier);
 
     try {
-      const supplier = await repo
+      const [list, total] = await repo
         .createQueryBuilder('supplier')
         .where('supplier.is_delete != 1')
         .orderBy('supplier.created_at', 'DESC')
         .skip((page - 1) * rows)
         .take(rows)
-        .getMany();
-      log.debug('供货商列表:', supplier)
+        .getManyAndCount();
+      log.debug('供货商列表:', list)
       await db.close();
-      return supplier;
+      return { list, total };
     } catch (e) {
       log.error(e.message);
       await db.close();

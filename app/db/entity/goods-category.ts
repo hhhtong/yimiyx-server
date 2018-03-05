@@ -24,4 +24,10 @@ export class GoodsCategory {
    */
   @Column('varchar', { length: 25 })
   name: string;
+
+  /**
+   * 软删除的标志位 1:删除
+   */
+  @Column('int', { name: _('isDelete'), default: 0 })
+  isDelete: number;
 }

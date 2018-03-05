@@ -5,9 +5,9 @@ export default class SupplierController extends BaseController {
 
   async index() {
     const { service, ctx } = this;
-    const list = await service.supplier.query(ctx.query);
+    const result: object = await service.supplier.query(ctx.query);
     // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
-    this.success({ list, total: list.length });
+    this.success(result);
   }
 
   async add() {
