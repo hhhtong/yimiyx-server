@@ -56,7 +56,23 @@ export default {
         <span style={{ display: 'inline-block', width: '100%' }}>
           <span>
             <Icon type="ios-folder-outline" class="margin-right-8"></Icon>
-            <span>{data.name}</span>
+            <span v-show={data.readonly}>{data.name}</span>
+            <span v-show={!data.readonly}>
+              <i-input
+                v-model={data.name}
+                clearable
+                size="small"
+                placeholder="请输入分类名称"
+                style={{ width: '200px' }}>
+              </i-input>
+              <i-button
+                type="success"
+                size="small"
+                icon="checkmark"
+                style={{ width: '52px' }}
+                on-click={() => this.save(root, node, data)}>
+              </i-button>
+            </span>
           </span>
           <span class="modal-tree-item-con">
             <i-button
@@ -64,6 +80,7 @@ export default {
               size="small"
               icon="ios-plus-empty"
               type="primary"
+              disabled={!data.readonly}
               style={{ width: '52px' }}
               on-click={() => this.append(data)}>
             </i-button>
@@ -86,14 +103,22 @@ export default {
                 placeholder="请输入分类名称"
                 style={{ width: '200px' }}>
               </i-input>
+              <i-button
+                type="success"
+                size="small"
+                icon="checkmark"
+                style={{ width: '52px' }}
+                on-click={() => this.save(root, node, data)}>
+              </i-button>
             </span>
           </span>
-          <span v-show={data.readonly} class="modal-tree-item-con">
+          <span v-show={data.type < 3} class="modal-tree-item-con">
             <i-button
               type="ghost"
               size="small"
               icon="ios-plus-empty"
               class="margin-right-8"
+              disabled={!data.readonly}
               on-click={() => this.append(data)}>
             </i-button>
             <i-button
@@ -101,15 +126,6 @@ export default {
               size="small"
               icon="ios-minus-empty"
               on-click={() => this.remove(root, node, data)}>
-            </i-button>
-          </span>
-          <span v-show={!data.readonly} class="modal-tree-item-con">
-            <i-button
-              type="ghost"
-              size="small"
-              icon="checkmark-round"
-              style={{ width: '52px' }}
-              on-click={() => this.save(root, node, data)}>
             </i-button>
           </span>
         </div>
@@ -142,6 +158,9 @@ export default {
     },
 
     save(root, node, data) {
+      if (data.name === '') {
+        return this.$Message.info('请填写分类名称')
+      }
       data.readonly = true
     }
   }

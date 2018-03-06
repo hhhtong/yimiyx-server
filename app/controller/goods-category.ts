@@ -69,8 +69,9 @@ export default class GoodsCategoryController extends BaseController {
   unmixin(list: any): Array<object> {
     const categoryList = [];
     const next = (item: any) => {
-      categoryList.push(item);
-
+      if (item.name !== '') {
+        categoryList.push(item);
+      }
       if (item.children instanceof Array) {
         item.children.forEach(children => next(children));
       }
