@@ -12,12 +12,15 @@ export default class GoodsCategoryService extends Service {
       const [list, total] = await repo
         .createQueryBuilder('category')
         .where('category.is_delete != 1')
-        .andWhere(`category.name LIKE '%${name}%'`)
+        .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
+        .orderBy('category.no', 'ASC')
         .skip((page - 1) * rows)
         .take(rows)
         .getManyAndCount();
       const idMax = await repo
         .createQueryBuilder('category')
+        .where('category.is_delete != 1')
+        .andWhere(`(category.name LIKE '%${name}%' AND category.type = 1)`)
         .select("MAX(id) AS idMax")
         .getRawMany();
 

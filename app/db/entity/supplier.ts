@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-// import { Category } from "./Category"; // 外键
 import { snakeCase as _ } from 'lodash';
 
 @Entity(_('Supplier'))
@@ -11,7 +10,7 @@ export class Supplier {
   /**
    * 供货商级别 1: 优 2: 良好 3: 凑合
    */
-  @Column('int', { length: 1, default: 2 })
+  @Column('tinyint', { length: 1, default: 2 })
   level: number;
 
   /**
@@ -53,7 +52,7 @@ export class Supplier {
   /**
    * 供货商类型 1:公司 2:个人
    */
-  @Column('int', { name: _('supplierType'), length: 1, default: 0 })
+  @Column('tinyint', { name: _('supplierType'), length: 1, default: 0 })
   supplierType: number;
 
   /**
@@ -101,10 +100,6 @@ export class Supplier {
   /**
    * 软删除的标志位 1:删除
    */
-  @Column('int', { name: _('isDelete'), default: 0 })
+  @Column('tinyint', { name: _('isDelete'), default: 0 })
   isDelete: number;
-
-  // @ManyToMany(type => Category)
-  // @JoinTable()
-  // categories: Category[];
 }

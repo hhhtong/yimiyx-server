@@ -16,7 +16,7 @@ export class GoodsCategory {
   /**
    * 类型 1：一级类目 | 2：二级类目 | 3：三级类目
    */
-  @Column('int', { length: 1, default: 0 })
+  @Column('tinyint', { length: 1, default: 0 })
   type: number;
 
   /**
@@ -26,8 +26,14 @@ export class GoodsCategory {
   name: string;
 
   /**
+   * 类目编号
+   */
+  @Column('char', { length: 6 })
+  no: string;
+
+  /**
    * 软删除的标志位 1:删除
    */
-  @Column('int', { name: _('isDelete'), default: 0 })
+  @Column('tinyint', { name: _('isDelete'), length: 1, default: 0 })
   isDelete: number;
 }

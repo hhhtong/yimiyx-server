@@ -51,7 +51,7 @@ export default {
       tableColumns: [
         {
           title: '编号',
-          key: 'id',
+          key: 'no',
           width: 60
         }, {
           title: '分类名称',
@@ -115,6 +115,7 @@ export default {
     // 添加分类
     handleAdd() {
       this.treeData = [{
+        no: '',
         name: '',
         expand: true,
         readonly: false,

@@ -56,14 +56,22 @@ export default {
         <span style={{ display: 'inline-block', width: '100%' }}>
           <span>
             <Icon type="ios-folder-outline" class="margin-right-8"></Icon>
-            <span v-show={data.readonly}>{data.name}</span>
+            <span v-show={data.readonly} on-click={() => data.readonly = false}>{data.no}-{data.name}</span>
             <span v-show={!data.readonly}>
+              <i-input
+                v-model={data.no}
+                clearable
+                size="small"
+                placeholder="编号"
+                style={{ width: '50px' }}>
+              </i-input>
+              &nbsp;-&nbsp;
               <i-input
                 v-model={data.name}
                 clearable
                 size="small"
                 placeholder="请输入分类名称"
-                style={{ width: '200px' }}>
+                style={{ width: '160px' }}>
               </i-input>
               <i-button
                 type="success"
@@ -94,14 +102,22 @@ export default {
         <div style={{ display: 'inline-block', width: '100%' }}>
           <span>
             <Icon type="ios-folder-outline" class="margin-right-8"></Icon>
-            <span v-show={data.readonly}>{data.name}</span>
+            <span v-show={data.readonly} on-click={() => data.readonly = false}>{data.no}-{data.name}</span>
             <span v-show={!data.readonly}>
+              <i-input
+                v-model={data.no}
+                clearable
+                size="small"
+                placeholder="编号"
+                style={{ width: '50px' }}>
+              </i-input>
+              &nbsp;-&nbsp;
               <i-input
                 v-model={data.name}
                 clearable
                 size="small"
                 placeholder="请输入分类名称"
-                style={{ width: '200px' }}>
+                style={{ width: '160px' }}>
               </i-input>
               <i-button
                 type="success"
@@ -138,6 +154,7 @@ export default {
       const pid = data.id || 0
       const type = (data.type || 0) + 1
       children.push({
+        no: '',
         name: '',
         expand: true,
         readonly: false,
