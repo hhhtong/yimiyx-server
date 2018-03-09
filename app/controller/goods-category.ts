@@ -9,7 +9,7 @@ export default class GoodsCategoryController extends BaseController {
     const twoList = list.filter(item => item.type === 2);
     const threeList = list.filter(item => item.type === 3);
 
-    list = this.mixin(oneList, this.mixin(twoList, threeList));
+    list = this.mixin(oneList.reverse(), this.mixin(twoList, threeList));
 
     return this.success({ list, total, idMax });
   }
@@ -44,6 +44,10 @@ export default class GoodsCategoryController extends BaseController {
    * 将平级结构转成树形结构
    */
   mixin(list1: Array<any>, list2: Array<any>): Array<object> {
+    if (list2.length <= 0) {
+      list2 = list1
+    }
+
     list2.forEach(item2 => {
       item2.expand = true
       item2.readonly = true

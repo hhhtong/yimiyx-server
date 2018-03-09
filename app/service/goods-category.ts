@@ -9,18 +9,21 @@ export default class GoodsCategoryService extends Service {
     const repo = db.getRepository(GoodsCategory);
 
     try {
-      const [list, total] = await repo
-        .createQueryBuilder('category')
+      const query = repo.createQueryBuilder('category')
+      const list = await query
         .where('category.is_delete != 1')
         .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
-        .orderBy('category.no', 'ASC')
-        .skip((page - 1) * rows)
-        .take(rows)
-        .getManyAndCount();
-      const idMax = await repo
-        .createQueryBuilder('category')
+        .orderBy('category.no', 'DESC')
+        // .skip((page - 1) * rows)
+        // .take(rows)
+        .getMany();
+      const total = await query
         .where('category.is_delete != 1')
         .andWhere(`(category.name LIKE '%${name}%' AND category.type = 1)`)
+        .getCount();
+      const idMax = await query
+        .where('category.is_delete != 1')
+        .andWhere(`category.name LIKE '%${name}%'`)
         .select("MAX(id) AS idMax")
         .getRawMany();
 
