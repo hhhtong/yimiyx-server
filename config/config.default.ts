@@ -9,6 +9,14 @@ export default (app: EggAppConfig) => {
   //   '/favicon.ico': readFileSync(join(app.baseDir, 'app/web/asset/images/favicon.ico'))
   // };
 
+  exports.cluster = {
+    listen: {
+      port: 7001,
+      hostname: '127.0.0.1',
+      // path: '/var/run/egg.sock',
+    }
+  };
+
   exports.security = {
     csrf: {
       ignoreJSON: true, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
