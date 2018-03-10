@@ -9,6 +9,10 @@ public
 private
 run
 *.iml
+*.gz
+*.tar
+*.rar
+*.log
 artifacts.json
 *tmp
 _site
