@@ -2,13 +2,13 @@
   <!-- 供货商列表 -->
   <Layout class="table-con">
     <Header style="background: white">
-      <label>城市：</label>
+      <!-- <label>城市：</label>
       <Select v-model="listQuery.cityCode" style="width:100px">
         <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select>
+      </Select> -->
       <label class="margin-left-20">类别：</label>
       <Select v-model="listQuery.category" style="width:100px">
-        <Option v-for="item in categoryList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
@@ -37,7 +37,7 @@
 
 <script>
 import ModalAddSupplier from './components/ModalAddSupplier'
-import { supplierGet, supplierAdd, supplierDel, supplierUpdate } from '@/api/supplier'
+import { supplierGet, supplierAdd, supplierDel, supplierUpdate, getCategoryOptions } from '@/api'
 import { Badge, Poptip } from 'iview'
 
 export default {
@@ -53,18 +53,13 @@ export default {
         page: 1,
         rows: 20,
         cityCode: '', // 城市ID
-        category: '', // 供应商类别
+        category: 0, // 供应商类别 默认(全部)
         supplier: '' // 供应商名称 | 编号
       },
       showModal: false,
       // showSlder: true,
       cityList: [],
-      categoryList: [
-        {
-          value: '果',
-          label: '蔬'
-        }
-      ],
+      categoryList: [],
       tableData: [],
       tableColumns: [
         {
@@ -138,6 +133,7 @@ export default {
 
   created() {
     this.fetchData()
+    this._getCategoryOptions()
   },
 
   methods: {
@@ -188,6 +184,14 @@ export default {
           this.$Message.success(result.msg)
           this.showModal = false
           this.fetchData()
+        }
+      })
+    },
+
+    _getCategoryOptions() {
+      getCategoryOptions().then(result => {
+        if (result.code === 50000) {
+          this.categoryList = result.data
         }
       })
     }

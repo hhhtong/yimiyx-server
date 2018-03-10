@@ -1,15 +1,39 @@
-import { Service } from 'egg';
+import BaseService from '../core/base-service';
 import { GoodsCategory } from '../db/entity/goods-category';
 
-export default class GoodsCategoryService extends Service {
+export default class GoodsCategoryService extends BaseService {
 
-  async query({ page, rows, name }) {
-    const log = this.app.logger;
-    const db = await this.ctx.db;
+  private async _getInstance(name = 'category') {
+    const db = await this.db;
     const repo = db.getRepository(GoodsCategory);
+    const query = repo.createQueryBuilder(name);
+
+    return { db, repo, query };
+  }
+
+  async queryOneList(type = 1) {
+    const { db, query } = await this._getInstance();
 
     try {
-      const query = repo.createQueryBuilder('category')
+      const list = await query
+        .where('category.is_delete != 1')
+        .andWhere(`category.type = ${type}`)
+        .getMany();
+
+      this.log.debug('一级分类options:', list)
+
+      await db.close();
+      return list;
+    } catch (e) {
+      this.log.error(e.message);
+      await db.close();
+    }
+  }
+
+  async query({ page, rows, name }) {
+    const { db, query } = await this._getInstance();
+
+    try {
       const list = await query
         .where('category.is_delete != 1')
         .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
@@ -27,19 +51,19 @@ export default class GoodsCategoryService extends Service {
         .select("MAX(id) AS idMax")
         .getRawMany();
 
-      log.debug('分类列表:', list)
+      this.log.debug('分类列表:', list)
 
       await db.close();
       return { list, total, idMax: idMax[0].idMax };
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
 
   async insert(rowData) {
     const log = this.app.logger;
-    const db = await this.ctx.db;
+    const db = await this.db;
     const category: any = new GoodsCategory();
 
     for (const key in rowData) {
@@ -50,42 +74,38 @@ export default class GoodsCategoryService extends Service {
 
     try {
       await db.manager.save(category);
-      log.info('新增一个分类：', category);
+      this.log.info('新增一个分类：', category);
       await db.close();
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
 
   async update(rowData: any[any]) {
-    const log = this.app.logger;
-    const db = await this.ctx.db;
-    const repo = db.getRepository(GoodsCategory);
+    const { db, repo } = await this._getInstance();
 
     try {
       await repo.save(rowData);
-      log.info('更新一个分类：', rowData);
+      this.log.info('更新一个分类：', rowData);
       await db.close();
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
 
   async delete(ids: any[number], rowData: object) {
-    const log = this.app.logger;
-    const db = await this.ctx.db;
-    const repo = db.getRepository(GoodsCategory);
+    const { db, repo } = await this._getInstance();
 
     try {
       for (const id of ids) {
         await repo.updateById(id, rowData);
       }
-      log.info('删除一些分类：', ids);
-      // await db.close();
+      this.log.info('删除一些分类：', ids);
+      await db.close();
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }

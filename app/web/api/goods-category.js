@@ -1,7 +1,17 @@
 import request from '@/libs/request'
 
 /**
- * 获取供货商列表
+ * 获取商品分类列表(一级)
+ */
+export function getCategoryOptions() {
+  return request({
+    url: '/goodsCategory/getCategoryOptions',
+    method: 'get'
+  })
+}
+
+/**
+ * 获取商品分类列表
  */
 export function categoryGet(params) {
   return request({
@@ -12,7 +22,7 @@ export function categoryGet(params) {
 }
 
 /**
- * 添加供货商
+ * 添加商品分类
  */
 export function categoryAdd(data) {
   return request({
@@ -23,7 +33,7 @@ export function categoryAdd(data) {
 }
 
 /**
- * 删除供货商
+ * 删除商品分类
  */
 export function categoryDel(data) {
   return request({
@@ -34,7 +44,7 @@ export function categoryDel(data) {
 }
 
 /**
- * 修改供货商
+ * 修改商品分类
  */
 export function categoryUpdate(data) {
   return request({

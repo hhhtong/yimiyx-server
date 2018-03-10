@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { snakeCase as _ } from 'lodash';
 
-@Entity(_('GoodsAttr'))
+@Entity(_('GoodsAttrValue'))
 export class GoodsAttr {
 
   @PrimaryGeneratedColumn()

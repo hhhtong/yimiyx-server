@@ -28,7 +28,7 @@
 <script>
 import { cloneDeep } from 'lodash'
 import ModalTreeCategory from './components/ModalTreeCategory'
-import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api/goods-category'
+import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api'
 import { Badge, Poptip } from 'iview'
 
 export default {

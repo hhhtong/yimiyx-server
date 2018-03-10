@@ -9,6 +9,7 @@
   <Modal
     :value="show"
     :title="title"
+    :mask-closable="false"
     @on-visible-change="handleVisibleChange"
     @on-ok="handleConfirm">
     <Tree :data="_treeData" :render="renderContent"></Tree>
@@ -128,13 +129,13 @@ export default {
               </i-button>
             </span>
           </span>
-          <span v-show={data.type < 3} class="modal-tree-item-con">
+          <span class="modal-tree-item-con">
             <i-button
               type="ghost"
               size="small"
               icon="ios-plus-empty"
               class="margin-right-8"
-              disabled={!data.readonly}
+              disabled={!data.readonly || data.type > 2}
               on-click={() => this.append(data)}>
             </i-button>
             <i-button

@@ -1,11 +1,10 @@
-import { Service } from 'egg';
+import BaseService from '../core/base-service';
 import { Supplier } from '../db/entity/supplier';
 
-export default class SupplierService extends Service {
+export default class SupplierService extends BaseService {
 
   async query({ page, rows }) {
-    const log = this.app.logger;
-    const db = await this.ctx.db;
+    const db = await this.db;
     const repo = db.getRepository(Supplier);
 
     try {
@@ -16,18 +15,18 @@ export default class SupplierService extends Service {
         .skip((page - 1) * rows)
         .take(rows)
         .getManyAndCount();
-      log.debug('供货商列表:', list)
+      this.log.debug('供货商列表:', list)
       await db.close();
       return { list, total };
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
 
   async insert(rowData) {
     const log = this.app.logger;
-    const db = await this.ctx.db;
+    const db = await this.db;
     const supplier: any = new Supplier();
 
     for (const key in rowData) {
@@ -38,25 +37,25 @@ export default class SupplierService extends Service {
 
     try {
       await db.manager.save(supplier);
-      log.info('新增一条供货商记录：', supplier);
+      this.log.info('新增一条供货商记录：', supplier);
       await db.close();
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
 
   async update(id, rowData) {
     const log = this.app.logger;
-    const db = await this.ctx.db;
+    const db = await this.db;
     const repo = db.getRepository(Supplier)
 
     try {
       await repo.updateById(id, rowData);
-      log.info('更新一条供货商记录：', rowData);
+      this.log.info('更新一条供货商记录：', rowData);
       await db.close();
     } catch (e) {
-      log.error(e.message);
+      this.log.error(e.message);
       await db.close();
     }
   }
