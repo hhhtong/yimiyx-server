@@ -16,7 +16,7 @@ export default class GoodsCategoryService extends BaseService {
 
     try {
       const list = await query
-        .where('category.is_delete != 1')
+        .where('category.isDelete != 1')
         .andWhere(`category.type = ${type}`)
         .getMany();
 
@@ -24,9 +24,9 @@ export default class GoodsCategoryService extends BaseService {
 
       await db.close();
       return list;
-    } catch (e) {
-      this.log.error(e.message);
+    } catch (error) {
       await db.close();
+      this.error(error);
     }
   }
 
@@ -35,18 +35,18 @@ export default class GoodsCategoryService extends BaseService {
 
     try {
       const list = await query
-        .where('category.is_delete != 1')
+        .where('category.isDelete != 1')
         .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
         .orderBy('category.no', 'DESC')
         // .skip((page - 1) * rows)
         // .take(rows)
         .getMany();
       const total = await query
-        .where('category.is_delete != 1')
+        .where('category.isDelete != 1')
         .andWhere(`(category.name LIKE '%${name}%' AND category.type = 1)`)
         .getCount();
       const idMax = await query
-        .where('category.is_delete != 1')
+        .where('category.isDelete != 1')
         .andWhere(`category.name LIKE '%${name}%'`)
         .select("MAX(id) AS idMax")
         .getRawMany();
@@ -55,9 +55,9 @@ export default class GoodsCategoryService extends BaseService {
 
       await db.close();
       return { list, total, idMax: idMax[0].idMax };
-    } catch (e) {
-      this.log.error(e.message);
+    } catch (error) {
       await db.close();
+      this.error(error);
     }
   }
 
@@ -76,9 +76,9 @@ export default class GoodsCategoryService extends BaseService {
       await db.manager.save(category);
       this.log.info('新增一个分类：', category);
       await db.close();
-    } catch (e) {
-      this.log.error(e.message);
+    } catch (error) {
       await db.close();
+      this.error(error);
     }
   }
 
@@ -89,9 +89,9 @@ export default class GoodsCategoryService extends BaseService {
       await repo.save(rowData);
       this.log.info('更新一个分类：', rowData);
       await db.close();
-    } catch (e) {
-      this.log.error(e.message);
+    } catch (error) {
       await db.close();
+      this.error(error);
     }
   }
 
@@ -104,9 +104,9 @@ export default class GoodsCategoryService extends BaseService {
       }
       this.log.info('删除一些分类：', ids);
       await db.close();
-    } catch (e) {
-      this.log.error(e.message);
+    } catch (error) {
       await db.close();
+      this.error(error);
     }
   }
 }

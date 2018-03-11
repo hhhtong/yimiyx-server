@@ -20,6 +20,9 @@
         <FormItem label="详细地址" prop="address">
           <Input v-model="formValidate.address" type="textarea" :autosize="{ minRows: 2,maxRows: 4 }" placeholder="在此输入供货商所在详细地址"></Input>
         </FormItem>
+        <FormItem label="供货商名称" prop="supplierName">
+          <Input v-model="formValidate.supplierName" placeholder="请输入供货商名称"></Input>
+        </FormItem>
         <FormItem label="供货商类型" required>
           <Select v-model="formValidate.supplierType" placeholder="选择供货商类型">
             <Option :value="1">公司</Option>
@@ -45,14 +48,15 @@
         <FormItem :label="_accountNoLabel" prop="accountNo">
           <Input v-model="formValidate.accountNo" placeholder="该账号为收款账号，请务必认真填写"></Input>
         </FormItem>
+        <FormItem label="税务号" v-if="_isCorp">
+          <Input v-model="formValidate.taxNo" placeholder="请输入税务登记号"></Input>
+        </FormItem>
         <FormItem label="开户行地址" prop="address" v-if="_isBank">
           <Input v-model="formValidate.bankAddress" type="textarea" :autosize="{ minRows: 2,maxRows: 4 }" placeholder="请输入开户行地址"></Input>
         </FormItem>
-        <FormItem label="经营产品" prop="category">
-          <Select v-model="formValidate.category" placeholder="请选择商品类">
-            <Option value="beijing">New York</Option>
-            <Option value="shanghai">London</Option>
-            <Option value="shenzhen">Sydney</Option>
+        <FormItem label="经营产品" prop="goodsCategoryID">
+          <Select v-model="formValidate.goodsCategoryID" placeholder="请选择商品分类" filterable>
+            <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
       </Form>
@@ -65,7 +69,7 @@
 </template>
 
 <script>
-import { isMobilePhone } from 'validator'
+import { checkMobile } from '~/libs/tools/validator'
 
 const payTypeRadios = [
   { text: '银行转账', label: 'bank' },
@@ -75,14 +79,15 @@ const payTypeRadios = [
 
 export default {
   props: {
-    show: Boolean
+    show: Boolean,
+    categoryList: Array
   },
 
   data() {
     const validateTel = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('手机号不能为空'))
-      } else if (!isMobilePhone(value, 'zh-CN')) {
+      } else if (!checkMobile(value)) {
         return callback(new Error('请输入正确的手机号'))
       } else {
         callback()
@@ -93,6 +98,14 @@ export default {
       { required: true, message: '该项不能为空', trigger: 'blur' }
     ]
 
+    const validateID = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('请至少选择一个经营产品'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       payTypeRadios,
       formValidate: {
@@ -100,13 +113,15 @@ export default {
         tel: '',
         area: [],
         address: '',
+        supplierName: '',
         supplierType: 1,
         payType: 'ali',
         bankName: '',
         bankUsername: '',
         accountNo: '',
+        taxNo: '',
         bankAddress: '',
-        category: []
+        goodsCategoryID: ''
       },
       ruleValidate: {
         linkmanName: notNull,
@@ -116,32 +131,33 @@ export default {
         tel: [
           { validator: validateTel, trigger: 'blur' }
         ],
-        area: [
-          { required: true, message: '请选择一个城市', trigger: 'blur' }
-        ],
         address: [
           { required: true, message: '地址不能为空', trigger: 'blur' },
           { type: 'string', max: 50, message: '地址长度不能超过50个字符', trigger: 'blur' }
         ],
+        supplierName: [
+          { required: true, message: '供货商名称不能为空', trigger: 'blur' },
+          { type: 'string', max: 50, message: '供货商名称为50个字符以内', trigger: 'blur' }
+        ],
         payType: [
           { required: true, message: '请选择一个收款方式', trigger: 'change' }
         ],
-        category: [
-          { required: true, message: '请至少选择一个经营产品', trigger: 'change' }
+        goodsCategoryID: [
+          { validator: validateID, trigger: 'change' }
         ]
       }
     }
   },
 
-  watch: {
-    'formValidate.supplierType'(val) {
-      if (val === 2) {
-        this.payTypeRadios = this.payTypeRadios.filter(item => item.label !== 'bank')
-      } else {
-        this.payTypeRadios = payTypeRadios
-      }
-    }
-  },
+  // watch: {
+  //   'formValidate.supplierType'(val) {
+  //     if (val === 2) {
+  //       this.payTypeRadios = this.payTypeRadios.filter(item => item.label !== 'bank')
+  //     } else {
+  //       this.payTypeRadios = payTypeRadios
+  //     }
+  //   }
+  // },
 
   computed: {
     _accountNoLabel() {
@@ -151,6 +167,11 @@ export default {
         case 'wechat': return '微信账号'
       }
     },
+    // 是否选中公司
+    _isCorp() {
+      return this.formValidate.supplierType === 1
+    },
+    // 是否选中银行卡
     _isBank() {
       return this.formValidate.payType === 'bank'
     }

@@ -8,7 +8,7 @@
   "database": "veggie_db",
   "synchronize": true,
   "logging": false,
-  "timezone": true,
+  "timezone": "local",
   "entities": [
     "app/db/entity/*.js"
   ],

@@ -86,15 +86,15 @@ export class Supplier {
   bankAddress: string;
 
   /**
-   * 商品类目
+   * 类目ID,对应goods-attr-value表中的ID
    */
-  @Column('varchar', { length: 150, default: '[]' })
-  category: string;
+  @Column('int', { name: _('goodsCategoryID') })
+  goodsCategoryID: number;
 
   /**
    * 创建时间
    */
-  @Column('datetime', { name: _('createdAt'), nullable: true })
+  @Column({ name: _('createdAt') })
   createdAt: Date;
 
   /**

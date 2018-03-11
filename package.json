@@ -43,7 +43,6 @@
     "server-side-render-resource": "^1.0.3",
     "tinymce": "^4.7.9",
     "typeorm": "^0.1.16",
-    "validator": "^9.4.1",
     "vue": "^2.5.13",
     "vue-hot-reload-api": "^2.3.0",
     "vue-router": "^3.0.1",

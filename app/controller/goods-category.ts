@@ -4,34 +4,50 @@ export default class GoodsCategoryController extends BaseController {
 
   async getCategoryOptions() {
     const { service } = this;
-    const list = await service.goodsCategory.queryOneList();
-    return this.success([{ id: 0, name: '全部' }, ...list]);
+    try {
+      const list = await service.goodsCategory.queryOneList();
+      return this.success([{ id: 0, name: '全部' }, ...list]);
+    } catch (e) {
+      this.fail(e)
+    }
   }
 
   async index() {
     const { service, ctx } = this;
-    let { list, total, idMax } = await service.goodsCategory.query(ctx.query);
-    const oneList = list.filter(item => item.type === 1);
-    const twoList = list.filter(item => item.type === 2);
-    const threeList = list.filter(item => item.type === 3);
+    try {
+      let { list, total, idMax } = await service.goodsCategory.query(ctx.query);
+      const oneList = list.filter(item => item.type === 1);
+      const twoList = list.filter(item => item.type === 2);
+      const threeList = list.filter(item => item.type === 3);
 
-    list = this.mixin(oneList.reverse(), this.mixin(twoList, threeList));
+      list = this.mixin(oneList.reverse(), this.mixin(twoList, threeList));
 
-    return this.success({ list, total, idMax });
+      this.success({ list, total, idMax });
+    } catch (error) {
+      this.fail(error);
+    }
   }
 
   async add() {
     const { service, ctx } = this;
     const rowData = { ...ctx.request.body, createdAt: new Date() };
-    await service.goodsCategory.insert(rowData);
-    this.success();
+    try {
+      await service.goodsCategory.insert(rowData);
+      this.success();
+    } catch (error) {
+      this.fail(error);
+    }
   }
 
   async delete() {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body
-    await service.goodsCategory.delete([rowData.id], { isDelete: 1 });
-    this.success();
+    try {
+      await service.goodsCategory.delete([rowData.id], { isDelete: 1 });
+      this.success();
+    } catch (error) {
+      this.fail(error);
+    }
   }
 
   async update() {
@@ -39,11 +55,15 @@ export default class GoodsCategoryController extends BaseController {
     const [treeData, deleteIds]: any = ctx.request.body
     const rowData: any = this.unmixin(treeData);
 
-    if (deleteIds.length > 0) {
-      await service.goodsCategory.delete(deleteIds, { isDelete: 1 });
+    try {
+      if (deleteIds.length > 0) {
+        await service.goodsCategory.delete(deleteIds, { isDelete: 1 });
+      }
+      await service.goodsCategory.update(rowData);
+      this.success();
+    } catch (error) {
+      this.fail(error);
     }
-    await service.goodsCategory.update(rowData);
-    this.success();
   }
 
   /**

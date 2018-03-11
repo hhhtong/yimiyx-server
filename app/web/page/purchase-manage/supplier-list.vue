@@ -2,12 +2,10 @@
   <!-- 供货商列表 -->
   <Layout class="table-con">
     <Header style="background: white">
-      <!-- <label>城市：</label>
-      <Select v-model="listQuery.cityCode" style="width:100px">
-        <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-      </Select> -->
+      <label>城市：</label>
+      <al-cascader v-model="listQuery.areaCode" data-type="code" level="1"  style="width: 138px;display:inline-block"/>
       <label class="margin-left-20">类别：</label>
-      <Select v-model="listQuery.category" style="width:100px">
+      <Select v-model="listQuery.goodsCategoryID" style="width:100px" filterable>
         <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
@@ -16,18 +14,12 @@
       <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出Excel</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
 
-      <ModalAddSupplier :show.sync="showModal" @handleSave="handleSave"></ModalAddSupplier>
+      <ModalAddSupplier :show.sync="showModal" @handleSave="handleSave" :category-list="categoryList"/>
     </Header>
     <Layout>
       <Content>
         <Table :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
-      <!-- <Sider
-        v-model="showSlder"
-        hide-trigger
-        collapsible
-        reverse-arrow
-        style="background: white">Sider</Sider> -->
     </Layout>
     <Footer class="text-right">
       <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
@@ -52,13 +44,11 @@ export default {
       listQuery: {
         page: 1,
         rows: 20,
-        cityCode: '', // 城市ID
-        category: 0, // 供应商类别 默认(全部)
+        areaCode: [], // [省份ID, 城市ID]
+        goodsCategoryID: 0, // 供应商类别 默认0(全部)
         supplier: '' // 供应商名称 | 编号
       },
       showModal: false,
-      // showSlder: true,
-      cityList: [],
       categoryList: [],
       tableData: [],
       tableColumns: [
@@ -85,8 +75,8 @@ export default {
             <div>{`${row.linkmanName}/${row.tel}`}</div>
           )
         }, {
-          title: '经营产品', // 目/类
-          key: 'category'
+          title: '经营产品', // 商品分类
+          key: 'categoryName'
         }, {
           title: '所在城市',
           key: 'areaName'
@@ -131,6 +121,27 @@ export default {
     }
   },
 
+  computed: {
+    _listQuery() {
+      let query = this.listQuery
+      let supplierID = 0
+      let supplierName = ''
+      if ((Number.isNaN(+query.supplier))) {
+        supplierName = query.supplier
+      } else {
+        supplierID = +query.supplier
+      }
+      query = {
+        ...query,
+        areaCode: query.areaCode.toString(),
+        supplierID,
+        supplierName
+      }
+
+      return query
+    }
+  },
+
   created() {
     this.fetchData()
     this._getCategoryOptions()
@@ -139,7 +150,7 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      supplierGet(this.listQuery).then(result => {
+      supplierGet(this._listQuery).then(result => {
         if (result.code === 50000) {
           const { list, total } = result.data
           this.tableData = list
