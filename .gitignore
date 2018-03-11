@@ -22,7 +22,7 @@ app/core/**/*.js
 app/db/**/*.js
 app/middleware/**/*.js
 app/service/**/*.js
-app/web@ts/**/*.js
+libs/**/*.js
 config/**/*.js
 /index.js
 config/buildConfig.json
