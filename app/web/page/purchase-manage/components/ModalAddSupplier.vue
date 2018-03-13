@@ -54,8 +54,8 @@
         <FormItem label="开户行地址" prop="address" v-if="_isBank">
           <Input v-model="formValidate.bankAddress" type="textarea" :autosize="{ minRows: 2,maxRows: 4 }" placeholder="请输入开户行地址"></Input>
         </FormItem>
-        <FormItem label="经营产品" prop="goodsCategoryID">
-          <Select v-model="formValidate.goodsCategoryID" placeholder="请选择商品分类" filterable>
+        <FormItem label="经营产品" prop="categoryID">
+          <Select v-model="formValidate.categoryID" placeholder="请选择商品分类" filterable>
             <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -77,10 +77,27 @@ const payTypeRadios = [
   { text: '微信', label: 'wechat' }
 ]
 
+const formValidate = {
+  linkmanName: '',
+  tel: '',
+  area: [],
+  address: '',
+  supplierName: '',
+  supplierType: 1,
+  payType: 'ali',
+  bankName: '',
+  bankUsername: '',
+  accountNo: '',
+  taxNo: '',
+  bankAddress: '',
+  categoryID: ''
+}
+
 export default {
   props: {
     show: Boolean,
-    categoryList: Array
+    categoryList: Array,
+    defaultModalData: [Boolean, Object]
   },
 
   data() {
@@ -108,21 +125,7 @@ export default {
 
     return {
       payTypeRadios,
-      formValidate: {
-        linkmanName: '',
-        tel: '',
-        area: [],
-        address: '',
-        supplierName: '',
-        supplierType: 1,
-        payType: 'ali',
-        bankName: '',
-        bankUsername: '',
-        accountNo: '',
-        taxNo: '',
-        bankAddress: '',
-        goodsCategoryID: ''
-      },
+      formValidate,
       ruleValidate: {
         linkmanName: notNull,
         bankName: notNull,
@@ -142,22 +145,24 @@ export default {
         payType: [
           { required: true, message: '请选择一个收款方式', trigger: 'change' }
         ],
-        goodsCategoryID: [
+        categoryID: [
           { validator: validateID, trigger: 'change' }
         ]
       }
     }
   },
 
-  // watch: {
-  //   'formValidate.supplierType'(val) {
-  //     if (val === 2) {
-  //       this.payTypeRadios = this.payTypeRadios.filter(item => item.label !== 'bank')
-  //     } else {
-  //       this.payTypeRadios = payTypeRadios
-  //     }
-  //   }
-  // },
+  watch: {
+    defaultModalData(val) {
+      if (val) {
+        val = { ...val }
+        const codeArr = val.areaCode.split(',')
+        const nameArr = val.areaName.split(',')
+        val.area = codeArr.map((code, index) => ({ code, name: nameArr[index] }))
+      }
+      this.formValidate = val ? val : formValidate
+    }
+  },
 
   computed: {
     _accountNoLabel() {

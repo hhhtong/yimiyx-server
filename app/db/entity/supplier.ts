@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
 import { snakeCase as _ } from 'lodash';
+import { GoodsCategory } from './goods-category';
 
 @Entity(_('Supplier'))
 export class Supplier {
@@ -56,6 +57,12 @@ export class Supplier {
   supplierType: number;
 
   /**
+   * 税务登记号, 可能是15位左右的数字
+   */
+  @Column('char', { name: _('taxNo'), length: 18, nullable: true })
+  taxNo: number;
+
+  /**
    * 收款方式 bank | ali | wechat
    */
   @Column('char', { name: _('payType'), length: 10, default: '' })
@@ -88,8 +95,9 @@ export class Supplier {
   /**
    * 类目ID,对应goods-attr-value表中的ID
    */
-  @Column('int', { name: _('goodsCategoryID') })
-  goodsCategoryID: number;
+  @ManyToOne(type => GoodsCategory)
+  @JoinColumn({ name: _('goodsCategoryID') })
+  goodsCategoryID: GoodsCategory;
 
   /**
    * 创建时间

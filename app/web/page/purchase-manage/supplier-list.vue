@@ -5,16 +5,21 @@
       <label>城市：</label>
       <al-cascader v-model="listQuery.areaCode" data-type="code" level="1"  style="width: 138px;display:inline-block"/>
       <label class="margin-left-20">类别：</label>
-      <Select v-model="listQuery.goodsCategoryID" style="width:100px" filterable>
+      <Select v-model="listQuery.categoryID" style="width:100px" filterable>
         <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出Excel</Button>
-      <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
+      <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
 
-      <ModalAddSupplier :show.sync="showModal" @handleSave="handleSave" :category-list="categoryList"/>
+      <ModalAddSupplier
+        :show.sync="showModal"
+        :default-modal-data="defaultModalData"
+        :category-list="categoryList"
+        @handleSave="handleSave">
+      </ModalAddSupplier>
     </Header>
     <Layout>
       <Content>
@@ -45,10 +50,11 @@ export default {
         page: 1,
         rows: 20,
         areaCode: [], // [省份ID, 城市ID]
-        goodsCategoryID: 0, // 供应商类别 默认0(全部)
+        categoryID: 0, // 供应商类别 默认0(全部)
         supplier: '' // 供应商名称 | 编号
       },
       showModal: false,
+      defaultModalData: false,
       categoryList: [],
       tableData: [],
       tableColumns: [
@@ -78,7 +84,7 @@ export default {
           title: '经营产品', // 商品分类
           key: 'categoryName'
         }, {
-          title: '所在城市',
+          title: '所在地区',
           key: 'areaName'
         }, {
           title: '详细地址',
@@ -86,19 +92,34 @@ export default {
         }, {
           title: '收款方式',
           render: (h, { row, column, index }) => {
-            let text = ''
+            let innerHTML = ''
             if (row.payType === 'bank') {
-              text = '银行转账'
-            }
-            if (row.payType === 'ali') {
-              text = '支付宝'
-            }
-            if (row.payType === 'wechat') {
-              text = '微信'
+              innerHTML =
+                <Poptip placement="left">
+                  <div slot="content">
+                    <p>银行名称：{row.bankName}</p>
+                    <p>银行卡号：{row.accountNo}</p>
+                    <p>持卡人姓名：{row.bankUsername}</p>
+                    <p>开户行地址：{row.bankAddress}</p>
+                  </div>
+                  <i-button type="text" style="padding: 0">银行转账</i-button>
+                </Poptip>
+            } else {
+              const text = row.payType === 'ali' ? '支付宝' : '微信'
+              innerHTML =
+                <Poptip placement="top">
+                  <div slot="content">
+                    <p>{text}账号：{row.accountNo}</p>
+                  </div>
+                  <i-button type="text" style="padding: 0">{text}</i-button>
+                </Poptip>
             }
 
-            return (<div>{text}</div>)
+            return innerHTML
           }
+        }, {
+          title: '税号',
+          key: 'taxNo'
         }, {
           title: '操作',
           key: 'handle',
@@ -175,9 +196,10 @@ export default {
     handleExportExcel() {
 
     },
-    // 编辑供货商
+    // 编辑 | 添加 供货商 -> 显示Modal
     handleEdit(row) {
-
+      this.defaultModalData = row
+      this.showModal = true
     },
     // 删除供货商
     handleDelete(row) {

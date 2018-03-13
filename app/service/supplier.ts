@@ -9,45 +9,52 @@ interface query {
 
 interface query {
   areaCode: string, // 省份ID,城市ID
-  goodsCategoryID: number, // 供应商类别 默认0(全部)
+  categoryID: number, // 供应商类别 默认0(全部)
   supplierID: number, // 供应商编号
   supplierName: string // 供应商名称
 }
 
 export default class SupplierService extends BaseService {
 
-  async query({ page, rows, areaCode, goodsCategoryID, supplierID, supplierName }: query) {
+  async query({ page, rows, areaCode, categoryID, supplierID, supplierName }: query) {
     const db = await this.db;
     const repo = db.getRepository(Supplier);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    const where2 = goodsCategoryID > 0 ? `supplier.goodsCategoryID = ${goodsCategoryID}` : '1 = 1';
+    const where2 = categoryID > 0 ? `supplier.goodsCategoryID = ${categoryID}` : '1 = 1';
 
     try {
-      const [list, total] = await repo
+      const query = await repo
         .createQueryBuilder('supplier')
-        .leftJoinAndSelect('goods_category', 'category', 'category.id = supplier.goods_category_id')
-        .where(`supplier.isDelete != 1 AND ${where1} AND ${where2}`)
+        .where(`supplier.isDelete != :isDelete AND ${where1} AND ${where2}`, { isDelete: 1 })
         .andWhere(`supplier.areaCode LIKE '${areaCode}%'`)
         .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
         .orderBy('supplier.id', 'ASC')
         .skip((page - 1) * rows)
-        .take(rows)
-        .getManyAndCount();
-      const list1 = await repo
-        .createQueryBuilder('supplier')
-        .leftJoinAndSelect('goods_category', 'category', 'category.id = supplier.goods_category_id')
+        .take(rows);
+      const total = await query.getCount();
+      const list = await query
+        .leftJoin('supplier.goodsCategoryID', 'category')
         .select([
-          'category.no',
-          'category.name',
-          'supplier.id',
-          'supplier.bankAddress',
-          'supplier.bankName',
-          'supplier.bankUsername'
+          'supplier.id as id',
+          'supplier.level as level',
+          'supplier.supplierName as supplierName',
+          'supplier.linkmanName as linkmanName',
+          'supplier.tel as tel',
+          'supplier.areaCode as areaCode',
+          'supplier.areaName as areaName',
+          'supplier.address as address',
+          'supplier.supplierType as supplierType',
+          'supplier.taxNo as taxNo',
+          'supplier.payType as payType',
+          'supplier.accountNo as accountNo',
+          'supplier.bankName as bankName',
+          'supplier.bankUsername as bankUsername',
+          'supplier.bankAddress as bankAddress',
+          'category.id as categoryID',
+          'category.name as categoryName'
         ])
-        .getQuery();
-        // .getMany();
-      this.log.debug('12@%@%@%@@%@%@%@%@@%', list1)
-      // this.log.debug('供货商列表:', list)
+        .getRawMany();
+      this.log.debug('供货商列表:', list)
       await db.close();
       return { list, total };
     } catch (e) {
