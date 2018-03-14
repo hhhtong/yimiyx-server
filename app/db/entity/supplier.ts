@@ -95,7 +95,7 @@ export class Supplier {
   /**
    * 类目ID,对应goods-category表中的ID
    */
-  @ManyToOne(type => GoodsCategory, goodsCategory => goodsCategory.id)
+  @ManyToOne(type => GoodsCategory, o => o.id)
   @JoinColumn({ name: _('categoryID') })
   categoryID: GoodsCategory;
 

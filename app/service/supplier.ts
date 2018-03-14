@@ -66,17 +66,12 @@ export default class SupplierService extends BaseService {
   async insert(rowData) {
     const db = await this.db;
     const repo = db.getRepository(Supplier);
-    // const supplier: any = new Supplier();
 
     try {
-      // const ddd = await db.manager.save(supplier);
-      console.log('0@@@@@@@@@@@@@@@@@@@@@', rowData);
+      const id = rowData.categoryID
       rowData = repo.create(rowData)
-      const supplier = await repo.insert(rowData);
-      console.log('1@@@@@@@@@@@@@@@@@@@@@', rowData);
-      console.log('2@@@@@@@@@@@@@@@@@@@@@', supplier);
-
-      // this.log.info('新增一条供货商记录：', supplier);
+      rowData.categoryID = { id }
+      await repo.save(rowData);
       await db.close();
     } catch (e) {
       await db.close();
