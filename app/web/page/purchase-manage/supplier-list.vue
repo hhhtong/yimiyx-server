@@ -211,8 +211,9 @@ export default {
       })
     },
     // 添加 | 修改供货商 -> 保存
-    handleSave(formData) {
-      supplierAdd(formData).then(result => {
+    handleSave(formData, isEdit) {
+      const action = isEdit ? supplierUpdate : supplierAdd
+      action(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
           this.showModal = false

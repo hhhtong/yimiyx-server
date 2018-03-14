@@ -70,6 +70,7 @@
 
 <script>
 import { checkMobile } from '~/libs/tools/validator'
+import { cloneDeep } from 'lodash'
 
 const payTypeRadios = [
   { text: '银行转账', label: 'bank' },
@@ -124,6 +125,7 @@ export default {
     }
 
     return {
+      isEdit: false,
       payTypeRadios,
       formValidate,
       ruleValidate: {
@@ -155,12 +157,14 @@ export default {
   watch: {
     defaultModalData(val) {
       if (val) {
-        val = { ...val }
-        const codeArr = val.areaCode.split(',')
-        const nameArr = val.areaName.split(',')
-        val.area = codeArr.map((code, index) => ({ code, name: nameArr[index] }))
+        val = cloneDeep(val)
+        val.area = val.areaCode.split(',')
+        this.isEdit = true // 标记为编辑模式
+        this.formValidate = val
+      } else {
+        this.isEdit = false // 标记为新增模式
+        this.formValidate = cloneDeep(formValidate)
       }
-      this.formValidate = val ? val : formValidate
     }
   },
 
@@ -202,7 +206,7 @@ export default {
           const areaCode = area.map(item => item.code).toString()
           const areaName = area.map(item => item.name).toString()
 
-          this.$emit('handleSave', { ...formData, areaCode, areaName })
+          this.$emit('handleSave', { ...formData, areaCode, areaName }, this.isEdit)
         } else {
           this.$Message.error('存在不符合格式的内容, 请认真填写!')
         }

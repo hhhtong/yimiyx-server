@@ -20,7 +20,7 @@ export default class SupplierService extends BaseService {
     const db = await this.db;
     const repo = db.getRepository(Supplier);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    const where2 = categoryID > 0 ? `supplier.goodsCategoryID = ${categoryID}` : '1 = 1';
+    const where2 = categoryID > 0 ? `supplier.categoryID = ${categoryID}` : '1 = 1';
 
     try {
       const query = await repo
@@ -33,7 +33,7 @@ export default class SupplierService extends BaseService {
         .take(rows);
       const total = await query.getCount();
       const list = await query
-        .leftJoin('supplier.goodsCategoryID', 'category')
+        .leftJoin('supplier.categoryID', 'category')
         .select([
           'supplier.id as id',
           'supplier.level as level',
@@ -64,19 +64,19 @@ export default class SupplierService extends BaseService {
   }
 
   async insert(rowData) {
-    const log = this.app.logger;
     const db = await this.db;
-    const supplier: any = new Supplier();
-
-    for (const key in rowData) {
-      if (rowData.hasOwnProperty(key)) {
-        supplier[key] = rowData[key];
-      }
-    }
+    const repo = db.getRepository(Supplier);
+    // const supplier: any = new Supplier();
 
     try {
-      await db.manager.save(supplier);
-      this.log.info('新增一条供货商记录：', supplier);
+      // const ddd = await db.manager.save(supplier);
+      console.log('0@@@@@@@@@@@@@@@@@@@@@', rowData);
+      rowData = repo.create(rowData)
+      const supplier = await repo.insert(rowData);
+      console.log('1@@@@@@@@@@@@@@@@@@@@@', rowData);
+      console.log('2@@@@@@@@@@@@@@@@@@@@@', supplier);
+
+      // this.log.info('新增一条供货商记录：', supplier);
       await db.close();
     } catch (e) {
       await db.close();
@@ -85,7 +85,6 @@ export default class SupplierService extends BaseService {
   }
 
   async update(id, rowData) {
-    const log = this.app.logger;
     const db = await this.db;
     const repo = db.getRepository(Supplier)
 
@@ -93,6 +92,7 @@ export default class SupplierService extends BaseService {
       await repo.updateById(id, rowData);
       this.log.info('更新一条供货商记录：', rowData);
       await db.close();
+
     } catch (e) {
       await db.close();
       this.error(e);

@@ -93,11 +93,11 @@ export class Supplier {
   bankAddress: string;
 
   /**
-   * 类目ID,对应goods-attr-value表中的ID
+   * 类目ID,对应goods-category表中的ID
    */
-  @ManyToOne(type => GoodsCategory)
-  @JoinColumn({ name: _('goodsCategoryID') })
-  goodsCategoryID: GoodsCategory;
+  @ManyToOne(type => GoodsCategory, goodsCategory => goodsCategory.id)
+  @JoinColumn({ name: _('categoryID') })
+  categoryID: GoodsCategory;
 
   /**
    * 创建时间
