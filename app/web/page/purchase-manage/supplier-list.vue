@@ -11,8 +11,9 @@
       <label class="margin-left-20">名称/编号：</label>
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
-      <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出Excel</Button>
+      <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出数据</Button>
       <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
+      <a id="hrefToExportTable" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
 
       <ModalAddSupplier
         :show.sync="showModal"
@@ -23,7 +24,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table ref="tableCsv":data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -194,7 +195,10 @@ export default {
     },
     // 导出Excel
     handleExportExcel() {
-
+      this.$refs.tableCsv.exportCsv({
+        filename: '供货商列表',
+        original: false
+      })
     },
     // 编辑 | 添加 供货商 -> 显示Modal
     handleEdit(row) {
