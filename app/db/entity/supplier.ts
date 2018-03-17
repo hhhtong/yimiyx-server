@@ -1,9 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
+/**
+ * 供货商表
+ */
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { snakeCase as _ } from 'lodash';
-import { GoodsCategory } from './goods-category';
+import GoodsCategory from './goods-category';
 
 @Entity(_('Supplier'))
-export class Supplier {
+export default class Supplier {
 
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,11 +1,11 @@
 import BaseService from '../core/base-service';
-import GoodsCategory from '../db/entity/goods-category';
+import Goods from '../db/entity/goods';
 
-export default class GoodsCategoryService extends BaseService {
+export default class GoodsService extends BaseService {
 
   private async _getInstance(name = 'category') {
     const db = await this.db;
-    const repo = db.getRepository(GoodsCategory);
+    const repo = db.getRepository(Goods);
     const query = repo.createQueryBuilder(name);
 
     return { db, repo, query };
@@ -64,7 +64,7 @@ export default class GoodsCategoryService extends BaseService {
   async insert(rowData) {
     const log = this.app.logger;
     const db = await this.db;
-    const category: any = new GoodsCategory();
+    const category: any = new Goods();
 
     for (const key in rowData) {
       if (rowData.hasOwnProperty(key)) {

@@ -1,3 +1,19 @@
+<style lang="stylus">
+.badge-level {
+  &-1 {
+    background: #5cadff !important;
+  }
+
+  &-2 {
+    background: #19be6b !important;
+  }
+
+  &-3 {
+    background: #ed3f14 !important;
+  }
+}
+</style>
+
 <template>
   <!-- 供货商列表 -->
   <Layout class="table-con">
@@ -62,15 +78,26 @@ export default {
         {
           title: '编号',
           key: 'id',
-          width: 60
+          width: 80,
+          sortable: true
+        }, {
+          title: '级别',
+          key: 'level',
+          width: 100,
+          sortable: true,
+          filters: [
+            { label: '1级', value: 1 },
+            { label: '2级', value: 2 },
+            { label: '3级', value: 3 }
+          ],
+          filterMultiple: false,
+          filterMethod: (value, row) => row.level === value,
+          render: (h, { row, column, index }) => (
+            <Badge count={row.level} class-name={`badge-level-${row.level}`} style="transform: scale(0.75)"></Badge>
+          )
         }, {
           title: '供货商名称',
-          render: (h, { row, column, index }) => (
-            <div>
-              <Badge count={row.level} style="transform: scale(0.75);margin-top: -1px;"></Badge>
-              <span>{row.supplierName}</span>
-            </div>
-          )
+          key: 'supplierName'
         }, {
           title: '供货商类型',
           render: (h, { row, column, index }) => (
@@ -79,7 +106,11 @@ export default {
         }, {
           title: '负责人/电话',
           render: (h, { row, column, index }) => (
-            <div>{`${row.linkmanName}/${row.tel}`}</div>
+            <div>
+              {row.linkmanName}
+              <br />
+              {row.tel}
+            </div>
           )
         }, {
           title: '经营产品', // 商品分类

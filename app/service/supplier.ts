@@ -1,6 +1,6 @@
 import BaseService from '../core/base-service';
-import { Supplier } from '../db/entity/supplier';
-import { GoodsCategory } from '../db/entity/goods-category';
+import Supplier from '../db/entity/supplier';
+import GoodsCategory from '../db/entity/goods-category';
 
 interface query {
   page: number,

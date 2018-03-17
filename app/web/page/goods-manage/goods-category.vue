@@ -52,7 +52,8 @@ export default {
         {
           title: '编号',
           key: 'no',
-          width: 60
+          width: 80,
+          sortable: true
         }, {
           title: '分类名称',
           key: 'name',

@@ -1,8 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+/**
+ * 商品分类表
+ */
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { snakeCase as _ } from 'lodash';
 
 @Entity(_('GoodsCategory'))
-export class GoodsCategory {
+export default class GoodsCategory {
 
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,17 +1,38 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+/**
+ * 商品表
+ */
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
 import { snakeCase as _ } from 'lodash';
+import Store from './store';
+import GoodsTag from './goods-tag';
+import GoodsCategory from './goods-category';
 
 @Entity(_('Goods'))
-export class Goods {
+export default class Goods {
 
   @PrimaryGeneratedColumn()
   id: number;
 
   /**
+   * 所在仓库
+   */
+  @ManyToMany(type => Store, store => store.id)
+  @JoinTable({ name: _('storeID') })
+  store: Store;
+
+  /**
+   * 对应商品表中的ID
+   */
+  @ManyToMany(type => GoodsTag, goodsTag => goodsTag.id)
+  @JoinTable({ name: _('goodsTagID') })
+  goodsTag: GoodsTag;
+
+  /**
    * 对应所关联的类目表(goods_category)中的类目id
    */
-  @Column('int', { default: 0 })
-  cid: number;
+  @ManyToOne(type => GoodsCategory, goodsCategory => goodsCategory.id)
+  @JoinColumn({ name: _('goodsCategoryID') })
+  goodsCategory: GoodsCategory;
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)
@@ -26,28 +47,16 @@ export class Goods {
   goodsName: string;
 
   /**
-   * 商品规格
+   * 商品别名
    */
-  @Column('varchar', { length: 20 })
-  type: number;
+  @Column('varchar', { name: _('goodsAlias'), length: 50, nullable: true })
+  goodsAlias: string;
 
   /**
-   * 商品描述
+   * 商品规格 eg: 150g/盒
    */
-  @Column('text')
-  description: string;
-
-  /**
-   * 小图
-   */
-  @Column('varchar', { name: _('smallImg'), length: 100 })
-  smallImg: string;
-
-  /**
-   * 大图
-   */
-  @Column('varchar', { name: _('bigImg'), length: 100 })
-  bigImg: string;
+  @Column('varchar', { length: 20, default: '' })
+  specification: string;
 
   /**
    * 库存数量

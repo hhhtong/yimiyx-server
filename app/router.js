@@ -25,4 +25,11 @@ exports.default = (app) => {
     router.post('/goodsCategory/delete', controller.goodsCategory.delete);
     router.post('/goodsCategory/update', controller.goodsCategory.update);
     router.get('/goodsCategory/getCategoryOptions', controller.goodsCategory.getCategoryOptions);
+    /**
+     * Controller
+     */
+    router.get('/goods', controller.goods.index);
+    router.post('/goods/add', controller.goods.add);
+    router.post('/goods/delete', controller.goods.delete);
+    router.post('/goods/update', controller.goods.update);
 };
