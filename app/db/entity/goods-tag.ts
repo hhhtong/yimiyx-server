@@ -1,18 +1,24 @@
 /**
  * 商品标签
  */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { snakeCase as _ } from 'lodash';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import Goods from './goods';
 
-@Entity(_('GoodsTag'))
+@Entity()
 export default class GoodsTag {
 
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToMany(type => Goods, goods => goods.tags, {
+    cascadeInsert: true,
+    cascadeUpdate: true
+  })
+  goods: Goods[];
+
   /**
    * 属性名称
    */
-  @Column('varchar', { name: _('tagName'), length: 25 })
+  @Column('varchar', { length: 25 })
   tagName: string;
 }

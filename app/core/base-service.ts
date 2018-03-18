@@ -7,7 +7,7 @@ export default class BaseService extends Service {
   }
 
   get db(): any {
-    return this.ctx.db;
+    return this.ctx.connected();
   }
 
   error(e) {

@@ -1,8 +1,13 @@
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import { createConnection, getConnectionOptions } from 'typeorm';
+import { SnakeNamingStrategy } from "../../../../../app/db/naming-strategy/snake-naming"
+
 
 export default {
-  get db() {
-    return createConnection();
+  async connected() {
+    return createConnection({
+      ...await getConnectionOptions(),
+      namingStrategy: new SnakeNamingStrategy()
+    })
   }
 }

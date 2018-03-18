@@ -1,18 +1,24 @@
 /**
  * 仓库表
  */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { snakeCase as _ } from 'lodash';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import Goods from './goods';
 
-@Entity(_('Store'))
+@Entity()
 export default class Store {
 
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToMany(type => Goods, goods => goods.stores, {
+    cascadeInsert: true,
+    cascadeUpdate: true
+  })
+  goods: Goods[];
+
   /**
    * 仓库名称
    */
-  @Column('varchar', { name: _('storeName'), length: 20 })
+  @Column('varchar', { length: 20 })
   storeName: string;
 }

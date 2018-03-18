@@ -2,9 +2,8 @@
  * 商品分类表
  */
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { snakeCase as _ } from 'lodash';
 
-@Entity(_('GoodsCategory'))
+@Entity()
 export default class GoodsCategory {
 
   @PrimaryGeneratedColumn()
@@ -37,6 +36,6 @@ export default class GoodsCategory {
   /**
    * 软删除的标志位 1:删除
    */
-  @Column('tinyint', { name: _('isDelete'), length: 1, default: 0 })
+  @Column('tinyint', { length: 1, default: 0 })
   isDelete: number;
 }

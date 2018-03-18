@@ -1,11 +1,10 @@
 /**
  * 供货商表
  */
-import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm';
-import { snakeCase as _ } from 'lodash';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
 import GoodsCategory from './goods-category';
 
-@Entity(_('Supplier'))
+@Entity()
 export default class Supplier {
 
   @PrimaryGeneratedColumn()
@@ -20,13 +19,13 @@ export default class Supplier {
   /**
    * 供货商名称
    */
-  @Column('varchar', { name: _('supplierName'), length: 50, default: '' })
+  @Column('varchar', { length: 50, default: '' })
   supplierName: string;
 
   /**
    * 负责人姓名
    */
-  @Column('varchar', { name: _('linkmanName'), length: 10, default: '' })
+  @Column('varchar', { length: 10, default: '' })
   linkmanName: string;
 
   /**
@@ -38,13 +37,13 @@ export default class Supplier {
   /**
    * 供货商所在地区代号 省,市,区,街道
    */
-  @Column('varchar', { name: _('areaCode'), length: 50, default: '' })
+  @Column('varchar', { length: 50, default: '' })
   areaCode: string;
 
   /**
    * 供货商所在地区名称 省,市,区,街道
    */
-  @Column('varchar', { name: _('areaName'), length: 100, default: '' })
+  @Column('varchar', { length: 100, default: '' })
   areaName: string;
 
   /**
@@ -56,61 +55,61 @@ export default class Supplier {
   /**
    * 供货商类型 1:公司 2:个人
    */
-  @Column('tinyint', { name: _('supplierType'), length: 1, default: 0 })
+  @Column('tinyint', { length: 1, default: 0 })
   supplierType: number;
 
   /**
    * 税务登记号, 可能是15位左右的数字
    */
-  @Column('char', { name: _('taxNo'), length: 18, nullable: true })
+  @Column('char', { length: 18, nullable: true })
   taxNo: number;
 
   /**
    * 收款方式 bank | ali | wechat
    */
-  @Column('char', { name: _('payType'), length: 10, default: '' })
+  @Column('char', { length: 10, default: '' })
   payType: string;
 
   /**
    * 汇款账号
    */
-  @Column('varchar', { name: _('accountNo'), length: 24, default: '' })
+  @Column('varchar', { length: 24, default: '' })
   accountNo: string;
 
   /**
    * 银行名称
    */
-  @Column('varchar', { name: _('bankName'), length: 10, nullable: true })
+  @Column('varchar', { length: 10, nullable: true })
   bankName: string;
 
   /**
    * 持卡人姓名
    */
-  @Column('char', { name: _('bankUsername'), length: 10, nullable: true })
+  @Column('char', { length: 10, nullable: true })
   bankUsername: string;
 
   /**
    * 开户行地址
    */
-  @Column('varchar', { name: _('bankAddress'), length: 50, nullable: true })
+  @Column('varchar', { length: 50, nullable: true })
   bankAddress: string;
 
   /**
    * 类目ID,对应goods-category表中的ID
    */
   @ManyToOne(type => GoodsCategory, o => o.id)
-  @JoinColumn({ name: _('categoryID') })
+  @JoinColumn()
   categoryID: GoodsCategory;
 
   /**
    * 创建时间
    */
-  @Column({ name: _('createdAt') })
+  @CreateDateColumn()
   createdAt: Date;
 
   /**
    * 软删除的标志位 1:删除
    */
-  @Column('tinyint', { name: _('isDelete'), default: 0 })
+  @Column('tinyint', { default: 0 })
   isDelete: number;
 }
