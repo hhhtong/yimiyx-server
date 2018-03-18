@@ -1,13 +1,17 @@
 /**
  * 商品分类表
  */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import Supplier from './supplier'
 
 @Entity()
 export default class GoodsCategory {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(type => Supplier, s => s.category)
+  supplier: Supplier[];
 
   /**
    * 指向二级或三级分类的对应父级id

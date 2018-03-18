@@ -2,16 +2,6 @@ import BaseController from '../core/base-controller';
 
 export default class GoodsCategoryController extends BaseController {
 
-  async getCategoryOptions() {
-    const { service } = this;
-    try {
-      const list = await service.goodsCategory.queryOneList();
-      return this.success([{ id: 0, name: '全部' }, ...list]);
-    } catch (e) {
-      this.fail(e)
-    }
-  }
-
   async index() {
     const { service, ctx } = this;
     try {

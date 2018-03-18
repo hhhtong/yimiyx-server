@@ -1,6 +1,6 @@
 /* vuex state */
 export const state = {
-
+  categoryOptions: []
 }
 
 /* vuex getters */

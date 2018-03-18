@@ -11,26 +11,7 @@ export default class GoodsCategoryService extends BaseService {
     return { db, repo, query };
   }
 
-  async queryOneList(type = 1) {
-    const { db, query } = await this._getInstance();
-
-    try {
-      const list = await query
-        .where('category.isDelete != 1')
-        .andWhere(`category.type = ${type}`)
-        .getMany();
-
-      this.log.debug('一级分类options:', list)
-
-      await db.close();
-      return list;
-    } catch (error) {
-      await db.close();
-      this.error(error);
-    }
-  }
-
-  async query({ page, rows, name }) {
+  async query({ page = 1, rows = 20, name = '' }) {
     const { db, query } = await this._getInstance();
 
     try {

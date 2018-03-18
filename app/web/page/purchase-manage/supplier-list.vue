@@ -22,7 +22,7 @@
       <al-cascader v-model="listQuery.areaCode" data-type="code" level="1"  style="width: 138px;display:inline-block"/>
       <label class="margin-left-20">类别：</label>
       <Select v-model="listQuery.categoryID" style="width:100px" filterable>
-        <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+        <Option v-for="item in categoryOptions" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
@@ -34,7 +34,7 @@
       <ModalAddSupplier
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
-        :category-list="categoryList"
+        :category-options="categoryOptions"
         @handleSave="handleSave">
       </ModalAddSupplier>
     </Header>
@@ -51,8 +51,10 @@
 
 <script>
 import ModalAddSupplier from './components/ModalAddSupplier'
-import { supplierGet, supplierAdd, supplierDel, supplierUpdate, getCategoryOptions } from '@/api'
+import { supplierGet, supplierAdd, supplierDel, supplierUpdate } from '@/api'
+import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
+import util from '@/libs/util'
 
 export default {
   name: 'supplier-list',
@@ -72,7 +74,6 @@ export default {
       },
       showModal: false,
       defaultModalData: false,
-      categoryList: [],
       tableData: [],
       tableColumns: [
         {
@@ -175,23 +176,16 @@ export default {
   },
 
   computed: {
+    ...mapState(['categoryOptions']),
     _listQuery() {
-      let query = this.listQuery
-      let supplierID = 0
-      let supplierName = ''
-      if ((Number.isNaN(+query.supplier))) {
-        supplierName = query.supplier
-      } else {
-        supplierID = +query.supplier
+      const query = this.listQuery
+      return {
+        ...util.parseSearchField({
+          query,
+          field: 'supplier'
+        }),
+        areaCode: query.areaCode.toString()
       }
-      query = {
-        ...query,
-        areaCode: query.areaCode.toString(),
-        supplierID,
-        supplierName
-      }
-
-      return query
     }
   },
 
@@ -258,11 +252,9 @@ export default {
     },
 
     _getCategoryOptions() {
-      getCategoryOptions().then(result => {
-        if (result.code === 50000) {
-          this.categoryList = result.data
-        }
-      })
+      if (this.categoryOptions.length === 0) {
+        this.$store.dispatch('updateCategoryOptions')
+      }
     }
   }
 }

@@ -3,7 +3,6 @@
  */
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
 import Store from './store';
-import GoodsTag from './goods-tag';
 import GoodsCategory from './goods-category';
 
 @Entity()
@@ -18,13 +17,6 @@ export default class Goods {
   @ManyToMany(type => Store, store => store.goods)
   @JoinTable()
   stores: Store[];
-
-  /**
-   * 对应商品标签
-   */
-  @ManyToMany(type => GoodsTag, tag => tag.goods)
-  @JoinTable()
-  tags: GoodsTag[];
 
   /**
    * 对应所关联的类目表(goods_category)中的类目id

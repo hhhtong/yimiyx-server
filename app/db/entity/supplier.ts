@@ -1,7 +1,7 @@
 /**
  * 供货商表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import GoodsCategory from './goods-category';
 
 @Entity()
@@ -9,6 +9,12 @@ export default class Supplier {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  /**
+   * 类目ID,对应goods-category表中的ID
+   */
+  @ManyToOne(type => GoodsCategory, gc => gc.supplier)
+  category: GoodsCategory;
 
   /**
    * 供货商级别 1: 优 2: 良好 3: 凑合
@@ -93,13 +99,6 @@ export default class Supplier {
    */
   @Column('varchar', { length: 50, nullable: true })
   bankAddress: string;
-
-  /**
-   * 类目ID,对应goods-category表中的ID
-   */
-  @ManyToOne(type => GoodsCategory, o => o.id)
-  @JoinColumn()
-  categoryID: GoodsCategory;
 
   /**
    * 创建时间

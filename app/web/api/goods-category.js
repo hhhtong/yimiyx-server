@@ -1,16 +1,6 @@
 import request from '@/libs/request'
 
 /**
- * 获取商品分类列表(一级)
- */
-export function getCategoryOptions() {
-  return request({
-    url: '/goodsCategory/getCategoryOptions',
-    method: 'get'
-  })
-}
-
-/**
  * 获取商品分类列表
  */
 export function categoryGet(params) {

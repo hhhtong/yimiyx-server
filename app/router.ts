@@ -28,7 +28,6 @@ export default (app: Application) => {
   router.post('/goodsCategory/add', controller.goodsCategory.add);
   router.post('/goodsCategory/delete', controller.goodsCategory.delete);
   router.post('/goodsCategory/update', controller.goodsCategory.update);
-  router.get('/goodsCategory/getCategoryOptions', controller.goodsCategory.getCategoryOptions);
 
   /**
    * Controller

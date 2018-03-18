@@ -1,4 +1,3 @@
-import axios from 'axios'
 import semver from 'semver'
 
 const env = process.env.NODE_ENV
@@ -9,16 +8,29 @@ util.title = function (title) {
   window.document.title = title
 }
 
-const ajaxUrl = env === 'development'
-  ? 'http://127.0.0.1:8888'
-  : env === 'production'
-    ? 'https://www.url.com'
-    : 'https://debug.url.com'
+/**
+ * 解析查询条件中编号/名称同输入框参数
+ * @param {Object} query
+ * @param {String} field
+ * @param {String} ID: 可选
+ * @param {String} name: 可选
+ */
+util.parseSearchField = function ({ query, field, ID = `${field}ID`, name = `${field}Name` }) {
+  let tempID = 0
+  let tempName = ''
 
-util.ajax = axios.create({
-  baseURL: ajaxUrl,
-  timeout: 30000
-})
+  if ((Number.isNaN(+query[field]))) {
+    tempName = query[field]
+  } else {
+    tempID = +query[field]
+  }
+
+  return {
+    ...query,
+      [ID]: tempID,
+      [name]: tempName
+  }
+}
 
 util.inOf = function (arr, targetArr) {
   let res = true

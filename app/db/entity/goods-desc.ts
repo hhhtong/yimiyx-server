@@ -1,13 +1,21 @@
 /**
  * 商品信息详情表
  */
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import GoodsTag from './goods-tag';
 
 @Entity()
 export default class GoodsDesc {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  /**
+   * 对应商品标签
+   */
+  @ManyToMany(type => GoodsTag, tag => tag.goods)
+  @JoinTable()
+  tags: GoodsTag[];
 
   /**
    * 商品描述

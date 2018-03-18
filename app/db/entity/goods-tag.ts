@@ -2,7 +2,7 @@
  * 商品标签
  */
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
-import Goods from './goods';
+import GoodsDesc from './goods-desc';
 
 @Entity()
 export default class GoodsTag {
@@ -10,14 +10,14 @@ export default class GoodsTag {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(type => Goods, goods => goods.tags, {
+  @ManyToMany(type => GoodsDesc, goods => goods.tags, {
     cascadeInsert: true,
     cascadeUpdate: true
   })
-  goods: Goods[];
+  goods: GoodsDesc[];
 
   /**
-   * 属性名称
+   * 商品标签
    */
   @Column('varchar', { length: 25 })
   tagName: string;

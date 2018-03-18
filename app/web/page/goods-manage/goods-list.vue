@@ -1,12 +1,20 @@
+<!--
+  Description 商品列表
+  @date    2018-03-18 20:17:55
+-->
 <template>
-  <!-- 商品分类 -->
   <Layout class="table-con">
     <Header style="background: white">
-      <label class="margin-left-20">分类名称：</label>
-      <Input v-model="listQuery.category" clearable placeholder="请输入分类名称" style="width: 160px"></Input>
+      <label class="margin-left-20">商品：</label>
+      <Input v-model="listQuery.goods" clearable placeholder="请输入商品编号/名称" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
-      <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加分类</Button>
-      <!-- <ModalEditCategory :show.sync="showModal" @handleSave="handleSave"></ModalEditCategory> -->
+      <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加商品</Button>
+      <ModalSaveGoods
+        :show.sync="showModal"
+        :default-modal-data="defaultModalData"
+        :category-options="categoryOptions"
+        @handleSave="handleSave">
+      </ModalSaveGoods>
     </Header>
     <Layout>
       <Content>
@@ -20,12 +28,17 @@
 </template>
 
 <script>
-// import ModalEditCategory from './components/ModalEditCategory'
-import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api/goods-category'
+import ModalSaveGoods from './components/ModalSaveGoods'
+import { goodsGet, goodsAdd, goodsDel, goodsUpdate, getCategoryOptions } from '@/api'
+import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
+import util from '@/libs/util'
 
 export default {
   name: 'goods-list',
+
+  components: { ModalSaveGoods },
+
   data() {
     return {
       total: 0,
@@ -33,29 +46,49 @@ export default {
       listQuery: {
         page: 1,
         rows: 20,
-        category: '' // 供应商名称 | 编号
+        goods: '' // 商品名称 | 编号
       },
       showModal: false,
+      defaultModalData: false,
       tableData: [],
       tableColumns: [
         {
-          title: '编号',
+          title: '#',
           key: 'id',
           width: 60
         }, {
-          title: '分类名称',
-          key: 'name',
-          width: 300
+          title: '商品编号',
+          key: 'goodsNo'
+        }, {
+          title: '商品名称/别名',
+          key: 'goodsName',
+          render: (h, { row, column, index }) => (
+            <div>{row.goodsName}<br />{row.goodsAlias}</div>
+          )
+        }, {
+          title: '规格',
+          key: 'specification'
+        }, {
+          title: '所属分类',
+          key: 'categoryName'
+        }, {
+          title: '库存',
+          key: 'stockQty',
+          sortable: true
+        }, {
+          title: '所在仓库',
+          key: 'storeName'
         }, {
           title: '操作',
           key: 'handle',
           render: (h, { row, column, index }) => (
             <div>
+              <i-button type="text" on-click={() => this.handleEdit(row)}>上架</i-button>
               <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="left"
-                title="删除此分类后，该分类下的子分类也将消失，您确认此操作？"
+                title="删除此商品后，该商品也会从已上架的商品列表消失，您确认此操作？"
                 on-on-ok={() => this.handleDelete(row)}>
                 <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
               </Poptip>
@@ -66,14 +99,25 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState(['categoryOptions']),
+    _listQuery() {
+      return util.parseSearchField({
+        query: this.listQuery,
+        field: 'goods'
+      })
+    }
+  },
+
   created() {
-    this.fetchData()
+    // this.fetchData()
+    this._getCategoryOptions()
   },
 
   methods: {
     fetchData() {
       this.listLoading = true
-      categoryGet(this.listQuery).then(result => {
+      goodsGet(this._listQuery).then(result => {
         if (result.code === 50000) {
           const { list, total } = result.data
           this.tableData = list
@@ -94,28 +138,42 @@ export default {
     handleQuery() {
       this.fetchData()
     },
-    // 编辑分类
-    handleEdit(row) {
-
+    // 导出Excel
+    handleExportExcel() {
+      this.$refs.tableCsv.exportCsv({
+        filename: '商品列表',
+        original: false
+      })
     },
-    // 删除分类
+    // 编辑 | 添加 商品 -> 显示Modal
+    handleEdit(row) {
+      this.defaultModalData = row
+      this.showModal = true
+    },
+    // 删除商品
     handleDelete(row) {
-      categoryDel(row).then(result => {
+      goodsDel(row).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
           this.fetchData()
         }
       })
     },
-    // 添加 | 修改分类 -> 保存
+    // 添加 | 修改商品 -> 保存
     handleSave(formData) {
-      categoryAdd(formData).then(result => {
+      goodsAdd(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
           this.showModal = false
           this.fetchData()
         }
       })
+    },
+
+    _getCategoryOptions() {
+      if (this.categoryOptions.length === 0) {
+        this.$store.dispatch('updateCategoryOptions')
+      }
     }
   }
 }

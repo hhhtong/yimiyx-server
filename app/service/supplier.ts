@@ -20,7 +20,7 @@ export default class SupplierService extends BaseService {
     const db = await this.db;
     const repo = db.getRepository(Supplier);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    const where2 = categoryID > 0 ? `supplier.categoryID = ${categoryID}` : '1 = 1';
+    const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
     try {
       const query = await repo
@@ -33,7 +33,7 @@ export default class SupplierService extends BaseService {
         .take(rows);
       const total = await query.getCount();
       const list = await query
-        .leftJoin('supplier.categoryID', 'category')
+        .leftJoin('supplier.category', 'category')
         .select([
           'supplier.id as id',
           'supplier.level as level',
@@ -70,8 +70,7 @@ export default class SupplierService extends BaseService {
     try {
       const id = rowData.categoryID
       rowData = repo.create(rowData)
-      rowData.categoryID = { id }
-      await repo.save(rowData);
+      await repo.save({ ...rowData, category: { id } });
       await db.close();
     } catch (e) {
       await db.close();
