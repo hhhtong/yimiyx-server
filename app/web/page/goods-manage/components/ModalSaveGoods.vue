@@ -34,23 +34,28 @@
               :name="item"
               closable
               @on-close="handleClose">
+              {{ item }}
             </Tag>
             <Poptip v-model="showPoptip" placement="bottom" width="250">
               <div slot="title"><i>请在下方选择(支持多选)</i></div>
               <div slot="content">
                 <Select class="poptip-select" v-model="categoryParent" placeholder="请选择" filterable>
-                  <Option v-if="item.id !== 0" v-for="item in categoryOptions" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                  <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
-                <Select class="poptip-select" v-show="hasChildren(_categoryOptions)" v-model="categoryChild" placeholder="请选择" filterable multiple>
-                  <OptionGroup v-if="item.id !== 0" v-for="item in _categoryOptions" :key="item.id" :label="item.name">
+                <Select class="poptip-select" v-show="hasChildren(_categoryList)" v-model="categoryChild" placeholder="请选择" filterable multiple>
+                  <OptionGroup v-if="item.id !== 0" v-for="item in _categoryList" :key="item.id" :label="item.name">
                     <Option v-for="children in item.children" :value="children.id" :key="children.id">{{ children.name }}</Option>
                   </OptionGroup>
                 </Select>
-                <Select class="poptip-select" v-show="!hasChildren(_categoryOptions) && _categoryOptions.length > 0" v-model="categoryChild" placeholder="请选择" filterable multiple>
-                  <Option v-for="item in _categoryOptions" :value="item.id" :key="item.id">{{ item.name }}</Option>
+                <Select class="poptip-select" v-show="!hasChildren(_categoryList) && _categoryList.length > 0" v-model="categoryChild" placeholder="请选择" filterable multiple>
+                  <Option v-for="item in _categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
+                <Row type="flex" justify="end" class="margin-top-20">
+                  <Button type="text" size="small" @click="showPoptip = false">取消</Button>
+                  <Button type="primary" size="small" @click="handleAddTag">确定</Button>
+                </Row>
               </div>
-              <Button icon="ios-plus-empty" type="dashed" size="small" @click="handleAdd">添加类别</Button>
+              <Button icon="ios-plus-empty" type="dashed" size="small">添加类别</Button>
             </Poptip>
           </div>
         </FormItem>
@@ -68,6 +73,7 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import { mapState } from 'vuex'
 
 const formValidate = {
   goodsName: '',
@@ -82,7 +88,7 @@ const colors = ['yellow', 'red', 'blue', 'green']
 export default {
   props: {
     show: Boolean,
-    categoryOptions: Array,
+    categoryList: Array,
     defaultModalData: [Boolean, Object]
   },
 
@@ -106,9 +112,10 @@ export default {
   },
 
   computed: {
-    _categoryOptions() {
+    ...mapState(['categoryListEqual']),
+    _categoryList() {
       this.categoryChild = []
-      const oneList = this.categoryOptions.filter(item => item.id === this.categoryParent)
+      const oneList = this.categoryList.filter(item => item.id === this.categoryParent)
       if (oneList[0] && oneList[0].children)
         return oneList[0].children
       return []
@@ -138,8 +145,38 @@ export default {
     handleClose(item) {
 
     },
-    handleAdd() {
-      this.categorys
+    handleAddTag() {
+      const newCategorys = this._getJoinCategory(this.categoryChild)
+      this.categorys = [...newCategorys.map(item => item.name), ...this.categorys]
+    },
+    _getJoinCategory(list) {
+      const tempArr = []
+      const done = (item, _tempObj) => {
+        const current = _tempObj
+          ? item
+          : this.categoryListEqual.filter(v => v.id === item)[0]
+        const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
+        const no = parent.no + current.no
+        const name = `${parent.name}/${current.name}`
+        const tempObj = { no, name }
+
+        if (_tempObj) {
+          _tempObj.no = parent.no + _tempObj.no
+          _tempObj.name = `${parent.name}/${_tempObj.name}`
+        } else {
+          tempArr.push(tempObj)
+        }
+
+        if (parent.type !== 1) {
+          done(parent, tempObj)
+        }
+      }
+
+      for (const item of list) {
+        done(item)
+      }
+
+      return tempArr
     },
     handleDone() {
 

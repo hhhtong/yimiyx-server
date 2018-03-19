@@ -2,18 +2,20 @@ import { categoryGet } from '@/api'
 
 /* vuex mutations */
 export const mutations = {
-  UPDATE_CATEGORY_OPTIONS(state, options) {
-    state.categoryOptions = options
+  UPDATE_CATEGORY_LIST(state, [list, listEqual]) {
+    state.categoryList = list
+    state.categoryListEqual = listEqual
   }
 }
 
 /* vuex actions */
 export const actions = {
-  updateCategoryOptions({ state, commit }) {
+  updateCategoryList({ state, commit }) {
     categoryGet().then(result => {
       if (result.code === 50000) {
-        const list = [{ id: 0, name: '全部' }, ...result.data.list]
-        commit('UPDATE_CATEGORY_OPTIONS', list)
+        let { list, listEqual } = result.data
+        list = [{ id: 0, name: '全部' }, ...list]
+        commit('UPDATE_CATEGORY_LIST', [list, listEqual])
       }
     })
   }

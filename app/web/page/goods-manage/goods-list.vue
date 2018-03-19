@@ -12,7 +12,7 @@
       <ModalSaveGoods
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
-        :category-options="categoryOptions"
+        :category-list="categoryList"
         @handleSave="handleSave">
       </ModalSaveGoods>
     </Header>
@@ -29,7 +29,7 @@
 
 <script>
 import ModalSaveGoods from './components/ModalSaveGoods'
-import { goodsGet, goodsAdd, goodsDel, goodsUpdate, getCategoryOptions } from '@/api'
+import { goodsGet, goodsAdd, goodsDel, goodsUpdate, getCategoryList } from '@/api'
 import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
 import util from '@/libs/util'
@@ -100,7 +100,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['categoryOptions']),
+    ...mapState(['categoryList']),
     _listQuery() {
       return util.parseSearchField({
         query: this.listQuery,
@@ -111,7 +111,7 @@ export default {
 
   created() {
     // this.fetchData()
-    this._getCategoryOptions()
+    this._getCategoryList()
   },
 
   methods: {
@@ -170,9 +170,9 @@ export default {
       })
     },
 
-    _getCategoryOptions() {
-      if (this.categoryOptions.length === 0) {
-        this.$store.dispatch('updateCategoryOptions')
+    _getCategoryList() {
+      if (this.categoryList.length === 0) {
+        this.$store.dispatch('updateCategoryList')
       }
     }
   }

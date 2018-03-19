@@ -56,7 +56,7 @@
         </FormItem>
         <FormItem label="经营产品" prop="categoryID">
           <Select v-model="formValidate.categoryID" placeholder="请选择商品分类" filterable>
-            <Option v-if="item.id !== 0" v-for="item in categoryOptions" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
       </Form>
@@ -97,7 +97,7 @@ const formValidate = {
 export default {
   props: {
     show: Boolean,
-    categoryOptions: Array,
+    categoryList: Array,
     defaultModalData: [Boolean, Object]
   },
 

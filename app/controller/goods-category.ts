@@ -9,10 +9,10 @@ export default class GoodsCategoryController extends BaseController {
       const oneList = list.filter(item => item.type === 1);
       const twoList = list.filter(item => item.type === 2);
       const threeList = list.filter(item => item.type === 3);
-
+      const listEqual = list
       list = this.mixin(oneList.reverse(), this.mixin(twoList, threeList));
 
-      this.success({ list, total, idMax });
+      this.success({ list, listEqual, total, idMax });
     } catch (error) {
       this.fail(error);
     }
@@ -69,6 +69,9 @@ export default class GoodsCategoryController extends BaseController {
       item2.readonly = true
       list1.forEach(item1 => {
         if (item2.pid === item1.id) {
+          // const temp = { ...item1 };
+          // delete temp.children;
+          // item2.parent = temp; // 挂载一个父级对象，方便操作
           item1.expand = true
           item1.readonly = true
           if (!item1.children) {

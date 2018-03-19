@@ -22,7 +22,7 @@
       <al-cascader v-model="listQuery.areaCode" data-type="code" level="1"  style="width: 138px;display:inline-block"/>
       <label class="margin-left-20">类别：</label>
       <Select v-model="listQuery.categoryID" style="width:100px" filterable>
-        <Option v-for="item in categoryOptions" :value="item.id" :key="item.id">{{ item.name }}</Option>
+        <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
@@ -34,7 +34,7 @@
       <ModalAddSupplier
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
-        :category-options="categoryOptions"
+        :category-list="categoryList"
         @handleSave="handleSave">
       </ModalAddSupplier>
     </Header>
@@ -176,7 +176,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['categoryOptions']),
+    ...mapState(['categoryList']),
     _listQuery() {
       const query = this.listQuery
       return {
@@ -191,7 +191,7 @@ export default {
 
   created() {
     this.fetchData()
-    this._getCategoryOptions()
+    this._getCategoryList()
   },
 
   methods: {
@@ -251,9 +251,9 @@ export default {
       })
     },
 
-    _getCategoryOptions() {
-      if (this.categoryOptions.length === 0) {
-        this.$store.dispatch('updateCategoryOptions')
+    _getCategoryList() {
+      if (this.categoryList.length === 0) {
+        this.$store.dispatch('updateCategoryList')
       }
     }
   }
