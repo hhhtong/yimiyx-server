@@ -30,14 +30,14 @@
             <Tag
               :color="randomColor()"
               v-for="item in categorys"
-              :key="item"
-              :name="item"
+              :key="item.no"
+              :name="item.no"
               closable
-              @on-close="handleClose">
-              {{ item }}
+              @on-close="() => handleClose(item)">
+              {{ item.name }}
             </Tag>
             <Poptip v-model="showPoptip" placement="bottom" width="250">
-              <div slot="title"><i>请在下方选择(支持多选)</i></div>
+              <div slot="title"><i>请在下方选择(二级以下类目支持多选)</i></div>
               <div slot="content">
                 <Select class="poptip-select" v-model="categoryParent" placeholder="请选择" filterable>
                   <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
@@ -79,7 +79,6 @@ const formValidate = {
   goodsName: '',
   goodsAlias: '',
   specification: '',
-  categoryID: '',
   stockQty: 0
 }
 
@@ -114,7 +113,6 @@ export default {
   computed: {
     ...mapState(['categoryListEqual']),
     _categoryList() {
-      this.categoryChild = []
       const oneList = this.categoryList.filter(item => item.id === this.categoryParent)
       if (oneList[0] && oneList[0].children)
         return oneList[0].children
@@ -128,9 +126,11 @@ export default {
         val = cloneDeep(val)
         this.isEdit = true // 标记为编辑模式
         this.formValidate = val
+        this.categorys = val.categorys
       } else {
         this.isEdit = false // 标记为新增模式
         this.formValidate = cloneDeep(formValidate)
+        this.categorys = []
       }
     }
   },
@@ -143,11 +143,14 @@ export default {
       return colors[Math.floor(Math.random() * colors.length)]
     },
     handleClose(item) {
-
+      this.categorys.splice(this.categorys.indexOf(item), 1)
     },
     handleAddTag() {
       const newCategorys = this._getJoinCategory(this.categoryChild)
-      this.categorys = [...newCategorys.map(item => item.name), ...this.categorys]
+      this.categorys = [...newCategorys, ...this.categorys]
+      this.categoryParent = null
+      this.categoryChild = []
+      this.showPoptip = false
     },
     _getJoinCategory(list) {
       const tempArr = []
@@ -157,12 +160,12 @@ export default {
           : this.categoryListEqual.filter(v => v.id === item)[0]
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
-        const name = `${parent.name}/${current.name}`
+        const name = `${parent.name} / ${current.name}`
         const tempObj = { no, name }
 
         if (_tempObj) {
           _tempObj.no = parent.no + _tempObj.no
-          _tempObj.name = `${parent.name}/${_tempObj.name}`
+          _tempObj.name = `${parent.name} / ${_tempObj.name}`
         } else {
           tempArr.push(tempObj)
         }
@@ -193,7 +196,8 @@ export default {
     handleSubmit() {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
-          this.$emit('handleSave', { ...this.formValidate }, this.isEdit)
+          const data = { ...this.formValidate, categorys: this.categorys }
+          this.$emit('handleSave', data, this.isEdit)
         } else {
           this.$Message.error('请根据输入框内提示认真填写!')
         }

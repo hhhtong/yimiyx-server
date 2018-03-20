@@ -43,7 +43,6 @@ export default class GoodsCategoryService extends BaseService {
   }
 
   async insert(rowData) {
-    const log = this.app.logger;
     const db = await this.db;
     const category: any = new GoodsCategory();
 

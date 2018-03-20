@@ -69,9 +69,6 @@ export default class GoodsCategoryController extends BaseController {
       item2.readonly = true
       list1.forEach(item1 => {
         if (item2.pid === item1.id) {
-          // const temp = { ...item1 };
-          // delete temp.children;
-          // item2.parent = temp; // 挂载一个父级对象，方便操作
           item1.expand = true
           item1.readonly = true
           if (!item1.children) {
