@@ -3,6 +3,16 @@ import Goods from '../db/entity/goods';
 import Store from '../db/entity/store';
 import GoodsCategory from '../db/entity/goods-category';
 
+interface query {
+  page: number,
+  rows: number
+}
+
+interface query {
+  goodsNo?: string, // 商品编号
+  goodsName?: string // 商品名称
+}
+
 export default class GoodsService extends BaseService {
 
   private async _getInstance(name = 'goods') {
@@ -13,31 +23,24 @@ export default class GoodsService extends BaseService {
     return { db, repo, query };
   }
 
-  async query({ page, rows, name }) {
+  async query({ page = 1, rows = 20, goodsNo, goodsName }: query) {
     const { db, query } = await this._getInstance();
+    const where1 = goodsNo ? `supplier.id = ${goodsNo}` : '1 = 1';
 
     try {
       const list = await query
-        .where('goods.isDelete != 1')
-        .andWhere(`(goods.name LIKE '%${name}%' OR goods.type != 1)`)
-        .orderBy('goods.no', 'DESC')
-        // .skip((page - 1) * rows)
-        // .take(rows)
+        .where(`goods.goodsName LIKE '%${goodsName}%' AND ${where1}`)
+        .skip((page - 1) * rows)
+        .take(rows)
         .getMany();
       const total = await query
-        .where('goods.isDelete != 1')
-        .andWhere(`(goods.name LIKE '%${name}%' AND goods.type = 1)`)
+        .where(`goods.goodsName LIKE '%${goodsName}%'`)
         .getCount();
-      const idMax = await query
-        .where('goods.isDelete != 1')
-        .andWhere(`goods.name LIKE '%${name}%'`)
-        .select("MAX(id) AS idMax")
-        .getRawMany();
 
       this.log.debug('分类列表:', list)
 
       await db.close();
-      return { list, total, idMax: idMax[0].idMax };
+      return { list, total };
     } catch (error) {
       await db.close();
       this.error(error);
@@ -45,13 +48,16 @@ export default class GoodsService extends BaseService {
   }
 
   async insert(rowData) {
-    const { db, repo } = await this._getInstance();
-    const goods = repo.create(rowData)
+    const { db, repo, query } = await this._getInstance();
+    const maxNo = await query.getCount() + 1;
+    rowData = repo.create({ ...rowData, goodsNo: rowData.goodsNo + maxNo });
     // Store
     // db.manage.save()
+    console.log('@@@@@@@@@@@@@@@@@', rowData);
+
     try {
-      await db.save(goods);
-      this.log.info('新增一个分类：', goods);
+      await repo.save(rowData);
+      this.log.info('新增一个分类：', rowData);
       await db.close();
     } catch (error) {
       await db.close();

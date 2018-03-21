@@ -1,7 +1,7 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, ManyToOne, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
 
@@ -54,4 +54,22 @@ export default class Goods {
    */
   @Column('int', { length: 10, default: 0 })
   stockQty: number;
+
+  /**
+   * 创建时间
+   */
+  @CreateDateColumn()
+  createdAt: Date;
+
+  /**
+   * 更新时间
+   */
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  /**
+   * 删除时间
+   */
+  @Column({ default: 0 })
+  deletedAt: Date;
 }

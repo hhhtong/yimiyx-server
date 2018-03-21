@@ -104,13 +104,15 @@ export default {
     _listQuery() {
       return util.parseSearchField({
         query: this.listQuery,
-        field: 'goods'
+        field: 'goods',
+        ID: 'goodsNo',
+        name: 'goodsName'
       })
     }
   },
 
   created() {
-    // this.fetchData()
+    this.fetchData()
     this._getCategoryList()
   },
 

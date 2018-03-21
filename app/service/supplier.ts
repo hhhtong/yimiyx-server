@@ -8,10 +8,10 @@ interface query {
 }
 
 interface query {
-  areaCode: string, // 省份ID,城市ID
-  categoryID: number, // 供应商类别 默认0(全部)
-  supplierID: number, // 供应商编号
-  supplierName: string // 供应商名称
+  areaCode?: string, // 省份ID,城市ID
+  categoryID?: number, // 供应商类别 默认0(全部)
+  supplierID?: number, // 供应商编号
+  supplierName?: string // 供应商名称
 }
 
 export default class SupplierService extends BaseService {
