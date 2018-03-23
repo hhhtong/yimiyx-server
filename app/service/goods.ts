@@ -1,6 +1,6 @@
 import BaseService from '../core/base-service';
 import Goods from '../db/entity/goods';
-import Store from '../db/entity/store';
+// import Store from '../db/entity/store';
 import GoodsCategory from '../db/entity/goods-category';
 
 interface query {
@@ -48,14 +48,17 @@ export default class GoodsService extends BaseService {
   }
 
   async insert(rowData) {
+    const no = rowData.goodsNo;
     const { db, repo, query } = await this._getInstance();
-    const maxNo = await query.getCount() + 1;
-    rowData = repo.create({ ...rowData, goodsNo: rowData.goodsNo + maxNo });
-    // Store
-    // db.manage.save()
+    const maxNo = await query.where(`goods.goodsNo LIKE '${no}%'`).getCount() + 1;
+    rowData = repo.create({ ...rowData, goodsNo: no + maxNo, goodsCategory: { id:  } });
+
     console.log('@@@@@@@@@@@@@@@@@', rowData);
 
     try {
+    // const category = new GoodsCategory();
+    // category.goods = rowData.categorys
+    // db.manage.save(category);
       await repo.save(rowData);
       this.log.info('新增一个分类：', rowData);
       await db.close();

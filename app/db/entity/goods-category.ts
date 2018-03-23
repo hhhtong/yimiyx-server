@@ -1,14 +1,21 @@
 /**
  * 商品分类表
  */
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import Supplier from './supplier'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany } from 'typeorm';
+import Supplier from './supplier';
+import Goods from './goods';
 
 @Entity()
 export default class GoodsCategory {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToMany(type => Goods, goods => goods.category, {
+    cascadeInsert: true,
+    cascadeUpdate: true
+  })
+  goods: Goods[];
 
   @OneToMany(type => Supplier, s => s.category)
   supplier: Supplier[];

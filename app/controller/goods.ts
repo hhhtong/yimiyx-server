@@ -17,6 +17,7 @@ export default class GoodsController extends BaseController {
     const rowData = ctx.request.body;
     // 以数组中的第一个类目作为序号前缀
     rowData.goodsNo = rowData.categorys[0].no
+    rowData.categorys = rowData.categorys.map(item => item.id)
     try {
       await service.goods.insert(rowData);
       this.success();
