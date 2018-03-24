@@ -1,7 +1,5 @@
 import BaseService from '../core/base-service';
 import Goods from '../db/entity/goods';
-// import Store from '../db/entity/store';
-import GoodsCategory from '../db/entity/goods-category';
 
 interface query {
   page: number,
@@ -25,7 +23,7 @@ export default class GoodsService extends BaseService {
 
   async query({ page = 1, rows = 20, goodsNo, goodsName }: query) {
     const { db, query } = await this._getInstance();
-    const where1 = goodsNo ? `supplier.id = ${goodsNo}` : '1 = 1';
+    const where1 = +goodsNo ? `goods.goodsNo = ${goodsNo}` : '1 = 1';
 
     try {
       const list = await query
@@ -47,20 +45,17 @@ export default class GoodsService extends BaseService {
     }
   }
 
-  async insert(rowData) {
-    const no = rowData.goodsNo;
+  async insert(goodsColumnData) {
     const { db, repo, query } = await this._getInstance();
-    const maxNo = await query.where(`goods.goodsNo LIKE '${no}%'`).getCount() + 1;
-    rowData = repo.create({ ...rowData, goodsNo: no + maxNo, goodsCategory: { id:  } });
+    let goodsNo: string = goodsColumnData.goodsNo;
+    const maxNo: number = await query.where(`goods.goodsNo LIKE '${goodsNo}%'`).getCount() + 1;
 
-    console.log('@@@@@@@@@@@@@@@@@', rowData);
+    goodsNo = goodsNo + this.ctx.helper.prefixZero(maxNo, 4)
+    goodsColumnData = repo.create({ ...goodsColumnData, goodsNo });
 
     try {
-    // const category = new GoodsCategory();
-    // category.goods = rowData.categorys
-    // db.manage.save(category);
-      await repo.save(rowData);
-      this.log.info('新增一个分类：', rowData);
+      await repo.save(goodsColumnData);
+      this.log.info('新增一个商品：', goodsColumnData);
       await db.close();
     } catch (error) {
       await db.close();

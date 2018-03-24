@@ -58,33 +58,44 @@ export default {
           width: 60
         }, {
           title: '商品编号',
-          key: 'goodsNo'
+          key: 'goodsNo',
+          width: 100,
+          sortable: true
         }, {
           title: '商品名称/别名',
           key: 'goodsName',
+          align: 'center',
           render: (h, { row, column, index }) => (
             <div>{row.goodsName}<br />{row.goodsAlias}</div>
           )
         }, {
           title: '规格',
-          key: 'specification'
+          key: 'specification',
+          align: 'center'
         }, {
           title: '所属分类',
-          key: 'categoryName'
+          key: 'categoryName',
+          align: 'center'
         }, {
           title: '库存',
           key: 'stockQty',
           sortable: true
         }, {
           title: '所在仓库',
-          key: 'storeName'
+          key: 'storeName',
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <span>{row.storeName ? row.storeName : '--'}</span>
+          )
         }, {
           title: '操作',
           key: 'handle',
+          align: 'center',
+          width: 185,
           render: (h, { row, column, index }) => (
             <div>
-              <i-button type="text" on-click={() => this.handleEdit(row)}>上架</i-button>
-              <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
+              <i-button size="small" type="success" on-click={() => this.handleEdit(row)}>上架</i-button>
+              <i-button size="small" type="primary" class="margin-left-10" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="left"
@@ -166,7 +177,7 @@ export default {
       goodsAdd(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
-          this.showModal = false
+          // this.showModal = false
           this.fetchData()
         }
       })

@@ -11,7 +11,7 @@ export default class GoodsCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(type => Goods, goods => goods.category, {
+  @ManyToMany(type => Goods, goods => goods.categorys, {
     cascadeInsert: true,
     cascadeUpdate: true
   })
@@ -23,7 +23,7 @@ export default class GoodsCategory {
   /**
    * 指向二级或三级分类的对应父级id
    */
-  @Column()
+  @Column({ default: 0 })
   pid: number;
 
   /**

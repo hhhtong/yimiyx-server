@@ -21,9 +21,9 @@ export default class Goods {
   /**
    * 对应所关联的类目表(goods_category)中的类目id
    */
-  @ManyToOne(type => GoodsCategory, category => category.goods)
+  @ManyToMany(type => GoodsCategory, category => category.goods)
   @JoinTable()
-  category: GoodsCategory[];
+  categorys: GoodsCategory[];
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)

@@ -25,7 +25,7 @@
         <FormItem label="商品规格" prop="specification">
           <Input v-model="formValidate.specification" placeholder="请输入商品规格"></Input>
         </FormItem>
-        <FormItem label="所属类别">
+        <FormItem label="商品分类">
           <div>
             <Tag
               :color="randomColor()"
@@ -147,7 +147,7 @@ export default {
     },
     handleAddTag() {
       const newCategorys = this._getJoinCategory(this.categoryChild)
-      this.categorys = [...newCategorys, ...this.categorys]
+      this.categorys = [...this.categorys, ...newCategorys]
       this.categoryParent = null
       this.categoryChild = []
       this.showPoptip = false
@@ -161,7 +161,7 @@ export default {
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
         const name = `${parent.name} / ${current.name}`
-        const tempObj = { no, name, id: current.no }
+        const tempObj = { no, name, categoryIds: { id: current.id } }
 
         if (_tempObj) {
           _tempObj.no = parent.no + _tempObj.no
