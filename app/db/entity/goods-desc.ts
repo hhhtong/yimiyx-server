@@ -54,12 +54,6 @@ export default class GoodsDesc {
   isOnline: string;
 
   /**
-   * 软删除标志位
-   */
-  @Column('tinyint')
-  isDelete: string;
-
-  /**
    * 创建时间
    */
   @CreateDateColumn()
@@ -70,4 +64,10 @@ export default class GoodsDesc {
    */
   @UpdateDateColumn()
   updatedAt: Date;
+
+  /**
+   * 删除时间
+   */
+  @Column({ nullable: true })
+  deletedAt: Date;
 }

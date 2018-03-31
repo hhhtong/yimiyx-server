@@ -70,6 +70,6 @@ export default class Goods {
   /**
    * 删除时间
    */
-  @Column({ default: 0 })
+  @Column({ nullable: true })
   deletedAt: Date;
 }

@@ -45,8 +45,8 @@ export default class GoodsCategory {
   no: string;
 
   /**
-   * 软删除的标志位 1:删除
+   * 删除时间
    */
-  @Column('tinyint', { length: 1, default: 0 })
-  isDelete: number;
+  @Column({ nullable: true })
+  deletedAt: Date;
 }

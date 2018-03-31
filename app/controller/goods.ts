@@ -12,7 +12,7 @@ export default class GoodsController extends BaseController {
     }
   }
 
-  async add() {
+  async save() {
     const { service, ctx } = this;
     const rowData = ctx.request.body;
     // 以数组中的第一个类目作为序号前缀
@@ -20,7 +20,7 @@ export default class GoodsController extends BaseController {
     // 获取Goods表中的categorys[]
     rowData.categorys = rowData.categorys.map(item => item.categoryIds)
     try {
-      await service.goods.insert(rowData);
+      await service.goods.save(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -31,22 +31,7 @@ export default class GoodsController extends BaseController {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body
     try {
-      await service.goods.delete([rowData.id], { isDelete: 1 });
-      this.success();
-    } catch (error) {
-      this.fail(error);
-    }
-  }
-
-  async update() {
-    const { service, ctx } = this;
-    const [treeData, deleteIds]: any = ctx.request.body
-
-    try {
-      if (deleteIds.length > 0) {
-        await service.goods.delete(deleteIds, { isDelete: 1 });
-      }
-      // await service.goods.update(rowData);
+      await service.goods.delete(rowData.id);
       this.success();
     } catch (error) {
       this.fail(error);

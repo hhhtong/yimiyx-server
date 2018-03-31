@@ -14,6 +14,7 @@
     <Modal
       :value="show"
       title="添加商品"
+      :mask-closable="isEdit"
       @on-visible-change="handleVisibleChange">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
         <FormItem label="商品名称" prop="goodsName">
@@ -28,12 +29,12 @@
         <FormItem label="商品分类">
           <div>
             <Tag
-              :color="randomColor()"
-              v-for="item in categorys"
+              :color="index | stokeColor"
+              v-for="(item, index) in categorys"
               :key="item.no"
               :name="item.no"
               closable
-              @on-close="() => handleClose(item)">
+              @on-close="() => handleDelete(item)">
               {{ item.name }}
             </Tag>
             <Poptip v-model="showPoptip" placement="bottom" width="250">
@@ -55,7 +56,7 @@
                   <Button type="primary" size="small" @click="handleAddTag">确定</Button>
                 </Row>
               </div>
-              <Button icon="ios-plus-empty" type="dashed" size="small">添加类别</Button>
+              <Button icon="ios-plus-empty" type="dashed" size="small">添加分类</Button>
             </Poptip>
           </div>
         </FormItem>
@@ -64,8 +65,8 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="primary" @click="handleSubmit">确 定</Button>
-        <Button type="ghost" @click="handleReset" style="margin-left: 8px">重 置</Button>
+        <Button type="primary" @click="handleSubmit" :loading="loading" class="margin-right-8">确 定</Button>
+        <Button type="ghost" @click="handleReset">重 置</Button>
       </div>
     </Modal>
   </div>
@@ -74,6 +75,7 @@
 <script>
 import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
+import tagColors from './TagColors.js'
 
 const formValidate = {
   goodsName: '',
@@ -82,7 +84,6 @@ const formValidate = {
   stockQty: 0
 }
 
-const colors = ['yellow', 'red', 'blue', 'green']
 
 export default {
   props: {
@@ -95,6 +96,7 @@ export default {
     return {
       isEdit: false,
       showPoptip: false,
+      loading: false,
       categorys: [],
       categoryParent: null,
       categoryChild: [],
@@ -126,7 +128,7 @@ export default {
         val = cloneDeep(val)
         this.isEdit = true // 标记为编辑模式
         this.formValidate = val
-        this.categorys = val.categorys
+        this.categorys = this._getJoinCategory(val.categorys.map(item => item.id))
       } else {
         this.isEdit = false // 标记为新增模式
         this.formValidate = cloneDeep(formValidate)
@@ -135,16 +137,28 @@ export default {
     }
   },
 
+  filters: {
+    stokeColor(index) {
+      return tagColors[index % tagColors.length]
+    }
+  },
+
+  created () {
+    this.$on('handleSave', (data, isEdit) => {
+      this.loading = true
+      setTimeout(() => this.loading = false, 1500)
+    })
+  },
+
   methods: {
     hasChildren(list) {
       return list[0] && list[0].children
     },
-    randomColor() {
-      return colors[Math.floor(Math.random() * colors.length)]
-    },
-    handleClose(item) {
+
+    handleDelete(item) {
       this.categorys.splice(this.categorys.indexOf(item), 1)
     },
+
     handleAddTag() {
       const newCategorys = this._getJoinCategory(this.categoryChild)
       this.categorys = [...this.categorys, ...newCategorys]
@@ -152,12 +166,19 @@ export default {
       this.categoryChild = []
       this.showPoptip = false
     },
-    _getJoinCategory(list) {
+
+    // 暴露给父级调用
+    GetJoinCategory(idsArr) {
+      return this._getJoinCategory(idsArr)
+    },
+
+    _getJoinCategory(idsArr) {
       const tempArr = []
       const done = (item, _tempObj) => {
         const current = _tempObj
           ? item
           : this.categoryListEqual.filter(v => v.id === item)[0]
+
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
         const name = `${parent.name} / ${current.name}`
@@ -175,27 +196,28 @@ export default {
         }
       }
 
-      for (const item of list) {
+      for (const item of idsArr) {
         done(item)
       }
 
       return tempArr
     },
-    handleDone() {
 
-    },
-    handleCancel() {
-
-    },
     handleVisibleChange(val) {
       if (!val) {
         this.$emit('update:show', false)
+        this.$emit('handleClose')
         this.handleReset()
       }
     },
+
     handleSubmit() {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
+          if (this.categorys.length === 0) {
+            return this.$Message.error('请至少添加一个分类!')
+          }
+
           const data = { ...this.formValidate, categorys: this.categorys }
           this.$emit('handleSave', data, this.isEdit)
         } else {
@@ -203,7 +225,11 @@ export default {
         }
       })
     },
+
     handleReset() {
+      this.formValidate.goodsAlias = ''
+      this.formValidate.stockQty = 0
+      this.categorys = []
       this.$refs['formValidate'].resetFields()
     }
   }

@@ -28,7 +28,6 @@ exports.default = (app) => {
      * Controller
      */
     router.get('/goods', controller.goods.index);
-    router.post('/goods/add', controller.goods.add);
+    router.post('/goods/save', controller.goods.save);
     router.post('/goods/delete', controller.goods.delete);
-    router.post('/goods/update', controller.goods.update);
 };

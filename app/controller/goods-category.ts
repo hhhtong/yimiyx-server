@@ -33,7 +33,7 @@ export default class GoodsCategoryController extends BaseController {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body
     try {
-      await service.goodsCategory.delete([rowData.id], { isDelete: 1 });
+      await service.goodsCategory.delete([rowData.id], { deletedAt: new Date() });
       this.success();
     } catch (error) {
       this.fail(error);
@@ -47,7 +47,7 @@ export default class GoodsCategoryController extends BaseController {
 
     try {
       if (deleteIds.length > 0) {
-        await service.goodsCategory.delete(deleteIds, { isDelete: 1 });
+        await service.goodsCategory.delete(deleteIds, { deletedAt: new Date() });
       }
       await service.goodsCategory.update(rowData);
       this.success();

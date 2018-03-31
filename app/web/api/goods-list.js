@@ -12,11 +12,11 @@ export function goodsGet(params) {
 }
 
 /**
- * 添加供货商
+ * 保存供货商 新加 | 修改
  */
-export function goodsAdd(data) {
+export function goodsSave(data) {
   return request({
-    url: '/goods/add',
+    url: '/goods/save',
     method: 'post',
     data
   })
@@ -28,17 +28,6 @@ export function goodsAdd(data) {
 export function goodsDel(data) {
   return request({
     url: '/goods/delete',
-    method: 'post',
-    data
-  })
-}
-
-/**
- * 修改供货商
- */
-export function goodsUpdate(data) {
-  return request({
-    url: '/goods/update',
     method: 'post',
     data
   })

@@ -22,20 +22,22 @@ export default class GoodsService extends BaseService {
   }
 
   async query({ page = 1, rows = 20, goodsNo, goodsName }: query) {
-    const { db, query } = await this._getInstance();
+    let { db, query } = await this._getInstance();
     const where1 = +goodsNo ? `goods.goodsNo = ${goodsNo}` : '1 = 1';
 
     try {
+      query = query
+        .where('ISNULL(goods.deletedAt)')
+        .andWhere(`goods.goodsName LIKE '%${goodsName}%' AND ${where1}`);
+
       const list = await query
-        .where(`goods.goodsName LIKE '%${goodsName}%' AND ${where1}`)
         .skip((page - 1) * rows)
         .take(rows)
+        .leftJoinAndSelect('goods.categorys', 'categorys')
         .getMany();
-      const total = await query
-        .where(`goods.goodsName LIKE '%${goodsName}%'`)
-        .getCount();
+      const total = await query.getCount();
 
-      this.log.debug('分类列表:', list)
+      this.log.debug('商品列表:', list)
 
       await db.close();
       return { list, total };
@@ -45,7 +47,7 @@ export default class GoodsService extends BaseService {
     }
   }
 
-  async insert(goodsColumnData) {
+  async save(goodsColumnData) {
     const { db, repo, query } = await this._getInstance();
     let goodsNo: string = goodsColumnData.goodsNo;
     const maxNo: number = await query.where(`goods.goodsNo LIKE '${goodsNo}%'`).getCount() + 1;
@@ -63,27 +65,12 @@ export default class GoodsService extends BaseService {
     }
   }
 
-  async update(rowData: any[any]) {
+  async delete(id: number) {
     const { db, repo } = await this._getInstance();
 
     try {
-      await repo.save(rowData);
-      this.log.info('更新一个分类：', rowData);
-      await db.close();
-    } catch (error) {
-      await db.close();
-      this.error(error);
-    }
-  }
-
-  async delete(ids: any[number], rowData: object) {
-    const { db, repo } = await this._getInstance();
-
-    try {
-      for (const id of ids) {
-        await repo.updateById(id, rowData);
-      }
-      this.log.info('删除一些分类：', ids);
+      await repo.updateById(id, { deletedAt: new Date() });
+      this.log.info('删除一个商品,ID：', id);
       await db.close();
     } catch (error) {
       await db.close();

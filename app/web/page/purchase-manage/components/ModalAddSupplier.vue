@@ -54,7 +54,7 @@
         <FormItem label="开户行地址" prop="address" v-if="_isBank">
           <Input v-model="formValidate.bankAddress" type="textarea" :autosize="{ minRows: 2,maxRows: 4 }" placeholder="请输入开户行地址"></Input>
         </FormItem>
-        <FormItem label="经营产品" prop="categoryID">
+        <FormItem label="供应产品" prop="categoryID">
           <Select v-model="formValidate.categoryID" placeholder="请选择商品分类" filterable>
             <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
           </Select>

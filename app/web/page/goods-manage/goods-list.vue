@@ -10,10 +10,12 @@
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加商品</Button>
       <ModalSaveGoods
+        ref="ModalSaveGoods"
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
         :category-list="categoryList"
-        @handleSave="handleSave">
+        @handleSave="handleSave"
+        @handleClose="defaultModalData = false">
       </ModalSaveGoods>
     </Header>
     <Layout>
@@ -29,10 +31,11 @@
 
 <script>
 import ModalSaveGoods from './components/ModalSaveGoods'
-import { goodsGet, goodsAdd, goodsDel, goodsUpdate, getCategoryList } from '@/api'
+import { goodsGet, goodsSave, goodsDel, getCategoryList } from '@/api'
 import { mapState } from 'vuex'
-import { Badge, Poptip } from 'iview'
+import { Badge, Poptip, Tag } from 'iview'
 import util from '@/libs/util'
+import tagColors from './components/TagColors.js'
 
 export default {
   name: 'goods-list',
@@ -54,28 +57,48 @@ export default {
       tableColumns: [
         {
           title: '#',
-          key: 'id',
+          type: 'index',
           width: 60
         }, {
           title: '商品编号',
           key: 'goodsNo',
-          width: 100,
+          width: 105,
           sortable: true
         }, {
-          title: '商品名称/别名',
+          title: '商品名称',
           key: 'goodsName',
+          align: 'center'
+        }, {
+          title: '商品别名',
+          key: 'goodsAlias',
           align: 'center',
-          render: (h, { row, column, index }) => (
-            <div>{row.goodsName}<br />{row.goodsAlias}</div>
-          )
+          render: (h, { row, column, index }) => {
+            return <span>{row.goodsAlias ? row.goodsAlias : '--'}</span>
+          }
         }, {
           title: '规格',
           key: 'specification',
           align: 'center'
         }, {
           title: '所属分类',
-          key: 'categoryName',
-          align: 'center'
+          key: 'categorys',
+          width: 270,
+          align: 'center',
+          render: (h, { row, column, index }) => {
+            const categorys = this.$refs.ModalSaveGoods
+              .GetJoinCategory(row.categorys.map(item => item.id))
+
+            return categorys.map((item, index) =>
+              <div>
+                <Tag
+                  type="dot"
+                  name={item.no}
+                  color={tagColors[index % tagColors.length]}>
+                  {item.name}
+                </Tag>
+              </div>
+            )
+          }
         }, {
           title: '库存',
           key: 'stockQty',
@@ -122,9 +145,9 @@ export default {
     }
   },
 
-  created() {
-    this.fetchData()
-    this._getCategoryList()
+  async created() {
+    await this.fetchCategoryList()
+    await this.fetchData()
   },
 
   methods: {
@@ -174,18 +197,20 @@ export default {
     },
     // 添加 | 修改商品 -> 保存
     handleSave(formData) {
-      goodsAdd(formData).then(result => {
+      goodsSave(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
-          // this.showModal = false
+          this.showModal = false
           this.fetchData()
         }
       })
     },
 
-    _getCategoryList() {
+    fetchCategoryList() {
       if (this.categoryList.length === 0) {
-        this.$store.dispatch('updateCategoryList')
+        return this.$store.dispatch('updateCategoryList')
+      } else {
+        return Promise.resolve({ msg: '类目已获取，无需再次获取' })
       }
     }
   }

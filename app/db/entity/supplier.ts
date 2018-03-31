@@ -1,7 +1,7 @@
 /**
  * 供货商表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import GoodsCategory from './goods-category';
 
 @Entity()
@@ -107,8 +107,14 @@ export default class Supplier {
   createdAt: Date;
 
   /**
-   * 软删除的标志位 1:删除
+   * 更新时间
    */
-  @Column('tinyint', { default: 0 })
-  isDelete: number;
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  /**
+   * 删除时间
+   */
+  @Column({ nullable: true })
+  deletedAt: Date;
 }

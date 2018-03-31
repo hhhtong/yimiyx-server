@@ -114,7 +114,7 @@ export default {
             </div>
           )
         }, {
-          title: '经营产品', // 商品分类
+          title: '供应产品', // 也是商品分类
           key: 'categoryName'
         }, {
           title: '所在地区',
@@ -200,6 +200,15 @@ export default {
       supplierGet(this._listQuery).then(result => {
         if (result.code === 50000) {
           const { list, total } = result.data
+
+          list.forEach(item => {
+            if (item.category) {
+              item.categoryID = item.category.id
+              item.categoryName = item.category.name
+              delete item.category
+            }
+          })
+
           this.tableData = list
           this.total = total
           this.listLoading = false

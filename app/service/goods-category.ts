@@ -12,22 +12,21 @@ export default class GoodsCategoryService extends BaseService {
   }
 
   async query({ page = 1, rows = 20, name = '' }) {
-    const { db, query } = await this._getInstance();
+    let { db, query } = await this._getInstance();
 
     try {
+      query = query.where('ISNULL(category.deletedAt)')
+
       const list = await query
-        .where('category.isDelete != 1')
         .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
         .orderBy('category.no', 'DESC')
         // .skip((page - 1) * rows)
         // .take(rows)
         .getMany();
       const total = await query
-        .where('category.isDelete != 1')
         .andWhere(`(category.name LIKE '%${name}%' AND category.type = 1)`)
         .getCount();
       const idMax = await query
-        .where('category.isDelete != 1')
         .andWhere(`category.name LIKE '%${name}%'`)
         .select("MAX(id) AS idMax")
         .getRawMany();
