@@ -8,7 +8,8 @@ interface query {
 
 interface query {
   goodsNo?: string, // 商品编号
-  goodsName?: string // 商品名称
+  goodsName?: string, // 商品名称
+  isOnline: string | number // 是否出售中的商品
 }
 
 export default class GoodsService extends BaseService {
@@ -21,14 +22,19 @@ export default class GoodsService extends BaseService {
     return { db, repo, query };
   }
 
-  async query({ page = 1, rows = 20, goodsNo, goodsName }: query) {
+  async query({ page = 1, rows = 20, goodsNo, goodsName, isOnline }: query) {
     let { db, query } = await this._getInstance();
     const where1 = +goodsNo ? `goods.goodsNo = ${goodsNo}` : '1 = 1';
+    const where2 = +isOnline === 1
+      ? `goods.isOnline = ${isOnline}`
+      : +isOnline === 0
+        ? 'goods.isOnline != 1'
+        : '1 = 1';
 
     try {
       query = query
         .where('ISNULL(goods.deletedAt)')
-        .andWhere(`goods.goodsName LIKE '%${goodsName}%' AND ${where1}`);
+        .andWhere(`goods.goodsName LIKE '%${goodsName}%' AND ${where1} AND ${where2}`);
 
       const list = await query
         .skip((page - 1) * rows)

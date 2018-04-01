@@ -123,6 +123,13 @@ export const appRouter = [
         name: 'goods-category',
         title: '商品分类',
         component: $import('goods-manage/goods-category')
+      // }, {
+      //   hidden: true,
+      //   path: 'goods-desc',
+      //   icon: 'ios-paper-outline',
+      //   name: 'goods-desc',
+      //   title: '商品描述',
+      //   component: $import('goods-manage/goods-desc')
       }
     ]
   },

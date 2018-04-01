@@ -55,6 +55,13 @@ export default class Goods {
   @Column('int', { length: 10, default: 0 })
   stockQty: number;
 
+
+  /**
+   * 是否在售
+   */
+  @Column('tinyint', { default: -1 })
+  isOnline: string;
+
   /**
    * 创建时间
    */

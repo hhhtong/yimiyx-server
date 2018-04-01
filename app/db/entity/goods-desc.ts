@@ -1,8 +1,10 @@
 /**
  * 商品信息详情表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, UpdateDateColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, JoinColumn, OneToOne, ManyToMany, JoinTable } from 'typeorm';
+import Goods from './goods';
 import GoodsTag from './goods-tag';
+import SpecialOffers from './goods-special-offers';
 
 @Entity()
 export default class GoodsDesc {
@@ -11,11 +13,25 @@ export default class GoodsDesc {
   id: number;
 
   /**
+   * 和商品表(goods)建立联系
+   */
+  @OneToOne(type => Goods)
+  @JoinColumn()
+  goods: Goods
+
+  /**
    * 对应商品标签
    */
   @ManyToMany(type => GoodsTag, tag => tag.goods)
   @JoinTable()
   tags: GoodsTag[];
+
+  /**
+   * 该商品参与的优惠活动
+   */
+  @ManyToMany(type => SpecialOffers, specialOffers => specialOffers.goods)
+  @JoinTable()
+  specialOffers: SpecialOffers[];
 
   /**
    * 商品描述
@@ -30,28 +46,28 @@ export default class GoodsDesc {
   unitPrice: number;
 
   /**
-   * 对外售价(按规格)
+   * 对外售价
    */
   @Column('decimal', { precision: 5, scale: 2 })
   resalePrice: number;
 
   /**
-   * 小图, 路径
+   * 出售的商品总量
+   */
+  @Column()
+  goodsAmount: number;
+
+  /**
+   * 小图[url1, url2]
    */
   @Column('json')
   smallImgPaths: any;
 
   /**
-   * 大图
+   * 大图[url1, url2]
    */
   @Column('json')
   imgPaths: any;
-
-  /**
-   * 是否在售
-   */
-  @Column('tinyint')
-  isOnline: string;
 
   /**
    * 创建时间
@@ -64,10 +80,4 @@ export default class GoodsDesc {
    */
   @UpdateDateColumn()
   updatedAt: Date;
-
-  /**
-   * 删除时间
-   */
-  @Column({ nullable: true })
-  deletedAt: Date;
 }

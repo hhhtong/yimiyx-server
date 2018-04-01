@@ -5,8 +5,12 @@
 <template>
   <Layout class="table-con">
     <Header style="background: white">
-      <label class="margin-left-20">商品：</label>
+      <label>商品：</label>
       <Input v-model="listQuery.goods" clearable placeholder="请输入商品编号/名称" style="width: 160px"></Input>
+      <label class="margin-left-20">状态：</label>
+      <Select v-model="listQuery.isOnline" style="width:100px">
+        <Option v-for="item in onlineStatus" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加商品</Button>
       <ModalSaveGoods
@@ -17,6 +21,13 @@
         @handleSave="handleSave"
         @handleClose="defaultModalData = false">
       </ModalSaveGoods>
+      <ModalPutawayGoods
+        :show.sync="showModal2"
+        :default-modal-data="defaultModalData2"
+        :category-list="categoryList"
+        @handleSave="handleSave2"
+        @handleClose="defaultModalData2 = false">
+      </ModalPutawayGoods>
     </Header>
     <Layout>
       <Content>
@@ -31,16 +42,23 @@
 
 <script>
 import ModalSaveGoods from './components/ModalSaveGoods'
+import ModalPutawayGoods from './components/ModalPutawayGoods'
 import { goodsGet, goodsSave, goodsDel, getCategoryList } from '@/api'
 import { mapState } from 'vuex'
-import { Badge, Poptip, Tag } from 'iview'
+import { Poptip, Tag, ButtonGroup } from 'iview'
 import util from '@/libs/util'
 import tagColors from './components/TagColors.js'
+
+const onlineStatus = [
+  { id: 'all', name: '全部' },
+  { id: 1, name: '出售中' },
+  { id: 0, name: '已下架' }
+]
 
 export default {
   name: 'goods-list',
 
-  components: { ModalSaveGoods },
+  components: { ModalSaveGoods, ModalPutawayGoods },
 
   data() {
     return {
@@ -49,10 +67,14 @@ export default {
       listQuery: {
         page: 1,
         rows: 20,
-        goods: '' // 商品名称 | 编号
+        goods: '', // 商品名称 | 编号
+        isOnline: ''
       },
+      onlineStatus,
       showModal: false,
+      showModal2: false,
       defaultModalData: false,
+      defaultModalData2: false,
       tableData: [],
       tableColumns: [
         {
@@ -111,20 +133,39 @@ export default {
             <span>{row.storeName ? row.storeName : '--'}</span>
           )
         }, {
+          title: '状态',
+          key: 'isOnline',
+          width: 100,
+          align: 'center',
+          render: (h, { row, column, index }) => {
+            if (row.isOnline === 1) {
+              return <Tag type="border" color="green">出售中</Tag>
+            }
+
+            if (row.isOnline === 0) {
+              return <Tag type="border">已下架</Tag>
+            }
+
+            if (row.isOnline === -1) {
+              return <Tag type="border" color="yellow">未上架</Tag>
+            }
+          }
+        }, {
           title: '操作',
           key: 'handle',
           align: 'center',
-          width: 185,
+          width: 200,
           render: (h, { row, column, index }) => (
-            <div>
-              <i-button size="small" type="success" on-click={() => this.handleEdit(row)}>上架</i-button>
-              <i-button size="small" type="primary" class="margin-left-10" on-click={() => this.handleEdit(row)}>编 辑</i-button>
+            <div class="text-right">
+              <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row)}>上 架</i-button>
+              <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row)}>下 架</i-button>
+              <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="left"
                 title="删除此商品后，该商品也会从已上架的商品列表消失，您确认此操作？"
                 on-on-ok={() => this.handleDelete(row)}>
-                <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
+                <i-button class="noradius" size="small" type="error">删 除</i-button>
               </Poptip>
             </div>
           )
@@ -162,18 +203,22 @@ export default {
         }
       })
     },
+
     handleSizeChange(val) {
       this.listQuery.rows = val
       this.fetchData()
     },
+
     handleCurrentChange(val) {
       this.listQuery.page = val
       this.fetchData()
     },
+
     // 查询
     handleQuery() {
       this.fetchData()
     },
+
     // 导出Excel
     handleExportExcel() {
       this.$refs.tableCsv.exportCsv({
@@ -181,11 +226,24 @@ export default {
         original: false
       })
     },
+
+    // 上架商品 -> 显示Modal
+    handlePutaway(row) {
+      this.defaultModalData2 = row
+      this.showModal2 = true
+    },
+
+    // 下架商品
+    handleSoldout(row) {
+
+    },
+
     // 编辑 | 添加 商品 -> 显示Modal
     handleEdit(row) {
       this.defaultModalData = row
       this.showModal = true
     },
+
     // 删除商品
     handleDelete(row) {
       goodsDel(row).then(result => {
@@ -195,6 +253,7 @@ export default {
         }
       })
     },
+
     // 添加 | 修改商品 -> 保存
     handleSave(formData) {
       goodsSave(formData).then(result => {
@@ -204,6 +263,17 @@ export default {
           this.fetchData()
         }
       })
+    },
+
+    // 添加 | 修改商品 -> 保存
+    handleSave2(formData) {
+      // putawayGoodsSave(formData).then(result => {
+      //   if (result.code === 50000) {
+      //     this.$Message.success(result.msg)
+      //     this.showModal = false
+      //     this.fetchData()
+      //   }
+      // })
     },
 
     fetchCategoryList() {

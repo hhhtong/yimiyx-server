@@ -24,7 +24,7 @@
           <Input v-model="formValidate.goodsAlias" placeholder="请输入别名"></Input>
         </FormItem>
         <FormItem label="商品规格" prop="specification">
-          <Input v-model="formValidate.specification" placeholder="比如：450g/盒"></Input>
+          <Input v-model="formValidate.specification" placeholder="请输入商品规格"></Input>
         </FormItem>
         <FormItem label="商品分类">
           <div>
