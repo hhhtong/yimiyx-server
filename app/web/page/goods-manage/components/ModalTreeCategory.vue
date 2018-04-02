@@ -1,4 +1,4 @@
-<style>
+<style lang="stylus">
 .modal-tree-item-con {
   float: right;
   margin-right: 32px;

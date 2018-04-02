@@ -1,30 +1,30 @@
 <style lang="stylus">
-    @import '../../../styles/loading.styl';
+@import '../../../styles/loading.styl'
 </style>
 
 <template>
-    <div>
-        <Card shadow>
-            <textarea class='tinymce-textarea' id="tinymceEditer"></textarea>
-        </Card>
-        <Spin fix v-if="spinShow">
-            <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-            <div>加载组件中...</div>
-        </Spin>
-    </div>
+  <div>
+    <Card shadow>
+      <textarea class='tinymce-textarea' id="tinymceEditer"></textarea>
+    </Card>
+    <Spin fix v-if="spinShow">
+      <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+      <div>加载组件中...</div>
+    </Spin>
+  </div>
 </template>
 
 <script>
 import tinymce from 'tinymce'
 export default {
   name: 'text-editor',
-  data () {
+  data() {
     return {
       spinShow: true
     }
   },
   methods: {
-    init () {
+    init() {
       this.$nextTick(() => {
         let vm = this
         let height = document.body.offsetHeight - 300
@@ -63,15 +63,11 @@ export default {
       })
     }
   },
-  mounted () {
+  mounted() {
     this.init()
   },
-  destroyed () {
+  destroyed() {
     tinymce.get('tinymceEditer').destroy()
   }
 }
 </script>
-
-<style>
-
-</style>

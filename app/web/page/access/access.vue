@@ -1,6 +1,6 @@
 <style lang="stylus">
-    @import '../../styles/common.styl';
-    @import './access.styl';
+@import '../../styles/common.styl'
+@import './access.styl'
 </style>
 
 <template>
@@ -46,19 +46,19 @@
 import Cookies from 'js-cookie'
 export default {
   name: 'access_index',
-  data () {
+  data() {
     return {
       accessCode: parseInt(Cookies.get('access')),
       switchValue: parseInt(Cookies.get('access')) === 1
     }
   },
   computed: {
-    avatorPath () {
+    avatorPath() {
       return localStorage.avatorImgPath
     }
   },
   methods: {
-    changeAccess (res) {
+    changeAccess(res) {
       if (res) {
         this.accessCode = 1
         Cookies.set('access', 1)
@@ -71,7 +71,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
