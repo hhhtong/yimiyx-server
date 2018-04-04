@@ -50,6 +50,12 @@ export default class Goods {
   specification: string;
 
   /**
+   * 产地
+   */
+  @Column('varchar', { length: 50, default: '' })
+  madeIn: string;
+
+  /**
    * 库存数量
    */
   @Column('int', { length: 10, default: 0 })

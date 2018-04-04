@@ -40,7 +40,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table ref="tableCsv":data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table :height="tableConHeight" ref="tableCsv":data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -176,7 +176,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['categoryList']),
+    ...mapState(['categoryList', 'tableConHeight']),
     _listQuery() {
       const query = this.listQuery
       return {

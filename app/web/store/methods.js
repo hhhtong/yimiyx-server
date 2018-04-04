@@ -5,6 +5,10 @@ export const mutations = {
   UPDATE_CATEGORY_LIST(state, [list, listEqual]) {
     state.categoryList = list
     state.categoryListEqual = listEqual
+  },
+
+  SET_TABLECONHEIGHT(state, height) {
+    state.tableConHeight = height
   }
 }
 

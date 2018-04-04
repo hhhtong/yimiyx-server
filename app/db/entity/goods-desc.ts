@@ -4,7 +4,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, JoinColumn, OneToOne, ManyToMany, JoinTable } from 'typeorm';
 import Goods from './goods';
 import GoodsTag from './goods-tag';
-import SpecialOffers from './goods-special-offers';
 
 @Entity()
 export default class GoodsDesc {
@@ -25,13 +24,6 @@ export default class GoodsDesc {
   @ManyToMany(type => GoodsTag, tag => tag.goods)
   @JoinTable()
   tags: GoodsTag[];
-
-  /**
-   * 该商品参与的优惠活动
-   */
-  @ManyToMany(type => SpecialOffers, specialOffers => specialOffers.goods)
-  @JoinTable()
-  specialOffers: SpecialOffers[];
 
   /**
    * 商品描述
@@ -56,6 +48,18 @@ export default class GoodsDesc {
    */
   @Column()
   goodsAmount: number;
+
+  /**
+   * @type {Number} - 优惠活动的类型
+   * 1: 打折
+   * 2：满减
+   * 3：指定价格出售。如1元大促销
+   * 4: 限量(前xx名购买xx价)暂时用不到
+   * @value {Number, String} - 参与活动的有效值，实际含义以优惠的类型type决定
+   * @example - [{ type: 1, value: 2.72 }, { type: 2, value: '300.00' }]
+   */
+  @Column({ type: 'json', nullable: true })
+  type: any;
 
   /**
    * 小图[url1, url2]

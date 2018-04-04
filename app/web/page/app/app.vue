@@ -1,5 +1,7 @@
 <style lang="stylus">
 @import "../../styles/common.styl"
+@import "../../styles/iview.styl"
+@import "../../styles/scrollbar.styl"
 
 html,
 body {
@@ -44,14 +46,7 @@ export default {
       theme: this.$store.state.app.themeColor
     }
   },
-  mounted() {
-    this.currentPageName = this.$route.name
-    // 显示打开的页面的列表
-    this.$store.commit('setOpenedList')
-    this.$store.commit('initCachepage')
-    // 权限菜单过滤相关
-    this.$store.commit('updateMenulist')
-  },
+
   created() {
     const tagsList = []
     appRouter.map((item) => {
@@ -62,6 +57,32 @@ export default {
       }
     })
     this.$store.commit('setTagsList', tagsList)
+  },
+
+  mounted() {
+    this.currentPageName = this.$route.name
+    // 显示打开的页面的列表
+    this.$store.commit('setOpenedList')
+    this.$store.commit('initCachepage')
+    // 权限菜单过滤相关
+    this.$store.commit('updateMenulist')
+    this.updateTableConHeight()
+    window.addEventListener('resize', this.updateTableConHeight)
+  },
+
+  updated () {
+    this.updateTableConHeight()
+  },
+
+  methods: {
+    // 更新各个页面中的table的高度
+    updateTableConHeight() {
+      const currentTableCon = this.$el.querySelector('.table-con > .ivu-layout')
+
+      if (currentTableCon) {
+        this.$store.commit('SET_TABLECONHEIGHT', currentTableCon.clientHeight)
+      }
+    }
   }
 }
 </script>

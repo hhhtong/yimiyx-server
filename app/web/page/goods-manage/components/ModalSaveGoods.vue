@@ -16,11 +16,11 @@
       title="添加商品"
       :mask-closable="isEdit"
       @on-visible-change="handleVisibleChange">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100">
         <FormItem label="商品名称" prop="goodsName">
           <Input v-model="formValidate.goodsName" placeholder="请输入商品名称"></Input>
         </FormItem>
-        <FormItem label="商品别名">
+        <FormItem label="商品别名(选填)">
           <Input v-model="formValidate.goodsAlias" placeholder="请输入别名"></Input>
         </FormItem>
         <FormItem label="商品规格" prop="specification">
@@ -60,6 +60,9 @@
             </Poptip>
           </div>
         </FormItem>
+        <FormItem label="产地(选填)">
+          <Input v-model="formValidate.madeIn" type="textarea" placeholder="请填写该商品的原产地"></Input>
+        </FormItem>
         <FormItem label="库存(选填)">
           <InputNumber v-model="formValidate.stockQty" :max="99999" :min="0" :step="10"></InputNumber>
         </FormItem>
@@ -81,6 +84,7 @@ const formValidate = {
   goodsName: '',
   goodsAlias: '',
   specification: '',
+  madeIn: '',
   stockQty: 0
 }
 

@@ -16,7 +16,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table :height="tableConHeight" :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -30,6 +30,7 @@ import { cloneDeep } from 'lodash'
 import ModalTreeCategory from './components/ModalTreeCategory'
 import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api'
 import { Badge, Poptip } from 'iview'
+import { mapState } from 'vuex'
 
 export default {
   name: 'goods-category',
@@ -82,6 +83,10 @@ export default {
         }
       ]
     }
+  },
+
+  computed: {
+    ...mapState(['tableConHeight']),
   },
 
   created() {

@@ -37,6 +37,7 @@ export default class GoodsService extends BaseService {
         .andWhere(`goods.goodsName LIKE '%${goodsName}%' AND ${where1} AND ${where2}`);
 
       const list = await query
+        .orderBy('goods.createdAt', 'DESC')
         .skip((page - 1) * rows)
         .take(rows)
         .leftJoinAndSelect('goods.categorys', 'categorys')

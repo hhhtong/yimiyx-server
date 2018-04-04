@@ -31,7 +31,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table :height="tableConHeight" :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -122,6 +122,9 @@ export default {
             )
           }
         }, {
+          title: '产地',
+          key: 'madeIn'
+        }, {
           title: '库存',
           key: 'stockQty',
           sortable: true
@@ -175,7 +178,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['categoryList']),
+    ...mapState(['categoryList', 'tableConHeight']),
     _listQuery() {
       return util.parseSearchField({
         query: this.listQuery,
@@ -230,7 +233,7 @@ export default {
     // 上架商品 -> 显示Modal
     handlePutaway(row) {
       this.defaultModalData2 = row
-      this.showModal2 = true
+      // this.showModal2 = true
     },
 
     // 下架商品
