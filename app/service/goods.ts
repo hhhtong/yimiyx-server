@@ -24,7 +24,7 @@ export default class GoodsService extends BaseService {
 
   async query({ page = 1, rows = 20, goodsNo, goodsName, isOnline }: query) {
     let { db, query } = await this._getInstance();
-    const where1 = +goodsNo ? `goods.goodsNo = ${goodsNo}` : '1 = 1';
+    const where1 = +goodsNo ? `goods.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
     const where2 = +isOnline === 1
       ? `goods.isOnline = ${isOnline}`
       : +isOnline === 0

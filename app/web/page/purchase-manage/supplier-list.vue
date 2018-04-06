@@ -19,13 +19,13 @@
   <Layout class="table-con">
     <Header style="background: white">
       <label>城市：</label>
-      <al-cascader v-model="listQuery.areaCode" data-type="code" level="1"  style="width: 138px;display:inline-block"/>
+      <al-cascader v-model="listQuery.areaCode" data-type="code" level="1" @on-change="handleQuery" style="width: 138px;display:inline-block"/>
       <label class="margin-left-20">类别：</label>
-      <Select v-model="listQuery.categoryID" style="width:100px" filterable>
+      <Select v-model="listQuery.categoryID" @on-change="handleQuery" style="width:100px" filterable>
         <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">名称/编号：</label>
-      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" style="width: 160px"></Input>
+      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出数据</Button>
       <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
@@ -160,13 +160,13 @@ export default {
           align: 'center',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
+              <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="left"
                 title="您确认删除该供货商吗？"
                 on-on-ok={() => this.handleDelete(row)}>
-                <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
+                <i-button class="noradius" size="small" type="error">删 除</i-button>
               </Poptip>
             </div>
           )

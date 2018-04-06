@@ -44,10 +44,16 @@ export default class Goods {
   goodsAlias: string;
 
   /**
-   * 商品规格 eg: 150g/盒
+   * 商品规格 eg: 150
    */
   @Column('varchar', { length: 20, default: '' })
   specification: string;
+
+  /**
+   * 商品规格的单位 eg: g
+   */
+  @Column('char', { length: 4, default: 'g' })
+  specificationUnit: string;
 
   /**
    * 产地

@@ -3,7 +3,7 @@
   <Layout class="table-con">
     <Header style="background: white">
       <label class="margin-left-20">分类名称：</label>
-      <Input v-model="listQuery.name" clearable placeholder="请输入分类名称" style="width: 160px"></Input>
+      <Input v-model="listQuery.name" clearable placeholder="请输入分类名称" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleAdd" type="success" icon="plus-circled" class="margin-left-20">添加分类</Button>
       <ModalTreeCategory
@@ -68,15 +68,16 @@ export default {
         }, {
           title: '操作',
           key: 'handle',
+          align: 'center',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
+              <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
                 placement="top"
                 title="删除此分类后，该分类下的子分类也将消失，您确认此操作？"
                 on-on-ok={() => this.handleDelete(row)}>
-                <i-button size="small" type="error" class="margin-left-10">删 除</i-button>
+                <i-button class="noradius" size="small" type="error">删 除</i-button>
               </Poptip>
             </div>
           )

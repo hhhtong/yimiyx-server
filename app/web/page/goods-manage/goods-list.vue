@@ -6,9 +6,9 @@
   <Layout class="table-con">
     <Header style="background: white">
       <label>商品：</label>
-      <Input v-model="listQuery.goods" clearable placeholder="请输入商品编号/名称" style="width: 160px"></Input>
+      <Input v-model="listQuery.goods" clearable placeholder="请输入商品编号/名称" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <label class="margin-left-20">状态：</label>
-      <Select v-model="listQuery.isOnline" style="width:100px">
+      <Select v-model="listQuery.isOnline" @on-change="handleQuery" style="width:100px">
         <Option v-for="item in onlineStatus" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
@@ -94,13 +94,16 @@ export default {
           title: '商品别名',
           key: 'goodsAlias',
           align: 'center',
-          render: (h, { row, column, index }) => {
-            return <span>{row.goodsAlias ? row.goodsAlias : '--'}</span>
-          }
+          render: (h, { row, column, index }) => (
+            <span>{row.goodsAlias ? row.goodsAlias : '--'}</span>
+          )
         }, {
           title: '规格',
           key: 'specification',
-          align: 'center'
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <span>{row.specification + row.specificationUnit}</span>
+          )
         }, {
           title: '所属分类',
           key: 'categorys',
@@ -159,7 +162,7 @@ export default {
           align: 'center',
           width: 200,
           render: (h, { row, column, index }) => (
-            <div class="text-right">
+            <div>
               <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row)}>上 架</i-button>
               <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row)}>下 架</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
