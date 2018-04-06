@@ -44,8 +44,6 @@ export default class GoodsService extends BaseService {
         .getMany();
       const total = await query.getCount();
 
-      this.log.debug('商品列表:', list)
-
       await db.close();
       return { list, total };
     } catch (error) {
@@ -55,12 +53,8 @@ export default class GoodsService extends BaseService {
   }
 
   async save(goodsColumnData) {
-    const { db, repo, query } = await this._getInstance();
-    let goodsNo: string = goodsColumnData.goodsNo;
-    const maxNo: number = await query.where(`goods.goodsNo LIKE '${goodsNo}%'`).getCount() + 1;
-
-    goodsNo = goodsNo + this.ctx.helper.prefixZero(maxNo, 4)
-    goodsColumnData = repo.create({ ...goodsColumnData, goodsNo });
+    const { db, repo } = await this._getInstance();
+    goodsColumnData = repo.create(goodsColumnData);
 
     try {
       await repo.save(goodsColumnData);
@@ -70,6 +64,14 @@ export default class GoodsService extends BaseService {
       await db.close();
       this.error(error);
     }
+  }
+
+  async getMaxGoodsNo(goodsNoPrefix: string) {
+    const { db, query } = await this._getInstance();
+    const maxNo: number = await query.where(`goods.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
+
+    await db.close();
+    return goodsNoPrefix + this.ctx.helper.prefixZero(maxNo, 4);
   }
 
   async delete(id: number) {

@@ -15,8 +15,11 @@ export default class GoodsController extends BaseController {
   async save() {
     const { service, ctx } = this;
     const rowData = ctx.request.body;
-    // 以数组中的第一个类目作为序号前缀
-    rowData.goodsNo = rowData.categorys[0].no
+
+    if (!rowData.goodsNo) { // 无goodsNo参数时 表示新增
+      // 以数组中的第一个类目作为序号前缀
+      rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no)
+    }
     // 获取Goods表中的categorys[]
     rowData.categorys = rowData.categorys.map(item => item.categoryIds)
     try {

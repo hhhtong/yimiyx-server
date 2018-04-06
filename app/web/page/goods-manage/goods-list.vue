@@ -126,7 +126,11 @@ export default {
           }
         }, {
           title: '产地',
-          key: 'madeIn'
+          key: 'madeIn',
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <span>{row.madeIn ? row.madeIn : '--'}</span>
+          )
         }, {
           title: '库存',
           key: 'stockQty',

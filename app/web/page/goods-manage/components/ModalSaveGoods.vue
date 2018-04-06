@@ -26,7 +26,7 @@
         <FormItem label="商品规格" prop="specification">
           <Input
             v-model="formValidate.specification"
-            @on-focus="!isEdit && isOnce && (formValidate.specification = '')"
+            @click.native="!isEdit && isOnce && (formValidate.specification = '')"
             @on-blur="isOnce = false"
             placeholder="比如：450"
             style="width: 180px">
@@ -73,12 +73,12 @@
                 <Select class="poptip-select" v-model="categoryParent" placeholder="请选择" filterable>
                   <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
-                <Select class="poptip-select" v-show="hasChildren(_categoryList)" v-model="categoryChild" placeholder="请选择" filterable multiple>
+                <Select class="poptip-select" v-show="hasChildren(_categoryList)" v-model="categoryChild" placeholder="请选择" filterable multiple placement="top">
                   <OptionGroup v-if="item.id !== 0" v-for="item in _categoryList" :key="item.id" :label="item.name">
                     <Option v-for="children in item.children" :value="children.id" :key="children.id">{{ children.name }}</Option>
                   </OptionGroup>
                 </Select>
-                <Select class="poptip-select" v-show="!hasChildren(_categoryList) && _categoryList.length > 0" v-model="categoryChild" placeholder="请选择" filterable multiple>
+                <Select class="poptip-select" v-show="!hasChildren(_categoryList) && _categoryList.length > 0" v-model="categoryChild" placeholder="请选择" filterable multiple placement="top">
                   <Option v-for="item in _categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
                 </Select>
                 <Row type="flex" justify="end" class="margin-top-20">
@@ -93,9 +93,9 @@
         <FormItem label="产地(选填)">
           <Input v-model="formValidate.madeIn" type="textarea" placeholder="请填写该商品的原产地"></Input>
         </FormItem>
-        <FormItem label="库存(选填)">
+        <!-- <FormItem label="库存(选填)">
           <InputNumber v-model="formValidate.stockQty" :max="99999" :min="0" :step="10" style="width: 180px"></InputNumber>
-        </FormItem>
+        </FormItem> -->
       </Form>
       <div slot="footer">
         <Button type="primary" @click="handleSubmit" :loading="loading" class="margin-right-8">确 定</Button>
