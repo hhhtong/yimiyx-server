@@ -3,10 +3,11 @@ import { Controller } from 'egg';
  * 业务码说明
  * 50000 操作成功
  * 50001 操作失败
- * 50002 待定
+ * 50002 数据库相关操作失败
  * 50003 待定
  * 50004 待定
  * 50005 待定
+ * ...
  */
 export default class BaseController extends Controller {
   get user() {
@@ -22,7 +23,12 @@ export default class BaseController extends Controller {
     return data;
   }
 
-  fail(data = {}, code = 50001, msg = '操作失败') {
+  fail(data: any = {}, code = 50001, msg = '操作失败') {
+    if (typeof data.sqlMessage === 'string') {
+      code = 50002
+      msg = data.sqlMessage
+    }
+
     this.ctx.body = {
       code,
       data,

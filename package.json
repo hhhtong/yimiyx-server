@@ -3,6 +3,8 @@
   "version": "1.0.2",
   "description": "基于 easywebpack-vue 和 egg-view-vue-ssr 插件的 egg + vue + typescript 服务端渲染同构工程",
   "scripts": {
+    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=node_modules --exclude=ormconfig.json --exclude=**/*.ts --exclude=*.ts --exclude=app/web *",
+    "compress1": "tar -zcvf veggie-admin.tar.gz --exclude=**/*.ts --exclude=app/web app config libs public run index.js",
     "tsc": "tsc -p tsconfig.json",
     "tsc:w": "tsc -p tsconfig.json -w",
     "clean": "rm -rf app/**.js && rm -rf config/**.js && rm -rf index.js",
