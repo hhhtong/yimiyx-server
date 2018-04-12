@@ -101,7 +101,7 @@
     "webpack-manifest-resource-plugin": "^4.2.3"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.10.0"
   },
   "ci": {
     "version": "6, 7, 8"
