@@ -87,21 +87,21 @@ export const appRouter = [
       {
         path: 'supplier-list',
         icon: 'ios-paper-outline',
-        name: 'purchase-manage__supplier-list',
+        name: 'supplier-list',
         title: '供货商管理',
         component: $import('purchase-manage/supplier-list')
       }, {
         path: 'enquiry-list',
         icon: 'ios-list-outline',
-        name: 'purchase-manage__enquiry-list',
+        name: 'enquiry-list',
         title: '询价明细',
         component: $import('purchase-manage/enquiry-list')
       }, {
-        path: 'caigou-list',
+        path: 'purchase-list',
         icon: 'ios-list-outline',
-        name: 'caigou-list',
-        title: '采购明细',
-        component: $import('purchase-manage/caigou-list')
+        name: 'purchase-list',
+        title: '采购管理',
+        component: $import('purchase-manage/purchase-list')
       }
     ]
   }, {

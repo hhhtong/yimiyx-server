@@ -4,6 +4,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany } from 'typeorm';
 import Supplier from './supplier';
 import Goods from './goods';
+import PurchaseOrder from './purchase-order';
 
 @Entity()
 export default class GoodsCategory {
@@ -11,14 +12,26 @@ export default class GoodsCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /**
+   * 商品
+   */
   @ManyToMany(type => Goods, goods => goods.categorys, {
     cascadeInsert: true,
     cascadeUpdate: true
   })
   goods: Goods[];
 
+  /**
+   * 供货商
+   */
   @OneToMany(type => Supplier, s => s.category)
   supplier: Supplier[];
+
+  /**
+   * 采购的主订单
+   */
+  @OneToMany(type => PurchaseOrder, po => po.goodsCategory)
+  purchaseOrder: PurchaseOrder[];
 
   /**
    * 指向二级或三级分类的对应父级id

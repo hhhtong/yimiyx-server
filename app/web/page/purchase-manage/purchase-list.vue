@@ -6,6 +6,6 @@
 
 <script>
 export default {
-  name: 'purchase-manage__caigou-list'
+  name: 'purchase-list'
 }
 </script>

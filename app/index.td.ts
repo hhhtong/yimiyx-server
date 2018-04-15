@@ -24,6 +24,18 @@ declare module 'egg' {
 
   export interface IHelper {
     /**
+     * @method Helper#dateFormat - 时间格式化
+     * @param {Number, String, Date} date - 时间戳 | 日期 | 日期对象
+     * @param {String} fmt - 返回格式 默认YYYY-MM-DD HH:mm:ss
+     * @example
+     * ```js
+     * ctx.helper.dateFormat(Date.now(), 'YYYY-MM-DD')
+     * => '2018-04-15'
+     * ```
+     * @return {String}
+     */
+    dateFormat(date?: number | string | Date, fmt?: string): string,
+    /**
      * @method Helper#prefixZero - 对指定数值进行前置补 '0'
      * @param {Number} num - 要进行处理的原始数字
      * @param {Number} len - 转换后的总长度
@@ -34,7 +46,13 @@ declare module 'egg' {
      * ```
      * @return {String}
      */
-    prefixZero(num: number, len: number): string
+    prefixZero(num: number, len: number): string,
+    /**
+     * @method Helper#getRandomNum - 生成指定范围随机整数
+     * @param {Number} minnum - 最小值
+     * @param {Number} maxnum - 最大值
+     */
+    getRandomNum(minnum?: number, maxnum?: number): number
   }
 
   function startCluster(options: any)

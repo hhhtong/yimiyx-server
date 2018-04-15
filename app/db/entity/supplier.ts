@@ -1,8 +1,9 @@
 /**
  * 供货商表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import GoodsCategory from './goods-category';
+import PurchaseOrder from './purchase-order';
 
 @Entity()
 export default class Supplier {
@@ -11,10 +12,16 @@ export default class Supplier {
   id: number;
 
   /**
-   * 类目ID,对应goods-category表中的ID
+   * 类目
    */
   @ManyToOne(type => GoodsCategory, gc => gc.supplier)
   category: GoodsCategory;
+
+  /**
+   * 采购的主订单
+   */
+  @OneToMany(type => PurchaseOrder, po => po.supplier)
+  purchaseOrder: PurchaseOrder;
 
   /**
    * 供货商级别 1: 优 2: 良好 3: 凑合
@@ -25,7 +32,7 @@ export default class Supplier {
   /**
    * 供货商名称
    */
-  @Column('varchar', { length: 50, default: '' })
+  @Column('varchar', { length: 50 })
   supplierName: string;
 
   /**
@@ -37,19 +44,19 @@ export default class Supplier {
   /**
    * 负责人联系方式
    */
-  @Column('varchar', { length: 20, default: '' })
+  @Column('char', { length: 11, default: '' })
   tel: string;
 
   /**
    * 供货商所在地区代号 省,市,区,街道
    */
-  @Column('varchar', { length: 50, default: '' })
+  @Column('varchar', { length: 50 })
   areaCode: string;
 
   /**
    * 供货商所在地区名称 省,市,区,街道
    */
-  @Column('varchar', { length: 100, default: '' })
+  @Column('varchar', { length: 100 })
   areaName: string;
 
   /**
@@ -73,13 +80,13 @@ export default class Supplier {
   /**
    * 收款方式 bank | ali | wechat
    */
-  @Column('char', { length: 10, default: '' })
+  @Column('char', { length: 10 })
   payType: string;
 
   /**
    * 汇款账号
    */
-  @Column('varchar', { length: 24, default: '' })
+  @Column('varchar', { length: 24 })
   accountNo: string;
 
   /**

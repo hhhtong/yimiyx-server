@@ -19,7 +19,7 @@ export default class GoodsDesc {
   goods: Goods
 
   /**
-   * 对应商品标签
+   * 商品标签
    */
   @ManyToMany(type => GoodsTag, tag => tag.goods)
   @JoinTable()
