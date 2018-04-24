@@ -13,10 +13,7 @@ export default class GoodsTag {
   /**
    * 和商品表(goods)建立多对多的关系
    */
-  @ManyToMany(type => GoodsDesc, goods => goods.tags, {
-    cascadeInsert: true,
-    cascadeUpdate: true
-  })
+  @ManyToMany(type => GoodsDesc, goods => goods.tags)
   goods: GoodsDesc[];
 
   /**

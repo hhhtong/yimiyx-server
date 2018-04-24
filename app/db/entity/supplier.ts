@@ -26,7 +26,7 @@ export default class Supplier {
   /**
    * 供货商级别 1: 优 2: 良好 3: 凑合
    */
-  @Column('tinyint', { length: 1, default: 2 })
+  @Column('tinyint', { default: 2 })
   level: number;
 
   /**
@@ -68,7 +68,7 @@ export default class Supplier {
   /**
    * 供货商类型 1:公司 2:个人
    */
-  @Column('tinyint', { length: 1, default: 0 })
+  @Column('tinyint', { default: 0 })
   supplierType: number;
 
   /**

@@ -71,7 +71,7 @@ export default class Goods {
   /**
    * 库存数量
    */
-  @Column('int', { length: 10, default: 0 })
+  @Column('int', { default: 0 })
   stockQty: number;
 
 

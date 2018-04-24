@@ -15,10 +15,7 @@ export default class GoodsCategory {
   /**
    * 商品
    */
-  @ManyToMany(type => Goods, goods => goods.categorys, {
-    cascadeInsert: true,
-    cascadeUpdate: true
-  })
+  @ManyToMany(type => Goods, goods => goods.categorys)
   goods: Goods[];
 
   /**
@@ -42,7 +39,7 @@ export default class GoodsCategory {
   /**
    * 类型 1：一级类目 | 2：二级类目 | 3：三级类目
    */
-  @Column('tinyint', { length: 1, default: 0 })
+  @Column('tinyint', { default: 0 })
   type: number;
 
   /**
