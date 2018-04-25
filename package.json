@@ -45,6 +45,7 @@
     "server-side-render-resource": "^1.0.3",
     "tinymce": "^4.7.11",
     "typeorm": "^0.2.1",
+    "uuid": "^3.2.1",
     "vue": "^2.5.16",
     "vue-hot-reload-api": "^2.3.0",
     "vue-router": "^3.0.1",

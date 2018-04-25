@@ -8,7 +8,7 @@ import PurchaseOrder from './purchase-order';
 @Entity()
 export default class PurchaseChildOrder {
   /**
-   * 采购的子订单编号 eg: 2018041515060502020002 201804151506(YYYYMMDDHHmm) + 0502020002(商品编号)
+   * 采购的子订单编号 UUID 据此生成条形码
    */
   @PrimaryColumn('char', { length: 22 })
   purchaseNo: string;

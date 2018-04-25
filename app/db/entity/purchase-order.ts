@@ -13,7 +13,7 @@ export default class PurchaseOrder {
   id: number;
 
   /**
-   * 采购编号 eg: CG05-201804151506XXX CG-('采购'首字母)+一级类目(05)+201804151506(YYYYMMDDHHmm)+XXX(3位随机数)
+   * 采购编号 eg: CG201804151506100502020001 CG('采购'首字母)+20180415150610(YYYYMMDDHHmmss)+商品编号(0502020001) 据此生成条形码
    */
   @Column('char', { length: 20 })
   purchaseID: string;
