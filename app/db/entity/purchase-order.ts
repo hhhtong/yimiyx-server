@@ -13,7 +13,7 @@ export default class PurchaseOrder {
   id: number;
 
   /**
-   * 采购编号 eg: CG201804151506100502020001 CG('采购'首字母)+20180415150610(YYYYMMDDHHmmss)+商品编号(0502020001) 据此生成条形码
+   * 采购编号 eg: 201804151506100502020001 20180415150610(YYYYMMDDHHmmss)+商品编号(0502020001) 据此生成条形码
    */
   @Column('char', { length: 20 })
   purchaseID: string;
@@ -49,6 +49,12 @@ export default class PurchaseOrder {
    */
   @Column()
   remark: string;
+
+  /**
+   * 修改人
+   */
+  @Column('char', { length: 32, nullable: true })
+  modifyBy: string;
 
   /**
    * 创建时间
