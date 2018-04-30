@@ -24,10 +24,10 @@
       <Select v-model="listQuery.categoryID" @on-change="handleQuery" style="width:100px" filterable>
         <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
-      <label class="margin-left-20">名称/编号：</label>
-      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/编号" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
+      <label class="margin-left-20">名称/ID：</label>
+      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/ID" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
-      <Button @click="handleExportExcel" type="success" icon="plus-circled" class="margin-left-20">导出数据</Button>
+      <Button @click="handleExportExcel" type="success" icon="ios-download-outline" class="margin-left-20">导出数据</Button>
       <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">添加供货商</Button>
       <a id="hrefToExportTable" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
 
@@ -40,7 +40,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table :height="tableConHeight" ref="tableCsv":data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table ref="tableCsv" :height="tableConHeight" :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -69,15 +69,15 @@ export default {
         page: 1,
         rows: 20,
         areaCode: [], // [省份ID, 城市ID]
-        categoryID: 0, // 供应商类别 默认0(全部)
-        supplier: '' // 供应商名称 | 编号
+        categoryID: 0, // 商品类别 默认0(全部)
+        supplier: '' // 供应商名称 | ID
       },
       showModal: false,
       defaultModalData: false,
       tableData: [],
       tableColumns: [
         {
-          title: '编号',
+          title: 'ID',
           key: 'id',
           width: 80,
           sortable: true
@@ -98,7 +98,8 @@ export default {
           )
         }, {
           title: '供货商名称',
-          key: 'supplierName'
+          key: 'supplierName',
+          width: 150
         }, {
           title: '供货商类型',
           render: (h, { row, column, index }) => (

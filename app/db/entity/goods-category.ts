@@ -53,10 +53,4 @@ export default class GoodsCategory {
    */
   @Column('char', { length: 6 })
   no: string;
-
-  /**
-   * 删除时间
-   */
-  @Column({ nullable: true })
-  deletedAt: Date;
 }

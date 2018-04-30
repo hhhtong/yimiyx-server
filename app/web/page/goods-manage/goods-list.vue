@@ -99,10 +99,10 @@ export default {
           )
         }, {
           title: '规格',
-          key: 'specification',
+          key: 'spec',
           align: 'center',
           render: (h, { row, column, index }) => (
-            <span>{row.specification + row.specificationUnit}</span>
+            <span>{row.spec + row.specUnit}</span>
           )
         }, {
           title: '所属分类',

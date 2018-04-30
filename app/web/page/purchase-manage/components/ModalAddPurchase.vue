@@ -5,7 +5,7 @@
   <div>
     <Modal
       :value="show"
-      title="添加供货商"
+      title="创建采购单"
       @on-visible-change="handleVisibleChange">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
         <FormItem label="负责人" prop="linkmanName">
@@ -95,7 +95,7 @@ const formValidate = {
 }
 
 export default {
-  name: 'ModalAddSupplier',
+  name: 'ModalAddPurchase',
 
   props: {
     show: Boolean,

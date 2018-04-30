@@ -5,6 +5,8 @@ import GoodsCategoryController from './controller/goods-category';
 import GoodsCategoryService from './service/goods-category';
 import GoodsController from './controller/goods';
 import GoodsService from './service/goods';
+import PurchaseOrderController from './controller/purchase-order';
+import PurchaseOrderService from './service/purchase-order';
 
 declare module 'egg' {
   export interface Application { }
@@ -13,13 +15,15 @@ declare module 'egg' {
     home: HomeController,
     supplier: SupplierController,
     goodsCategory: GoodsCategoryController,
-    goods: GoodsController
+    goods: GoodsController,
+    purchaseOrder: PurchaseOrderController
   }
 
   export interface IService {
     supplier: SupplierService,
     goodsCategory: GoodsCategoryService,
-    goods: GoodsService
+    goods: GoodsService,
+    purchaseOrder: PurchaseOrderService
   }
 
   export interface IHelper {

@@ -58,7 +58,6 @@ export default class GoodsService extends BaseService {
 
     try {
       await repo.save(goodsColumnData);
-      this.log.info('新增一个商品：', goodsColumnData);
       await db.close();
     } catch (error) {
       await db.close();
@@ -79,7 +78,6 @@ export default class GoodsService extends BaseService {
 
     try {
       await repo.updateById(id, { deletedAt: new Date() });
-      this.log.info('删除一个商品,ID：', id);
       await db.close();
     } catch (error) {
       await db.close();

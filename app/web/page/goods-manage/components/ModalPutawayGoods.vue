@@ -23,8 +23,8 @@
         <FormItem label="商品别名">
           <Input v-model="formValidate.goodsAlias" placeholder="请输入别名"></Input>
         </FormItem>
-        <FormItem label="商品规格" prop="specification">
-          <Input v-model="formValidate.specification" placeholder="请输入商品规格"></Input>
+        <FormItem label="商品规格" prop="spec">
+          <Input v-model="formValidate.spec" placeholder="请输入商品规格"></Input>
         </FormItem>
         <FormItem label="商品分类">
           <div>
@@ -80,7 +80,7 @@ import tagColors from './TagColors.js'
 const formValidate = {
   goodsName: '',
   goodsAlias: '',
-  specification: '',
+  spec: '',
   stockQty: 0
 }
 
@@ -105,7 +105,7 @@ export default {
         goodsName: [
           { required: true, message: '商品名称为必填项', trigger: 'blur' }
         ],
-        specification: [
+        spec: [
           { required: true, message: '商品规格为必填项', trigger: 'blur' },
         ]
       }

@@ -23,14 +23,14 @@
         <FormItem label="商品别名(选填)">
           <Input v-model="formValidate.goodsAlias" placeholder="请输入别名"></Input>
         </FormItem>
-        <FormItem label="商品规格" prop="specification">
+        <FormItem label="商品规格" prop="spec">
           <Input
-            v-model="formValidate.specification"
-            @click.native="!isEdit && isOnce && (formValidate.specification = '')"
+            v-model="formValidate.spec"
+            @click.native="!isEdit && isOnce && (formValidate.spec = '')"
             @on-blur="isOnce = false"
             placeholder="比如：450"
             style="width: 180px">
-            <Select v-model="formValidate.specificationUnit" slot="append" style="width: 70px">
+            <Select v-model="formValidate.specUnit" slot="append" style="width: 70px">
               <Option value="g">g</Option>
               <Option value="个">个</Option>
             </Select>
@@ -113,8 +113,8 @@ import tagColors from './TagColors.js'
 const formValidate = {
   goodsName: '',
   goodsAlias: '',
-  specification: '450',
-  specificationUnit: 'g',
+  spec: '450',
+  specUnit: 'g',
   madeIn: '',
   stockQty: 0
 }
@@ -143,7 +143,7 @@ export default {
         goodsName: [
           { required: true, message: '商品名称为必填项', trigger: 'blur' }
         ],
-        specification: [
+        spec: [
           { required: true, message: '商品规格为必填项', trigger: 'blur' },
         ]
       }

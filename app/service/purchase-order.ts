@@ -1,5 +1,6 @@
 import BaseService from '../core/base-service';
-import Supplier from '../db/entity/supplier';
+import PurchaseOrder from '../db/entity/purchase-order';
+import PurchaseChildOrder from '../db/entity/purchase-child-order';
 
 interface query {
   page: number,
@@ -7,7 +8,7 @@ interface query {
 }
 
 interface query {
-  areaCode?: string, // 省份ID,城市ID
+  dateRange?: string, // 采购单创建时间范围筛选
   categoryID?: number, // 商品类别 默认0(全部)
   supplierID?: number, // 供应商编号
   supplierName?: string // 供应商名称
@@ -15,9 +16,9 @@ interface query {
 
 export default class SupplierService extends BaseService {
 
-  async query({ page, rows, areaCode, categoryID, supplierID, supplierName }: query) {
+  async query({ page, rows, dateRange, categoryID, supplierID, supplierName }: query) {
     const db = await this.db;
-    const repo = db.getRepository(Supplier);
+    const repo = db.getRepository(PurchaseOrder);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
@@ -25,7 +26,6 @@ export default class SupplierService extends BaseService {
       const query = await repo
         .createQueryBuilder('supplier')
         .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
-        .andWhere(`supplier.areaCode LIKE '${areaCode}%'`)
         .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
         .orderBy('supplier.id', 'ASC')
       const total = await query.getCount();
@@ -44,7 +44,7 @@ export default class SupplierService extends BaseService {
 
   async insert(rowData) {
     const db = await this.db;
-    const repo = db.getRepository(Supplier);
+    const repo = db.getRepository(PurchaseOrder);
 
     try {
       const id = rowData.categoryID
@@ -59,7 +59,7 @@ export default class SupplierService extends BaseService {
 
   async update(id, rowData) {
     const db = await this.db;
-    const repo = db.getRepository(Supplier)
+    const repo = db.getRepository(PurchaseOrder)
 
     try {
       await repo.updateById(id, rowData);
