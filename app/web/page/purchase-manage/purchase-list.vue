@@ -83,10 +83,6 @@ export default {
           title: '采购类别',
           key: 'categoryName'
         }, {
-          title: '采购数量',
-          key: 'purchaseNum',
-          width: 100
-        }, {
           title: '状态',
           width: 100,
           render: (h, { row, column, index }) => (
@@ -98,6 +94,9 @@ export default {
         }, {
           title: '供货商ID',
           key: 'supplierID'
+        }, {
+          title: '供货商联系电话',
+          key: 'supplierTel'
         }, {
           title: '经办人',
           key: 'transactor'

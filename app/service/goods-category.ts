@@ -15,8 +15,6 @@ export default class GoodsCategoryService extends BaseService {
     let { db, query } = await this._getInstance();
 
     try {
-      query = query.where('ISNULL(category.deletedAt)')
-
       const list = await query
         .andWhere(`(category.name LIKE '%${name}%' OR category.type != 1)`)
         .orderBy('category.no', 'DESC')

@@ -14,6 +14,7 @@ export default class GoodsCategoryController extends BaseController {
 
       this.success({ list, listEqual, total, idMax });
     } catch (error) {
+      console.warn('@@@@@@@@@@@@@@@@@@@@错误', error);
       this.fail(error);
     }
   }

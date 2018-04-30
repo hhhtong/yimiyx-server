@@ -1,6 +1,7 @@
 import BaseService from '../core/base-service';
 import PurchaseOrder from '../db/entity/purchase-order';
-import PurchaseChildOrder from '../db/entity/purchase-child-order';
+import PurchaseGoodsOrder from '../db/entity/purchase-goods-order';
+import PurchaseGoodsDetail from '../db/entity/purchase-goods-detail';
 
 interface query {
   page: number,

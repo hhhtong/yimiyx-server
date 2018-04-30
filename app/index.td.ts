@@ -52,11 +52,11 @@ declare module 'egg' {
      */
     prefixZero(num: number, len: number): string,
     /**
-     * @method Helper#getRandomNum - 生成指定范围随机整数
-     * @param {Number} minnum - 最小值
-     * @param {Number} maxnum - 最大值
+     * @method Helper#uuid - 生成随机ID
+     * @param {Number} len - 生成长度
+     * @param {Number} radix - 基于几进制生成
      */
-    getRandomNum(minnum?: number, maxnum?: number): number
+    uuid(len: number, radix: number): string
   }
 
   function startCluster(options: any)

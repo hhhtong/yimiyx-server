@@ -1,23 +1,20 @@
 /**
- * 采购
+ * 采购单
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import Supplier from './supplier';
-import Goods from './goods';
 import GoodsCategory from './goods-category';
-import PurchaseChildOrder from './purchase-child-order';
+import PurchaseGoodsOrder from './purchase-goods-order';
 
 @Entity()
 export default class PurchaseOrder {
-
-  @PrimaryGeneratedColumn()
-  id: number;
-
   /**
-   * 商品
+   * 采购单编号
+   * eg: CG20180415150610E0STI4 - CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
+   * 据此生成条形码
    */
-  @ManyToOne(type => Goods, goods => goods.purchaseOrder)
-  goods: Goods;
+  @PrimaryColumn('char', { length: 24 })
+  id: string;
 
   /**
    * 供货商
@@ -32,27 +29,13 @@ export default class PurchaseOrder {
   goodsCategory: GoodsCategory;
 
   /**
-   * 采购的子订单
+   * 采购商品单的主订单
    */
-  @OneToMany(type => PurchaseChildOrder, pco => pco.purchaseOrder)
-  purchaseChildOrder: PurchaseChildOrder;
+  @OneToMany(type => PurchaseGoodsOrder, mo => mo.purchaseOrder)
+  purchaseGoodsOrder: PurchaseGoodsOrder;
 
   /**
-   * 采购编号
-   * eg: 201804151506100502020001 20180415150610(YYYYMMDDHHmmss)+商品编号(0502020001)
-   * 据此生成条形码
-   */
-  @Column('char', { length: 20, unique: true })
-  purchaseID: string;
-
-  /**
-   * 采购数量
-   */
-  @Column()
-  purchaseNum: number;
-
-  /**
-   * 状态
+   * 采购单状态
    * -1: 待采购
    *  1: 已入库
    */

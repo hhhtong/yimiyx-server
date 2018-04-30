@@ -4,7 +4,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
-import PurchaseOrder from './purchase-order';
+import PurchaseGoodsOrder from './purchase-goods-order';
 
 @Entity()
 export default class Goods {
@@ -27,16 +27,22 @@ export default class Goods {
   categorys: GoodsCategory[];
 
   /**
-   * 采购的子订单
+   * 采购商品单的主订单
    */
-  @OneToMany(type => PurchaseOrder, pco => pco.goods)
-  purchaseOrder: PurchaseOrder;
+  @OneToMany(type => PurchaseGoodsOrder, pgo => pgo.goods)
+  purchaseGoodsOrder: PurchaseGoodsOrder;
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)
    */
   @Column('char', { length: 10, unique: true })
   goodsNo: string;
+
+  /**
+   * 条码
+   */
+  @Column('varchar', { length: 32, nullable: true })
+  barCode: string;
 
   /**
    * 商品名称
