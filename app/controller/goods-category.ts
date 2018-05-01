@@ -6,15 +6,8 @@ export default class GoodsCategoryController extends BaseController {
     const { service, ctx } = this;
     try {
       let { list, total, idMax } = await service.goodsCategory.query(ctx.query);
-      const oneList = list.filter(item => item.type === 1);
-      const twoList = list.filter(item => item.type === 2);
-      const threeList = list.filter(item => item.type === 3);
-      const listEqual = list
-      list = this.mixin(oneList.reverse(), this.mixin(twoList, threeList));
-
-      this.success({ list, listEqual, total, idMax });
+      this.success({ list: this.$refix(list), listEqual: list, total, idMax });
     } catch (error) {
-      console.warn('@@@@@@@@@@@@@@@@@@@@错误', error);
       this.fail(error);
     }
   }
@@ -55,50 +48,5 @@ export default class GoodsCategoryController extends BaseController {
     } catch (error) {
       this.fail(error);
     }
-  }
-
-  /**
-   * 将平级结构转成树形结构
-   */
-  mixin(list1: Array<any>, list2: Array<any>): Array<object> {
-    if (list2.length <= 0) {
-      list2 = list1
-    }
-
-    list2.forEach(item2 => {
-      item2.expand = true
-      item2.readonly = true
-      list1.forEach(item1 => {
-        if (item2.pid === item1.id) {
-          item1.expand = true
-          item1.readonly = true
-          if (!item1.children) {
-            item1.children = [item2];
-          } else {
-            item1.children = [item2, ...item1.children];
-          }
-        }
-      });
-    })
-
-    return list1;
-  }
-
-  /**
-   * 将树形结构转成平级结构
-   */
-  unmixin(list: any): Array<object> {
-    const categoryList = [];
-    const next = (item: any) => {
-      if (item.name !== '') {
-        categoryList.push(item);
-      }
-      if (item.children instanceof Array) {
-        item.children.forEach(children => next(children));
-      }
-    };
-
-    list.forEach(item => next(item));
-    return categoryList;
   }
 }

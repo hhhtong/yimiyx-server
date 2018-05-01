@@ -167,11 +167,6 @@ export default {
       this.showPoptip = false
     },
 
-    // 暴露给父级调用
-    GetJoinCategory(idsArr) {
-      return this._getJoinCategory(idsArr)
-    },
-
     _getJoinCategory(idsArr) {
       const tempArr = []
       const done = (item, _tempObj) => {

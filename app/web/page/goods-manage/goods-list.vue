@@ -14,7 +14,6 @@
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="showModal = true" type="success" icon="plus-circled" class="margin-left-20">添加商品</Button>
       <ModalSaveGoods
-        ref="ModalSaveGoods"
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
         :category-list="categoryList"
@@ -110,19 +109,27 @@ export default {
           width: 270,
           align: 'center',
           render: (h, { row, column, index }) => {
-            const categorys = this.$refs.ModalSaveGoods
-              .GetJoinCategory(row.categorys.map(item => item.id))
+            const joinName = obj => {
+              const c = obj.children
+              if (c) {
+                if (c[0].children) {
+                  return `${obj.name} / ${c[0].name} / ${c[0].children[0].name}`
+                }
+                return `${obj.name} / ${c[0].name}`
+              }
+              return obj.name
+            }
 
-            return categorys.map((item, index) =>
-              <div>
+            return row.categorys.map((item, index) => {
+              return <div>
                 <Tag
                   type="dot"
-                  name={item.no}
+                  name={item.id}
                   color={tagColors[index % tagColors.length]}>
-                  {item.name}
+                  {joinName(item)}
                 </Tag>
               </div>
-            )
+            })
           }
         }, {
           title: '产地',

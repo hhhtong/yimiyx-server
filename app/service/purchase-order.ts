@@ -18,29 +18,30 @@ interface query {
 export default class SupplierService extends BaseService {
 
   async query({ page, rows, dateRange, categoryID, supplierID, supplierName }: query) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseOrder);
-    const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
+    return { list: [], total: 0 }
+    // const db = await this.db;
+    // const repo = db.getRepository(PurchaseOrder);
+    // const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
+    // const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
-    try {
-      const query = await repo
-        .createQueryBuilder('supplier')
-        .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
-        .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
-        .orderBy('supplier.id', 'ASC')
-      const total = await query.getCount();
-      const list = await query
-        .skip((page - 1) * rows)
-        .take(rows)
-        .leftJoinAndSelect('supplier.category', 'category')
-        .getMany();
-      await db.close();
-      return { list, total };
-    } catch (e) {
-      await db.close();
-      this.error(e);
-    }
+    // try {
+    //   const query = await repo
+    //     .createQueryBuilder('supplier')
+    //     .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
+    //     .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
+    //     .orderBy('supplier.id', 'ASC')
+    //   const total = await query.getCount();
+    //   const list = await query
+    //     .skip((page - 1) * rows)
+    //     .take(rows)
+    //     .leftJoinAndSelect('supplier.category', 'category')
+    //     .getMany();
+    //   await db.close();
+    //   return { list, total };
+    // } catch (e) {
+    //   await db.close();
+    //   this.error(e);
+    // }
   }
 
   async insert(rowData) {

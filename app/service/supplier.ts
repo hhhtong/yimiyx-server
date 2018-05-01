@@ -15,7 +15,7 @@ interface query {
 
 export default class SupplierService extends BaseService {
 
-  async query({ page, rows, areaCode, categoryID, supplierID, supplierName }: query) {
+  async query({ page = 1, rows = 20, areaCode = '', categoryID = 0, supplierID = 0, supplierName = '' }: query) {
     const db = await this.db;
     const repo = db.getRepository(Supplier);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';

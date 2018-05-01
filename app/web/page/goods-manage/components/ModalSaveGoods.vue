@@ -203,7 +203,7 @@ export default {
     },
 
     handleAddTag(item) {
-      if (item && !this.hasExistCategorys(item.categoryIds.id)) {
+      if (item && !this.hasExistCategorys(item.categoryIds)) {
         this.categorys = [...this.categorys, item]
       } else {
         const newCategorys = this.getJoinCategory(this.categoryChild)
@@ -215,13 +215,11 @@ export default {
       this.showPoptip = false
     },
 
-    // 暴露给父级调用
-    GetJoinCategory(idsArr) {
-      return this.getJoinCategory(idsArr)
-    },
-
     hasExistCategorys(id) {
-      return this.categorys.some(v => v.categoryIds.id === id)
+      if (Array.isArray(id)) {
+        return this.categorys.some(v => v.categoryIds.toString() === id.toString())
+      }
+      return this.categorys.some(v => v.categoryIds.indexOf(id) > -1)
     },
 
     getJoinCategory(idsArr) {
@@ -230,16 +228,27 @@ export default {
         // 已存在该列表的 就出循环， 防止重复选
         if (this.hasExistCategorys(id)) return false
 
-        const current = _tempObj ? id : this.categoryListEqual.filter(v => v.id === id)[0]
+        let current
+        if (typeof _tempObj !== 'undefined') {
+          current = id // id 是object - { id, name, child ... }
+        } else {
+          current = this.categoryListEqual.filter(v => v.id === id)[0]
+        }
 
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
         const name = `${parent.name} / ${current.name}`
-        const tempObj = { no, name, categoryIds: { id: current.id } }
+        const categoryIds = (`${parent.id},${current.id}`)
+          .split(',')
+          .map(item => +item)
+        const tempObj = { no, name, categoryIds }
 
-        if (_tempObj) {
+        if (typeof _tempObj !== 'undefined') {
           _tempObj.no = parent.no + _tempObj.no
           _tempObj.name = `${parent.name} / ${_tempObj.name}`
+          _tempObj.categoryIds = (`${parent.id},${_tempObj.categoryIds}`)
+            .split(',')
+            .map(item => +item)
         } else {
           tempArr.push(tempObj)
         }
@@ -289,7 +298,7 @@ export default {
         this.historyCategorys = []
       } else {
         const historyCategorys = this.historyCategorys
-          .filter(item => !this.hasExistCategorys(item.categoryIds.id))
+          .filter(item => !this.hasExistCategorys(item.categoryIds))
         // 最终存储最近选择过的三条
         this.historyCategorys = [...this.categorys.reverse(), ...historyCategorys].slice(0, 3)
       }

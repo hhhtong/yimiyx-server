@@ -3,9 +3,13 @@ import BaseController from '../core/base-controller';
 export default class GoodsController extends BaseController {
 
   async index() {
-    const { service, ctx } = this;
+    const { service, ctx, controller } = this;
     try {
       let { list, total } = await service.goods.query(ctx.query);
+
+      for (const item of list) {
+        item.categorys = this.$refix(item.categorys)
+      }
       this.success({ list, total });
     } catch (error) {
       this.fail(error);
@@ -21,7 +25,15 @@ export default class GoodsController extends BaseController {
       rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no)
     }
     // 获取Goods表中的categorys[]
-    rowData.categorys = rowData.categorys.map(item => item.categoryIds)
+    let categorys = []
+    for (const item of rowData.categorys) {
+      for (const id of item.categoryIds) {
+        categorys = [...categorys, { id }]
+      }
+    }
+
+    rowData.categorys = categorys
+    // rowData.categorys = rowData.categorys.map(item => item.categoryIds)
     try {
       await service.goods.save(rowData);
       this.success();

@@ -24,6 +24,8 @@
         :show.sync="showModal"
         :default-modal-data="defaultModalData"
         :category-list="categoryList"
+        :goods-list="goodsList"
+        :supplier-list="supplierList"
         @handleSave="handleSave">
       </ModalAddPurchase>
     </Header>
@@ -40,7 +42,7 @@
 
 <script>
 import ModalAddPurchase from './components/ModalAddPurchase'
-import { purchaseOrderGet, purchaseOrderAdd, purchaseOrderDel, purchaseOrderUpdate } from '@/api'
+import { purchaseOrderGet, purchaseOrderAdd, purchaseOrderDel, purchaseOrderUpdate, goodsGet, supplierGet } from '@/api'
 import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
 import util from '@/libs/util'
@@ -61,6 +63,8 @@ export default {
         categoryID: 0, // 商品类别 默认0(全部)
         supplier: '' // 供应商名称 | ID
       },
+      goodsList: [],
+      supplierList: [],
       showModal: false,
       defaultModalData: false,
       tableData: [],
@@ -140,7 +144,9 @@ export default {
 
   created() {
     this.fetchData()
-    this._getCategoryList()
+    this.__getCategoryList()
+    this.__getGoodsList()
+    this.__getSupplierList()
   },
 
   methods: {
@@ -208,11 +214,27 @@ export default {
         }
       })
     },
-
-    _getCategoryList() {
+    // 获取商品分类列表
+    __getCategoryList() {
       if (this.categoryList.length === 0) {
         this.$store.dispatch('updateCategoryList')
       }
+    },
+    // 获取商品列表
+    __getGoodsList() {
+      goodsGet().then(result => {
+        if (result.code === 50000) {
+          this.goodsList = result.data.list
+        }
+      })
+    },
+    // 获取供货商列表
+    __getSupplierList() {
+      supplierGet().then(result => {
+        if (result.code === 50000) {
+          this.supplierList = result.data.list
+        }
+      })
     }
   }
 }

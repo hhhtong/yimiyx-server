@@ -58,20 +58,20 @@ export default class GoodsDesc {
    * @value {Number, String} - 参与活动的有效值，实际含义以优惠的类型type决定
    * @example - [{ type: 1, value: 2.72 }, { type: 2, value: '300.00' }]
    */
-  @Column('json', { nullable: true })
-  type: any;
+  // @Column('json')
+  // type: any;
 
   /**
    * 小图[url1, url2]
    */
-  @Column('json')
-  smallImgPaths: any;
+  // @Column('json')
+  // smallImgPaths: any;
 
   /**
    * 大图[url1, url2]
    */
-  @Column('json')
-  imgPaths: any;
+  // @Column('json')
+  // imgPaths: any;
 
   /**
    * 创建时间
