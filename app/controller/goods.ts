@@ -27,13 +27,10 @@ export default class GoodsController extends BaseController {
     // 获取Goods表中的categorys[]
     let categorys = []
     for (const item of rowData.categorys) {
-      for (const id of item.categoryIds) {
-        categorys = [...categorys, { id }]
-      }
+      categorys = [...categorys, ...item.categoryIds.map(id => ({ id }))]
     }
 
     rowData.categorys = categorys
-    // rowData.categorys = rowData.categorys.map(item => item.categoryIds)
     try {
       await service.goods.save(rowData);
       this.success();

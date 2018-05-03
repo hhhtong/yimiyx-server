@@ -1,5 +1,6 @@
 import BaseService from '../core/base-service';
 import Goods from '../db/entity/goods';
+import { WSAVERNOTSUPPORTED } from 'constants';
 
 interface query {
   page: number,
@@ -23,7 +24,7 @@ export default class GoodsService extends BaseService {
   }
 
   async query({ page = 1, rows = 20, goodsNo, goodsName, isOnline }: query) {
-    let { db, query } = await this.__getInstance();
+    let { db, query, repo } = await this.__getInstance();
     const where1 = +goodsNo ? `goods.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
     const where2 = goodsName ? `goods.goodsName LIKE '%${goodsName}%'` : '1 = 1';
     const where3 = +isOnline === 1
@@ -39,11 +40,42 @@ export default class GoodsService extends BaseService {
 
       const list = await query
         .orderBy('goods.createdAt', 'DESC')
-        .skip((page - 1) * rows)
-        .take(rows)
+        // .skip((page - 1) * rows)
+        // .take(rows)
         .leftJoinAndSelect('goods.categorys', 'categorys')
         .getMany();
       const total = await query.getCount();
+
+      const mock = require('./mock.js')
+      for (const v of list) {
+        if (v.id === 39) {
+          // continue
+          // const v = list[0]
+          console.warn('##########', v.categorys, v.goodsName);
+
+          let pump = []
+          for (const item of v.categorys) {
+            pump.push({ id: item.id })
+            function refix(itemFn) {
+              if (itemFn.pid !== 0) {
+                mock.forEach(mv => {
+                  if (mv.id === itemFn.pid) {
+                    pump.push({ id: mv.id })
+                    if (mv.pid !== 0) {
+                      refix(mv)
+                    }
+                  }
+                })
+              }
+            }
+            refix(item)
+          }
+
+          v.categorys = repo.create(pump.reverse())
+          console.warn('@@@@@@@@@@@@@@@', v.categorys);
+          await repo.save(v)
+        }
+      }
 
       await db.close();
       return { list, total };
