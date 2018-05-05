@@ -17,6 +17,8 @@ artifacts.json
 *tmp
 _site
 logs
+
+app/*.js
 app/controller/**/*.js
 app/core/**/*.js
 app/db/**/*.js
@@ -25,6 +27,7 @@ app/service/**/*.js
 libs/**/*.js
 config/**/*.js
 /index.js
+
 config/buildConfig.json
 config/manifest.json
 config/manifest-dll.json

@@ -1,15 +1,15 @@
-# egg-vue-typescript-boilerplate
+# veggie-admin
 
-基于 Egg + Vue + TypeScript + Element + Webpack3 多页面和单页面服务端客户端渲染同构工程骨架项目.
+基于 Egg + Vue + TypeScript + iView + Webpack 多页面和单页面服务端客户端渲染同构工程骨架项目.
 
 ## 1. 版本
 
 - Egg 版本： ^2.x.x
-- Node 版本: Node ^8.x.x+,
-- Webpack 版本: ^3.10.1
-- Vue 版本: ^2.5.0
-- TypeScript: ^2.6.2
-- Element UI
+- Node 版本: Node ^8.10.x+,
+- Webpack 版本: ^4.x.x+,
+- Vue 版本: ^2.5.16
+- TypeScript: ^2.8.3
+- iView
 
 ## 2. 文档
 
@@ -34,22 +34,23 @@
 - 支持 Webpack DLL 自动化构建
 
 - 支持 Vue组件服务端渲染异步加载
- 
+
 
 ## 4. 依赖
 
-- [easywebpack-vue](https://github.com/hubcarl/easywebpack) ^3.5.0
-- [egg-view-vue-ssr](https://github.com/hubcarl/egg-view-vue-ssr) ^3.0.2
-- [egg-webpack](https://github.com/hubcarl/egg-webpack) ^3.2.6
-- [egg-webpack-vue](https://github.com/hubcarl/egg-webpack-vue) ^2.0.0
+- [easywebpack-vue](https://github.com/hubcarl/easywebpack) ^4.0.4
+- [egg-view-vue-ssr](https://github.com/hubcarl/egg-view-vue-ssr) ^3.0.8
+- [egg-webpack](https://github.com/hubcarl/egg-webpack) ^4.1.1
+- [egg-webpack-vue](https://github.com/hubcarl/egg-webpack-vue) ^2.0.1
 
 ## 5. 使用
 
 #### 5.1 安装依赖
 
 ```bash
-npm install
-npm start
+yarn install
+yarn start     // linux
+yarn start:win // windows
 ```
 
 #### 5.2 启动应用
@@ -57,33 +58,33 @@ npm start
 首次运行请先运行一次 `npm run tsc`
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 应用访问: http://127.0.0.1:7001
 
-![npm start启动](https://github.com/hubcarl/egg-vue-webpack-boilerplate/blob/master/docs/images/webpack-build.png)
+![yarn start启动](https://github.com/hubcarl/egg-vue-webpack-boilerplate/blob/master/docs/images/webpack-build.png)
 
 
 #### 5.3 构建
 
-- TypeScript Egg 构建
+- TypeScript Egg 服务端构建
 
 ```bash
-npm run tsc
+yarn tsc
 ```
 
-- TypeScript 前端工程构建
+- ES6 前端工程构建
 
 ```bash
-npm run build
+yarn build
 ```
 
 #### 5.4 打包部署
 
-1. 先运行 `npm run tsc` 和 `npm run build` 构建 TypeScript Egg 代码和 TypeScript 前端代码
+1. 先运行 `yarn tsc` 和 `yarn build` 分别构建 TypeScript Egg 代码和 ES6 前端代码
 2. 项目代码和构建代码一起打包代码
-3. 应用部署后，通过 `npm start` 启动应用
+3. 应用部署后，linux通过 `yarn start` 启动应用，windows下通过`yarn start:win`
 
 
 ## License
