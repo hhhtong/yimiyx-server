@@ -42,25 +42,26 @@ export default class GoodsService extends BaseService {
         .orderBy('goods.createdAt', 'DESC')
         // .skip((page - 1) * rows)
         // .take(rows)
+        // .where('goods.id = 39 OR goods.id = 40')
+        // .where('goods.id = 39')
         .leftJoinAndSelect('goods.categorys', 'categorys')
         .getMany();
       const total = await query.getCount();
 
       const mock = require('./mock.js')
-      for (const v of list) {
-        if (v.id === 39) {
-          // continue
-          // const v = list[0]
-          console.warn('##########', v.categorys, v.goodsName);
+      for (let v of list) {
+        // if (v.id === 39 && false) {
+        if (false && true) {
+          // console.warn('##########', v.categorys);
 
           let pump = []
           for (const item of v.categorys) {
-            pump.push({ id: item.id })
+            pump.push(item.id )
             function refix(itemFn) {
               if (itemFn.pid !== 0) {
                 mock.forEach(mv => {
                   if (mv.id === itemFn.pid) {
-                    pump.push({ id: mv.id })
+                    pump.push(mv.id)
                     if (mv.pid !== 0) {
                       refix(mv)
                     }
@@ -71,8 +72,11 @@ export default class GoodsService extends BaseService {
             refix(item)
           }
 
-          v.categorys = repo.create(pump.reverse())
-          console.warn('@@@@@@@@@@@@@@@', v.categorys);
+          pump = [...new Set(pump)]
+          pump = pump.map(id => ({ id })).reverse()
+          // console.warn('@@@@@@@@@@@@@@@', pump);
+          v.categorys = pump
+          v = repo.create(v)
           await repo.save(v)
         }
       }

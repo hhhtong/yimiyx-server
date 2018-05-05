@@ -177,7 +177,7 @@ export default {
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
         const name = `${parent.name} / ${current.name}`
-        const tempObj = { no, name, categoryIds: { id: current.id } }
+        const tempObj = { no, name, ids: { id: current.id } }
 
         if (_tempObj) {
           _tempObj.no = parent.no + _tempObj.no

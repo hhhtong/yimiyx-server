@@ -27,7 +27,7 @@ export default class GoodsController extends BaseController {
     // 获取Goods表中的categorys[]
     let categorys = []
     for (const item of rowData.categorys) {
-      categorys = [...categorys, ...item.categoryIds.map(id => ({ id }))]
+      categorys = [...categorys, ...item.ids.map(id => ({ id }))]
     }
 
     rowData.categorys = categorys

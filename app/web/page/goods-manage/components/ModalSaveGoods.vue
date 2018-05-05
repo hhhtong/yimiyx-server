@@ -203,7 +203,7 @@ export default {
     },
 
     handleAddTag(item) {
-      if (item && !this.hasExistCategorys(item.categoryIds)) {
+      if (item && !this.hasExistCategorys(item.ids)) {
         this.categorys = [...this.categorys, item]
       } else {
         const newCategorys = this.getJoinCategory(this.categoryChild)
@@ -217,9 +217,9 @@ export default {
 
     hasExistCategorys(id) {
       if (Array.isArray(id)) {
-        return this.categorys.some(v => v.categoryIds.toString() === id.toString())
+        return this.categorys.some(v => v.ids.toString() === id.toString())
       }
-      return this.categorys.some(v => v.categoryIds.indexOf(id) > -1)
+      return this.categorys.some(v => v.ids.indexOf(id) > -1)
     },
 
     getJoinCategory(idsArr) {
@@ -238,15 +238,15 @@ export default {
         const parent = this.categoryListEqual.filter(v => v.id === current.pid)[0]
         const no = parent.no + current.no
         const name = `${parent.name} / ${current.name}`
-        const categoryIds = (`${parent.id},${current.id}`)
+        const ids = (`${parent.id},${current.id}`)
           .split(',')
           .map(item => +item)
-        const tempObj = { no, name, categoryIds }
+        const tempObj = { no, name, ids }
 
         if (typeof _tempObj !== 'undefined') {
           _tempObj.no = parent.no + _tempObj.no
           _tempObj.name = `${parent.name} / ${_tempObj.name}`
-          _tempObj.categoryIds = (`${parent.id},${_tempObj.categoryIds}`)
+          _tempObj.ids = (`${parent.id},${_tempObj.ids}`)
             .split(',')
             .map(item => +item)
         } else {
@@ -298,7 +298,7 @@ export default {
         this.historyCategorys = []
       } else {
         const historyCategorys = this.historyCategorys
-          .filter(item => !this.hasExistCategorys(item.categoryIds))
+          .filter(item => !this.hasExistCategorys(item.ids))
         // 最终存储最近选择过的三条
         this.historyCategorys = [...this.categorys.reverse(), ...historyCategorys].slice(0, 3)
       }

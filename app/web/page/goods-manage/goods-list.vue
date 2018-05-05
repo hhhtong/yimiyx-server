@@ -109,24 +109,14 @@ export default {
           width: 270,
           align: 'center',
           render: (h, { row, column, index }) => {
-            const joinName = obj => {
-              const c = obj.children
-              if (c) {
-                if (c[0].children) {
-                  return `${obj.name} / ${c[0].name} / ${c[0].children[0].name}`
-                }
-                return `${obj.name} / ${c[0].name}`
-              }
-              return obj.name
-            }
-
-            return row.categorys.map((item, index) => {
+            const categorys = this.__parseCategory(row.categorys)
+            return categorys.map((item, index) => {
               return <div>
                 <Tag
                   type="dot"
                   name={item.id}
                   color={tagColors[index % tagColors.length]}>
-                  {joinName(item)}
+                  {item.name}
                 </Tag>
               </div>
             })
@@ -221,6 +211,14 @@ export default {
       })
     },
 
+    fetchCategoryList() {
+      if (this.categoryList.length === 0) {
+        return this.$store.dispatch('updateCategoryList')
+      } else {
+        return Promise.resolve({ msg: '类目已获取，无需再次获取' })
+      }
+    },
+
     handleSizeChange(val) {
       this.listQuery.rows = val
       this.fetchData()
@@ -257,7 +255,8 @@ export default {
 
     // 编辑 | 添加 商品 -> 显示Modal
     handleEdit(row) {
-      this.defaultModalData = row
+      const categorys = this.__parseCategory(row.categorys)
+      this.defaultModalData = { ...row, categorys }
       this.showModal = true
     },
 
@@ -293,12 +292,26 @@ export default {
       // })
     },
 
-    fetchCategoryList() {
-      if (this.categoryList.length === 0) {
-        return this.$store.dispatch('updateCategoryList')
-      } else {
-        return Promise.resolve({ msg: '类目已获取，无需再次获取' })
+    // 嵌套类目结构解析成平级
+    __parseCategory(categorys) {
+      let temp = []
+
+      const joinName = (current, name = '') => {
+        let currentName = name ? `${name} / ${current.name}` : current.name
+        if (current.children) {
+          for (const item of current.children) {
+            joinName(item, currentName)
+          }
+        } else {
+          temp.push({ name: currentName, id: current.id })
+        }
       }
+
+      for (const item of categorys) {
+        joinName(item)
+      }
+
+      return temp
     }
   }
 }
