@@ -40,46 +40,11 @@ export default class GoodsService extends BaseService {
 
       const list = await query
         .orderBy('goods.createdAt', 'DESC')
-        // .skip((page - 1) * rows)
-        // .take(rows)
-        // .where('goods.id = 39 OR goods.id = 40')
-        // .where('goods.id = 39')
+        .skip((page - 1) * rows)
+        .take(rows)
         .leftJoinAndSelect('goods.categorys', 'categorys')
         .getMany();
       const total = await query.getCount();
-
-      const mock = require('./mock.js')
-      for (let v of list) {
-        // if (v.id === 39 && false) {
-        if (false && true) {
-          // console.warn('##########', v.categorys);
-
-          let pump = []
-          for (const item of v.categorys) {
-            pump.push(item.id )
-            function refix(itemFn) {
-              if (itemFn.pid !== 0) {
-                mock.forEach(mv => {
-                  if (mv.id === itemFn.pid) {
-                    pump.push(mv.id)
-                    if (mv.pid !== 0) {
-                      refix(mv)
-                    }
-                  }
-                })
-              }
-            }
-            refix(item)
-          }
-
-          pump = [...new Set(pump)]
-          pump = pump.map(id => ({ id })).reverse()
-          // console.warn('@@@@@@@@@@@@@@@', pump);
-          v.categorys = pump
-          v = repo.create(v)
-          await repo.save(v)
-        }
-      }
 
       await db.close();
       return { list, total };
