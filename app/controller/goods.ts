@@ -3,7 +3,7 @@ import BaseController from '../core/base-controller';
 export default class GoodsController extends BaseController {
 
   async index() {
-    const { service, ctx, controller } = this;
+    const { service, ctx } = this;
     try {
       let { list, total } = await service.goods.query(ctx.query);
 

@@ -4,27 +4,27 @@
       :value="show"
       title="创建采购单"
       @on-visible-change="handleVisibleChange">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
-        <FormItem label="采购类别">
-          <Select v-model="formValidate.categoryID" placeholder="请选择采购类别" filterable>
+      <Form ref="formData" :model="formData" :rules="formValidate" :label-width="90">
+        <FormItem label="采购类别" prop="categoryID">
+          <Select v-model="formData.categoryID" placeholder="请选择采购类别" filterable>
             <Option v-if="item.id !== 0" v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem label="采购商品" prop="goods">
-          <Select v-model="formValidate.goods" placeholder="请选择商品" filterable multiple>
+          <Select v-model="formData.goods" placeholder="请选择商品" filterable multiple>
             <Option v-for="item in goodsListTemp" :value="item.id" :key="item.id">{{ item.goodsName }}</Option>
           </Select>
         </FormItem>
         <FormItem label="供货商" prop="supplierID">
-          <Select v-model="formValidate.supplierID" placeholder="请选择供货商" filterable>
+          <Select v-model="formData.supplierID" placeholder="请选择供货商" filterable>
             <Option v-for="item in supplierListTemp" :value="item.id" :key="item.id">{{ item.supplierName }}</Option>
           </Select>
         </FormItem>
         <FormItem label="经办人" prop="transactor">
-          <Input v-model="formValidate.transactor" placeholder="请输入经办人姓名"></Input>
+          <Input v-model="formData.transactor" placeholder="请输入经办人姓名"></Input>
         </FormItem>
-        <FormItem label="备注">
-          <Input v-model="formValidate.remark" placeholder="请填写备注"></Input>
+        <FormItem label="备注(选填)">
+          <Input v-model="formData.remark" type="textarea" placeholder="请填写备注"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -38,7 +38,7 @@
 <script>
 import { cloneDeep } from 'lodash'
 
-const formValidate = {
+const formData = {
   categoryID: '',
   goods: [],
   supplierID: '',
@@ -58,27 +58,24 @@ export default {
   },
 
   data() {
-    const validateID = msg => {
-      return (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error(msg))
-        } else {
-          callback()
-        }
-      }
+    const validate = msg => (rule, value, callback) => {
+      return (value).toString() === '' ? callback(new Error(msg)) : callback()
     }
 
     return {
       isEdit: false,
-      formValidate,
       goodsListTemp: this.goodsList,
       supplierListTemp: this.supplierList,
-      ruleValidate: {
-        catagoryID: [
-          { validator: validateID('请选择采购类别'), trigger: 'change' }
+      formData,
+      formValidate: {
+        categoryID: [
+          { validator: validate('请选择采购类别'), trigger: 'change' }
         ],
         goods: [
-          { validator: validateID('请选择要采购的商品'), trigger: 'change' }
+          { validator: validate('请选择要采购的商品'), trigger: 'change' }
+        ],
+        supplierID: [
+          { validator: validate('请选择供货商'), trigger: 'change' }
         ],
         transactor: [
           { required: true, message: '请填写经办人姓名', trigger: 'blur' }
@@ -92,14 +89,13 @@ export default {
       if (newVal) {
         newVal = cloneDeep(newVal)
         this.isEdit = true // 标记为编辑模式
-        this.formValidate = newVal
+        this.formData = newVal
       } else {
         this.isEdit = false // 标记为新增模式
-        this.formValidate = cloneDeep(formValidate)
+        this.formData = cloneDeep(formData)
       }
     },
-    'formValidate.categoryID'(newVal) {
-      this.handleReset()
+    'formData.categoryID'(newVal) {
       // 筛除符合商品类别的商品
       this.goodsListTemp = this.goodsList.filter(item => item.categorys.some(v => v.id === newVal))
       // 筛除符合商品类别的供货商
@@ -115,16 +111,16 @@ export default {
       }
     },
     handleSubmit() {
-      this.$refs['formValidate'].validate((valid) => {
+      this.$refs['formData'].validate((valid) => {
         if (valid) {
-          this.$emit('handleSave', { ...this.formValidate }, this.isEdit)
+          this.$emit('handleSave', { ...this.formData }, this.isEdit)
         } else {
-          this.$Message.error('存在不符合格式的内容, 请认真填写!')
+          this.$Message.error('请认真填写!')
         }
       })
     },
     handleReset() {
-      this.$refs['formValidate'] && this.$refs['formValidate'].resetFields()
+      this.$refs['formData'] && this.$refs['formData'].resetFields()
     }
   }
 }

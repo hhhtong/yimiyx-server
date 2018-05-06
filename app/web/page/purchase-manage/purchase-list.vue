@@ -87,12 +87,6 @@ export default {
           title: '采购类别',
           key: 'categoryName'
         }, {
-          title: '状态',
-          width: 100,
-          render: (h, { row, column, index }) => (
-            <div>{row.status === -1 ? '待采购' : '已入库'}</div>
-          )
-        }, {
           title: '供货商',
           key: 'supplierName'
         }, {
@@ -104,6 +98,12 @@ export default {
         }, {
           title: '经办人',
           key: 'transactor'
+        }, {
+          title: '状态',
+          width: 100,
+          render: (h, { row, column, index }) => (
+            <div>{row.status === -1 ? '待采购' : '已入库'}</div>
+          )
         }, {
           title: '备注',
           key: 'remark'

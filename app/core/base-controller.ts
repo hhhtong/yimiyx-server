@@ -48,9 +48,9 @@ export default class BaseController extends Controller {
    * 数据重排变成嵌套
    */
   $refix(list: Array<object>) {
-    const oneList = list.filter(item => item.type === 1);
-    const twoList = list.filter(item => item.type === 2);
-    const threeList = list.filter(item => item.type === 3);
+    const oneList = list.filter((item: any) => item.type === 1);
+    const twoList = list.filter((item: any) => item.type === 2);
+    const threeList = list.filter((item: any) => item.type === 3);
     return this.$mixin(oneList.reverse(), this.$mixin(twoList, threeList));
   }
 

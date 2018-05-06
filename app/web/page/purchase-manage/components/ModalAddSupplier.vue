@@ -118,12 +118,8 @@ export default {
       { required: true, message: '该项不能为空', trigger: 'blur' }
     ]
 
-    const validateID = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('请至少选择一个经营产品'))
-      } else {
-        callback()
-      }
+    const validate = msg => (rule, value, callback) => {
+      return (value).toString() === '' ? callback(new Error(msg)) : callback()
     }
 
     return {
@@ -150,7 +146,7 @@ export default {
           { required: true, message: '请选择一个收款方式', trigger: 'change' }
         ],
         categoryID: [
-          { validator: validateID, trigger: 'change' }
+          { validator: validate('请至少选择一个经营产品'), trigger: 'change' }
         ]
       }
     }
