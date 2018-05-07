@@ -102,6 +102,13 @@ export const appRouter = [
         name: 'purchase-list',
         title: '采购管理',
         component: $import('purchase-manage/purchase-list')
+      }, {
+        hidden: true,
+        path: 'purchase-add',
+        icon: 'ios-list-outline',
+        name: 'purchase-add',
+        title: '新增采购单',
+        component: $import('purchase-manage/purchase-add')
       }
     ]
   }, {

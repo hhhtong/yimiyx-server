@@ -1,4 +1,3 @@
-/* vuex state */
 export const state = {
   // 分类列表【嵌套】
   categoryList: [],
@@ -7,7 +6,6 @@ export const state = {
   tableConHeight: null
 }
 
-/* vuex getters */
 export const getters = {
   token: state => state.user.token
 }

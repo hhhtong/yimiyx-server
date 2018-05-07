@@ -17,17 +17,8 @@
       <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/ID" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleExportExcel" type="success" icon="ios-download-outline" class="margin-left-20">导出数据</Button>
-      <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">创建采购单</Button>
+      <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">新增采购单</Button>
       <a id="hrefToExportTable" style="postion: absolute;left: -10px;top: -10px;width: 0px;height: 0px;"></a>
-
-      <ModalAddPurchase
-        :show.sync="showModal"
-        :default-modal-data="defaultModalData"
-        :category-list="categoryList"
-        :goods-list="goodsList"
-        :supplier-list="supplierList"
-        @handleSave="handleSave">
-      </ModalAddPurchase>
     </Header>
     <Layout>
       <Content>
@@ -42,9 +33,9 @@
 
 <script>
 import ModalAddPurchase from './components/ModalAddPurchase'
-import { purchaseOrderGet, purchaseOrderAdd, purchaseOrderDel, purchaseOrderUpdate, goodsGet, supplierGet } from '@/api'
 import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
+import { purchaseOrderGet, purchaseOrderDel } from '@/api'
 import util from '@/libs/util'
 
 export default {
@@ -63,10 +54,6 @@ export default {
         categoryID: 0, // 商品类别 默认0(全部)
         supplier: '' // 供应商名称 | ID
       },
-      goodsList: [],
-      supplierList: [],
-      showModal: false,
-      defaultModalData: false,
       tableData: [],
       tableColumns: [
         {
@@ -145,8 +132,6 @@ export default {
   created() {
     this.fetchData()
     this.__getCategoryList()
-    this.__getGoodsList()
-    this.__getSupplierList()
   },
 
   methods: {
@@ -189,10 +174,13 @@ export default {
         original: false
       })
     },
-    // 编辑 | 添加 采购单 -> 显示Modal
+    // 编辑 | 添加 采购单 -> 路由跳转
     handleEdit(row) {
-      this.defaultModalData = row
-      this.showModal = true
+      if (row) {
+
+      } else {
+        this.$router.push({ name: 'purchase-add' })
+      }
     },
     // 删除采购单
     handleDelete(row) {
@@ -203,38 +191,11 @@ export default {
         }
       })
     },
-    // 添加 | 修改采购单 -> 保存
-    handleSave(formData, isEdit) {
-      const action = isEdit ? purchaseOrderUpdate : purchaseOrderAdd
-      action(formData).then(result => {
-        if (result.code === 50000) {
-          this.$Message.success(result.msg)
-          this.showModal = false
-          this.fetchData()
-        }
-      })
-    },
     // 获取商品分类列表
     __getCategoryList() {
       if (this.categoryList.length === 0) {
         this.$store.dispatch('updateCategoryList')
       }
-    },
-    // 获取商品列表
-    __getGoodsList() {
-      goodsGet().then(result => {
-        if (result.code === 50000) {
-          this.goodsList = result.data.list
-        }
-      })
-    },
-    // 获取供货商列表
-    __getSupplierList() {
-      supplierGet().then(result => {
-        if (result.code === 50000) {
-          this.supplierList = result.data.list
-        }
-      })
     }
   }
 }
