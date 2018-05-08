@@ -4,7 +4,19 @@
 }
 
 .slider {
-  margin-left: 20px;
+  margin: 0 20px;
+  height: 100%;
+
+  &-con {
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  &-head {
+    color: white;
+    text-align: center;
+    font-size: 18px;
+  }
 }
 </style>
 
@@ -38,16 +50,15 @@
       </div>
     </Content>
     <Sider
-      class="slider"
       breakpoint="md"
       collapsible
       reverse-arrow
-      :width="700"
+      :width="600"
       :collapsed-width="78"
       v-model="isCollapsed">
-      <Layout class="slider-con">
-        <Header>请选择要采购的商品</Header>
-        <Content>
+      <Layout class="slider" v-show="!isCollapsed">
+        <Header class="slider-head">请选择要采购的商品</Header>
+        <Content class="slider-con">
           <Table :data="goodsList" :columns="goodsColumns" :loading="listLoading" stripe></Table>
         </Content>
       </Layout>
@@ -81,7 +92,7 @@ export default {
 
     return {
       isEdit,
-      isCollapsed: true,
+      isCollapsed: !true,
       listLoading: false,
       goodsListTemp: this.goodsList,
       supplierListTemp: this.supplierList,
@@ -104,8 +115,7 @@ export default {
       goodsList: [],
       goodsColumns: [
         {
-          title: '#',
-          type: 'index',
+          type: 'selection',
           width: 60
         }, {
           title: '商品名称',
@@ -121,15 +131,16 @@ export default {
         }, {
           title: '库存',
           key: 'stockQty',
+          align: 'center',
           sortable: true
         }, {
-          title: '操作',
+          title: '采购数量',
           key: 'handle',
           align: 'center',
-          width: 200,
+          width: 130,
           render: (h, { row, column, index }) => (
             <div>
-              <InputNumber min={0} v-model={row.purchaseNum}></InputNumber>
+              <InputNumber v-model={row.purchaseNum} min={0} on-on-change={() => this.handleNumChange(row)}></InputNumber>
             </div>
           )
         }
@@ -169,6 +180,13 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
+    handleNumChange(row) {
+      if (row.purchaseNum > 0) {
+        console.warn(row)
+        row._checked = true
+        console.warn(row._checked)
+      }
+    },
     __save(formData) {
 
     },
@@ -182,6 +200,10 @@ export default {
     __getGoodsList() {
       goodsGet().then(result => {
         if (result.code === 50000) {
+          result.data.list.forEach(item => {
+            item.purchaseNum = 0
+            item._checked = false
+          })
           this.goodsList = result.data.list
         }
       })
@@ -191,7 +213,6 @@ export default {
       this.listLoading = true
       supplierGet().then(result => {
         if (result.code === 50000) {
-          result.data.list.forEach(item => item.purchaseNum = 0)
           this.supplierList = result.data.list
           this.listLoading = false
         }
