@@ -140,7 +140,7 @@ export default {
           width: 130,
           render: (h, { row, column, index }) => (
             <div>
-              <InputNumber v-model={row.purchaseNum} min={0} on-on-change={() => this.handleNumChange(row)}></InputNumber>
+              <InputNumber v-model={this.goodsList[index].purchaseNum} min={0} on-on-change={() => this.handleNumChange(index)}></InputNumber>
             </div>
           )
         }
@@ -180,11 +180,12 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
-    handleNumChange(row) {
+    handleNumChange(index) {
+      const row = this.goodsList[index]
       if (row.purchaseNum > 0) {
-        console.warn(row)
         row._checked = true
-        console.warn(row._checked)
+      } else {
+        row._checked = false
       }
     },
     __save(formData) {

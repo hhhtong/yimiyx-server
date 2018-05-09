@@ -34,8 +34,7 @@ export default {
 
   computed: {
     _treeData() {
-      const treeData = this.treeData
-      return treeData.map(item => ({ ...item, render: this.renderData }))
+      return this.treeData.map(item => ({ ...item, render: this.renderData }))
     }
   },
 
