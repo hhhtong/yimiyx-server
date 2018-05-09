@@ -16,6 +16,10 @@
     color: white;
     text-align: center;
     font-size: 18px;
+
+    &-searchbox {
+      text-align: center;
+    }
   }
 }
 </style>
@@ -30,7 +34,8 @@
           </Select>
         </FormItem>
         <FormItem label="采购商品">
-          <Button icon="ios-plus-empty" type="dashed" size="small" @click="isCollapsed = false">添加</Button>
+          <Button v-show="formData.goods.length === 0" icon="ios-plus-empty" type="dashed" size="small" @click="isCollapsed = false">添加</Button>
+          <Table v-show="formData.goods.length > 0" :height="300" :data="formData.goods" :columns="goodsColumns2"></Table>
         </FormItem>
         <FormItem label="供货商" prop="supplierID">
           <Select v-model="formData.supplierID" placeholder="请选择供货商" filterable>
@@ -57,9 +62,15 @@
       :collapsed-width="78"
       v-model="isCollapsed">
       <Layout class="slider" v-show="!isCollapsed">
-        <Header class="slider-head">请选择要采购的商品</Header>
+        <Header class="slider-head">
+          <h3>请选择要采购的商品</h3>
+          <div class="slider-head-searchbox">
+            <label>商品搜素：</label>
+            <Input v-model="goods" clearable placeholder="请输入商品编号/名称" @keyup.native.enter="handleQuery" style="width: 250px"></Input>
+          </div>
+        </Header>
         <Content class="slider-con">
-          <Table :data="goodsList" :columns="goodsColumns" :loading="listLoading" stripe></Table>
+          <Table :data="goodsListTemp" :columns="goodsColumns" :loading="listLoading" stripe></Table>
         </Content>
       </Layout>
     </Sider>
@@ -67,6 +78,7 @@
 </template>
 
 <script>
+import util from '@/libs/util'
 import { mapState } from 'vuex'
 import { cloneDeep } from 'lodash'
 import { InputNumber } from 'iview'
@@ -94,8 +106,6 @@ export default {
       isEdit,
       isCollapsed: !true,
       listLoading: false,
-      goodsListTemp: this.goodsList,
-      supplierListTemp: this.supplierList,
       formData,
       formValidate: {
         categoryID: [
@@ -111,8 +121,11 @@ export default {
           { required: true, message: '请填写经办人姓名', trigger: 'blur' }
         ]
       },
-      supplierList: [],
+      goods: '',
       goodsList: [],
+      supplierList: [],
+      goodsListTemp: [],
+      supplierListTemp: [],
       goodsColumns: [
         {
           type: 'selection',
@@ -144,6 +157,34 @@ export default {
             </div>
           )
         }
+      ],
+      goodsColumns2: [
+        {
+          type: 'index',
+          width: 60
+        }, {
+          title: '商品名称',
+          key: 'goodsName',
+          align: 'center'
+        }, {
+          title: '规格',
+          key: 'spec',
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <span>{row.spec + row.specUnit}</span>
+          )
+        }, {
+          title: '采购数量',
+          key: 'purchaseNum',
+          align: 'center'
+        }, {
+          title: '操作',
+          key: 'handle',
+          align: 'center',
+          render: (h, { row, column, index }) => (
+            <i-button class="noradius" size="small" type="error" on-click={() => this.__removeGoods(row)}>删 除</i-button>
+          )
+        }
       ]
     }
   },
@@ -153,11 +194,16 @@ export default {
   },
 
   watch: {
-    'formData.categoryID'(newVal) {
-      // 筛除符合商品类别的商品
-      this.goodsListTemp = this.goodsList.filter(item => item.categorys.some(v => v.id === newVal))
-      // 筛除符合商品类别的供货商
-      this.supplierListTemp = this.supplierList.filter(item => item.category.id === newVal)
+    goods(goods) {
+      this.__filterGoods(this.formData.categoryID, goods)
+    },
+    'formData.categoryID': {
+      handler(newVal) {
+        this.__filterGoods(newVal, goods)
+        // 筛除符合商品类别的供货商
+        this.supplierListTemp = this.supplierList.filter(item => item.category.id === newVal)
+      },
+      immediate: true
     }
   },
 
@@ -182,11 +228,35 @@ export default {
     },
     handleNumChange(index) {
       const row = this.goodsList[index]
+
       if (row.purchaseNum > 0) {
         row._checked = true
+        this.formData.goods.push(row)
       } else {
         row._checked = false
+        this.__removeGoods(row)
       }
+    },
+    __removeGoods({ goodsNo }) {
+      this.formData.goods = this.formData.goods.filter(item => item.goodsNo !== goodsNo)
+    },
+    // 筛除符合商品类别的商品
+    __filterGoods(categoryID, goods) {
+      const { goodsNo, goodsName } = util.parseSearchField({
+        query: { goods },
+        field: 'goods',
+        ID: 'goodsNo',
+        name: 'goodsName'
+      })
+
+      // 筛除符合商品类别的商品
+      this.goodsListTemp = this.goodsList.filter(item => {
+        const hasCagegorys = item.categorys.some(v => v.id === categoryID)
+        if (goodsNo === 0) {
+          return hasCagegorys && item.goodsName.indexOf(goodsName) > -1
+        }
+        return hasCagegorys && item.goodsNo.indexOf(goodsNo) > -1
+      })
     },
     __save(formData) {
 
