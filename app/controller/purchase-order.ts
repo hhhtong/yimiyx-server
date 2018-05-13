@@ -16,9 +16,21 @@ export default class PurchaseOrderController extends BaseController {
 
   async add() {
     const { service, ctx } = this;
-    const rowData = { ...ctx.request.body, createdAt: new Date() };
+    const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
+    const id = `CG${ctx.helper.dateFormat()}${ctx.helper.uuid(6, 52)}`
+    const rowData = {
+      id,
+      goodsCategory: { id: categoryID },
+      supplier: { id: supplierID },
+      transactor,
+      remark,
+      status: 1
+    }
+
     try {
-      await service.purchaseOrder.insert(rowData);
+      await service.purchaseOrder.insertPurchaseOrder(rowData);
+      // await service.purchaseOrder.insertPurchaseGoodsOrder(rowData);
+      // await service.purchaseOrder.insertPurchaseGoodsDetail(rowData);
       this.success();
     } catch (error) {
       this.fail(error);

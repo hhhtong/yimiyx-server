@@ -16,9 +16,8 @@ export default class SupplierController extends BaseController {
 
   async add() {
     const { service, ctx } = this;
-    const rowData = { ...ctx.request.body, createdAt: new Date() };
     try {
-      await service.supplier.insert(rowData);
+      await service.supplier.insert(ctx.request.body);
       this.success();
     } catch (error) {
       this.fail(error);

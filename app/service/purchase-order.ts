@@ -9,9 +9,9 @@ interface query {
 }
 
 interface query {
-  dateRange?: string, // 采购单创建时间范围筛选
+  dateRange?: any, // 采购单创建时间范围筛选
   categoryID?: number, // 商品类别 默认0(全部)
-  supplierID?: number, // 供应商编号
+  supplierID?: number, // 供应商ID
   supplierName?: string // 供应商名称
 }
 
@@ -44,7 +44,7 @@ export default class SupplierService extends BaseService {
     // }
   }
 
-  async insert(rowData) {
+  async insertPurchaseOrder(rowData) {
     const db = await this.db;
     const repo = db.getRepository(PurchaseOrder);
 

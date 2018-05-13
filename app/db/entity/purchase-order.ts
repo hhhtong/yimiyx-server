@@ -36,10 +36,11 @@ export default class PurchaseOrder {
 
   /**
    * 采购单状态
-   * -1: 待采购
-   *  1: 已入库
+   * -1: 已删除
+   *  1: 待采购
+   *  2: 已入库
    */
-  @Column('tinyint', { default: -1 })
+  @Column('tinyint', { default: 1 })
   status: number;
 
   /**

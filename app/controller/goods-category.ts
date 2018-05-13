@@ -14,9 +14,8 @@ export default class GoodsCategoryController extends BaseController {
 
   async add() {
     const { service, ctx } = this;
-    const rowData = { ...ctx.request.body, createdAt: new Date() };
     try {
-      await service.goodsCategory.insert(rowData);
+      await service.goodsCategory.insert(ctx.request.body);
       this.success();
     } catch (error) {
       this.fail(error);

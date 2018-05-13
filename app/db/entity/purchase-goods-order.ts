@@ -38,8 +38,10 @@ export default class PurchaseGoodsOrder {
 
   /**
    * 采购商品单状态
-   * -1: 采购失败
-   *  1: 已入库
+   * -2: 采购失败
+   * -1: 已删除
+   *  1: 待采购
+   *  2: 已入库
    */
   @Column('tinyint', { default: -1 })
   status: number;

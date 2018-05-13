@@ -71,7 +71,8 @@ export const otherRouter = {
   children: [
     { path: 'home', title: '工作台', name: 'home_index', component: $import('home/home') },
     { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: $import('own-space/own-space') },
-    { path: 'message', title: '消息中心', name: 'message_index', component: $import('message/message') }
+    { path: 'message', title: '消息中心', name: 'message_index', component: $import('message/message') },
+    { path: 'purchase-add', title: '新增采购单', name: 'purchase-add', component: $import('purchase-manage/purchase-add') }
   ]
 }
 
@@ -102,13 +103,6 @@ export const appRouter = [
         name: 'purchase-list',
         title: '采购管理',
         component: $import('purchase-manage/purchase-list')
-      }, {
-        hidden: true,
-        path: 'purchase-add',
-        icon: 'ios-list-outline',
-        name: 'purchase-add',
-        title: '新增采购单',
-        component: $import('purchase-manage/purchase-add')
       }
     ]
   }, {
