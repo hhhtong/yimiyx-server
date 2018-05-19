@@ -4,7 +4,7 @@ const env = process.env.NODE_ENV
 const util = {}
 
 util.title = function (title) {
-  title = title || '浩海恒达后台管理系统'
+  title = title || '浩海鸿通后台管理系统'
   window.document.title = title
 }
 

@@ -34,7 +34,7 @@
           </Select>
         </FormItem>
         <FormItem label="采购商品">
-          <Button v-show="formData.goods.length === 0" icon="ios-plus-empty" type="dashed" size="small" @click="isCollapsed = false">添加</Button>
+          <Button v-show="formData.goods.length === 0" icon="ios-plus-empty" type="dashed" size="small" @click="handleAddClick">添加</Button>
           <Table v-show="formData.goods.length > 0" :data="formData.goods" :columns="goodsColumns2"></Table>
         </FormItem>
         <FormItem label="供货商" prop="supplierID">
@@ -101,7 +101,7 @@ export default {
 
     return {
       isEdit,
-      isCollapsed: !true,
+      isCollapsed: true,
       listLoading: false,
       formData,
       formValidate: {
@@ -119,9 +119,9 @@ export default {
         ]
       },
       goodsQuery: '',
-      goodsList: [],
-      supplierList: [],
+      goodsList: [], // 获取所有的商品，并缓存起来
       goodsListTemp: [],
+      supplierList: [], // 获取所有的供货商信息，并缓存起来
       supplierListTemp: [],
       goodsColumns: [
         {
@@ -154,7 +154,16 @@ export default {
           width: 130,
           render: (h, { row, column, index }) => (
             <div>
-              <InputNumber v-model={this.goodsList[index].purchaseNum} min={0} on-on-change={() => this.handleNumChange(index)}></InputNumber>
+              <InputNumber
+                min={0}
+                v-model={this.goodsListTemp[index].purchaseNum}
+                on-on-change={
+                  (curVal) => {
+                    row = this.goodsListTemp[index]
+                    curVal > 0 ? this.__addGoods(row) : this.__removeGoods(row)
+                  }
+              }>
+              </InputNumber>
             </div>
           )
         }
@@ -199,6 +208,7 @@ export default {
       this.__updateGoods()
     },
     'formData.categoryID'(newVal) {
+      this.formData.goods = []
       this.__updateGoods()
       this.__updateSupplier()
     }
@@ -223,14 +233,11 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
-    handleNumChange(index) {
-      const row = this.goodsList[index]
-
-      if (row.purchaseNum > 0) {
-        this.__addGoods(row)
-      } else {
-        this.__removeGoods(row)
+    handleAddClick() {
+      if (this.formData.categoryID === '') {
+        return this.$Message.info('请先选择采购类别')
       }
+      this.isCollapsed = false
     },
     __addGoods(row) {
       row._checked = true
@@ -244,7 +251,7 @@ export default {
       curGoods.purchaseNum = 0
       this.formData.goods = this.formData.goods.filter(item => item.goodsNo !== goodsNo)
     },
-    // 筛除符合商品类别的商品
+    // 筛选符合商品类别的商品
     __updateGoods() {
       const { categoryID } = this.formData
       const goods = this.goodsQuery
@@ -254,6 +261,9 @@ export default {
         ID: 'goodsNo',
         name: 'goodsName'
       })
+
+      this.listLoading = true
+      setTimeout(() => this.listLoading = false, 1500)
 
       this.goodsListTemp = this.goodsList.filter(item => {
         const hasCagegorys = categoryID === '' || item.categorys.some(v => v.id === categoryID)
@@ -291,11 +301,11 @@ export default {
       goodsGet({ disabledPage: true }).then(result => {
         if (result.code === 50000) {
           result.data.list.forEach(item => {
-            item.purchaseNum = 0
-            item._checked = false
+            item.purchaseNum = 0 // 初始采购数量
+            item._checked = false // 初始是否选中
+            item._disabled = true // 初始是否禁用
           })
           this.goodsList = result.data.list
-          this.__updateGoods()
           this.listLoading = false
         }
       })
@@ -305,7 +315,6 @@ export default {
       supplierGet().then(result => {
         if (result.code === 50000) {
           this.supplierList = result.data.list
-          this.__updateSupplier()
         }
       })
     }
