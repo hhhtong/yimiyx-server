@@ -222,6 +222,10 @@ export default {
 
   methods: {
     handleSubmit() {
+      if (this.formData.goods.length === 0) {
+        return this.$Message.error('请选择要采购的商品!')
+      }
+
       this.$refs['formData'].validate((valid) => {
         if (valid) {
           this.__save(this.formData)
@@ -285,7 +289,11 @@ export default {
     __save(formData) {
       purchaseOrderAdd(formData).then(result => {
         if (result.code === 50000) {
+          const { name } = this.$route
+          this.$store.commit('removeTag', name)
+          this.$store.commit('closePage', name)
           this.$router.replace({ name: 'purchase-list' })
+          localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
         }
       })
     },

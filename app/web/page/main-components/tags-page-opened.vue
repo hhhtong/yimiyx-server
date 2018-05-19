@@ -71,7 +71,7 @@ export default {
       // }
     },
     closePage (event, name) {
-      let pageOpenedList = this.$store.state.app.pageOpenedList
+      let pageOpenedList = this.tagsList
       let lastPageObj = pageOpenedList[0]
       if (this.currentPageName === name) {
         let len = pageOpenedList.length
@@ -88,7 +88,7 @@ export default {
       }
       this.$store.commit('removeTag', name)
       this.$store.commit('closePage', name)
-      pageOpenedList = this.$store.state.app.pageOpenedList
+      pageOpenedList = this.tagsList
       localStorage.pageOpenedList = JSON.stringify(pageOpenedList)
       if (this.currentPageName === name) {
         this.linkTo(lastPageObj)

@@ -17,6 +17,7 @@ export default class PurchaseOrderController extends BaseController {
   async add() {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
+    // 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
     const id = `CG${ctx.helper.dateFormat()}${ctx.helper.uuid(6, 52)}`
     const rowData = {
       id,
