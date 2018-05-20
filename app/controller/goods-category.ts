@@ -36,7 +36,7 @@ export default class GoodsCategoryController extends BaseController {
   async update() {
     const { service, ctx } = this;
     const [treeData, deleteIds]: any = ctx.request.body
-    const rowData: any = this.unmixin(treeData);
+    const rowData: any = this.$unmixin(treeData);
 
     try {
       if (deleteIds.length > 0) {

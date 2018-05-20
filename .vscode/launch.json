@@ -15,7 +15,6 @@
         "--",
         "--inspect-brk"
       ],
-      "windows": { "runtimeExecutable": "npm.cmd" },
       "console": "integratedTerminal",
       "restart": true,
       "protocol": "auto",

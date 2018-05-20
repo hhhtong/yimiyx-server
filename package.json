@@ -12,6 +12,7 @@
     "build:dev": "cross-env easywebpack build dev",
     "build:test": "cross-env easywebpack build test",
     "dev": "node --max_old_space_size=4096 index.js",
+    "debug": "egg-bin debug",
     "start": "egg-scripts start --daemon --title=egg-server-veggie",
     "stop": "egg-scripts stop --title=egg-server-veggie",
     "start:win": "cross-env NODE_ENV=production EGG_SERVER_ENV=prod node index.js",

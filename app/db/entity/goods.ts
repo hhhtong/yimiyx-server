@@ -69,6 +69,12 @@ export default class Goods {
   specUnit: string;
 
   /**
+   * 商品规格的数量
+   */
+  @Column('int', { default: 1 })
+  specNum: number;
+
+  /**
    * 产地
    */
   @Column('varchar', { length: 50, default: '' })

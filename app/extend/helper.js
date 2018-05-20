@@ -42,3 +42,4 @@ exports.default = {
         return uuid.join('');
     }
 };
+//# sourceMappingURL=helper.js.map

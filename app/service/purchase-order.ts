@@ -44,14 +44,16 @@ export default class SupplierService extends BaseService {
     // }
   }
 
+  // 插入采购单数据
   async insertPurchaseOrder(rowData) {
     const db = await this.db;
     const repo = db.getRepository(PurchaseOrder);
 
     try {
-      const id = rowData.categoryID
+      console.warn('@@@@@@@@@@@@@@@', rowData);
+
       rowData = repo.create(rowData)
-      await repo.save({ ...rowData, category: { id } });
+      await repo.save(rowData);
       await db.close();
     } catch (e) {
       await db.close();

@@ -5,6 +5,7 @@ export default class PurchaseOrderController extends BaseController {
 
   async index() {
     const { service, ctx } = this;
+
     try {
       const result: object = await service.purchaseOrder.query(ctx.query);
       // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
@@ -23,6 +24,7 @@ export default class PurchaseOrderController extends BaseController {
       id,
       goodsCategory: { id: categoryID },
       supplier: { id: supplierID },
+      purchaseGoodsOrder: this.__generatePurchaseGoodsOrder(goods),
       transactor,
       remark,
       status: 1
@@ -60,5 +62,33 @@ export default class PurchaseOrderController extends BaseController {
     } catch (error) {
       this.fail(error);
     }
+  }
+
+  // 生成采购商品单主订单数据
+  __generatePurchaseGoodsOrder(_goods) {
+      let purchaseGoodsOrder = [];
+      for (const goods of _goods) {
+        // 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
+        const purchaseGoodsID = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 52)}`;
+        purchaseGoodsOrder.push({
+          purchaseGoodsID,
+          goods,
+          purchaseGoodsDetail: this.__generatePurchaseGoodsDetail(goods),
+          status: 1,
+          purchaseNum: goods.purchaseNum
+        });
+      }
+      return purchaseGoodsOrder;
+  }
+
+  // 生成采购商品单子订单数据
+  __generatePurchaseGoodsDetail({ goodsNo, specNum }) {
+      let purchaseGoodsDetail = [];
+      for (let index = 0; index < specNum; index++) {
+        // 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
+        const goodsDetailID = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 52);
+        purchaseGoodsDetail.push({ goodsDetailID });
+      }
+      return purchaseGoodsDetail;
   }
 }

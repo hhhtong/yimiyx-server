@@ -1,6 +1,7 @@
 {
   "files.exclude": {
     "USE_GITIGNORE": true,
+    "**/*.map": true,
     "**/*.js": {
       "when": "$(basename).ts"
     }

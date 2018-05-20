@@ -17,16 +17,16 @@ export default class PurchaseOrder {
   id: string;
 
   /**
-   * 供货商
-   */
-  @ManyToOne(type => Supplier, supplier => supplier.purchaseOrder)
-  supplier: Supplier;
-
-  /**
    * 采购类别(一级类目)
    */
   @ManyToOne(type => GoodsCategory, gc => gc.purchaseOrder)
   goodsCategory: GoodsCategory;
+
+  /**
+   * 供货商
+   */
+  @ManyToOne(type => Supplier, supplier => supplier.purchaseOrder)
+  supplier: Supplier;
 
   /**
    * 采购商品单的主订单

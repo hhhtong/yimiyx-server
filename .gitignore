@@ -13,6 +13,7 @@ run
 *.tar
 *.rar
 *.log
+*.map
 artifacts.json
 *tmp
 _site
