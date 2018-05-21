@@ -30,7 +30,7 @@ export default class Goods {
    * 采购商品单的主订单
    */
   @OneToMany(type => PurchaseGoodsOrder, pgo => pgo.goods)
-  purchaseGoodsOrder: PurchaseGoodsOrder;
+  purchaseGoodsOrder: PurchaseGoodsOrder[];
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)

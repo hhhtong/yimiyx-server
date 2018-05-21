@@ -34,7 +34,7 @@ export default class PurchaseGoodsOrder {
    * 采购的子订单
    */
   @OneToMany(type => PurchaseGoodsDetail, co => co.purchaseGoodsOrder)
-  purchaseGoodsDetail: PurchaseGoodsDetail;
+  purchaseGoodsDetail: PurchaseGoodsDetail[];
 
   /**
    * 采购商品单状态

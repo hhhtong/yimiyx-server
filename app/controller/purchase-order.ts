@@ -19,7 +19,7 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
     // 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
-    const id = `CG${ctx.helper.dateFormat()}${ctx.helper.uuid(6, 52)}`
+    const id = 'CG' + ctx.helper.dateFormat(new Date(), 'YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
     const rowData = {
       id,
       goodsCategory: { id: categoryID },
@@ -69,7 +69,7 @@ export default class PurchaseOrderController extends BaseController {
       let purchaseGoodsOrder = [];
       for (const goods of _goods) {
         // 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
-        const purchaseGoodsID = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 52)}`;
+        const purchaseGoodsID = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
         purchaseGoodsOrder.push({
           purchaseGoodsID,
           goods,
@@ -86,7 +86,7 @@ export default class PurchaseOrderController extends BaseController {
       let purchaseGoodsDetail = [];
       for (let index = 0; index < specNum; index++) {
         // 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
-        const goodsDetailID = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 52);
+        const goodsDetailID = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
         purchaseGoodsDetail.push({ goodsDetailID });
       }
       return purchaseGoodsDetail;

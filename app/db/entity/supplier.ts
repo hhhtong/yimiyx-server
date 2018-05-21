@@ -21,7 +21,7 @@ export default class Supplier {
    * 采购的主订单
    */
   @OneToMany(type => PurchaseOrder, po => po.supplier)
-  purchaseOrder: PurchaseOrder;
+  purchaseOrder: PurchaseOrder[];
 
   /**
    * 供货商级别 1: 优 2: 良好 3: 凑合

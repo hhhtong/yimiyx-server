@@ -32,7 +32,7 @@ export default class PurchaseOrder {
    * 采购商品单的主订单
    */
   @OneToMany(type => PurchaseGoodsOrder, mo => mo.purchaseOrder)
-  purchaseGoodsOrder: PurchaseGoodsOrder;
+  purchaseGoodsOrder: PurchaseGoodsOrder[];
 
   /**
    * 采购单状态
