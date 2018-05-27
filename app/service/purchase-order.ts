@@ -50,11 +50,44 @@ export default class SupplierService extends BaseService {
     const repo = db.getRepository(PurchaseOrder);
 
     try {
-      console.warn('@@@@@@@@@@@@@@@', rowData);
-
       rowData = repo.create(rowData)
       await repo.save(rowData);
       await db.close();
+    } catch (e) {
+      await db.close();
+      this.error(e);
+    }
+  }
+
+  // 插入采购的商品单数据
+  async insertPurchaseGoodsOrder(rowData) {
+    const db = await this.db;
+    const repo = db.getRepository(PurchaseGoodsOrder);
+
+    try {
+      rowData = repo.create(rowData)
+      rowData = await repo.save(rowData);
+      await db.close();
+      console.log('1@@@@@@@@@@@@@@@', rowData);
+
+      return rowData;
+    } catch (e) {
+      await db.close();
+      this.error(e);
+    }
+  }
+
+  // 插入采购的商品单的子订单数据
+  async insertPurchaseGoodsDetail(rowData) {
+    const db = await this.db;
+    const repo = db.getRepository(PurchaseGoodsDetail);
+
+    try {
+      rowData = repo.create(rowData)
+      rowData = await repo.save(rowData);
+      await db.close();
+      console.log('2@@@@@@@@@@@@@@@', rowData);
+      return rowData;
     } catch (e) {
       await db.close();
       this.error(e);

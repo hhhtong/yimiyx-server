@@ -103,7 +103,7 @@ export default {
       isEdit,
       isCollapsed: true,
       listLoading: false,
-      formData,
+      formData: cloneDeep(formData),
       formValidate: {
         categoryID: [
           { validator: validate('请选择采购类别'), trigger: 'change' }
@@ -223,14 +223,14 @@ export default {
   methods: {
     handleSubmit() {
       if (this.formData.goods.length === 0) {
-        return this.$Message.error('请选择要采购的商品!')
+        return this.$Message.error('请选择要采购的商品')
       }
 
       this.$refs['formData'].validate((valid) => {
         if (valid) {
           this.__save(this.formData)
         } else {
-          this.$Message.error('请认真填写!')
+          this.$Message.error('请认真填写')
         }
       })
     },
@@ -289,6 +289,9 @@ export default {
     __save(formData) {
       purchaseOrderAdd(formData).then(result => {
         if (result.code === 50000) {
+          this.$Message.success('添加成功')
+          this.formData = cloneDeep(formData) // 清空表单数据
+          // 关闭当前标签并返回采购列表
           const { name } = this.$route
           this.$store.commit('removeTag', name)
           this.$store.commit('closePage', name)

@@ -65,7 +65,7 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   // 生成采购商品单主订单数据
-  __generatePurchaseGoodsOrder(_goods) {
+  async __generatePurchaseGoodsOrder(_goods) {
       let purchaseGoodsOrder = [];
       for (const goods of _goods) {
         // 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
@@ -78,17 +78,19 @@ export default class PurchaseOrderController extends BaseController {
           purchaseNum: goods.purchaseNum
         });
       }
-      return purchaseGoodsOrder;
+      // 插入订单数据并返回插入的数据
+      return await this.service.purchaseOrder.insertPurchaseGoodsOrder(purchaseGoodsOrder);
   }
 
   // 生成采购商品单子订单数据
-  __generatePurchaseGoodsDetail({ goodsNo, specNum }) {
+  async __generatePurchaseGoodsDetail({ goodsNo, specNum }) {
       let purchaseGoodsDetail = [];
       for (let index = 0; index < specNum; index++) {
         // 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
         const goodsDetailID = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
         purchaseGoodsDetail.push({ goodsDetailID });
       }
-      return purchaseGoodsDetail;
+      // 插入订单数据并返回插入的数据
+      return await this.service.purchaseOrder.insertPurchaseGoodsDetail(purchaseGoodsDetail);
   }
 }

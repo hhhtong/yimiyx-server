@@ -1,5 +1,5 @@
 /**
- * 采购
+ * 采购的商品单的子订单
  */
 import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import PurchaseGoodsOrder from './purchase-goods-order';

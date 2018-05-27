@@ -192,7 +192,7 @@ export default {
 
   created() {
     this.fetchData()
-    this._getCategoryList()
+    this.__getCategoryList()
   },
 
   methods: {
@@ -254,14 +254,14 @@ export default {
       const action = isEdit ? supplierUpdate : supplierAdd
       action(formData).then(result => {
         if (result.code === 50000) {
-          this.$Message.success(result.msg)
+          this.$Message.success('保存成功')
           this.showModal = false
           this.fetchData()
         }
       })
     },
 
-    _getCategoryList() {
+    __getCategoryList() {
       if (this.categoryList.length === 0) {
         this.$store.dispatch('updateCategoryList')
       }
