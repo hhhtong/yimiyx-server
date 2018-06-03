@@ -26,7 +26,7 @@
       </Content>
     </Layout>
     <Footer class="text-right">
-      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
+      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="val => listQuery.page = val" @on-page-size-change="val => listQuery.rows = val"></Page>
     </Footer>
   </Layout>
 </template>
@@ -67,7 +67,7 @@ export default {
           sortable: true
         }, {
           title: '采购编号',
-          key: 'purchaseID',
+          key: 'id',
           width: 150,
           sortable: true
         }, {
@@ -129,6 +129,15 @@ export default {
     }
   },
 
+  watch: {
+    'listQuery.rows'(val) {
+      this.fetchData()
+    },
+    'listQuery.page'(val) {
+      this.fetchData()
+    }
+  },
+
   created() {
     this.fetchData()
     this.__getCategoryList()
@@ -155,14 +164,6 @@ export default {
         }
       })
     },
-    handleSizeChange(val) {
-      this.listQuery.rows = val
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.fetchData()
-    },
     // 查询
     handleQuery() {
       this.fetchData()
@@ -170,7 +171,7 @@ export default {
     // 导出Excel
     handleExportExcel() {
       this.$refs.tableCsv.exportCsv({
-        filename: '供货商列表',
+        filename: '采购单列表',
         original: false
       })
     },

@@ -1,7 +1,10 @@
 import BaseService from '../core/base-service';
 import PurchaseOrder from '../db/entity/purchase-order';
-import PurchaseGoodsOrder from '../db/entity/purchase-goods-order';
-import PurchaseGoodsDetail from '../db/entity/purchase-goods-detail';
+import PurchaseMainOrder from '../db/entity/purchase-main-order';
+import PurchaseChildOrder from '../db/entity/purchase-child-order';
+import Goods from '../db/entity/goods';
+import GoodsCategory from '../db/entity/goods-category';
+import Supplier from '../db/entity/supplier';
 
 interface query {
   page: number,
@@ -18,30 +21,38 @@ interface query {
 export default class SupplierService extends BaseService {
 
   async query({ page, rows, dateRange, categoryID, supplierID, supplierName }: query) {
-    return { list: [], total: 0 }
-    // const db = await this.db;
-    // const repo = db.getRepository(PurchaseOrder);
-    // const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    // const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
+    const db = await this.db;
+    const repo = db.getRepository(PurchaseOrder);
+    const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
+    const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
-    // try {
-    //   const query = await repo
-    //     .createQueryBuilder('supplier')
-    //     .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
-    //     .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
-    //     .orderBy('supplier.id', 'ASC')
-    //   const total = await query.getCount();
-    //   const list = await query
-    //     .skip((page - 1) * rows)
-    //     .take(rows)
-    //     .leftJoinAndSelect('supplier.category', 'category')
-    //     .getMany();
-    //   await db.close();
-    //   return { list, total };
-    // } catch (e) {
-    //   await db.close();
-    //   this.error(e);
-    // }
+    try {
+      const query = await repo
+        .createQueryBuilder('PurchaseOrder')
+        .where(`ISNULL(PurchaseOrder.deletedAt) AND ${where1} AND ${where2}`)
+        // .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
+        .orderBy('PurchaseOrder.createdAt', 'ASC')
+      const total = await query.getCount();
+      const list = await query
+        .skip((page - 1) * rows)
+        .take(rows)
+        .leftJoin('PurchaseOrder.mainOrders', 'mainOrder')
+        .leftJoin('PurchaseOrder.category', 'category')
+        .leftJoinAndSelect('PurchaseOrder.supplier', 'supplier')
+        // .select([
+        //   'supplier.tel',
+        //   'supplier.supplierNo',
+        //   'supplier.supplierName'
+        // ])
+        // .getRawMany();
+        .getMany();
+
+      await db.close();
+      return { list, total };
+    } catch (e) {
+      await db.close();
+      this.error(e);
+    }
   }
 
   // 插入采购单数据
@@ -60,16 +71,14 @@ export default class SupplierService extends BaseService {
   }
 
   // 插入采购的商品单数据
-  async insertPurchaseGoodsOrder(rowData) {
+  async insertPurchaseMainOrder(rowData) {
     const db = await this.db;
-    const repo = db.getRepository(PurchaseGoodsOrder);
+    const repo = db.getRepository(PurchaseMainOrder);
 
     try {
       rowData = repo.create(rowData)
       rowData = await repo.save(rowData);
       await db.close();
-      console.log('1@@@@@@@@@@@@@@@', rowData);
-
       return rowData;
     } catch (e) {
       await db.close();
@@ -78,15 +87,14 @@ export default class SupplierService extends BaseService {
   }
 
   // 插入采购的商品单的子订单数据
-  async insertPurchaseGoodsDetail(rowData) {
+  async insertPurchaseChildOrder(rowData) {
     const db = await this.db;
-    const repo = db.getRepository(PurchaseGoodsDetail);
+    const repo = db.getRepository(PurchaseChildOrder);
 
     try {
       rowData = repo.create(rowData)
       rowData = await repo.save(rowData);
       await db.close();
-      console.log('2@@@@@@@@@@@@@@@', rowData);
       return rowData;
     } catch (e) {
       await db.close();

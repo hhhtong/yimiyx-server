@@ -4,7 +4,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
-import PurchaseGoodsOrder from './purchase-goods-order';
+import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
 export default class Goods {
@@ -29,8 +29,8 @@ export default class Goods {
   /**
    * 采购商品单的主订单
    */
-  @OneToMany(type => PurchaseGoodsOrder, pgo => pgo.goods)
-  purchaseGoodsOrder: PurchaseGoodsOrder[];
+  @OneToMany(type => PurchaseMainOrder, pgo => pgo.goods)
+  purchaseMainOrders: PurchaseMainOrder[];
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)

@@ -22,9 +22,9 @@ export default class PurchaseOrderController extends BaseController {
     const id = 'CG' + ctx.helper.dateFormat(new Date(), 'YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
     const rowData = {
       id,
-      goodsCategory: { id: categoryID },
+      category: { id: categoryID },
       supplier: { id: supplierID },
-      purchaseGoodsOrder: this.__generatePurchaseGoodsOrder(goods),
+      mainOrders: await this.__generatePurchaseMainOrder(goods),
       transactor,
       remark,
       status: 1
@@ -32,8 +32,6 @@ export default class PurchaseOrderController extends BaseController {
 
     try {
       await service.purchaseOrder.insertPurchaseOrder(rowData);
-      // await service.purchaseOrder.insertPurchaseGoodsOrder(rowData);
-      // await service.purchaseOrder.insertPurchaseGoodsDetail(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -65,32 +63,36 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   // 生成采购商品单主订单数据
-  async __generatePurchaseGoodsOrder(_goods) {
-      let purchaseGoodsOrder = [];
+  async __generatePurchaseMainOrder(_goods) {
+      let mainOrders = [];
       for (const goods of _goods) {
         // 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
-        const purchaseGoodsID = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
-        purchaseGoodsOrder.push({
-          purchaseGoodsID,
+        const mid = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
+        mainOrders.push({
+          mid,
           goods,
-          purchaseGoodsDetail: this.__generatePurchaseGoodsDetail(goods),
+          childOrders: await this.__generatePurchaseChildOrder(goods),
           status: 1,
           purchaseNum: goods.purchaseNum
         });
       }
+      mainOrders = await this.service.purchaseOrder.insertPurchaseMainOrder(mainOrders);
+
       // 插入订单数据并返回插入的数据
-      return await this.service.purchaseOrder.insertPurchaseGoodsOrder(purchaseGoodsOrder);
+      return mainOrders
   }
 
   // 生成采购商品单子订单数据
-  async __generatePurchaseGoodsDetail({ goodsNo, specNum }) {
-      let purchaseGoodsDetail = [];
-      for (let index = 0; index < specNum; index++) {
+  async __generatePurchaseChildOrder({ goodsNo, specNum }) {
+      let childOrders = [];
+      for (let index = 1; index <= specNum; index++) {
         // 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
-        const goodsDetailID = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
-        purchaseGoodsDetail.push({ goodsDetailID });
+        const cid = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
+        childOrders.push({ cid });
       }
+      childOrders = await this.service.purchaseOrder.insertPurchaseChildOrder(childOrders);
+
       // 插入订单数据并返回插入的数据
-      return await this.service.purchaseOrder.insertPurchaseGoodsDetail(purchaseGoodsDetail);
+      return childOrders;
   }
 }

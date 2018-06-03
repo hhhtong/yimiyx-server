@@ -2,10 +2,10 @@
  * 采购的商品单的子订单
  */
 import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
-import PurchaseGoodsOrder from './purchase-goods-order';
+import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
-export default class PurchaseGoodsDetail {
+export default class PurchaseChildOrder {
   /**
    * 主键
    * 采购商品单编号
@@ -15,13 +15,13 @@ export default class PurchaseGoodsDetail {
    * C开头表示商品主订单下的子订单
    */
   @PrimaryColumn('char', { length: 24 })
-  goodsDetailID: string;
+  cid: string;
 
   /**
    * 采购商品单的主订单
    */
-  @ManyToOne(type => PurchaseGoodsOrder, mo => mo.purchaseGoodsDetail)
-  purchaseGoodsOrder: PurchaseGoodsOrder;
+  @ManyToOne(type => PurchaseMainOrder, mo => mo.childOrders)
+  mainOrder: PurchaseMainOrder;
 
   /**
    * 创建时间

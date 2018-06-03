@@ -4,10 +4,10 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import Goods from './goods';
 import PurchaseOrder from './purchase-order'
-import PurchaseGoodsDetail from './purchase-goods-detail';
+import PurchaseChildOrder from './purchase-child-order';
 
 @Entity()
-export default class PurchaseGoodsOrder {
+export default class PurchaseMainOrder {
   /**
    * 采购商品单编号
    * 据此生成内部条形码
@@ -16,25 +16,25 @@ export default class PurchaseGoodsOrder {
    * C开头表示商品主订单下的子订单
    */
   @PrimaryColumn('char', { length: 24 })
-  purchaseGoodsID: string;
+  mid: string;
 
   /**
    * 商品
    */
-  @ManyToOne(type => Goods, goods => goods.purchaseGoodsOrder)
+  @ManyToOne(type => Goods, goods => goods.purchaseMainOrders)
   goods: Goods;
 
   /**
    * 采购单
    */
-  @ManyToOne(type => PurchaseOrder, po => po.purchaseGoodsOrder)
-  purchaseOrder: PurchaseOrder;
+  @ManyToOne(type => PurchaseOrder, po => po.mainOrders)
+  order: PurchaseOrder;
 
   /**
    * 采购的子订单
    */
-  @OneToMany(type => PurchaseGoodsDetail, co => co.purchaseGoodsOrder)
-  purchaseGoodsDetail: PurchaseGoodsDetail[];
+  @OneToMany(type => PurchaseChildOrder, co => co.mainOrder)
+  childOrders: PurchaseChildOrder[];
 
   /**
    * 采购商品单状态

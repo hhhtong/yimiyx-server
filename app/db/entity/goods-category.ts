@@ -27,8 +27,8 @@ export default class GoodsCategory {
   /**
    * 采购的主订单
    */
-  @OneToMany(type => PurchaseOrder, po => po.goodsCategory)
-  purchaseOrder: PurchaseOrder[];
+  @OneToMany(type => PurchaseOrder, po => po.category)
+  purchaseOrders: PurchaseOrder[];
 
   /**
    * 指向二级或三级分类的对应父级id

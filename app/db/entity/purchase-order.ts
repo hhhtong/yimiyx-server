@@ -4,7 +4,7 @@
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import Supplier from './supplier';
 import GoodsCategory from './goods-category';
-import PurchaseGoodsOrder from './purchase-goods-order';
+import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
 export default class PurchaseOrder {
@@ -19,8 +19,8 @@ export default class PurchaseOrder {
   /**
    * 采购类别(一级类目)
    */
-  @ManyToOne(type => GoodsCategory, gc => gc.purchaseOrder)
-  goodsCategory: GoodsCategory;
+  @ManyToOne(type => GoodsCategory, gc => gc.purchaseOrders)
+  category: GoodsCategory;
 
   /**
    * 供货商
@@ -31,8 +31,8 @@ export default class PurchaseOrder {
   /**
    * 采购商品单的主订单
    */
-  @OneToMany(type => PurchaseGoodsOrder, mo => mo.purchaseOrder)
-  purchaseGoodsOrder: PurchaseGoodsOrder[];
+  @OneToMany(type => PurchaseMainOrder, mo => mo.order)
+  mainOrders: PurchaseMainOrder[];
 
   /**
    * 采购单状态
@@ -66,4 +66,11 @@ export default class PurchaseOrder {
    */
   @UpdateDateColumn()
   updatedAt: Date;
+
+
+  /**
+   * 删除时间
+   */
+  @Column({ nullable: true })
+  deletedAt: Date;
 }
