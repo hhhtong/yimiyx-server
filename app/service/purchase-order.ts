@@ -28,25 +28,28 @@ export default class SupplierService extends BaseService {
 
     try {
       const query = await repo
-        .createQueryBuilder('PurchaseOrder')
-        .where(`ISNULL(PurchaseOrder.deletedAt) AND ${where1} AND ${where2}`)
+        .createQueryBuilder('po')
+        .where(`ISNULL(po.deletedAt) AND ${where1} AND ${where2}`)
         // .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
-        .orderBy('PurchaseOrder.createdAt', 'ASC')
+        .orderBy('po.createdAt', 'ASC')
       const total = await query.getCount();
-      const list = await query
+      let list = await query
         .skip((page - 1) * rows)
         .take(rows)
-        .leftJoin('PurchaseOrder.mainOrders', 'mainOrder')
-        .leftJoin('PurchaseOrder.category', 'category')
-        .leftJoinAndSelect('PurchaseOrder.supplier', 'supplier')
-        // .select([
-        //   'supplier.tel',
-        //   'supplier.supplierNo',
-        //   'supplier.supplierName'
-        // ])
+        // .leftJoin('po.mainOrders', 'mainOrder')
+        .leftJoin('po.category', 'category')
+        .leftJoin('po.supplier', 'supplier')
+        .select([
+          'po.*',
+          'category.name AS categoryName',
+          'supplier.tel AS supplierTel',
+          'supplier.id AS supplierID',
+          'supplier.supplierName AS supplierName'
+        ])
         // .getRawMany();
-        .getMany();
+      console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
 
+      list = this.ctx.helper.toCamelObj(await list.getRawMany())
       await db.close();
       return { list, total };
     } catch (e) {

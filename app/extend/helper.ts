@@ -1,17 +1,40 @@
 import dateFormat from '../../libs/tools/dateFormat'
+import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
+
+const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
+  if (Array.isArray(obj)) {
+    return obj.map(item => transform(item))
+  } else {
+    return transform(obj)
+  }
+
+  function transform(_obj) {
+    const newObj = {};
+    Object.keys(_obj).map(key => {
+      newObj[fn(key)] = _obj[key];
+    })
+    return newObj;
+  }
+}
 
 export default {
   dateFormat,
+  toCamelObj(obj) { // 将Object内的key转为小驼峰命名
+    return transformObjKey(obj, camelCase)
+  },
+  toSnakeObj(obj) { // 将Object内的key转为下划线分割命名
+    return transformObjKey(obj, snakeCase)
+  },
   prefixZero(num, len) {
     // this 是 helper 对象，在其中可以调用其他 helper 方法
     // this.ctx => context 对象
     // this.app => application 对象
     num = (num).toString();
-    len = len - num.length
+    len = len - num.length;
     for (let i = 0; i < len; i++) {
-      num = `0${num}`
+      num = `0${num}`;
     }
-    return num
+    return num;
   },
   //随机ID
   uuid(len, radix) {

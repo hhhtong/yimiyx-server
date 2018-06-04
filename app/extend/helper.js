@@ -1,8 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const dateFormat_1 = require("../../libs/tools/dateFormat");
+const StringUtils_1 = require("typeorm/util/StringUtils");
+const transformObjKey = (obj, fn) => {
+    if (Array.isArray(obj)) {
+        return obj.map(item => transform(item));
+    }
+    else {
+        return transform(obj);
+    }
+    function transform(_obj) {
+        const newObj = {};
+        Object.keys(_obj).map(key => {
+            newObj[fn(key)] = _obj[key];
+        });
+        return newObj;
+    }
+};
 exports.default = {
     dateFormat: dateFormat_1.default,
+    toCamelObj(obj) {
+        return transformObjKey(obj, StringUtils_1.camelCase);
+    },
+    toSnakeObj(obj) {
+        return transformObjKey(obj, StringUtils_1.snakeCase);
+    },
     prefixZero(num, len) {
         // this 是 helper 对象，在其中可以调用其他 helper 方法
         // this.ctx => context 对象

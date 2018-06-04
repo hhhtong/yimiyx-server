@@ -39,6 +39,19 @@ declare module 'egg' {
      * @return {String}
      */
     dateFormat(date?: number | string | Date, fmt?: string): string,
+
+    /**
+     * @method Helper#toCamelObj - 将对象或者数组内对象的key转为小驼峰命名
+     * @param {Object | Array} obj - 要进行转换的对象或者数组
+     */
+    toCamelObj(obj: Object | Object[]),
+
+    /**
+     * @method Helper#toSnakeObj - 将对象或者数组内对象的key转为下划线分割命名
+     * @param {Object | Array} obj - 要进行转换的对象或者数组
+     */
+    toSnakeObj(obj: Object | Object[]),
+
     /**
      * @method Helper#prefixZero - 对指定数值进行前置补 '0'
      * @param {Number} num - 要进行处理的原始数字
@@ -51,6 +64,7 @@ declare module 'egg' {
      * @return {String}
      */
     prefixZero(num: number, len: number): string,
+
     /**
      * @method Helper#uuid - 生成随机ID
      * @param {Number} len - 生成长度
