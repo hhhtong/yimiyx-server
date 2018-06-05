@@ -34,7 +34,7 @@
 <script>
 import ModalAddPurchase from './components/ModalAddPurchase'
 import { mapState } from 'vuex'
-import { Badge, Poptip } from 'iview'
+import { Badge, Tag, Poptip } from 'iview'
 import { purchaseOrderGet, purchaseOrderDel } from '@/api'
 import util from '@/libs/util'
 
@@ -63,42 +63,60 @@ export default {
         }, {
           title: '创建时间',
           key: 'createdAt',
-          width: 120,
+          width: 150,
           sortable: true
         }, {
           title: '采购编号',
           key: 'id',
-          width: 150,
+          width: 200,
           sortable: true
         }, {
           title: '采购类别',
-          key: 'categoryName'
+          key: 'categoryName',
+          width: 100
         }, {
           title: '供货商',
-          key: 'supplierName'
+          key: 'supplierName',
+          width: 180
         }, {
           title: '供货商ID',
-          key: 'supplierID'
+          key: 'supplierID',
+          width: 90
         }, {
           title: '供货商联系电话',
-          key: 'supplierTel'
+          key: 'supplierTel',
+          width: 125
         }, {
           title: '经办人',
-          key: 'transactor'
+          key: 'transactor',
+          width: 90
         }, {
           title: '状态',
-          width: 100,
-          render: (h, { row, column, index }) => (
-            <div>{row.status === -1 ? '待采购' : '已入库'}</div>
-          )
+          width: 128,
+          render: (h, { row, column, index }) => {
+            return <div>
+              {
+                row.status === 1 ?
+                  <Tag type="dot" color="yellow">待采购</Tag> :
+                  row.status === 2 ?
+                    <Tag type="dot" color="green">已入库</Tag> :
+                    <Tag type="dot" color="red">已删除</Tag>
+              }
+            </div>
+          }
         }, {
           title: '备注',
-          key: 'remark'
+          key: 'remark',
+          width: 200,
+          render: (h, { row, column, index }) => (
+            <div>{row.remark ? row.remark : '--'}</div>
+          )
         }, {
           title: '操作',
           key: 'handle',
           width: 150,
           align: 'center',
+          fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>

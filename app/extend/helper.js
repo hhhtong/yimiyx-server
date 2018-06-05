@@ -20,7 +20,7 @@ const transformObjKey = (obj, fn) => {
 exports.default = {
     dateFormat: dateFormat_1.default,
     toCamelObj(obj) {
-        return transformObjKey(obj, StringUtils_1.camelCase);
+        return transformObjKey(obj, (key) => StringUtils_1.camelCase(key).replace(/Id$/, 'ID'));
     },
     toSnakeObj(obj) {
         return transformObjKey(obj, StringUtils_1.snakeCase);

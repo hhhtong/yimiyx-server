@@ -20,7 +20,7 @@ const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
 export default {
   dateFormat,
   toCamelObj(obj) { // 将Object内的key转为小驼峰命名
-    return transformObjKey(obj, camelCase)
+    return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'))
   },
   toSnakeObj(obj) { // 将Object内的key转为下划线分割命名
     return transformObjKey(obj, snakeCase)

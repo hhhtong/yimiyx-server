@@ -41,9 +41,10 @@ export default class SupplierService extends BaseService {
         .leftJoin('po.supplier', 'supplier')
         .select([
           'po.*',
-          'category.name AS categoryName',
-          'supplier.tel AS supplierTel',
-          'supplier.id AS supplierID',
+          `DATE_FORMAT(po.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
+          'category.name',
+          'supplier.tel',
+          'supplier.id',
           'supplier.supplierName AS supplierName'
         ])
         // .getRawMany();

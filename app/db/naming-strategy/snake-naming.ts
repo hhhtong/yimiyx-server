@@ -1,5 +1,5 @@
 import { NamingStrategyInterface, DefaultNamingStrategy } from 'typeorm';
-import { snakeCase } from 'typeorm/util/StringUtils';
+import { snakeCase, camelCase } from 'typeorm/util/StringUtils';
 
 export class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
   tableName(className: string, customName: string): string {
@@ -11,7 +11,7 @@ export class SnakeNamingStrategy extends DefaultNamingStrategy implements Naming
   }
 
   relationName(propertyName: string): string {
-    return snakeCase(propertyName)
+    return camelCase(propertyName)
   }
 
   joinColumnName(relationName: string, referencedColumnName: string): string {
