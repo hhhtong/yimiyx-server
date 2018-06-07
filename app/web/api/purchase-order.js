@@ -36,6 +36,18 @@ export function purchaseOrderAdd(data) {
 }
 
 /**
+ * 查看采购单详情
+ * @param {String} id - 采购单号
+ */
+export function purchaseOrderDetails(id) {
+  return request({
+    url: '/purchaseOrder/details',
+    method: 'get',
+    data: { id }
+  })
+}
+
+/**
  * 删除采购单
  * @param {Object} data
  * └── @param {String} purchaseID - 采购单ID

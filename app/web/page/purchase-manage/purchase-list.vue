@@ -14,7 +14,7 @@
         <Option v-for="item in categoryList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <label class="margin-left-20">供货商名称/ID：</label>
-      <Input g="listQuery.supplier" clearable placeholder="请输入供货商名称/ID" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
+      <Input v-model="listQuery.supplier" clearable placeholder="请输入供货商名称/ID" @keyup.native.enter="handleQuery" style="width: 160px"></Input>
       <Button @click="handleQuery" type="primary" icon="ios-search" class="margin-left-20">查 询</Button>
       <Button @click="handleExportExcel" type="success" icon="ios-download-outline" class="margin-left-20">导出数据</Button>
       <Button @click="handleEdit(false)" type="success" icon="plus-circled" class="margin-left-20">新增采购单</Button>
@@ -35,7 +35,7 @@
 import ModalAddPurchase from './components/ModalAddPurchase'
 import { mapState } from 'vuex'
 import { Badge, Tag, Poptip } from 'iview'
-import { purchaseOrderGet, purchaseOrderDel } from '@/api'
+import { purchaseOrderGet, purchaseOrderDetails, purchaseOrderDel } from '@/api'
 import util from '@/libs/util'
 
 export default {
@@ -114,11 +114,12 @@ export default {
         }, {
           title: '操作',
           key: 'handle',
-          width: 150,
+          width: 200,
           align: 'center',
           fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
+              <i-button class="noradius" size="small" on-click={() => this.handleViewClick(row.id)}>查看详情</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 confirm
@@ -191,6 +192,14 @@ export default {
       this.$refs.tableCsv.exportCsv({
         filename: '采购单列表',
         original: false
+      })
+    },
+    // 查看详情
+    handleViewClick(id) {
+      purchaseOrderDetails(id).then(result => {
+        if (result.code === 50000) {
+          // this.$router.push('')
+        }
       })
     },
     // 编辑 | 添加 采购单 -> 路由跳转

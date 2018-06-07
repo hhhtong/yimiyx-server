@@ -29,13 +29,6 @@ export default class SupplierService extends BaseService {
     try {
       const query = await repo
         .createQueryBuilder('po')
-        .where(`ISNULL(po.deletedAt) AND ${where1} AND ${where2}`)
-        // .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
-        .orderBy('po.createdAt', 'ASC')
-      const total = await query.getCount();
-      let list = await query
-        .skip((page - 1) * rows)
-        .take(rows)
         // .leftJoin('po.mainOrders', 'mainOrder')
         .leftJoin('po.category', 'category')
         .leftJoin('po.supplier', 'supplier')
@@ -47,10 +40,17 @@ export default class SupplierService extends BaseService {
           'supplier.id',
           'supplier.supplierName AS supplierName'
         ])
+        .where(`ISNULL(po.deletedAt) AND ${where1} AND ${where2}`)
+        .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
+      const total = await query.getCount();
+      let list = await query
+        .orderBy('po.createdAt', 'ASC')
+        .skip((page - 1) * rows)
+        .take(rows);
         // .getRawMany();
-      console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
+      // console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
 
-      list = this.ctx.helper.toCamelObj(await list.getRawMany())
+      list = this.ctx.helper.toCamelObj(await list.getRawMany());
       await db.close();
       return { list, total };
     } catch (e) {
