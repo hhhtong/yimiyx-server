@@ -9,7 +9,9 @@ import PurchaseOrderController from './controller/purchase-order';
 import PurchaseOrderService from './service/purchase-order';
 
 declare module 'egg' {
-  export interface Application { }
+  export interface Application {
+    // connection: any
+  }
 
   export interface IController {
     home: HomeController,

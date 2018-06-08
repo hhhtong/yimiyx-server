@@ -157,12 +157,14 @@ export default {
         }, {
           title: '操作',
           key: 'handle',
-          width: 150,
           align: 'center',
+          width: 150,
+          fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
+                transfer
                 confirm
                 placement="left"
                 title="您确认删除该供货商吗？"

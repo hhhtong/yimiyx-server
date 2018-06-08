@@ -122,6 +122,7 @@ export default {
               <i-button class="noradius" size="small" on-click={() => this.handleViewClick(row.id)}>查看详情</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
+                transfer
                 confirm
                 placement="left"
                 title="您确认删除该采购单吗？"

@@ -28,6 +28,7 @@ app/service/**/*.js
 libs/**/*.js
 config/**/*.js
 /index.js
+/app.js
 
 config/buildConfig.json
 config/manifest.json

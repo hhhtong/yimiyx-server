@@ -162,12 +162,14 @@ export default {
           key: 'handle',
           align: 'center',
           width: 200,
+          fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
               <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row)}>上 架</i-button>
               <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row)}>下 架</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
+                transfer
                 confirm
                 placement="left"
                 title="删除此商品后，该商品也会从已上架的商品列表消失，您确认此操作？"
