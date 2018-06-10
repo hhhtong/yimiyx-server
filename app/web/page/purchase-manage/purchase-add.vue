@@ -97,13 +97,13 @@ export default {
       return (value).toString() === '' ? callback(new Error(msg)) : callback()
     }
 
-    const { isEdit } = this.$route.params
+    const editRowData = this.$route.params
 
     return {
       isEdit,
       isCollapsed: true,
       listLoading: false,
-      formData: cloneDeep(formData),
+      formData: editRowData ? editRowData : cloneDeep(formData),
       formValidate: {
         categoryID: [
           { validator: validate('请选择采购类别'), trigger: 'change' }

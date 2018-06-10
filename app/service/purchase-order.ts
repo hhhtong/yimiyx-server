@@ -4,17 +4,23 @@ import PurchaseOrder from '../db/entity/purchase-order';
 import PurchaseMainOrder from '../db/entity/purchase-main-order';
 import PurchaseChildOrder from '../db/entity/purchase-child-order';
 
-interface query {
+interface IQuery {
   page: number,
   rows: number
 }
 
-interface query {
+interface IQuery {
   dateRange?: any, // 采购单创建时间范围筛选
   categoryID?: number, // 商品类别 默认0(全部)
   supplierID?: number, // 供应商ID
   supplierName?: string // 供应商名称
 }
+
+// type IResult<T> = {
+//   [P in keyof T]?: IResult<T[P]>;
+// list: Object[],
+// total: number
+// }
 
 export default class SupplierService extends BaseService {
 
@@ -22,11 +28,11 @@ export default class SupplierService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 采购订单
+  //- 采购单__实体
   readonly PO: Repository<ObjectLiteral>;
-  //- 采购订单下的某个子商品的主订单
+  //- 采购商品__实体
   readonly PMO: Repository<ObjectLiteral>;
-  //- 某个子商品主订单下的子订单
+  //- 采购子商品__实体
   readonly PCO: Repository<ObjectLiteral>;
 
   // -------------------------------------------------------------------------
@@ -44,36 +50,57 @@ export default class SupplierService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async query({ page, rows, dateRange, categoryID, supplierID, supplierName }: query) {
+  //- 根据条件查找采购单集合
+  async find({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
     try {
       const query = await this.PO
-        .createQueryBuilder('po')
-        // .leftJoin('po.mainOrders', 'mainOrder')
-        .leftJoin('po.category', 'category')
-        .leftJoin('po.supplier', 'supplier')
+        .createQueryBuilder('PO')
+        // .leftJoin('PO.mainOrders', 'mainOrder')
+        .leftJoin('PO.category', 'category')
+        .leftJoin('PO.supplier', 'supplier')
         .select([
-          'po.*',
-          `DATE_FORMAT(po.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
+          'PO.*',
+          `DATE_FORMAT(PO.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
           'category.name',
           'supplier.tel',
           'supplier.id',
           'supplier.supplierName AS supplierName'
         ])
-        .where(`ISNULL(po.deletedAt) AND ${where1} AND ${where2}`)
+        .where(`ISNULL(PO.deletedAt) AND ${where1} AND ${where2}`)
         .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
       const total = await query.getCount();
       let list = await query
-        .orderBy('po.createdAt', 'DESC')
+        .orderBy('PO.createdAt', 'DESC')
         .skip((page - 1) * rows)
         .take(rows);
       // .getRawMany();
       // console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
 
       list = this.ctx.helper.toCamelObj(await list.getRawMany());
-      return { list, total };
+      return Promise.resolve({ list, total });
+    } catch (e) {
+      this.error(e);
+    }
+  }
+
+  //- 查找符合id的采购单所有关联信息
+  async findOne(id: number) {
+    try {
+      const data: Object = await this.PO.findOne(id, {
+        relations: [
+          'category',
+          'supplier',
+          'mainOrders',
+          'mainOrders.goods',
+          'mainOrders.childOrders'
+        ]
+      })
+      // const data = await this.PO.find()
+
+      return data;
     } catch (e) {
       this.error(e);
     }
@@ -106,7 +133,17 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  async update(rowData) {
+  //- 假删除一条采购单数据
+  async deletePurchaseOrder(rowData) {
+    try {
+      await this.PO.save({ ...rowData, deletedAt: new Date() });
+    } catch (e) {
+      this.error(e);
+    }
+  }
+
+  //- 更新采购单数据
+  async updatePurchaseOrder(rowData) {
     try {
       await this.PO.save(rowData);
     } catch (e) {

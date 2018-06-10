@@ -1,5 +1,4 @@
 import BaseController from '../core/base-controller';
-// import * as moment from 'moment';
 
 export default class PurchaseOrderController extends BaseController {
 
@@ -7,7 +6,7 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
 
     try {
-      const result: object = await service.purchaseOrder.query(ctx.query);
+      const result: object = await service.purchaseOrder.find(ctx.query);
       // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
       this.success(result);
     } catch (error) {
@@ -43,20 +42,32 @@ export default class PurchaseOrderController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.update(rowData);
+      await service.purchaseOrder.deletePurchaseOrder(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
     }
   }
 
+  //- 该方法暂时没用到
   async update() {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.update(rowData);
+      await service.purchaseOrder.updatePurchaseOrder(rowData);
       this.success();
+    } catch (error) {
+      this.fail(error);
+    }
+  }
+
+  async details() {
+    const { service, ctx } = this;
+
+    try {
+      const result: object = await service.purchaseOrder.findOne(ctx.query.id);
+      this.success(result);
     } catch (error) {
       this.fail(error);
     }

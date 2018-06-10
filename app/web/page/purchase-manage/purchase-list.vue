@@ -33,6 +33,7 @@
 
 <script>
 import ModalAddPurchase from './components/ModalAddPurchase'
+import PurchaseExpandRow from './components/PurchaseExpandRow'
 import { mapState } from 'vuex'
 import { Badge, Tag, Poptip } from 'iview'
 import { purchaseOrderGet, purchaseOrderDetails, purchaseOrderDel } from '@/api'
@@ -60,6 +61,12 @@ export default {
           title: '#',
           type: 'index',
           width: 60
+        }, {
+          type: 'expand',
+          width: 50,
+          render: (h, { row }) => (
+            <PurchaseExpandRow row={row}/>
+          )
         }, {
           title: '创建时间',
           key: 'createdAt',
@@ -120,7 +127,7 @@ export default {
           render: (h, { row, column, index }) => (
             <div>
               <i-button class="noradius" size="small" on-click={() => this.handleViewClick(row.id)}>查看详情</i-button>
-              <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
+              <i-button class="noradius" disabled size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 transfer
                 confirm
@@ -199,14 +206,14 @@ export default {
     handleViewClick(id) {
       purchaseOrderDetails(id).then(result => {
         if (result.code === 50000) {
-          // this.$router.push('')
+          this.$router.push({ name: 'purchase-details', params: result.data })
         }
       })
     },
     // 编辑 | 添加 采购单 -> 路由跳转
-    handleEdit(row) {
-      if (row) {
-
+    handleEdit(params) {
+      if (params) {
+        // this.$router.push({ name: 'purchase-add', params })
       } else {
         this.$router.push({ name: 'purchase-add' })
       }

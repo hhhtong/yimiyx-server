@@ -44,7 +44,7 @@
       </Content>
     </Layout>
     <Footer class="text-right">
-      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
+      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="val => listQuery.page = val" @on-page-size-change="val => listQuery.rows = val"></Page>
     </Footer>
   </Layout>
 </template>
@@ -199,6 +199,15 @@ export default {
     }
   },
 
+  watch: {
+    'listQuery.rows'(val) {
+      this.fetchData()
+    },
+    'listQuery.page'(val) {
+      this.fetchData()
+    }
+  },
+
   created() {
     this.fetchData()
     this.__getCategoryList()
@@ -225,18 +234,12 @@ export default {
         }
       })
     },
-    handleSizeChange(val) {
-      this.listQuery.rows = val
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.fetchData()
-    },
+
     // 查询
     handleQuery() {
       this.fetchData()
     },
+
     // 导出Excel
     handleExportExcel() {
       this.$refs.tableCsv.exportCsv({
@@ -244,11 +247,13 @@ export default {
         original: false
       })
     },
+
     // 编辑 | 添加 供货商 -> 显示Modal
     handleEdit(row) {
       this.defaultModalData = row
       this.showModal = true
     },
+
     // 删除供货商
     handleDelete(row) {
       supplierDel(row).then(result => {
@@ -258,6 +263,7 @@ export default {
         }
       })
     },
+
     // 添加 | 修改供货商 -> 保存
     handleSave(formData, isEdit) {
       const action = isEdit ? supplierUpdate : supplierAdd

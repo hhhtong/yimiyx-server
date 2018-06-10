@@ -31,4 +31,5 @@ export default (app: Application) => {
   router.post('/purchaseOrder/add', controller.purchaseOrder.add);
   router.post('/purchaseOrder/delete', controller.purchaseOrder.delete);
   router.post('/purchaseOrder/update', controller.purchaseOrder.update);
+  router.get('/purchaseOrder/details', controller.purchaseOrder.details);
 };

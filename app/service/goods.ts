@@ -20,7 +20,7 @@ export default class GoodsService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 采购订单
+  //- 商品__实体
   readonly Goods: Repository<ObjectLiteral>;
 
   // -------------------------------------------------------------------------

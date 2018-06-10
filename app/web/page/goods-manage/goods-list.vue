@@ -34,7 +34,7 @@
       </Content>
     </Layout>
     <Footer class="text-right">
-      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="handleCurrentChange" @on-page-size-change="handleSizeChange"></Page>
+      <Page show-total show-sizer show-elevator placement="top" :total="total" :page-size="listQuery.rows" :current="listQuery.page" @on-change="val => listQuery.page = val" @on-page-size-change="val => listQuery.rows = val"></Page>
     </Footer>
   </Layout>
 </template>
@@ -202,6 +202,15 @@ export default {
     }
   },
 
+  watch: {
+    'listQuery.rows'(val) {
+      this.fetchData()
+    },
+    'listQuery.page'(val) {
+      this.fetchData()
+    }
+  },
+
   async created() {
     await this.fetchCategoryList()
     await this.fetchData()
@@ -226,16 +235,6 @@ export default {
       } else {
         return Promise.resolve({ msg: '类目已获取，无需再次获取' })
       }
-    },
-
-    handleSizeChange(val) {
-      this.listQuery.rows = val
-      this.fetchData()
-    },
-
-    handleCurrentChange(val) {
-      this.listQuery.page = val
-      this.fetchData()
     },
 
     // 查询
