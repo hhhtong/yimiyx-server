@@ -29,7 +29,7 @@ export default class SupplierController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.supplier.update(rowData.id, { deletedAt: new Date() });
+      await service.supplier.delete(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -41,7 +41,7 @@ export default class SupplierController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.supplier.update(rowData.id, rowData);
+      await service.supplier.update(rowData);
       this.success();
     } catch (error) {
       this.fail(error);

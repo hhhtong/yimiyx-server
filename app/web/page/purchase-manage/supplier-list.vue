@@ -99,14 +99,16 @@ export default {
         }, {
           title: '供货商名称',
           key: 'supplierName',
-          width: 150
+          width: 180
         }, {
           title: '供货商类型',
+          width: 100,
           render: (h, { row, column, index }) => (
             <div>{row.supplierType === 1 ? '公司' : '个人'}</div>
           )
         }, {
           title: '负责人/电话',
+          width: 125,
           render: (h, { row, column, index }) => (
             <div>
               {row.linkmanName}
@@ -116,15 +118,19 @@ export default {
           )
         }, {
           title: '供应产品', // 也是商品分类
-          key: 'categoryName'
+          key: 'categoryName',
+          width: 100
         }, {
           title: '所在地区',
-          key: 'areaName'
+          key: 'areaName',
+          width: 120
         }, {
           title: '详细地址',
-          key: 'address'
+          key: 'address',
+          width: 150
         }, {
           title: '收款方式',
+          width: 100,
           render: (h, { row, column, index }) => {
             let innerHTML = ''
             if (row.payType === 'bank') {
@@ -153,7 +159,8 @@ export default {
           }
         }, {
           title: '税号',
-          key: 'taxNo'
+          key: 'taxNo',
+          width: 120
         }, {
           title: '操作',
           key: 'handle',

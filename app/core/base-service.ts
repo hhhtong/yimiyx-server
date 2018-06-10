@@ -6,8 +6,8 @@ export default class BaseService extends Service {
     return this.app.logger;
   }
 
-  get db(): any {
-    return this.ctx.connected();
+  get conn() {
+    return this.ctx.app.connection
   }
 
   error(e) {

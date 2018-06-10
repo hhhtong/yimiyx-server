@@ -12,17 +12,6 @@ export function categoryGet(params) {
 }
 
 /**
- * 添加商品分类
- */
-export function categoryAdd(data) {
-  return request({
-    url: '/goodsCategory/add',
-    method: 'post',
-    data
-  })
-}
-
-/**
  * 删除商品分类
  */
 export function categoryDel(data) {
@@ -36,9 +25,9 @@ export function categoryDel(data) {
 /**
  * 修改商品分类
  */
-export function categoryUpdate(data) {
+export function categorySave(data) {
   return request({
-    url: '/goodsCategory/update',
+    url: '/goodsCategory/save',
     method: 'post',
     data
   })

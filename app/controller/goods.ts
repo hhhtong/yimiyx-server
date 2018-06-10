@@ -8,7 +8,7 @@ export default class GoodsController extends BaseController {
       let { list, total } = await service.goods.query(ctx.query);
 
       for (const item of list) {
-        item.categorys = this.$refix(item.categorys)
+        item.categorys = this.$refix(item.categorys);
       }
       this.success({ list, total });
     } catch (error) {
@@ -22,15 +22,15 @@ export default class GoodsController extends BaseController {
 
     if (!rowData.goodsNo) { // 无goodsNo参数时 表示新增
       // 以数组中的第一个类目作为序号前缀
-      rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no)
+      rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no);
     }
     // 获取Goods表中的categorys[]
-    let categorys = []
+    let categorys = [];
     for (const item of rowData.categorys) {
-      categorys = [...categorys, ...item.ids.map(id => ({ id }))]
+      categorys = [...categorys, ...item.ids.map(id => ({ id }))];
     }
 
-    rowData.categorys = categorys
+    rowData.categorys = categorys;
     try {
       await service.goods.save(rowData);
       this.success();
@@ -41,9 +41,9 @@ export default class GoodsController extends BaseController {
 
   async delete() {
     const { service, ctx } = this;
-    const rowData: any = ctx.request.body
+    const rowData: any = ctx.request.body;
     try {
-      await service.goods.delete(rowData.id);
+      await service.goods.delete(rowData);
       this.success();
     } catch (error) {
       this.fail(error);

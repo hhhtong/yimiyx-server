@@ -6,6 +6,7 @@
     "module": "commonjs"
   },
   "include": [
+    "app.ts",
     "index.ts",
     "app/**/*.ts",
     "config/**/*.ts",

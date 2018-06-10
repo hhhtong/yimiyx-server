@@ -12,10 +12,15 @@ export default class GoodsCategoryController extends BaseController {
     }
   }
 
-  async add() {
+  async save() {
     const { service, ctx } = this;
+    const [treeData, deleteIds]: Array<any[]> = ctx.request.body;
+
     try {
-      await service.goodsCategory.insert(ctx.request.body);
+      if (deleteIds.length > 0) {
+        await service.goodsCategory.delete(deleteIds);
+      }
+      await service.goodsCategory.save(this.$unmixin(treeData));
       this.success();
     } catch (error) {
       this.fail(error);
@@ -24,25 +29,9 @@ export default class GoodsCategoryController extends BaseController {
 
   async delete() {
     const { service, ctx } = this;
-    const rowData: any = ctx.request.body
+    const rowData: any = ctx.request.body;
     try {
-      await service.goodsCategory.delete([rowData.id], { deletedAt: new Date() });
-      this.success();
-    } catch (error) {
-      this.fail(error);
-    }
-  }
-
-  async update() {
-    const { service, ctx } = this;
-    const [treeData, deleteIds]: any = ctx.request.body
-    const rowData: any = this.$unmixin(treeData);
-
-    try {
-      if (deleteIds.length > 0) {
-        await service.goodsCategory.delete(deleteIds, { deletedAt: new Date() });
-      }
-      await service.goodsCategory.update(rowData);
+      await service.goodsCategory.delete([rowData.id]);
       this.success();
     } catch (error) {
       this.fail(error);

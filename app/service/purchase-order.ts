@@ -1,10 +1,8 @@
+import { Repository, ObjectLiteral } from 'typeorm';
 import BaseService from '../core/base-service';
 import PurchaseOrder from '../db/entity/purchase-order';
 import PurchaseMainOrder from '../db/entity/purchase-main-order';
 import PurchaseChildOrder from '../db/entity/purchase-child-order';
-import Goods from '../db/entity/goods';
-import GoodsCategory from '../db/entity/goods-category';
-import Supplier from '../db/entity/supplier';
 
 interface query {
   page: number,
@@ -20,14 +18,38 @@ interface query {
 
 export default class SupplierService extends BaseService {
 
+  // -------------------------------------------------------------------------
+  // Public Properties
+  // -------------------------------------------------------------------------
+
+  //- 采购订单
+  readonly PO: Repository<ObjectLiteral>;
+  //- 采购订单下的某个子商品的主订单
+  readonly PMO: Repository<ObjectLiteral>;
+  //- 某个子商品主订单下的子订单
+  readonly PCO: Repository<ObjectLiteral>;
+
+  // -------------------------------------------------------------------------
+  // Constructor
+  // -------------------------------------------------------------------------
+
+  constructor(ctx) {
+    super(ctx);
+    this.PO = this.conn.getRepository(PurchaseOrder);
+    this.PMO = this.conn.getRepository(PurchaseMainOrder);
+    this.PCO = this.conn.getRepository(PurchaseChildOrder);
+  }
+
+  // -------------------------------------------------------------------------
+  // Public Methods
+  // -------------------------------------------------------------------------
+
   async query({ page, rows, dateRange, categoryID, supplierID, supplierName }: query) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseOrder);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
     try {
-      const query = await repo
+      const query = await this.PO
         .createQueryBuilder('po')
         // .leftJoin('po.mainOrders', 'mainOrder')
         .leftJoin('po.category', 'category')
@@ -44,78 +66,50 @@ export default class SupplierService extends BaseService {
         .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
       const total = await query.getCount();
       let list = await query
-        .orderBy('po.createdAt', 'ASC')
+        .orderBy('po.createdAt', 'DESC')
         .skip((page - 1) * rows)
         .take(rows);
-        // .getRawMany();
+      // .getRawMany();
       // console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
 
       list = this.ctx.helper.toCamelObj(await list.getRawMany());
-      await db.close();
       return { list, total };
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
-  // 插入采购单数据
+  //- 插入采购单数据
   async insertPurchaseOrder(rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseOrder);
-
     try {
-      rowData = repo.create(rowData)
-      await repo.save(rowData);
-      await db.close();
+      return await this.PO.save(this.PO.create(rowData));
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
-  // 插入采购的商品单数据
+  //- 插入采购的商品单数据
   async insertPurchaseMainOrder(rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseMainOrder);
-
     try {
-      rowData = repo.create(rowData)
-      rowData = await repo.save(rowData);
-      await db.close();
-      return rowData;
+      return await this.PMO.save(this.PMO.create(rowData));
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
-  // 插入采购的商品单的子订单数据
+  //- 插入采购的商品单的子订单数据
   async insertPurchaseChildOrder(rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseChildOrder);
-
     try {
-      rowData = repo.create(rowData)
-      rowData = await repo.save(rowData);
-      await db.close();
-      return rowData;
+      return await this.PCO.save(this.PCO.create(rowData));
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
-  async update(id, rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(PurchaseOrder)
-
+  async update(rowData) {
     try {
-      await repo.updateById(id, rowData);
-      await db.close();
-
+      await this.PO.save(rowData);
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }

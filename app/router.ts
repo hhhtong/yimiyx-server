@@ -18,9 +18,8 @@ export default (app: Application) => {
 
   // GoodsCategoryController
   router.get('/goodsCategory', controller.goodsCategory.index);
-  router.post('/goodsCategory/add', controller.goodsCategory.add);
   router.post('/goodsCategory/delete', controller.goodsCategory.delete);
-  router.post('/goodsCategory/update', controller.goodsCategory.update);
+  router.post('/goodsCategory/save', controller.goodsCategory.save);
 
   // GoodsController
   router.get('/goods', controller.goods.index);

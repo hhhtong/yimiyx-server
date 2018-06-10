@@ -83,16 +83,18 @@ export default {
         }, {
           title: '商品编号',
           key: 'goodsNo',
-          width: 105,
+          width: 110,
           sortable: true
         }, {
           title: '商品名称',
           key: 'goodsName',
-          align: 'center'
+          align: 'center',
+          width: 120,
         }, {
           title: '商品别名',
           key: 'goodsAlias',
           align: 'center',
+          width: 120,
           render: (h, { row, column, index }) => (
             <span>{row.goodsAlias ? row.goodsAlias : '--'}</span>
           )
@@ -100,6 +102,7 @@ export default {
           title: '规格',
           key: 'spec',
           align: 'center',
+          width: 100,
           render: (h, { row, column, index }) => (
             <span>{row.spec + row.specUnit}</span>
           )
@@ -125,17 +128,20 @@ export default {
           title: '产地',
           key: 'madeIn',
           align: 'center',
+          width: 100,
           render: (h, { row, column, index }) => (
             <span>{row.madeIn ? row.madeIn : '--'}</span>
           )
         }, {
           title: '库存',
           key: 'stockQty',
+          width: 100,
           sortable: true
         }, {
           title: '所在仓库',
           key: 'storeName',
           align: 'center',
+          width: 100,
           render: (h, { row, column, index }) => (
             <span>{row.storeName ? row.storeName : '--'}</span>
           )
@@ -169,6 +175,7 @@ export default {
               <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row)}>下 架</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
+                width="200"
                 transfer
                 confirm
                 placement="left"

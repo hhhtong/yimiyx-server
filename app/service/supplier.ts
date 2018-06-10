@@ -1,3 +1,4 @@
+import { Repository, ObjectLiteral } from 'typeorm';
 import BaseService from '../core/base-service';
 import Supplier from '../db/entity/supplier';
 
@@ -15,14 +16,31 @@ interface query {
 
 export default class SupplierService extends BaseService {
 
+  // -------------------------------------------------------------------------
+  // Public Properties
+  // -------------------------------------------------------------------------
+
+  readonly Supplier: Repository<ObjectLiteral>
+
+  // -------------------------------------------------------------------------
+  // Public Properties
+  // -------------------------------------------------------------------------
+
+  constructor(ctx) {
+    super(ctx);
+    this.Supplier = this.conn.getRepository(Supplier);
+  }
+
+  // -------------------------------------------------------------------------
+  // Public Methods
+  // -------------------------------------------------------------------------
+
   async query({ page = 1, rows = 20, areaCode = '', categoryID = 0, supplierID = 0, supplierName = '' }: query) {
-    const db = await this.db;
-    const repo = db.getRepository(Supplier);
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
     try {
-      const query = await repo
+      const query = await this.Supplier
         .createQueryBuilder('supplier')
         .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
         .andWhere(`supplier.areaCode LIKE '${areaCode}%'`)
@@ -34,39 +52,35 @@ export default class SupplierService extends BaseService {
         .take(rows)
         .leftJoinAndSelect('supplier.category', 'category')
         .getMany();
-      await db.close();
+
       return { list, total };
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
   async insert(rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(Supplier);
-
     try {
       const id = rowData.categoryID
-      rowData = repo.create(rowData)
-      await repo.save({ ...rowData, category: { id } });
-      await db.close();
+      rowData = this.Supplier.create(rowData)
+      await this.Supplier.save({ ...rowData, category: { id } });
     } catch (e) {
-      await db.close();
       this.error(e);
     }
   }
 
-  async update(id, rowData) {
-    const db = await this.db;
-    const repo = db.getRepository(Supplier)
-
+  async delete(rowData) {
     try {
-      await repo.updateById(id, rowData);
-      await db.close();
-
+      await this.Supplier.save({ ...rowData, deletedAt: new Date() })
     } catch (e) {
-      await db.close();
+      this.error(e);
+    }
+  }
+
+  async update(rowData) {
+    try {
+      await this.Supplier.save(rowData)
+    } catch (e) {
       this.error(e);
     }
   }

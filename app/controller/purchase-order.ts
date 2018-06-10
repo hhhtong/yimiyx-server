@@ -28,7 +28,7 @@ export default class PurchaseOrderController extends BaseController {
       transactor,
       remark,
       status: 1
-    }
+    };
 
     try {
       await service.purchaseOrder.insertPurchaseOrder(rowData);
@@ -43,7 +43,7 @@ export default class PurchaseOrderController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.update(rowData.id, { deletedAt: new Date() });
+      await service.purchaseOrder.update(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -55,7 +55,7 @@ export default class PurchaseOrderController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.update(rowData.id, rowData);
+      await service.purchaseOrder.update(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -79,7 +79,7 @@ export default class PurchaseOrderController extends BaseController {
       mainOrders = await this.service.purchaseOrder.insertPurchaseMainOrder(mainOrders);
 
       // 插入订单数据并返回插入的数据
-      return mainOrders
+      return mainOrders;
   }
 
   // 生成采购商品单子订单数据

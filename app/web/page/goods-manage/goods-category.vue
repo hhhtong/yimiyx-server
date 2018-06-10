@@ -28,7 +28,7 @@
 <script>
 import { cloneDeep } from 'lodash'
 import ModalTreeCategory from './components/ModalTreeCategory'
-import { categoryGet, categoryAdd, categoryDel, categoryUpdate } from '@/api'
+import { categoryGet, categoryDel, categorySave } from '@/api'
 import { Badge, Poptip } from 'iview'
 import { mapState } from 'vuex'
 
@@ -73,6 +73,8 @@ export default {
             <div>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
+                width="240"
+                transfer
                 confirm
                 placement="top"
                 title="删除此分类后，该分类下的子分类也将消失，您确认此操作？"
@@ -148,9 +150,10 @@ export default {
         }
       })
     },
-    // 添加 | 修改分类 -> 保存
+    //- 添加 | 修改分类 -> 保存
+    //- formData: [treeData, deleteIds]
     handleSave(formData) {
-      categoryUpdate(formData).then(result => {
+      categorySave(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success(result.msg)
           this.showModal = false
