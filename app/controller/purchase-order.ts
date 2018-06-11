@@ -6,7 +6,7 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
 
     try {
-      const result: object = await service.purchaseOrder.find(ctx.query);
+      const result: object = await service.purchaseOrder.findCondition(ctx.query);
       // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
       this.success(result);
     } catch (error) {

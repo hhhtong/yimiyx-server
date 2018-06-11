@@ -58,10 +58,6 @@ export default {
       tableData: [],
       tableColumns: [
         {
-          title: '#',
-          type: 'index',
-          width: 60
-        }, {
           type: 'expand',
           width: 50,
           render: (h, { row }) => (

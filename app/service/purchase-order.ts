@@ -51,7 +51,7 @@ export default class SupplierService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 根据条件查找采购单集合
-  async find({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
+  async findCondition({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
@@ -71,16 +71,42 @@ export default class SupplierService extends BaseService {
         ])
         .where(`ISNULL(PO.deletedAt) AND ${where1} AND ${where2}`)
         .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
+
+      // console.log('@@@@@@@@@@@@@@@@@@@@@@@@', query.getSql());
+
       const total = await query.getCount();
       let list = await query
         .orderBy('PO.createdAt', 'DESC')
         .skip((page - 1) * rows)
-        .take(rows);
-      // .getRawMany();
-      // console.log('@@@@@@@@@@@@@@@@@@@@', list.getQuery());
+        .take(rows)
+        .getRawMany();
 
-      list = this.ctx.helper.toCamelObj(await list.getRawMany());
+      list = this.ctx.helper.toCamelObj(list);
+      this.findAll(list.map(item => item.id));
       return Promise.resolve({ list, total });
+    } catch (e) {
+      this.error(e);
+    }
+  }
+
+  //- 获取所有的采购商品单集合
+  async findAll(ids: string[]) {
+    try {
+      const list = await this.PMO
+        .find({ where: `order_id IN (${ids.toString()})` })
+        // childOrders
+        // .select([
+        //   'PO.*',
+        //   `DATE_FORMAT(PO.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
+        //   'category.name',
+        //   'supplier.tel',
+        //   'supplier.id',
+        //   'supplier.supplierName AS supplierName'
+        // ])
+        // .getRawMany()
+      console.log('@@@@@@@@@@@@@@@', list);
+
+      return Promise.resolve(list);
     } catch (e) {
       this.error(e);
     }
@@ -98,8 +124,6 @@ export default class SupplierService extends BaseService {
           'mainOrders.childOrders'
         ]
       })
-      // const data = await this.PO.find()
-
       return data;
     } catch (e) {
       this.error(e);
