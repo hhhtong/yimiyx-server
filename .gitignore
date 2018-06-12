@@ -20,12 +20,13 @@ _site
 logs
 
 app/*.js
+app/libs/*.js
 app/controller/**/*.js
 app/core/**/*.js
 app/db/**/*.js
+app/extend/*.js
 app/middleware/**/*.js
 app/service/**/*.js
-libs/**/*.js
 config/**/*.js
 /index.js
 /app.js

@@ -51,7 +51,7 @@ export default class SupplierService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 根据条件查找采购单集合
-  async findCondition({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
+  async findConditions({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
@@ -82,15 +82,15 @@ export default class SupplierService extends BaseService {
         .getRawMany();
 
       list = this.ctx.helper.toCamelObj(list);
-      this.findAll(list.map(item => item.id));
+      this.findByIds(list.map(item => item.id));
       return Promise.resolve({ list, total });
     } catch (e) {
       this.error(e);
     }
   }
 
-  //- 获取所有的采购商品单集合
-  async findAll(ids: string[]) {
+  //- 根据一组采购单的 id 获取相关联的采购商品单列表
+  async findByIds(ids: string[]) {
     try {
       const list = await this.PMO
         .find({ where: `order_id IN (${ids.toString()})` })

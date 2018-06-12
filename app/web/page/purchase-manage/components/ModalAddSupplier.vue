@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { checkMobile } from '~/libs/tools/validator'
+import { checkMobile } from '~/app/libs/validator'
 import { cloneDeep } from 'lodash'
 
 const payTypeRadios = [

@@ -1,4 +1,4 @@
-import dateFormat from '../../libs/tools/dateFormat'
+import dateFormat from '../../app/libs/dateFormat'
 import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
 
 const transformObjKey = (obj: Object | Object[], fn: Function): Object => {

@@ -1,3 +1,4 @@
+import TestController from './controller/test';
 import HomeController from './controller/home';
 import SupplierController from './controller/supplier';
 import SupplierService from './service/supplier';
@@ -14,6 +15,7 @@ declare module 'egg' {
   }
 
   export interface IController {
+    test: TestController,
     home: HomeController,
     supplier: SupplierController,
     goodsCategory: GoodsCategoryController,
