@@ -1,4 +1,4 @@
-import { Repository, ObjectLiteral } from 'typeorm';
+import { Repository, ObjectLiteral, createQueryBuilder } from 'typeorm';
 import BaseService from '../core/base-service';
 import PurchaseOrder from '../db/entity/purchase-order';
 import PurchaseMainOrder from '../db/entity/purchase-main-order';
@@ -92,20 +92,17 @@ export default class SupplierService extends BaseService {
   //- 根据一组采购单的 id 获取相关联的采购商品单列表
   async findByIds(ids: string[]) {
     try {
-      const list = await this.PMO
-        .find({ where: `order_id IN (${ids.toString()})` })
-        // childOrders
-        // .select([
-        //   'PO.*',
-        //   `DATE_FORMAT(PO.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
-        //   'category.name',
-        //   'supplier.tel',
-        //   'supplier.id',
-        //   'supplier.supplierName AS supplierName'
-        // ])
-        // .getRawMany()
-      console.log('@@@@@@@@@@@@@@@', list);
-
+      const list: Object[] = await this.PO
+        .findByIds(ids, {
+          relations: [
+            'category',
+            'supplier',
+            'mainOrders',
+            'mainOrders.goods',
+            'mainOrders.childOrders'
+          ]
+        })
+      // console.log('@@@@@@@@@@@@@@@', list);
       return Promise.resolve(list);
     } catch (e) {
       this.error(e);
@@ -124,7 +121,7 @@ export default class SupplierService extends BaseService {
           'mainOrders.childOrders'
         ]
       })
-      return data;
+      return Promise.resolve(data);
     } catch (e) {
       this.error(e);
     }

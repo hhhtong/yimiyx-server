@@ -18,7 +18,7 @@ export default {
 
   watch: {
     details(val) {
-      console.warn(val)
+      // console.warn(val)
     }
   }
 }

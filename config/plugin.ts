@@ -7,7 +7,7 @@ exports.vuessr = {
   package: 'egg-view-vue-ssr'
 };
 
-exports.typeorm = {
-  enable: true,
-  path: join(__dirname, '../libs/plugin/egg-typeorm')
-};
+// exports.typeorm = {
+//   enable: true,
+//   path: join(__dirname, '../libs/plugin/egg-typeorm')
+// };
