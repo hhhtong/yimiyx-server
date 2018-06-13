@@ -16,10 +16,12 @@ interface IQuery {
   supplierName?: string // 供应商名称
 }
 
-// type IResult<T> = {
-//   [P in keyof T]?: IResult<T[P]>;
-// list: Object[],
-// total: number
+type IResult<T> = {
+  [P in keyof T]?: IResult<T[P]>;
+}
+// type IResult<LIST> = {
+//   list: IResult<LIST>;
+//   total: number
 // }
 
 export default class SupplierService extends BaseService {
@@ -51,38 +53,35 @@ export default class SupplierService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 根据条件查找采购单集合
-  async findConditions({ page, rows, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
+  async find({ page = 1, rows = 20, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
+    const where = 'ISNULL(PO.deletedAt)';
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
-    const where2 = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
+    const where2 = categoryID > 0 ? `category.id = ${categoryID}` : '1 = 1';
+    const where3 = supplierName && supplierName.trim() !== '' ? `supplier.supplierName LIKE '%${supplierName}%'` : '1 = 1';
 
     try {
-      const query = await this.PO
+      const list = await this.PO.find({
+        join: {
+          alias: 'PO',
+          leftJoinAndSelect: {
+            category: 'PO.category',
+            supplier: 'PO.supplier',
+            mainOrders: 'PO.mainOrders',
+            goods: 'mainOrders.goods',
+            childOrders: 'mainOrders.childOrders'
+          }
+        },
+        where: `${where} AND ${where1} AND ${where2} AND ${where3}`,
+        order: { 'createdAt': 'DESC' }, //- PO.createdAt
+        skip: (page - 1) * rows,
+        take: rows
+      })
+
+      const total = await this.PO
         .createQueryBuilder('PO')
-        // .leftJoin('PO.mainOrders', 'mainOrder')
-        .leftJoin('PO.category', 'category')
-        .leftJoin('PO.supplier', 'supplier')
-        .select([
-          'PO.*',
-          `DATE_FORMAT(PO.createdAt,'%Y-%m-%d %H:%i:%s') AS createdAt`,
-          'category.name',
-          'supplier.tel',
-          'supplier.id',
-          'supplier.supplierName AS supplierName'
-        ])
-        .where(`ISNULL(PO.deletedAt) AND ${where1} AND ${where2}`)
-        .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
+        .where(where)
+        .getCount();
 
-      // console.log('@@@@@@@@@@@@@@@@@@@@@@@@', query.getSql());
-
-      const total = await query.getCount();
-      let list = await query
-        .orderBy('PO.createdAt', 'DESC')
-        .skip((page - 1) * rows)
-        .take(rows)
-        .getRawMany();
-
-      list = this.ctx.helper.toCamelObj(list);
-      this.findByIds(list.map(item => item.id));
       return Promise.resolve({ list, total });
     } catch (e) {
       this.error(e);
@@ -92,17 +91,15 @@ export default class SupplierService extends BaseService {
   //- 根据一组采购单的 id 获取相关联的采购商品单列表
   async findByIds(ids: string[]) {
     try {
-      const list: Object[] = await this.PO
-        .findByIds(ids, {
-          relations: [
-            'category',
-            'supplier',
-            'mainOrders',
-            'mainOrders.goods',
-            'mainOrders.childOrders'
-          ]
-        })
-      // console.log('@@@@@@@@@@@@@@@', list);
+      const list: Object[] = await this.PO.findByIds(ids, {
+        relations: [
+          'category',
+          'supplier',
+          'mainOrders',
+          'mainOrders.goods',
+          'mainOrders.childOrders'
+        ]
+      })
       return Promise.resolve(list);
     } catch (e) {
       this.error(e);

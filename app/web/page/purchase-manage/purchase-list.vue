@@ -60,18 +60,16 @@ export default {
         {
           type: 'expand',
           width: 50,
-          render: (h, { row }) => (
-            <PurchaseExpandRow row={row}/>
-          )
-        }, {
-          title: '创建时间',
-          key: 'createdAt',
-          width: 150,
-          sortable: true
+          render: (h, { row }) => <PurchaseExpandRow table-data={row.mainOrders} />
         }, {
           title: '采购编号',
           key: 'id',
           width: 200,
+          sortable: true
+        }, {
+          title: '创建时间',
+          key: 'createdAt',
+          width: 150,
           sortable: true
         }, {
           title: '采购类别',
@@ -96,8 +94,8 @@ export default {
         }, {
           title: '状态',
           width: 128,
-          render: (h, { row, column, index }) => {
-            return <div>
+          render: (h, { row }) => (
+            <div>
               {
                 row.status === 1 ?
                   <Tag type="dot" color="yellow">待采购</Tag> :
@@ -106,14 +104,12 @@ export default {
                     <Tag type="dot" color="red">已删除</Tag>
               }
             </div>
-          }
+          )
         }, {
           title: '备注',
           key: 'remark',
           width: 200,
-          render: (h, { row, column, index }) => (
-            <div>{row.remark ? row.remark : '--'}</div>
-          )
+          render: (h, { row, column, index }) => <div>{row.remark ? row.remark : '--'}</div>
         }, {
           title: '操作',
           key: 'handle',

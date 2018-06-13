@@ -92,7 +92,6 @@ export default {
           width: 120,
         }, {
           title: '商品别名',
-          key: 'goodsAlias',
           align: 'center',
           width: 120,
           render: (h, { row, column, index }) => (
@@ -100,7 +99,6 @@ export default {
           )
         }, {
           title: '规格',
-          key: 'spec',
           align: 'center',
           width: 100,
           render: (h, { row, column, index }) => (
@@ -108,7 +106,6 @@ export default {
           )
         }, {
           title: '所属分类',
-          key: 'categorys',
           width: 270,
           align: 'center',
           render: (h, { row, column, index }) => {
@@ -126,7 +123,6 @@ export default {
           }
         }, {
           title: '产地',
-          key: 'madeIn',
           align: 'center',
           width: 100,
           render: (h, { row, column, index }) => (
@@ -139,7 +135,6 @@ export default {
           sortable: true
         }, {
           title: '所在仓库',
-          key: 'storeName',
           align: 'center',
           width: 100,
           render: (h, { row, column, index }) => (
@@ -147,7 +142,6 @@ export default {
           )
         }, {
           title: '状态',
-          key: 'isOnline',
           width: 100,
           align: 'center',
           render: (h, { row, column, index }) => {
@@ -165,7 +159,6 @@ export default {
           }
         }, {
           title: '操作',
-          key: 'handle',
           align: 'center',
           width: 200,
           fixed: 'right',

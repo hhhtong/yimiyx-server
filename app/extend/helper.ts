@@ -1,4 +1,4 @@
-import dateFormat from '../../app/libs/dateFormat'
+import * as moment from 'moment';
 import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
 
 const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
@@ -18,7 +18,7 @@ const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
 }
 
 export default {
-  dateFormat,
+  moment,
   toCamelObj(obj) { // 将Object内的key转为小驼峰命名
     return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'))
   },

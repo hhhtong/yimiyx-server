@@ -32,19 +32,6 @@ declare module 'egg' {
 
   export interface IHelper {
     /**
-     * @method Helper#dateFormat - 时间格式化
-     * @param {Number, String, Date} date - 时间戳 | 日期 | 日期对象
-     * @param {String} fmt - 返回格式 默认YYYY-MM-DD HH:mm:ss
-     * @example
-     * ```js
-     * ctx.helper.dateFormat(Date.now(), 'YYYY-MM-DD')
-     * => '2018-04-15'
-     * ```
-     * @return {String}
-     */
-    dateFormat(date?: number | string | Date, fmt?: string): string,
-
-    /**
      * @method Helper#toCamelObj - 将对象或者数组内对象的key转为小驼峰命名
      * @param {Object | Array} obj - 要进行转换的对象或者数组
      */

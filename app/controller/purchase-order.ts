@@ -6,8 +6,21 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
 
     try {
-      const result: object = await service.purchaseOrder.findConditions(ctx.query);
-      // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
+      const result: any = await service.purchaseOrder.find(ctx.query);
+      result.list.forEach(item => {
+        item.createdAt = ctx.helper.moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss');
+        item.updatedAt = ctx.helper.moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+
+        //- 将需要用到的字段放到最外层
+        item.categoryName = item.category.name;
+        item.categoryID = item.category.id;
+        item.supplierID = item.supplier.id;
+        item.supplierName = item.supplier.supplierName;
+        item.supplierTel = item.supplier.tel;
+
+        delete item.category;
+        delete item.supplier;
+      });
       this.success(result);
     } catch (error) {
       this.fail(error);
@@ -17,8 +30,8 @@ export default class PurchaseOrderController extends BaseController {
   async add() {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
-    // 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
-    const id = 'CG' + ctx.helper.dateFormat(new Date(), 'YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
+    //- 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
+    const id = 'CG' + ctx.helper.moment(new Date()).format('YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
     const rowData = {
       id,
       category: { id: categoryID },
@@ -73,11 +86,11 @@ export default class PurchaseOrderController extends BaseController {
     }
   }
 
-  // 生成采购商品单主订单数据
+  //- 生成采购商品单主订单数据
   async __generatePurchaseMainOrder(_goods) {
       let mainOrders = [];
       for (const goods of _goods) {
-        // 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
+        //- 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
         const mid = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
         mainOrders.push({
           mid,
@@ -89,21 +102,21 @@ export default class PurchaseOrderController extends BaseController {
       }
       mainOrders = await this.service.purchaseOrder.insertPurchaseMainOrder(mainOrders);
 
-      // 插入订单数据并返回插入的数据
+      //- 插入订单数据并返回插入的数据
       return mainOrders;
   }
 
-  // 生成采购商品单子订单数据
+  //- 生成采购商品单子订单数据
   async __generatePurchaseChildOrder({ goodsNo, specNum }) {
       let childOrders = [];
       for (let index = 1; index <= specNum; index++) {
-        // 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
+        //- 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
         const cid = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
         childOrders.push({ cid });
       }
       childOrders = await this.service.purchaseOrder.insertPurchaseChildOrder(childOrders);
 
-      // 插入订单数据并返回插入的数据
+      //- 插入订单数据并返回插入的数据
       return childOrders;
   }
 }

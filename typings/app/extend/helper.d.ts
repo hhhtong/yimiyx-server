@@ -4,7 +4,7 @@
 import ExtendObject from '../../../app/extend/helper';
 declare module 'egg' {
   interface IHelper {
-    dateFormat: typeof ExtendObject.dateFormat;
+    moment: typeof ExtendObject.moment;
     toCamelObj: typeof ExtendObject.toCamelObj;
     toSnakeObj: typeof ExtendObject.toSnakeObj;
     prefixZero: typeof ExtendObject.prefixZero;
