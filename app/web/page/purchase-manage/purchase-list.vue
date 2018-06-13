@@ -22,7 +22,7 @@
     </Header>
     <Layout>
       <Content>
-        <Table ref="tableCsv" border :height="tableConHeight" :data="tableData" :columns="tableColumns" :loading="listLoading" stripe></Table>
+        <Table ref="tableCsv" :height="tableConHeight" :data="tableData" :columns="tableColumns" :loading="listLoading"></Table>
       </Content>
     </Layout>
     <Footer class="text-right">
@@ -115,7 +115,7 @@ export default {
           key: 'handle',
           width: 200,
           align: 'center',
-          fixed: 'right',
+          // fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
               <i-button class="noradius" size="small" on-click={() => this.handleViewClick(row.id)}>查看详情</i-button>

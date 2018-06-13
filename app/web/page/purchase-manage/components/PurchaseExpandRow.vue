@@ -1,5 +1,46 @@
+<style lang="stylus">
+.purchase-expand {
+  max-width: 980px;
+  display: flex;
+  margin-top: -15px;
+  margin-left: -15px;
+
+  &-card {
+    flex-basis: 310px;
+    margin-top: 15px;
+    margin-left: 15px;
+
+    .extra {
+      top: 4px;
+      right: 0;
+
+      .ivu-tag {
+        border: none !important;
+      }
+    }
+
+    p {
+      line-height: 28px;
+    }
+  }
+}
+</style>
+
 <template>
-  <Table :data="tableData" :columns="tableColumns"></Table>
+  <div class="purchase-expand">
+    <Card class="purchase-expand-card" :bordered="false" v-for="row in tableData">
+      <div slot="title">{{ row.goods.goodsName }}</div>
+      <div slot="extra" class="extra">
+        <Tag v-if="row.status === 1" type="dot" color="yellow">待采购</Tag>
+        <Tag v-else-if="row.status === 2" type="dot" color="green">已入库</Tag>
+        <Tag v-else type="dot" color="red">已删除</Tag>
+      </div>
+      <p>条码：{{ row.mid }}</p>
+      <p>规格：{{ row.goods.spec + row.goods.specUnit }}</p>
+      <p>采购数量：{{ row.purchaseNum }}</p>
+      <p>当前库存：{{ row.goods.stockQty }}</p>
+    </Card>
+  </div>
 </template>
 
 <script>
@@ -13,58 +54,7 @@ export default {
   },
 
   data() {
-    return {
-      tableColumns: [
-        {
-          type: 'index',
-          width: 60
-        }, {
-          title: '采购商品号',
-          key: 'mid',
-          width: 200
-        }, {
-          title: '名称',
-          width: 150,
-          render: (h, { row }) => <span>{row.goods.goodsName ? row.goods.goodsName : '--'}</span>
-        }, {
-          title: '别名',
-          width: 150,
-          render: (h, { row }) => <span>{row.goods.goodsAlias ? row.goods.goodsAlias : '--'}</span>
-        }, {
-          title: '规格',
-          key: 'spec',
-          align: 'center',
-          width: 100,
-          render: (h, { row }) => <span>{row.goods.spec + row.goods.specUnit}</span>
-        }, {
-          title: '采购数量',
-          width: 120,
-          render: (h, { row }) => <span>{row.goods.purchaseNum}</span>
-        }, {
-          title: '当前库存',
-          width: 120,
-          render: (h, { row }) => <span>{row.goods.stockQty}</span>
-        }, {
-          title: '状态',
-          width: 128,
-          render: (h, { row }) => (
-            <div>
-              {
-                row.status === 1 ?
-                  <Tag type="dot" color="yellow">待采购</Tag> :
-                  row.status === 2 ?
-                    <Tag type="dot" color="green">已入库</Tag> :
-                    <Tag type="dot" color="red">已删除</Tag>
-              }
-            </div>
-          )
-        }, {
-          title: '商品条形码',
-          width: 150,
-          render: (h, { row }) => <img src={row.goods.barCode} />
-        }
-      ]
-    }
+    return {}
   }
 }
 </script>
