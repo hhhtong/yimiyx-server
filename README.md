@@ -1,14 +1,14 @@
 # veggie-admin
 
-基于 Egg + Vue + TypeScript + iView + Webpack 多页面和单页面服务端客户端渲染同构工程骨架项目.
+基于 Egg + Vue2 + TypeScript + iView + Webpack4 多页面和单页面服务端客户端渲染同构工程项目.
 
 ## 1. 版本
 
-- Egg 版本： ^2.x.x
-- Node 版本: Node ^8.10.x+,
-- Webpack 版本: ^4.x.x+,
+- Egg 版本： ^2.x
+- Node 版本: Node ^8.10.x,
+- Webpack 版本: ^4.x,
 - Vue 版本: ^2.5.16
-- TypeScript: ^2.8.3
+- TypeScript: ^2.9.1
 - iView
 
 ## 2. 文档

@@ -1,7 +1,7 @@
 {
   "name": "veggie-admin",
   "version": "1.0.6",
-  "description": "基于 easywebpack-vue 和 egg-view-vue-ssr 插件的 egg + vue + typescript 服务端渲染同构工程",
+  "description": "基于 Egg + Vue2 + TypeScript + iView + Webpack4 多页面和单页面服务端客户端渲染同构工程项目.",
   "scripts": {
     "tsc": "ets && tsc -p tsconfig.json",
     "tsc:w": "ets && tsc -p tsconfig.json -w",
