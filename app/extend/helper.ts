@@ -19,13 +19,16 @@ const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
 
 export default {
   moment,
-  toCamelObj(obj) { // 将Object内的key转为小驼峰命名
+  toCamelObj(obj: Object | Object[]) { // 将Object内的key转为小驼峰命名
     return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'))
   },
-  toSnakeObj(obj) { // 将Object内的key转为下划线分割命名
+  toSnakeObj(obj: Object | Object[]) { // 将Object内的key转为下划线分割命名
     return transformObjKey(obj, snakeCase)
   },
-  prefixZero(num, len) {
+  transformDateRange(dateRange: string[]) {
+    return [`${dateRange[0]} 00:00:00`, `${dateRange[1]} 23:59:59`]
+  },
+  prefixZero(num: string | number, len: number) {
     // this 是 helper 对象，在其中可以调用其他 helper 方法
     // this.ctx => context 对象
     // this.app => application 对象
@@ -37,7 +40,7 @@ export default {
     return num;
   },
   //随机ID
-  uuid(len, radix) {
+  uuid(len: number, radix: number) {
     let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     let uuid = [], i;
     radix = radix || chars.length;

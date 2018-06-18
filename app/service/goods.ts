@@ -1,4 +1,4 @@
-import { Repository, ObjectLiteral } from 'typeorm';
+import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import Goods from '../db/entity/goods';
 
@@ -21,7 +21,7 @@ export default class GoodsService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 商品__实体
-  readonly Goods: Repository<ObjectLiteral>;
+  readonly Goods: Repository<Goods>;
 
   // -------------------------------------------------------------------------
   // Constructor

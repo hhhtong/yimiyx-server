@@ -22,3 +22,7 @@ const query = await this.PO
   .where(`ISNULL(PO.deletedAt) AND ${where1} AND ${where2}`)
   .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`);
 ```
+
+事务控制：
+
+https://github.com/typeorm/typeorm/blob/master/docs/transactions.md

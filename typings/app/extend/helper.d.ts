@@ -7,6 +7,7 @@ declare module 'egg' {
     moment: typeof ExtendObject.moment;
     toCamelObj: typeof ExtendObject.toCamelObj;
     toSnakeObj: typeof ExtendObject.toSnakeObj;
+    transformDateRange: typeof ExtendObject.transformDateRange;
     prefixZero: typeof ExtendObject.prefixZero;
     uuid: typeof ExtendObject.uuid;
   }

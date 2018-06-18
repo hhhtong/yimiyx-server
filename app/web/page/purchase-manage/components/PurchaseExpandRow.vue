@@ -10,7 +10,7 @@
     margin-top: 15px;
     margin-left: 15px;
 
-    .extra {
+    .ivu-card-extra {
       top: 4px;
       right: 0;
 
@@ -28,9 +28,9 @@
 
 <template>
   <div class="purchase-expand">
-    <Card class="purchase-expand-card" :bordered="false" v-for="row in tableData">
+    <Card class="purchase-expand-card" :bordered="false" v-for="row in tableData" :key="row.mid">
       <div slot="title">{{ row.goods.goodsName }}</div>
-      <div slot="extra" class="extra">
+      <div slot="extra">
         <Tag v-if="row.status === 1" type="dot" color="yellow">待采购</Tag>
         <Tag v-else-if="row.status === 2" type="dot" color="green">已入库</Tag>
         <Tag v-else type="dot" color="red">已删除</Tag>

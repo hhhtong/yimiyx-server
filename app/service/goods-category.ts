@@ -1,4 +1,4 @@
-import { Repository, ObjectLiteral } from 'typeorm';
+import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import GoodsCategory from '../db/entity/goods-category';
 
@@ -9,7 +9,7 @@ export default class GoodsCategoryService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 商品分类__实体
-  readonly GC: Repository<ObjectLiteral>;
+  readonly GC: Repository<GoodsCategory>;
 
   // -------------------------------------------------------------------------
   // Constructor

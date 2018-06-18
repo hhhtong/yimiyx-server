@@ -1,4 +1,4 @@
-import { Repository, ObjectLiteral } from 'typeorm';
+import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import Supplier from '../db/entity/supplier';
 
@@ -21,7 +21,7 @@ export default class SupplierService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 供货商__实体
-  readonly Supplier: Repository<ObjectLiteral>
+  readonly Supplier: Repository<Supplier>
 
   // -------------------------------------------------------------------------
   // Public Properties

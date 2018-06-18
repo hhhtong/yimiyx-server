@@ -621,12 +621,12 @@ autoprefixer@^6.3.1:
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
 
-autoprefixer@^8.6.2:
-  version "8.6.2"
-  resolved "http://registry.npm.taobao.org/autoprefixer/download/autoprefixer-8.6.2.tgz#51d42ff13243820a582a53ecca20dedaeb7f2efd"
+autoprefixer@^8.6.3:
+  version "8.6.3"
+  resolved "http://registry.npm.taobao.org/autoprefixer/download/autoprefixer-8.6.3.tgz#1d38a129e6a4582a565b6570d16f2d7d3de9cbf9"
   dependencies:
     browserslist "^3.2.8"
-    caniuse-lite "^1.0.30000851"
+    caniuse-lite "^1.0.30000856"
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
     postcss "^6.0.22"
@@ -1944,6 +1944,12 @@ camelcase@^4.0.0, camelcase@^4.1.0:
   version "4.1.0"
   resolved "http://registry.npm.taobao.org/camelcase/download/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
+can-promise@^0.0.1:
+  version "0.0.1"
+  resolved "http://registry.npm.taobao.org/can-promise/download/can-promise-0.0.1.tgz#7a7597ad801fb14c8b22341dfec314b6bd6ad8d3"
+  dependencies:
+    window-or-global "^1.0.1"
+
 caniuse-api@^1.5.2:
   version "1.6.1"
   resolved "http://registry.npm.taobao.org/caniuse-api/download/caniuse-api-1.6.1.tgz#b534e7c734c4f81ec5fbe8aca2ad24354b962c6c"
@@ -1969,15 +1975,9 @@ caniuse-lite@^1.0.30000844:
   version "1.0.30000847"
   resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000847.tgz#be77f439be29bbc57ae08004b1e470b653b1ec1d"
 
-caniuse-lite@^1.0.30000851:
-  version "1.0.30000851"
-  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000851.tgz#3b498aebf9f92cf6cff4ab54d13b557c0b590533"
-
-canvas@^1.6.11:
-  version "1.6.11"
-  resolved "http://registry.npm.taobao.org/canvas/download/canvas-1.6.11.tgz#c2d8bcf283281f19ded14fa163a111804522330d"
-  dependencies:
-    nan "^2.10.0"
+caniuse-lite@^1.0.30000856:
+  version "1.0.30000856"
+  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000856.tgz#ecc16978135a6f219b138991eb62009d25ee8daa"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -2647,11 +2647,11 @@ cron-parser@^2.4.4:
     is-nan "^1.2.1"
     moment-timezone "^0.5.0"
 
-cross-env@^5.1.6:
-  version "5.1.6"
-  resolved "http://registry.npm.taobao.org/cross-env/download/cross-env-5.1.6.tgz#0dc05caf945b24e4b9e3b12871fe0e858d08b38d"
+cross-env@^5.2.0:
+  version "5.2.0"
+  resolved "http://registry.npm.taobao.org/cross-env/download/cross-env-5.2.0.tgz#6ecd4c015d5773e614039ee529076669b9d126f2"
   dependencies:
-    cross-spawn "^5.1.0"
+    cross-spawn "^6.0.5"
     is-windows "^1.0.0"
 
 cross-spawn@^4:
@@ -2669,7 +2669,7 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^6.0.0:
+cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "http://registry.npm.taobao.org/cross-spawn/download/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
   dependencies:
@@ -3224,6 +3224,10 @@ digest-header@^0.0.1:
   resolved "http://registry.npm.taobao.org/digest-header/download/digest-header-0.0.1.tgz#11ccf6deec5766ac379744d901c12cba49514be6"
   dependencies:
     utility "0.1.11"
+
+dijkstrajs@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/dijkstrajs/download/dijkstrajs-1.0.1.tgz#d3cd81221e3ea40742cfcde556d4e99e98ddc71b"
 
 dir-glob@^2.0.0:
   version "2.0.0"
@@ -4742,6 +4746,14 @@ fs-extra@^5.0.0:
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
+fs-extra@^6.0.1:
+  version "6.0.1"
+  resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-6.0.1.tgz#8abc128f7946e310135ddc93b98bddb410e7a34b"
+  dependencies:
+    graceful-fs "^4.1.2"
+    jsonfile "^4.0.0"
+    universalify "^0.1.0"
+
 fs-minipass@^1.2.5:
   version "1.2.5"
   resolved "http://registry.npm.taobao.org/fs-minipass/download/fs-minipass-1.2.5.tgz#06c277218454ec288df77ada54a03b8702aacb9d"
@@ -6071,6 +6083,10 @@ isarray@1.0.0, isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/isarray/download/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
 
+isarray@^2.0.1:
+  version "2.0.4"
+  resolved "http://registry.npm.taobao.org/isarray/download/isarray-2.0.4.tgz#38e7bcbb0f3ba1b7933c86ba1894ddfc3781bbb7"
+
 isexe@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/isexe/download/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
@@ -6227,10 +6243,6 @@ js-yaml@~3.7.0:
   dependencies:
     argparse "^1.0.7"
     esprima "^2.6.0"
-
-jsbarcode@^3.9.0:
-  version "3.9.0"
-  resolved "http://registry.npm.taobao.org/jsbarcode/download/jsbarcode-3.9.0.tgz#dabe86e28bc3f189a80dc9d88030036882967912"
 
 jsbn@~0.1.0:
   version "0.1.1"
@@ -7226,13 +7238,13 @@ mz@^2.0.0, mz@^2.4.0, mz@^2.7.0, mz@~2.7.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-nan@^2.10.0, nan@^2.9.2:
-  version "2.10.0"
-  resolved "http://registry.npm.taobao.org/nan/download/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
-
 nan@^2.3.0:
   version "2.9.2"
   resolved "http://registry.npm.taobao.org/nan/download/nan-2.9.2.tgz#f564d75f5f8f36a6d9456cca7a6c4fe488ab7866"
+
+nan@^2.9.2:
+  version "2.10.0"
+  resolved "http://registry.npm.taobao.org/nan/download/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
 
 nanomatch@^1.2.9:
   version "1.2.9"
@@ -8023,6 +8035,10 @@ pluralize@^7.0.0:
   version "7.0.0"
   resolved "http://registry.npm.taobao.org/pluralize/download/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
 
+pngjs@^3.3.0:
+  version "3.3.3"
+  resolved "http://registry.npm.taobao.org/pngjs/download/pngjs-3.3.3.tgz#85173703bde3edac8998757b96e5821d0966a21b"
+
 pngquant-bin@^4.0.0:
   version "4.0.0"
   resolved "http://registry.npm.taobao.org/pngquant-bin/download/pngquant-bin-4.0.0.tgz#468adf7036f50fae09c9c264ef62b6d10c02f5c2"
@@ -8574,6 +8590,16 @@ punycode@^1.2.4, punycode@^1.4.1:
 q@^1.1.2:
   version "1.5.1"
   resolved "http://registry.npm.taobao.org/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
+
+qrcode@^1.2.0:
+  version "1.2.0"
+  resolved "http://registry.npm.taobao.org/qrcode/download/qrcode-1.2.0.tgz#330d24313fbf8d429a806091af9525250239e44a"
+  dependencies:
+    can-promise "^0.0.1"
+    dijkstrajs "^1.0.1"
+    isarray "^2.0.1"
+    pngjs "^3.3.0"
+    yargs "^8.0.2"
 
 qs@^6.4.0, qs@~6.5.1:
   version "6.5.1"
@@ -10228,9 +10254,13 @@ typescript@^2.2.1:
   version "2.8.3"
   resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.8.3.tgz#5d817f9b6f31bb871835f4edf0089f21abe6c170"
 
-typescript@^2.8.0, typescript@^2.9.1:
+typescript@^2.8.0:
   version "2.9.1"
   resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.9.1.tgz#fdb19d2c67a15d11995fd15640e373e09ab09961"
+
+typescript@^2.9.2:
+  version "2.9.2"
+  resolved "http://registry.npm.taobao.org/typescript/download/typescript-2.9.2.tgz#1cbf61d05d6b96269244eb6a3bce4bd914e0f00c"
 
 uglify-es@^3.3.4, uglify-es@^3.3.9:
   version "3.3.9"
@@ -10903,6 +10933,10 @@ win-release@^1.0.0:
   resolved "http://registry.npm.taobao.org/win-release/download/win-release-1.1.1.tgz#5fa55e02be7ca934edfc12665632e849b72e5209"
   dependencies:
     semver "^5.0.1"
+
+window-or-global@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/window-or-global/download/window-or-global-1.0.1.tgz#dbe45ba2a291aabc56d62cf66c45b7fa322946de"
 
 window-size@0.1.0:
   version "0.1.0"

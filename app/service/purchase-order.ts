@@ -1,4 +1,4 @@
-import { Repository, ObjectLiteral, createQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import PurchaseOrder from '../db/entity/purchase-order';
 import PurchaseMainOrder from '../db/entity/purchase-main-order';
@@ -10,7 +10,7 @@ interface IQuery {
 }
 
 interface IQuery {
-  dateRange?: any, // 采购单创建时间范围筛选
+  dateRange?: string[], // 采购单创建时间范围筛选
   categoryID?: number, // 商品类别 默认0(全部)
   supplierID?: number, // 供应商ID
   supplierName?: string // 供应商名称
@@ -31,11 +31,11 @@ export default class SupplierService extends BaseService {
   // -------------------------------------------------------------------------
 
   //- 采购单__实体
-  readonly PO: Repository<ObjectLiteral>;
+  readonly PO: Repository<PurchaseOrder>;
   //- 采购商品__实体
-  readonly PMO: Repository<ObjectLiteral>;
+  readonly PMO: Repository<PurchaseMainOrder>;
   //- 采购子商品__实体
-  readonly PCO: Repository<ObjectLiteral>;
+  readonly PCO: Repository<PurchaseChildOrder>;
 
   // -------------------------------------------------------------------------
   // Constructor
@@ -54,7 +54,12 @@ export default class SupplierService extends BaseService {
 
   //- 根据条件查找采购单集合
   async find({ page = 1, rows = 20, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
-    const where = 'ISNULL(PO.deletedAt)';
+    let where = 'ISNULL(PO.deletedAt)';
+
+    if (dateRange) {
+      where += ` AND PO.createdAt BETWEEN '${dateRange[0]}' AND '${dateRange[1]}'`;
+    }
+
     const where1 = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2 = categoryID > 0 ? `category.id = ${categoryID}` : '1 = 1';
     const where3 = supplierName && supplierName.trim() !== '' ? `supplier.supplierName LIKE '%${supplierName}%'` : '1 = 1';
