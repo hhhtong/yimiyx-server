@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { createConnection, getConnectionOptions } from 'typeorm';
-import { SnakeNamingStrategy } from './app/db/naming-strategy/snake-naming';
+import { SnakeNamingStrategy } from './app/model/naming-strategy/snake-naming';
 
 export default app => {
   app.beforeStart(async () => {

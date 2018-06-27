@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
-import Goods from '../db/entity/goods';
+import Goods from '../model/entity/goods';
 
 interface query {
   disabledPage: boolean, // 是否禁用分页，true将会忽略`page`和`rows`参数

@@ -9,9 +9,7 @@
     "app.ts",
     "index.ts",
     "app/**/*.ts",
-    "config/**/*.ts",
-    "test/**/*.ts",
-    "libs/**/**/**/*.ts"
+    "config/**/*.ts"
   ],
   "exclude": [
     "public",

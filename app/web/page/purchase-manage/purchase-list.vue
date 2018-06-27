@@ -190,7 +190,7 @@ export default {
     // 导出Excel
     handleExportExcel() {
       this.$refs.tableCsv.exportCsv({
-        filename: '采购单列表',
+        filename: '采购列表',
         original: false
       })
     },

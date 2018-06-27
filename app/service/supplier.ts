@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
-import Supplier from '../db/entity/supplier';
+import Supplier from '../model/entity/supplier';
 
 interface query {
   page: number,

@@ -6,7 +6,7 @@
     "tsc": "ets && tsc -p tsconfig.json",
     "tsc:w": "ets && tsc -p tsconfig.json -w",
     "clean": "ets clean && find *.map */*.map */*/*.map | xargs rm -rf",
-    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=*/*.ts --exclude=*/*.td.js* --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
+    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
     "build": "cross-env easywebpack build prod",
     "dev": "node --max_old_space_size=4096 index.js",
     "dev:egg": "egg-bin dev -r egg-ts-helper/register",
@@ -19,8 +19,7 @@
     "kill": "pkill --signal SIGINT egg-vue-webpack-boilerplate",
     "kill:mac": "kill -9 $(lsof -i:7001 |grep 'node'|awk '{print $2}')",
     "kill:win": "taskkill -PID $(netstat -ano | findstr 7001|awk '{print $5}') -F",
-    "tslint:fix": "tslint --fix .",
-    "eslint:fix": "eslint --fix ."
+    "lint:fix": "tslint --fix . && eslint --fix ."
   },
   "dependencies": {
     "axios": "^0.18.0",

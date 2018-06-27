@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
-import PurchaseOrder from '../db/entity/purchase-order';
-import PurchaseMainOrder from '../db/entity/purchase-main-order';
-import PurchaseChildOrder from '../db/entity/purchase-child-order';
+import PurchaseOrder from '../model/entity/purchase-order';
+import PurchaseMainOrder from '../model/entity/purchase-main-order';
+import PurchaseChildOrder from '../model/entity/purchase-child-order';
 
 interface IQuery {
   page: number,

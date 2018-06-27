@@ -23,7 +23,7 @@ app/*.js
 app/libs/*.js
 app/controller/**/*.js
 app/core/**/*.js
-app/db/**/*.js
+app/model/**/*.js
 app/extend/*.js
 app/middleware/**/*.js
 app/service/**/*.js
