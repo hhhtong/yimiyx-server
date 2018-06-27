@@ -1,7 +1,11 @@
 import * as moment from 'moment';
 import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
 
-const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
+export interface IObj {
+  obj: Object | Object[]
+}
+
+const transformObjKey = (obj: IObj, fn: Function): Object | Object[] => {
   if (Array.isArray(obj)) {
     return obj.map(item => transform(item))
   } else {
@@ -19,16 +23,16 @@ const transformObjKey = (obj: Object | Object[], fn: Function): Object => {
 
 export default {
   moment,
-  toCamelObj(obj: Object | Object[]) { // 将Object内的key转为小驼峰命名
+  toCamelObj(obj: IObj): Object | Object[] { // 将Object内的key转为小驼峰命名
     return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'))
   },
-  toSnakeObj(obj: Object | Object[]) { // 将Object内的key转为下划线分割命名
+  toSnakeObj(obj: IObj): Object | Object[] { // 将Object内的key转为下划线分割命名
     return transformObjKey(obj, snakeCase)
   },
-  transformDateRange(dateRange: string[]) {
+  transformDateRange(dateRange: string[]): string[] {
     return [`${dateRange[0]} 00:00:00`, `${dateRange[1]} 23:59:59`]
   },
-  prefixZero(num: string | number, len: number) {
+  prefixZero(num: string | number, len: number): string {
     // this 是 helper 对象，在其中可以调用其他 helper 方法
     // this.ctx => context 对象
     // this.app => application 对象
@@ -40,7 +44,7 @@ export default {
     return num;
   },
   //随机ID
-  uuid(len: number, radix: number) {
+  uuid(len: number, radix: number): string {
     let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
     let uuid = [], i;
     radix = radix || chars.length;

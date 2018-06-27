@@ -7,6 +7,7 @@ import Home from '../../../app/controller/home';
 import PurchaseOrder from '../../../app/controller/purchase-order';
 import Supplier from '../../../app/controller/supplier';
 import Test from '../../../app/controller/test';
+import ClientGoods from '../../../app/controller/client/goods';
 
 declare module 'egg' {
   interface IController {
@@ -16,5 +17,8 @@ declare module 'egg' {
     purchaseOrder: PurchaseOrder;
     supplier: Supplier;
     test: Test;
+    client: {
+      goods: ClientGoods;
+    };
   }
 }
