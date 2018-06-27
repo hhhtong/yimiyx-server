@@ -1,7 +1,7 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
 import PurchaseMainOrder from './purchase-main-order';

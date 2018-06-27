@@ -1,7 +1,7 @@
 /**
  * 采购的商品单的子订单
  */
-import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryColumn, CreateDateColumn, ManyToOne } from 'typeorm';
 import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
