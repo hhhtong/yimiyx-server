@@ -29,6 +29,9 @@ export default (app: Application) => {
   router.post('/goods/save', controller.goods.save);
   router.post('/goods/delete', controller.goods.delete);
 
+  //- Client/GoodsController
+  router.get('/client/goods', controller.client.goods.index);
+
   //- PurchaseOrderController
   router.get('/purchaseOrder', controller.purchaseOrder.index);
   router.post('/purchaseOrder/add', controller.purchaseOrder.add);
