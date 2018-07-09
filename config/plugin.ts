@@ -1,5 +1,3 @@
-import { join } from 'path';
-
 exports.static = true;
 
 exports.vuessr = {
@@ -7,7 +5,7 @@ exports.vuessr = {
   package: 'egg-view-vue-ssr'
 };
 
-// exports.typeorm = {
-//   enable: true,
-//   path: join(__dirname, '../libs/plugin/egg-typeorm')
-// };
+exports.cors = {
+  enable: true,
+  package: 'egg-cors'
+};

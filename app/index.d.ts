@@ -1,4 +1,4 @@
-import { IObj } from '../../app/extend/helper'
+import { IObj } from './extend/helper'
 
 declare module 'egg' {
   interface Application {
