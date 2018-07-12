@@ -1,4 +1,4 @@
-import { Application, EggAppConfig } from 'egg';
+import { EggAppConfig } from 'egg';
 import { join } from 'path';
 // import { readFileSync } from 'fs';
 
@@ -18,7 +18,9 @@ export default (app: EggAppConfig) => {
   };
 
   exports.security = {
-    domainWhiteList: ['http://localhost:7001']
+    csrf: {
+      ignoreJSON: true, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
+    }
   };
 
   exports.view = {
@@ -39,7 +41,7 @@ export default (app: EggAppConfig) => {
     dir: join(app.baseDir, 'public')
   };
 
-  exports.keys = '123456';
+  exports.keys = app.name + '_123456';
 
   exports.middleware = [
     'access'

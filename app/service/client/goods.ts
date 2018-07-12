@@ -24,22 +24,21 @@ export default class GoodsService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async query(goodsName: string) {
-    const where = goodsName ? `g.goodsName LIKE '%${goodsName}%'` : '1 = 1';
+  async query({ page = 1, rows = 20 }) {
 
     try {
-      const query = this.Goods
+      let list: any = this.Goods
         .createQueryBuilder('g')
         .where('ISNULL(g.deletedAt)')
-        .andWhere(where);
-      let list: any = await query.orderBy('g.createdAt', 'DESC');
-      let total: number = await query.getCount();
+        .skip((page - 1) * rows)
+        .take(rows)
+        .orderBy('g.createdAt', 'DESC');
 
       list = await list
         .leftJoinAndSelect('g.categorys', 'categorys')
         .getMany();
 
-      return { list, total };
+      return { list };
     } catch (error) {
       this.error(error);
     }
