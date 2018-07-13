@@ -89,6 +89,9 @@ export default class Goods {
 
   /**
    * 是否在售
+   * -1 未上架
+   *  0 已下架
+   *  1 出售中
    */
   @Column('tinyint', { default: -1 })
   isOnline: string;

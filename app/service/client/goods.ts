@@ -27,18 +27,17 @@ export default class GoodsService extends BaseService {
   async query({ page = 1, rows = 20 }) {
 
     try {
-      let list: any = this.Goods
+      const list: any = this.Goods
         .createQueryBuilder('g')
         .where('ISNULL(g.deletedAt)')
+        .andWhere('g.isOnline = 1')
         .skip((page - 1) * rows)
         .take(rows)
-        .orderBy('g.createdAt', 'DESC');
-
-      list = await list
+        .orderBy('g.createdAt', 'DESC')
         .leftJoinAndSelect('g.categorys', 'categorys')
         .getMany();
 
-      return { list };
+      return list;
     } catch (error) {
       this.error(error);
     }
