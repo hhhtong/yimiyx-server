@@ -1,9 +1,10 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
+import GoodsDesc from './goods-desc';
 import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
@@ -25,6 +26,13 @@ export default class Goods {
   @ManyToMany(type => GoodsCategory, category => category.goods)
   @JoinTable()
   categorys: GoodsCategory[];
+
+  /**
+   * 反向映射到商品详情表(goodsDesc)
+   */
+  @OneToOne(type => GoodsDesc, gd => gd.goods)
+  @JoinColumn()
+  goodsDesc: GoodsDesc;
 
   /**
    * 采购商品单的主订单

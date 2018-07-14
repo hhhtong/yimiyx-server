@@ -20,7 +20,7 @@ export default class SupplierService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 供货商__实体
+  // - 供货商__实体
   readonly Supplier: Repository<Supplier>
 
   // -------------------------------------------------------------------------

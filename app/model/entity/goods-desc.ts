@@ -14,9 +14,9 @@ export default class GoodsDesc {
   /**
    * 和商品表(goods)建立联系
    */
-  @OneToOne(type => Goods)
+  @OneToOne(type => Goods, g => g.goodsDesc)
   @JoinColumn()
-  goods: Goods
+  goods: Goods;
 
   /**
    * 商品标签
@@ -32,7 +32,7 @@ export default class GoodsDesc {
   description: string;
 
   /**
-   * 单价(按斤) xx元/500g
+   * 单价(按规格) xx元/500g
    */
   @Column('decimal', { precision: 5, scale: 2 })
   unitPrice: number;

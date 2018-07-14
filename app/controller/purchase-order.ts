@@ -7,7 +7,7 @@ export default class PurchaseOrderController extends BaseController {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 采购单，商品单，商品子单的数组集合
+  // - 采购单，商品单，商品子单的数组集合
   public codes: string[];
   readonly queryRunner: QueryRunner;
 
@@ -41,7 +41,7 @@ export default class PurchaseOrderController extends BaseController {
         item.createdAt = ctx.helper.moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss');
         item.updatedAt = ctx.helper.moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss');
 
-        //- 将需要用到的字段放到最外层
+        // - 将需要用到的字段放到最外层
         item.categoryName = item.category.name;
         item.categoryID = item.category.id;
         item.supplierID = item.supplier.id;
@@ -60,9 +60,9 @@ export default class PurchaseOrderController extends BaseController {
   async add() {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
-    //- 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
+    // - 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
     const id = 'CG' + ctx.helper.moment(new Date()).format('YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
-    await this.queryRunner.startTransaction(); //- 开启事务
+    await this.queryRunner.startTransaction(); // - 开启事务
 
     try {
       const rowData = {
@@ -79,10 +79,10 @@ export default class PurchaseOrderController extends BaseController {
       this.__generateQRCode();
 
       await service.purchaseOrder.insertPurchaseOrder(rowData);
-      await this.queryRunner.commitTransaction(); //- 提交事务
+      await this.queryRunner.commitTransaction(); // - 提交事务
       this.success();
     } catch (error) {
-      await this.queryRunner.rollbackTransaction(); //- 回滚事务
+      await this.queryRunner.rollbackTransaction(); // - 回滚事务
       this.fail(error);
     }
   }
@@ -99,7 +99,7 @@ export default class PurchaseOrderController extends BaseController {
     }
   }
 
-  //- 该方法暂时没用到
+  // - 该方法暂时没用到
   async update() {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
@@ -127,17 +127,17 @@ export default class PurchaseOrderController extends BaseController {
   // Private Methods
   // -------------------------------------------------------------------------
 
-  //- 批量生成二维码
+  // - 批量生成二维码
   async __generateQRCode() {
     for (const code of this.codes) await this.ctx.app.generateQRCode(code);
     this.codes = [];
   }
 
-  //- 生成采购商品单主订单数据
+  // - 生成采购商品单主订单数据
   async __generatePurchaseMainOrder(_goods) {
     let mainOrders = [];
     for (const goods of _goods) {
-      //- 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
+      // - 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
       const mid = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
       mainOrders.push({
         mid,
@@ -150,22 +150,22 @@ export default class PurchaseOrderController extends BaseController {
     }
     mainOrders = await this.service.purchaseOrder.insertPurchaseMainOrder(mainOrders);
 
-    //- 插入订单数据并返回插入的数据
+    // - 插入订单数据并返回插入的数据
     return mainOrders;
   }
 
-  //- 生成采购商品单子订单数据
+  // - 生成采购商品单子订单数据
   async __generatePurchaseChildOrder({ goodsNo, specNum }) {
     let childOrders = [];
     for (let index = 1; index <= specNum; index++) {
-      //- 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
+      // - 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
       const cid = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
       childOrders.push({ cid });
       this.codes.unshift(cid);
     }
     childOrders = await this.service.purchaseOrder.insertPurchaseChildOrder(childOrders);
 
-    //- 插入订单数据并返回插入的数据
+    // - 插入订单数据并返回插入的数据
     return childOrders;
   }
 }

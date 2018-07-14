@@ -6,33 +6,33 @@ import { Application } from 'egg';
 export default (app: Application) => {
   const { router, controller } = app;
 
-  //- TestController
+  // - TestController
   router.get('/test', controller.test.index);
 
-  //- HomeController
+  // - HomeController
   router.get('/', controller.home.index);
   router.get('/server', controller.home.server);
 
-  //- SupplierController
+  // - SupplierController
   router.get('/supplier', controller.supplier.index);
   router.post('/supplier/add', controller.supplier.add);
   router.post('/supplier/delete', controller.supplier.delete);
   router.post('/supplier/update', controller.supplier.update);
 
-  //- GoodsCategoryController
+  // - GoodsCategoryController
   router.get('/goodsCategory', controller.goodsCategory.index);
   router.post('/goodsCategory/delete', controller.goodsCategory.delete);
   router.post('/goodsCategory/save', controller.goodsCategory.save);
 
-  //- GoodsController
+  // - GoodsController
   router.get('/goods', controller.goods.index);
   router.post('/goods/save', controller.goods.save);
   router.post('/goods/delete', controller.goods.delete);
 
-  //- Client/GoodsController
+  // - Client/GoodsController
   router.get('/client/goods', controller.client.goods.index);
 
-  //- PurchaseOrderController
+  // - PurchaseOrderController
   router.get('/purchaseOrder', controller.purchaseOrder.index);
   router.post('/purchaseOrder/add', controller.purchaseOrder.add);
   router.post('/purchaseOrder/delete', controller.purchaseOrder.delete);

@@ -8,7 +8,7 @@ export default class GoodsService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 商品__实体
+  // - 商品__实体
   readonly Goods: Repository<Goods>;
 
   // -------------------------------------------------------------------------
@@ -24,20 +24,41 @@ export default class GoodsService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async query({ page = 1, rows = 20 }) {
+  // - 获得指定类目下的在售商品
+  // async queryAssignOnlineGoods() { }
 
+  // - 获得所有在售商品的类目
+  // async queryOnlineGoodsCategorys() { }
+
+  // - 获得所有的在售商品
+  async queryOnlineGoods() {
     try {
       const list: any = this.Goods
-        .createQueryBuilder('g')
-        .where('ISNULL(g.deletedAt)')
-        .andWhere('g.isOnline = 1')
-        .skip((page - 1) * rows)
-        .take(rows)
-        .orderBy('g.createdAt', 'DESC')
-        .leftJoinAndSelect('g.categorys', 'categorys')
-        .getMany();
+        .createQueryBuilder('G')
+        .where('ISNULL(G.deletedAt)')
+        .andWhere('G.isOnline = 1')
+        .andWhere('GC.type = 3')
+        .leftJoin('G.categorys', 'GC')
+        .leftJoin('G.goodsDesc', 'GD')
+        .leftJoin('GD.tags', 'T')
+        .select([
+          'G.id',
+          'G.barCode',
+          'G.goodsName',
+          'G.goodsAlias',
+          'G.madeIn',
+          'G.spec',
+          'G.specUnit',
+          'G.specNum',
+          'GC.name',
+          'GD.description',
+          'GD.unitPrice',
+          'GD.resalePrice',
+          'GD.goodsAmount',
+          'T.tagName'
+        ]);
 
-      return list;
+      return list.orderBy('G.updatedAt', 'DESC').getMany();
     } catch (error) {
       this.error(error);
     }

@@ -20,7 +20,7 @@ export default class GoodsService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 商品__实体
+  // - 商品__实体
   readonly Goods: Repository<Goods>;
 
   // -------------------------------------------------------------------------
@@ -37,31 +37,31 @@ export default class GoodsService extends BaseService {
   // -------------------------------------------------------------------------
 
   async query({ page = 1, rows = 20, disabledPage = false, isOnline, goodsNo, goodsName }: query) {
-    const where1 = +goodsNo ? `g.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
-    const where2 = goodsName ? `g.goodsName LIKE '%${goodsName}%'` : '1 = 1';
+    const where1 = +goodsNo ? `G.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
+    const where2 = goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
     const where3 = +isOnline === 1
-      ? `g.isOnline = ${isOnline}`
+      ? `G.isOnline = ${isOnline}`
       : +isOnline === 0
-        ? 'g.isOnline != 1'
+        ? 'G.isOnline != 1'
         : '1 = 1';
 
     try {
       const query = this.Goods
-        .createQueryBuilder('g')
-        .where('ISNULL(g.deletedAt)')
+        .createQueryBuilder('G')
+        .where('ISNULL(G.deletedAt)')
         .andWhere(`${where1} AND ${where2} AND ${where3}`);
-      let list: any = await query.orderBy('g.createdAt', 'DESC');
+      let list: any = await query.orderBy('G.createdAt', 'DESC');
       let total: number = await query.getCount();
 
       if (disabledPage) {
         list = await list
-          .leftJoinAndSelect('g.categorys', 'categorys')
+          .leftJoinAndSelect('G.categorys', 'categorys')
           .getMany();
       } else {
         list = await list
           .skip((page - 1) * rows)
           .take(rows)
-          .leftJoinAndSelect('g.categorys', 'categorys')
+          .leftJoinAndSelect('G.categorys', 'categorys')
           .getMany();
       }
 
@@ -80,7 +80,7 @@ export default class GoodsService extends BaseService {
   }
 
   async getMaxGoodsNo(goodsNoPrefix: string) {
-    const maxNo: number = await this.Goods.createQueryBuilder('g').where(`g.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
+    const maxNo: number = await this.Goods.createQueryBuilder('G').where(`G.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
     return goodsNoPrefix + this.ctx.helper.prefixZero(maxNo, 4);
   }
 

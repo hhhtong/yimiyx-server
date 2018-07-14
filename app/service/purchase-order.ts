@@ -30,11 +30,11 @@ export default class SupplierService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 采购单__实体
+  // - 采购单__实体
   readonly PO: Repository<PurchaseOrder>;
-  //- 采购商品__实体
+  // - 采购商品__实体
   readonly PMO: Repository<PurchaseMainOrder>;
-  //- 采购子商品__实体
+  // - 采购子商品__实体
   readonly PCO: Repository<PurchaseChildOrder>;
 
   // -------------------------------------------------------------------------
@@ -52,7 +52,7 @@ export default class SupplierService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  //- 根据条件查找采购单集合
+  // - 根据条件查找采购单集合
   async find({ page = 1, rows = 20, dateRange, categoryID, supplierID, supplierName }: IQuery): Promise<Object> {
     let where = 'ISNULL(PO.deletedAt)';
 
@@ -77,7 +77,7 @@ export default class SupplierService extends BaseService {
           }
         },
         where: `${where} AND ${where1} AND ${where2} AND ${where3}`,
-        order: { 'createdAt': 'DESC' }, //- PO.createdAt
+        order: { 'createdAt': 'DESC' }, // - PO.createdAt
         skip: (page - 1) * rows,
         take: rows
       })
@@ -93,7 +93,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 根据一组采购单的 id 获取相关联的采购商品单列表
+  // - 根据一组采购单的 id 获取相关联的采购商品单列表
   async findByIds(ids: string[]) {
     try {
       const list: Object[] = await this.PO.findByIds(ids, {
@@ -111,7 +111,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 查找符合id的采购单所有关联信息
+  // - 查找符合id的采购单所有关联信息
   async findOne(id: number) {
     try {
       const data: Object = await this.PO.findOne(id, {
@@ -129,7 +129,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 插入采购单数据
+  // - 插入采购单数据
   async insertPurchaseOrder(rowData) {
     try {
       return await this.PO.save(this.PO.create(rowData));
@@ -138,7 +138,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 插入采购的商品单数据
+  // - 插入采购的商品单数据
   async insertPurchaseMainOrder(rowData) {
     try {
       return await this.PMO.save(this.PMO.create(rowData));
@@ -147,7 +147,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 插入采购的商品单的子订单数据
+  // - 插入采购的商品单的子订单数据
   async insertPurchaseChildOrder(rowData) {
     try {
       return await this.PCO.save(this.PCO.create(rowData));
@@ -156,7 +156,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 假删除一条采购单数据
+  // - 假删除一条采购单数据
   async deletePurchaseOrder(rowData) {
     try {
       await this.PO.save({ ...rowData, deletedAt: new Date() });
@@ -165,7 +165,7 @@ export default class SupplierService extends BaseService {
     }
   }
 
-  //- 更新采购单数据
+  // - 更新采购单数据
   async updatePurchaseOrder(rowData) {
     try {
       await this.PO.save(rowData);

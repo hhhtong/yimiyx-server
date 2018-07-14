@@ -8,7 +8,7 @@ export default class GoodsCategoryService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  //- 商品分类__实体
+  // - 商品分类__实体
   readonly GC: Repository<GoodsCategory>;
 
   // -------------------------------------------------------------------------

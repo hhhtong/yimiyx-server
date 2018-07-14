@@ -14,7 +14,7 @@ export default class BaseController extends Controller {
     return this.ctx.session.user;
   }
 
-  success(data = {}, msg = '操作成功') {
+  success(data: any = {}, msg: string = '操作成功') {
     this.ctx.body = {
       code: 50000,
       data,
@@ -23,7 +23,7 @@ export default class BaseController extends Controller {
     return data;
   }
 
-  fail(data: any = {}, code = 50001, msg = '操作失败') {
+  fail(data: any = {}, code: number = 50001, msg: string = '操作失败') {
     if (typeof data.sqlMessage === 'string') {
       code = 50002
       msg = data.sqlMessage
@@ -43,11 +43,22 @@ export default class BaseController extends Controller {
     this.ctx.throw(404, msg);
   }
 
+  /**
+   * 从obj里删掉指定key,可以有效减少网络传输中的数据大小
+   * @param obj - 要进行操作的obj
+   * @param str - 要删除的key
+   */
+  $expel(obj: Object, str: string | string[]) {
+    if (typeof str === 'string') delete obj[str]
+    if (typeof str === 'object') {
+      for (const item of str) delete obj[item]
+    }
+  }
 
   /**
-   * 数据重排变成嵌套
+   * 商品数据重排变成嵌套
    */
-  $refix(list: Array<object>) {
+  $refix(list: Object[]) {
     const oneList = list.filter((item: any) => item.type === 1);
     const twoList = list.filter((item: any) => item.type === 2);
     const threeList = list.filter((item: any) => item.type === 3);
@@ -55,9 +66,9 @@ export default class BaseController extends Controller {
   }
 
   /**
-   * 将平级结构转成树形结构
+   * 将商品平级结构转成树形结构
    */
-  $mixin(list1: Array<any>, list2: Array<any>): Array<object> {
+  $mixin(list1: any[], list2: any[]): Object[] {
     if (list2.length <= 0) {
       list2 = list1
     }
@@ -82,9 +93,9 @@ export default class BaseController extends Controller {
   }
 
   /**
-   * 将树形结构转成平级结构
+   * 将商品树形结构转成平级结构
    */
-  $unmixin(list: any): Array<object> {
+  $unmixin(list: any): Object[] {
     const categoryList = [];
     const next = (item: any) => {
       if (item.name !== '') {

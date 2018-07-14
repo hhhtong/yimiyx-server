@@ -3,16 +3,26 @@ import BaseController from '../../core/base-controller';
 export default class GoodsController extends BaseController {
 
   async index() {
-    const { service, ctx } = this;
+    const { service } = this;
     try {
-      let list = await service.client.goods.query(ctx.query);
-
+      let list = await service.client.goods.queryOnlineGoods();
       for (const item of list) {
-        item.categorys = this.$refix(item.categorys);
+        const { unitPrice } = item.goodsDesc;
+        item.smallImg = 'https://www.34580.com/static/img/vegetable.36ef04b.png'; // - mock
+        item.specList = [{ spec: item.spec + item.specUnit, unitPrice }]; // - 暂时只有一种规格
+        item.categoryName = item.categorys[0].name;
+        for (const [key, value] of Object.entries(item.goodsDesc)) {
+          item[key] = value;
+        }
+        this.$expel(item, ['categorys', 'specUnit', 'goodsDesc']);
       }
       this.success(list);
     } catch (error) {
       this.fail(error);
     }
+  }
+
+  async goodsDetail() {
+
   }
 }

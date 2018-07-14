@@ -4,10 +4,10 @@ import * as QRCode from 'qrcode';
 import * as fs from 'fs-extra';
 
 export default {
-  // 生成二维码
+  // - 生成二维码
   async generateQRCode(code: string, options?: Object): Promise<string> {
     const fileName = `${code}.png`;
-    // 存储路径按日期归类：public/static/2018/06/06/CG2018060523133306BCW2.png
+    // - 存储路径按日期归类：public/static/2018/06/06/CG2018060523133306BCW2.png
     const saveDir = resolve(
       __dirname,
       '../../public/qrcode',
@@ -19,7 +19,7 @@ export default {
     }
 
     try {
-      // 确保该目录存在，否则创建一个
+      // - 确保该目录存在，否则创建一个
       await fs.ensureDir(saveDir);
       await QRCode.toFile(join(saveDir, fileName), code, options);
       return Promise.resolve(`Create QRCode:${code}`);
