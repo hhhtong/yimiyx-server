@@ -32,13 +32,13 @@ export default class GoodsDesc {
   description: string;
 
   /**
-   * 单价(按规格) xx元/500g
+   * 进价
    */
   @Column('decimal', { precision: 5, scale: 2 })
   unitPrice: number;
 
   /**
-   * 对外售价
+   * 售价(按规格) xx元/500g
    */
   @Column('decimal', { precision: 5, scale: 2 })
   resalePrice: number;
@@ -70,7 +70,7 @@ export default class GoodsDesc {
   /**
    * 大图[url1, url2]
    */
-  // @Column('json')
+  // @Column('json', { nullable: true })
   // imgPaths: any;
 
   /**

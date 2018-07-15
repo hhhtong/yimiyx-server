@@ -1,6 +1,6 @@
 <style lang="stylus">
-    @import '../../../styles/common.styl';
-    @import 'upload.styl';
+    @import '../../../styles/common.styl'
+    @import 'upload.styl'
 </style>
 
 

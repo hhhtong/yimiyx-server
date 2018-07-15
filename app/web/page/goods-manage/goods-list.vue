@@ -42,7 +42,7 @@
 <script>
 import ModalSaveGoods from './components/ModalSaveGoods'
 import ModalPutawayGoods from './components/ModalPutawayGoods'
-import { goodsGet, goodsSave, goodsDel, getCategoryList } from '@/api'
+import { goodsGet, goodsSave, goodsDel, getCategoryList, goodsStatusToggle } from '@/api'
 import { mapState } from 'vuex'
 import { Poptip, Tag, ButtonGroup } from 'iview'
 import util from '@/libs/util'
@@ -66,7 +66,7 @@ export default {
       listQuery: {
         page: 1,
         rows: 20,
-        goods: '', // 商品名称 | 编号
+        goods: '', // - 商品名称 | 编号
         isOnline: ''
       },
       onlineStatus,
@@ -164,8 +164,8 @@ export default {
           fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row)}>上 架</i-button>
-              <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row)}>下 架</i-button>
+              <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row, index)}>上 架</i-button>
+              <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row, index)}>下 架</i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 width="200"
@@ -230,12 +230,12 @@ export default {
       }
     },
 
-    // 查询
+    // - 查询
     handleQuery() {
       this.fetchData()
     },
 
-    // 导出Excel
+    // - 导出Excel
     handleExportExcel() {
       this.$refs.tableCsv.exportCsv({
         filename: '商品列表',
@@ -243,25 +243,35 @@ export default {
       })
     },
 
-    // 上架商品 -> 显示Modal
-    handlePutaway(row) {
-      this.defaultModalData2 = row
-      // this.showModal2 = true
+    // - 上架商品 -> 显示Modal
+    handlePutaway({ goodsNo, isOnline, spec, specUnit }, index) {
+      if (isOnline === -1) {
+        // - 第一次上架需要填写商品的详细信息
+        this.$router.push({
+          name: 'goods-desc',
+          query: {
+            goodsNo,
+            spec: spec + specUnit
+          }
+        })
+      } else {
+        this.__toggleStatus(goodsNo, isOnline, index)
+      }
     },
 
-    // 下架商品
-    handleSoldout(row) {
-
+    // - 下架商品
+    handleSoldout({ goodsNo, isOnline }, index) {
+      this.__toggleStatus(goodsNo, isOnline, index)
     },
 
-    // 编辑 | 添加 商品 -> 显示Modal
+    // - 编辑 | 添加 商品 -> 显示Modal
     handleEdit(row) {
       const categorys = this.__parseCategory(row.categorys)
       this.defaultModalData = { ...row, categorys }
       this.showModal = true
     },
 
-    // 删除商品
+    // - 删除商品
     handleDelete(row) {
       goodsDel(row).then(result => {
         if (result.code === 50000) {
@@ -271,7 +281,7 @@ export default {
       })
     },
 
-    // 添加 | 修改商品 -> 保存
+    // - 添加 | 修改商品 -> 保存
     handleSave(formData) {
       goodsSave(formData).then(result => {
         if (result.code === 50000) {
@@ -282,7 +292,7 @@ export default {
       })
     },
 
-    // 添加 | 修改商品 -> 保存
+    // - 添加 | 修改商品 -> 保存
     handleSave2(formData) {
       // putawayGoodsSave(formData).then(result => {
       //   if (result.code === 50000) {
@@ -293,7 +303,17 @@ export default {
       // })
     },
 
-    // 嵌套类目结构解析成平级
+    // - 出售中或已下架进行状态反转
+    __toggleStatus(goodsNo, isOnline, index) {
+      goodsStatusToggle({ goodsNo, isOnline }).then(result => {
+        if (result.code === 50000) {
+          this.tableData[index].isOnline = result.data
+          this.$Message.success('状态已更新')
+        }
+      })
+    },
+
+    // - 嵌套类目结构解析成平级
     __parseCategory(categorys) {
       let temp = []
 

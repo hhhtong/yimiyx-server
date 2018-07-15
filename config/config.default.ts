@@ -1,13 +1,13 @@
 import { EggAppConfig } from 'egg';
 import { join } from 'path';
-// import { readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
 export default (app: EggAppConfig) => {
   const exports: any = {};
 
-  // exports.siteFile = {
-  //   '/favicon.ico': readFileSync(join(app.baseDir, 'app/web/asset/images/favicon.ico'))
-  // };
+  exports.siteFile = {
+    '/favicon.ico': readFileSync(join(app.baseDir, 'app/web/assets/favicon.ico'))
+  };
 
   exports.cluster = {
     listen: {

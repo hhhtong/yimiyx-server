@@ -32,3 +32,25 @@ export function goodsDel(data) {
     data
   })
 }
+
+/**
+ * 出售中或已下架进行状态反转
+ */
+export function goodsStatusToggle(data) {
+  return request({
+    url: '/goods/toggleStatus',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 保存商品详细, 通常用于第一次上架该商品
+ */
+export function goodsSaveDesc(data) {
+  return request({
+    url: '/goods/saveDesc',
+    method: 'post',
+    data
+  })
+}

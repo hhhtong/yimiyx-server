@@ -4,7 +4,7 @@ export default class HomeController extends Controller {
 
   // - 客户端渲染
   async index() {
-    const { service, ctx } = this;
+    const { ctx } = this;
     await ctx.renderClient('app/app.js');
   }
 
