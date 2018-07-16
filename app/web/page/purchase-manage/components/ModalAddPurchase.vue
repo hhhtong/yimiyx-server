@@ -115,7 +115,7 @@ export default {
         if (valid) {
           this.$emit('handleSave', { ...this.formData }, this.isEdit)
         } else {
-          this.$Message.error('请认真填写!')
+          this.$Message.error('填写有误，请检查!')
         }
       })
     },

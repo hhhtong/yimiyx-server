@@ -56,9 +56,10 @@ export default class GoodsService extends BaseService {
           'GD.resalePrice',
           'GD.goodsAmount',
           'T.tagName'
-        ]);
+        ])
+        .orderBy('G.updatedAt', 'DESC');
 
-      return list.orderBy('G.updatedAt', 'DESC').getMany();
+      return list.getMany();
     } catch (error) {
       this.error(error);
     }

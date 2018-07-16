@@ -36,7 +36,8 @@ export default class GoodsService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async query({ page = 1, rows = 20, disabledPage = false, isOnline, goodsNo, goodsName }: query) {
+  // - 获得所有的商品
+  async queryAll({ page = 1, rows = 20, disabledPage = false, isOnline, goodsNo, goodsName }: query) {
     const where1 = +goodsNo ? `G.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
     const where2 = goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
     const where3 = +isOnline === 1
@@ -71,7 +72,22 @@ export default class GoodsService extends BaseService {
     }
   }
 
-  async save(rowData: any) {
+  // - 获得商品详情
+  async queryDesc(goodsNo: string) {
+    try {
+      const query = this.Goods
+        .createQueryBuilder('G')
+        .where('G.goodsNo = :goodsNo', { goodsNo })
+        .leftJoin('G.goodsDesc', 'GD')
+        .leftJoin('GD.tags', 'T')
+      return query.getOne();
+    } catch (error) {
+      this.error(error);
+    }
+  }
+
+  // - 保存一个商品
+  async saveOne(rowData: any) {
     try {
       await this.Goods.save(this.Goods.create(rowData));
     } catch (error) {
@@ -79,12 +95,14 @@ export default class GoodsService extends BaseService {
     }
   }
 
+  // - 获得最大的商品编号
   async getMaxGoodsNo(goodsNoPrefix: string) {
     const maxNo: number = await this.Goods.createQueryBuilder('G').where(`G.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
     return goodsNoPrefix + this.ctx.helper.prefixZero(maxNo, 4);
   }
 
-  async delete(rowData: any) {
+  // - 删除一个商品
+  async deleteOne(rowData: any) {
     try {
       await this.Goods.save({ ...rowData, deletedAt: new Date() });
     } catch (error) {

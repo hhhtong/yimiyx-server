@@ -9,14 +9,13 @@ export default class GoodsController extends BaseController {
   async index() {
     const { service, ctx } = this;
     try {
-      let { list, total } = await service.goods.query(ctx.query);
-
+      let { list, total } = await service.goods.queryAll(ctx.query);
       for (const item of list) {
         item.categorys = this.$refix(item.categorys);
       }
       this.success({ list, total });
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -37,10 +36,10 @@ export default class GoodsController extends BaseController {
 
     rowData.categorys = categorys;
     try {
-      await service.goods.save(rowData);
+      await service.goods.saveOne(rowData);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -49,29 +48,40 @@ export default class GoodsController extends BaseController {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
     try {
-      await service.goods.delete(rowData);
+      await service.goods.deleteOne(rowData);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // - 获取商品详情
+  async desc() {
+    const { goodsNo } = this.ctx.query;
+    try {
+      const data = await this.service.goods.queryDesc(goodsNo);
+      this.success(data);
+    } catch (err) {
+      throw err;
     }
   }
 
   // - 保存上传的图片
   async uploadImg() {
-
     const { ctx } = this;
+    const { baseDir } = this.config;
     const stream = await ctx.getFileStream();
     const filename = encodeURIComponent(stream.fields.name) + path.extname(stream.filename).toLowerCase();
-    const today = ctx.helper.moment().format('YYYY/MM/DD');
-    // - 存储路径按日期归类：public/goods/2018/06/06/0523133306_01.png
-    const dir = path.join(this.config.baseDir, 'app/public/goods', today);
+    const today = ctx.helper.moment().format('YYYY_MM_DD');
+    // - 存储路径按日期归类：public/upload/goods/2018_06_06/0523133306_01.png
+    const dir = path.join(baseDir, 'public/upload/goods', today);
 
     await fs.ensureDir(dir); // - 确保该目录存在，否则创建一个
-
-    const writeStream = fs.createWriteStream(path.join(dir, filename));
+    const target = path.join(dir, filename);
+    const writeStream = fs.createWriteStream(target);
     try {
       await awaitWriteStream(stream.pipe(writeStream));
-      this.success({ url: '/public/' + filename });
+      this.success({ url: target.replace(baseDir, ''), filename });
     } catch (err) {
       await sendToWormhole(stream);
       throw err;

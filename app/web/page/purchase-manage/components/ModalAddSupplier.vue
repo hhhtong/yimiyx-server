@@ -206,7 +206,7 @@ export default {
 
           this.$emit('handleSave', { ...formData, areaCode, areaName }, this.isEdit)
         } else {
-          this.$Message.error('存在不符合格式的内容, 请认真填写!')
+          this.$Message.error('存在不符合格式的内容, 填写有误，请检查!')
         }
       })
     },

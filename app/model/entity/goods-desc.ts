@@ -65,13 +65,13 @@ export default class GoodsDesc {
    * 小图[url1, url2]
    */
   // @Column('json')
-  // smallImgPaths: any;
+  // smallImgs: any;
 
   /**
    * 大图[url1, url2]
    */
   // @Column('json', { nullable: true })
-  // imgPaths: any;
+  // imgs: any;
 
   /**
    * 创建时间
