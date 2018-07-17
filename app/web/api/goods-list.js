@@ -75,15 +75,16 @@ export function goodsStatusToggle(data) {
 
 /**
  * 保存商品详细, 通常用于第一次上架该商品
+ * @param {Number} id
  * @param {Object} data
  * └─ @prop {Array} tags 商品标签
  * └─ @prop {String} unitPrice 进价
  * └─ @prop {String} resalePrice 售价
  * └─ @prop {Number} goodsAmount 出售数量
  */
-export function goodsSaveDesc(data) {
+export function goodsSaveDesc(id, data) {
   return request({
-    url: '/goods/saveDesc',
+    url: `/goods/saveDesc?id=${id}`,
     method: 'post',
     data
   })

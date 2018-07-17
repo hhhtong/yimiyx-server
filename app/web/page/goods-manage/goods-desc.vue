@@ -169,7 +169,7 @@ export default {
     // const editRowData = this.$route.params
     const { goodsNo, spec } = this.$route.query
     const validateTags = (rule, value, callback) => {
-      this.formData.tags.length === 0 ? callback(new Error('请至少填写一个标签')) : callback()
+      this.formData.tags.length === 0 ? callback(new Error('请填写标签')) : callback()
     }
     const validateImgs = (rule, value, callback) => {
       this.uploadList.length === 0 ? callback(new Error('请至少上传一张图片')) : callback()
@@ -269,7 +269,7 @@ export default {
       this.$refs['formData'].validate((valid) => {
         if (valid) {
           this.formData.imgs = this.uploadList.map(item => item.url)
-          this.__save(this.formData)
+          this.__save(this.goodsInfo.id, this.formData)
         } else {
           this.$Message.error('填写有误，请检查')
         }
@@ -283,8 +283,8 @@ export default {
       for (let i = 0; i < len - num.length; i++) num = `0${num}`
       return num
     },
-    __save(formData) {
-      goodsSaveDesc(formData).then(result => {
+    __save(id, formData) {
+      goodsSaveDesc(id, formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success('保存成功')
           this.formData = cloneDeep(formData) // 清空表单数据

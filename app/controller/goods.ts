@@ -90,7 +90,14 @@ export default class GoodsController extends BaseController {
 
   // - 保存商品详细, 通常用于第一次上架该商品
   async saveDesc() {
-
+    const { id } = this.ctx.query;
+    const params = this.ctx.request.body;
+    try {
+      const result = await this.service.goods.saveOneDesc(id, params);
+      this.success(result);
+    } catch (err) {
+      throw err;
+    }
   }
 
   // - 切换商品状态(1：在售 OR 0：下架)

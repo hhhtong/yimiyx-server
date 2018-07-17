@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import Goods from '../model/entity/goods';
+import GoodsDesc from '../model/entity/goods-desc';
 
 interface query {
   disabledPage: boolean, // 是否禁用分页，true将会忽略`page`和`rows`参数
@@ -22,6 +23,7 @@ export default class GoodsService extends BaseService {
 
   // - 商品__实体
   readonly Goods: Repository<Goods>;
+  readonly GoodsDesc: Repository<GoodsDesc>;
 
   // -------------------------------------------------------------------------
   // Constructor
@@ -30,6 +32,7 @@ export default class GoodsService extends BaseService {
   constructor(ctx) {
     super(ctx);
     this.Goods = this.conn.getRepository(Goods);
+    this.GoodsDesc = this.conn.getRepository(GoodsDesc);
   }
 
   // -------------------------------------------------------------------------
@@ -67,8 +70,8 @@ export default class GoodsService extends BaseService {
       }
 
       return { list, total };
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
     }
   }
 
@@ -81,8 +84,8 @@ export default class GoodsService extends BaseService {
         .leftJoin('G.goodsDesc', 'GD')
         .leftJoin('GD.tags', 'T')
       return query.getOne();
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
     }
   }
 
@@ -90,8 +93,18 @@ export default class GoodsService extends BaseService {
   async saveOne(rowData: any) {
     try {
       await this.Goods.save(this.Goods.create(rowData));
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
+    }
+  }
+
+  async saveOneDesc(id: number, rowData: any) {
+    try {
+      const data: any = this.GoodsDesc.create(rowData);
+      data.goods = { id };
+      await this.GoodsDesc.save(data);
+    } catch (err) {
+      this.error(err);
     }
   }
 
@@ -105,8 +118,8 @@ export default class GoodsService extends BaseService {
   async deleteOne(rowData: any) {
     try {
       await this.Goods.save({ ...rowData, deletedAt: new Date() });
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
     }
   }
 }

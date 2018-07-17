@@ -244,7 +244,7 @@ export default {
     },
 
     // - 上架商品 -> 显示Modal
-    handlePutaway({ goodsNo, isOnline, spec, specUnit }, index) {
+    handlePutaway({ id, goodsNo, isOnline, spec, specUnit }, index) {
       if (isOnline === -1) {
         // - 第一次上架需要填写商品的详细信息
         this.$router.push({
