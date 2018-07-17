@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Goods from '../../model/entity/goods';
+import GoodsDesc from '../../model/entity/goods-desc';
 
 export default class GoodsService extends BaseService {
 
@@ -10,6 +11,7 @@ export default class GoodsService extends BaseService {
 
   // - 商品__实体
   readonly Goods: Repository<Goods>;
+  readonly GoodsDesc: Repository<GoodsDesc>;
 
   // -------------------------------------------------------------------------
   // Constructor
@@ -18,6 +20,7 @@ export default class GoodsService extends BaseService {
   constructor(ctx) {
     super(ctx);
     this.Goods = this.conn.getRepository(Goods);
+    this.GoodsDesc = this.conn.getRepository(GoodsDesc);
   }
 
   // -------------------------------------------------------------------------
@@ -33,13 +36,13 @@ export default class GoodsService extends BaseService {
   // - 获得所有的在售商品
   async queryOnlineGoods() {
     try {
-      const list: any = this.Goods
-        .createQueryBuilder('G')
+      const list: any = this.GoodsDesc
+        .createQueryBuilder('GD')
         .where('ISNULL(G.deletedAt)')
         .andWhere('G.isOnline = 1')
         .andWhere('GC.type = 3')
+        .leftJoin('GD.goods', 'G')
         .leftJoin('G.categorys', 'GC')
-        .leftJoin('G.goodsDesc', 'GD')
         .leftJoin('GD.tags', 'T')
         .select([
           'G.id',

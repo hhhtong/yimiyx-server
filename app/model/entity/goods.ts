@@ -28,13 +28,6 @@ export default class Goods {
   categorys: GoodsCategory[];
 
   /**
-   * 反向映射到商品详情表(goodsDesc)
-   */
-  @OneToOne(type => GoodsDesc, gd => gd.goods)
-  @JoinColumn()
-  goodsDesc: GoodsDesc;
-
-  /**
    * 采购商品单的主订单
    */
   @OneToMany(type => PurchaseMainOrder, pgo => pgo.goods)

@@ -102,6 +102,15 @@ export default class GoodsController extends BaseController {
 
   // - 切换商品状态(1：在售 OR 0：下架)
   async toggleStatus() {
-
+    let { id, isOnline } = this.ctx.request.body;
+    isOnline = isOnline === 1 ? 0 : 1;
+    try {
+      const rowData = await this.service.goods.findById(id);
+      rowData.isOnline = isOnline;
+      await this.service.goods.saveOne(rowData);
+      this.success(isOnline)
+    } catch (err) {
+      throw err;
+    }
   }
 }

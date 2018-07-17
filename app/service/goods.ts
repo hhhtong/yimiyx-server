@@ -89,6 +89,24 @@ export default class GoodsService extends BaseService {
     }
   }
 
+  // - 删除一个商品
+  async deleteOne(rowData: any) {
+    try {
+      await this.Goods.save({ ...rowData, deletedAt: new Date() });
+    } catch (err) {
+      this.error(err);
+    }
+  }
+
+  // - 根据id查找
+  async findById(id: number) {
+    try {
+      return await this.Goods.findOne(id);
+    } catch (err) {
+      this.error(err);
+    }
+  }
+
   // - 保存一个商品
   async saveOne(rowData: any) {
     try {
@@ -100,9 +118,11 @@ export default class GoodsService extends BaseService {
 
   async saveOneDesc(id: number, rowData: any) {
     try {
-      const data: any = this.GoodsDesc.create(rowData);
-      data.goods = { id };
-      await this.GoodsDesc.save(data);
+      rowData = this.GoodsDesc.create(rowData);
+      await this.GoodsDesc.save({ ...rowData, goods: { id } });
+      rowData = await this.findById(id); // goods rowData
+      rowData.isOnline = 1; // 商品状态设为上架
+      this.Goods.save(rowData);
     } catch (err) {
       this.error(err);
     }
@@ -112,14 +132,5 @@ export default class GoodsService extends BaseService {
   async getMaxGoodsNo(goodsNoPrefix: string) {
     const maxNo: number = await this.Goods.createQueryBuilder('G').where(`G.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
     return goodsNoPrefix + this.ctx.helper.prefixZero(maxNo, 4);
-  }
-
-  // - 删除一个商品
-  async deleteOne(rowData: any) {
-    try {
-      await this.Goods.save({ ...rowData, deletedAt: new Date() });
-    } catch (err) {
-      this.error(err);
-    }
   }
 }
