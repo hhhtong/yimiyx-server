@@ -67,7 +67,7 @@
             placeholder="输入完毕之后按下回车以生成标签"
             @keyup.native.enter="handleAddTag">
           </Input>
-          <div v-if="formData.tags.length > 0" class="margin-top-8">
+          <div v-if="formData.tags && formData.tags.length > 0" class="margin-top-8">
             <Tag
               v-for="(tagValue, index) in formData.tags"
               :key="index" :name="tagValue"
@@ -115,7 +115,7 @@
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="defaultFileList"
+            :default-file-list="parseImg(formData.imgs)"
             :on-success="handleSuccess"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
@@ -163,7 +163,6 @@ export default {
     const validateImgs = (rule, value, callback) => {
       this.uploadList.length === 0 ? callback(new Error('请至少上传一张图片')) : callback()
     }
-    const formData = this.__getRowData(this.$route.query)
 
     return {
       visible: false,
@@ -171,7 +170,6 @@ export default {
       imgBigSrc: '',
       imgNumber: 1,
       tag: '',
-      formData,
       formValidate: {
         tags: [
           { validator: validateTags, trigger: 'blur' }
@@ -188,13 +186,18 @@ export default {
 
   computed: {
     ...mapGetters(['token']),
-    defaultFileList() {
-      const { imgs } = this.formData
-      if (!imgs) {
-        this.$refs.upload.clearFiles()
-        return []
+    formData() {
+      const { query } = this.$route
+      const imgs = this.uploadList.length === 0
+        ? query.imgs
+        : JSON.stringify(this.uploadList.map(item => item.url))
+      return {
+        ...query,
+        imgs,
+        unitPrice: +query['unitPrice'],
+        resalePrice: +query['resalePrice'],
+        goodsAmount: +query['goodsAmount']
       }
-      return JSON.parse(imgs).map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
     }
   },
 
@@ -202,12 +205,10 @@ export default {
     this.uploadList = this.$refs.upload.fileList
   },
 
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (to.query.id !== vm.formData.id) {
-        vm.formData = vm.__getRowData(to.query)
-      }
-    })
+  beforeRouteLeave (to, from, next) {
+    this.$refs.upload.clearFiles()
+    this.uploadList = this.$refs.upload.fileList
+    next()
   },
 
   methods: {
@@ -260,7 +261,6 @@ export default {
     handleSubmit() {
       this.$refs['formData'].validate((valid) => {
         if (valid) {
-          this.formData.imgs = JSON.stringify(this.uploadList.map(item => item.url))
           this.__save(this.formData.id, this.formData)
         } else {
           this.$Message.error('填写有误，请检查')
@@ -270,17 +270,14 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
+    parseImg(imgs) {
+      if (!imgs) return []
+      return JSON.parse(imgs).map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
+    },
     prefixZero(num, len) {
       num = (num).toString()
       for (let i = 0; i < len - num.length; i++) num = `0${num}`
       return num
-    },
-    __getRowData(query) {
-      query = cloneDeep(query)
-      query['unitPrice'] = +query['unitPrice']
-      query['resalePrice'] = +query['resalePrice']
-      query['goodsAmount'] = +query['goodsAmount']
-      return query
     },
     __save(id, formData) {
       goodsSaveFull(id, formData).then(result => {
