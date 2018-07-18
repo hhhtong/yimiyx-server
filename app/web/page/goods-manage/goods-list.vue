@@ -200,6 +200,15 @@ export default {
     await this.fetchData()
   },
 
+  // - 从详情页保存完信息跳回来的时候要刷新一下数据
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (to.params.refresh) {
+        vm.fetchData()
+      }
+    })
+  },
+
   methods: {
     fetchData() {
       this.listLoading = true
@@ -286,22 +295,15 @@ export default {
     // - 嵌套类目结构解析成平级
     __parseCategory(categorys) {
       let temp = []
-
       const joinName = (current, name = '') => {
         let currentName = name ? `${name} / ${current.name}` : current.name
         if (current.children) {
-          for (const item of current.children) {
-            joinName(item, currentName)
-          }
+          for (const item of current.children) joinName(item, currentName)
         } else {
           temp.push({ name: currentName, id: current.id })
         }
       }
-
-      for (const item of categorys) {
-        joinName(item)
-      }
-
+      for (const item of categorys) joinName(item)
       return temp
     }
   }

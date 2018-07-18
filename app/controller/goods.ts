@@ -100,7 +100,9 @@ export default class GoodsController extends BaseController {
     const { id } = this.ctx.query;
     const params = this.ctx.request.body;
     try {
-      params.tags = await this.service.goods.createTags(id, params.tags);
+      await this.service.goods.createTags(id, params.tags);
+      console.log(params);
+
       const rowData = await this.service.goods.findById(id);
       this.service.goods.saveOne({ ...rowData, ...params, isOnline: 1 })
       this.success();

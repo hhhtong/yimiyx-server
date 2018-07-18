@@ -153,18 +153,6 @@ import { cloneDeep } from 'lodash'
 // import { InputNumber } from 'iview'
 import { goodsSaveFull } from '@/api'
 
-const noopFormData = {
-  id: null,
-  spec: '',
-  goodsNo: '',
-  tags: [],
-  description: '',
-  unitPrice: 0,
-  resalePrice: 0,
-  goodsAmount: 0,
-  imgs: null
-}
-
 export default {
   name: 'goods-desc',
 
@@ -175,10 +163,7 @@ export default {
     const validateImgs = (rule, value, callback) => {
       this.uploadList.length === 0 ? callback(new Error('请至少上传一张图片')) : callback()
     }
-    const query = cloneDeep(this.$route.query)
-    query['unitPrice'] = +query['unitPrice']
-    query['resalePrice'] = +query['resalePrice']
-    query['goodsAmount'] = +query['goodsAmount']
+    const formData = this.__getRowData(this.$route.query)
 
     return {
       visible: false,
@@ -186,7 +171,7 @@ export default {
       imgBigSrc: '',
       imgNumber: 1,
       tag: '',
-      formData: cloneDeep({ ...noopFormData, ...query }),
+      formData,
       formValidate: {
         tags: [
           { validator: validateTags, trigger: 'blur' }
@@ -204,13 +189,25 @@ export default {
   computed: {
     ...mapGetters(['token']),
     defaultFileList() {
-      const list = this.formData.imgs ? JSON.parse(this.formData.imgs) : []
-      return list.map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
+      const { imgs } = this.formData
+      if (!imgs) {
+        this.$refs.upload.clearFiles()
+        return []
+      }
+      return JSON.parse(imgs).map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
     }
   },
 
-  mounted () {
+  mounted() {
     this.uploadList = this.$refs.upload.fileList
+  },
+
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (to.query.id !== vm.formData.id) {
+        vm.formData = vm.__getRowData(to.query)
+      }
+    })
   },
 
   methods: {
@@ -278,16 +275,22 @@ export default {
       for (let i = 0; i < len - num.length; i++) num = `0${num}`
       return num
     },
+    __getRowData(query) {
+      query = cloneDeep(query)
+      query['unitPrice'] = +query['unitPrice']
+      query['resalePrice'] = +query['resalePrice']
+      query['goodsAmount'] = +query['goodsAmount']
+      return query
+    },
     __save(id, formData) {
       goodsSaveFull(id, formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success('保存成功')
-          this.formData = cloneDeep(noopFormData) // 清空表单数据
           // 关闭当前标签并返回商品列表
           const { name } = this.$route
           this.$store.commit('removeTag', name)
           this.$store.commit('closePage', name)
-          this.$router.replace({ name: 'goods-list' })
+          this.$router.replace({ name: 'goods-list', params: { refresh: true } })
           localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
         }
       })
