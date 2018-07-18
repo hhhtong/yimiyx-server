@@ -1,8 +1,8 @@
 /**
  * 商品标签
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
-import GoodsDesc from './goods-desc';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import Goods from './goods';
 
 @Entity()
 export default class GoodsTag {
@@ -13,8 +13,8 @@ export default class GoodsTag {
   /**
    * 和商品表(goods)建立多对多的关系
    */
-  @ManyToMany(type => GoodsDesc, goods => goods.tags)
-  goods: GoodsDesc[];
+  @ManyToOne(type => Goods, goods => goods.tags)
+  goods: Goods;
 
   /**
    * 商品标签

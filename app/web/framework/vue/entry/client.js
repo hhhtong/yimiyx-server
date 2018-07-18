@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import '../filter'
+import '../plugin'
 import '../directive'
 import '../component'
 
 export default function (options) {
-  Vue.prototype.$http = require('axios')
   if (options.store) {
     options.store.replaceState(Object.assign({}, window.__INITIAL_STATE__, options.store.state))
   } else if (window.__INITIAL_STATE__) {

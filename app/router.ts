@@ -26,11 +26,11 @@ export default (app: Application) => {
 
   // - GoodsController
   router.get('/goods', controller.goods.index);
-  router.get('/goods/desc', controller.goods.desc);
+  router.get('/goods/one', controller.goods.one);
   router.post('/goods/save', controller.goods.save);
   router.post('/goods/delete', controller.goods.delete);
   router.post('/goods/uploadImg', controller.goods.uploadImg);
-  router.post('/goods/saveDesc', controller.goods.saveDesc);
+  router.post('/goods/saveFull', controller.goods.saveFull);
   router.post('/goods/toggleStatus', controller.goods.toggleStatus);
 
   // - Client/GoodsController

@@ -139,10 +139,7 @@ export default {
         }, {
           title: '规格',
           key: 'spec',
-          align: 'center',
-          render: (h, { row, column, index }) => (
-            <span>{row.spec + row.specUnit}</span>
-          )
+          align: 'center'
         }, {
           title: '库存',
           key: 'stockQty',
@@ -180,10 +177,7 @@ export default {
         }, {
           title: '规格',
           key: 'spec',
-          align: 'center',
-          render: (h, { row, column, index }) => (
-            <span>{row.spec + row.specUnit}</span>
-          )
+          align: 'center'
         }, {
           title: '采购数量',
           key: 'purchaseNum',

@@ -36,7 +36,7 @@
         <Tag v-else type="dot" color="red">已删除</Tag>
       </div>
       <p>条码：{{ row.mid }}</p>
-      <p>规格：{{ row.goods.spec + row.goods.specUnit }}</p>
+      <p>规格：{{ row.goods.spec }}</p>
       <p>采购数量：{{ row.purchaseNum }}</p>
       <p>当前库存：{{ row.goods.stockQty }}</p>
     </Card>

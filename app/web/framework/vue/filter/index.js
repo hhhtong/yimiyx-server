@@ -1,3 +1,4 @@
+// 全局过滤器
 /* eslint-disable */
 import Vue from 'vue'
 

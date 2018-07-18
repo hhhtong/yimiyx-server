@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import '../filter'
+import '../plugin'
 import '../directive'
 import '../component'
 

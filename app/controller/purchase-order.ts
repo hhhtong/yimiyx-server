@@ -38,9 +38,6 @@ export default class PurchaseOrderController extends BaseController {
     try {
       const result: any = await service.purchaseOrder.find(ctx.query);
       result.list.forEach(item => {
-        item.createdAt = ctx.helper.moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss');
-        item.updatedAt = ctx.helper.moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-
         // - 将需要用到的字段放到最外层
         item.categoryName = item.category.name;
         item.categoryID = item.category.id;
@@ -48,8 +45,8 @@ export default class PurchaseOrderController extends BaseController {
         item.supplierName = item.supplier.supplierName;
         item.supplierTel = item.supplier.tel;
 
-        delete item.category;
-        delete item.supplier;
+        this.$expel(item, ['category', 'supplier']);
+        this.$sqlDateFormat(item, ['createdAt', 'updatedAt']);
       });
       this.success(result);
     } catch (error) {

@@ -12,8 +12,21 @@ export default class GoodsController extends BaseController {
       let { list, total } = await service.goods.queryAll(ctx.query);
       for (const item of list) {
         item.categorys = this.$refix(item.categorys);
+        item.tags = item.tags.map(({ tagName }) => tagName);
+        this.$sqlDateFormat(item, ['createdAt', 'updatedAt']);
       }
       this.success({ list, total });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // - 获取单个商品信息
+  async one() {
+    const { goodsNo } = this.ctx.query;
+    try {
+      const data = await this.service.goods.queryOne(goodsNo);
+      this.success(data);
     } catch (err) {
       throw err;
     }
@@ -25,9 +38,14 @@ export default class GoodsController extends BaseController {
     const rowData = ctx.request.body;
 
     if (!rowData.goodsNo) { // 无goodsNo参数时 表示新增
-      // 以数组中的第一个类目作为序号前缀
-      rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no);
+      try {
+        // 以数组中的第一个类目作为序号前缀
+        rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no);
+      } catch (err) {
+        throw err;
+      }
     }
+
     // 获取Goods表中的categorys[]
     let categorys = [];
     for (const item of rowData.categorys) {
@@ -55,17 +73,6 @@ export default class GoodsController extends BaseController {
     }
   }
 
-  // - 获取商品详情
-  async desc() {
-    const { goodsNo } = this.ctx.query;
-    try {
-      const data = await this.service.goods.queryDesc(goodsNo);
-      this.success(data);
-    } catch (err) {
-      throw err;
-    }
-  }
-
   // - 保存上传的图片
   async uploadImg() {
     const { ctx } = this;
@@ -88,13 +95,15 @@ export default class GoodsController extends BaseController {
     }
   }
 
-  // - 保存商品详细, 通常用于第一次上架该商品
-  async saveDesc() {
+  // - 保存或者补充商品详细信息, 将完善该记录的一些字段数据到数据库，通常用于第一次上架该商品
+  async saveFull() {
     const { id } = this.ctx.query;
     const params = this.ctx.request.body;
     try {
-      const result = await this.service.goods.saveOneDesc(id, params);
-      this.success(result);
+      params.tags = await this.service.goods.createTags(id, params.tags);
+      const rowData = await this.service.goods.findById(id);
+      this.service.goods.saveOne({ ...rowData, ...params, isOnline: 1 })
+      this.success();
     } catch (err) {
       throw err;
     }
@@ -106,8 +115,7 @@ export default class GoodsController extends BaseController {
     isOnline = isOnline === 1 ? 0 : 1;
     try {
       const rowData = await this.service.goods.findById(id);
-      rowData.isOnline = isOnline;
-      await this.service.goods.saveOne(rowData);
+      await this.service.goods.saveOne({ ...rowData, isOnline });
       this.success(isOnline)
     } catch (err) {
       throw err;

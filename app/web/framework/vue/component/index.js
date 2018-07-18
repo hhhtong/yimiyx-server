@@ -1,4 +1,6 @@
-import Vue from 'vue'
+// 全局组件
+
+// import Vue from 'vue'
 
 // import Layout from 'component/layout/standard';
 

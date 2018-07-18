@@ -20,13 +20,6 @@
         @handleSave="handleSave"
         @handleClose="defaultModalData = false">
       </ModalSaveGoods>
-      <ModalPutawayGoods
-        :show.sync="showModal2"
-        :default-modal-data="defaultModalData2"
-        :category-list="categoryList"
-        @handleSave="handleSave2"
-        @handleClose="defaultModalData2 = false">
-      </ModalPutawayGoods>
     </Header>
     <Layout>
       <Content>
@@ -41,7 +34,6 @@
 
 <script>
 import ModalSaveGoods from './components/ModalSaveGoods'
-import ModalPutawayGoods from './components/ModalPutawayGoods'
 import { goodsGet, goodsSave, goodsDel, getCategoryList, goodsStatusToggle } from '@/api'
 import { mapState } from 'vuex'
 import { Poptip, Tag, ButtonGroup } from 'iview'
@@ -57,7 +49,7 @@ const onlineStatus = [
 export default {
   name: 'goods-list',
 
-  components: { ModalSaveGoods, ModalPutawayGoods },
+  components: { ModalSaveGoods },
 
   data() {
     return {
@@ -67,13 +59,11 @@ export default {
         page: 1,
         rows: 20,
         goods: '', // - 商品名称 | 编号
-        isOnline: ''
+        isOnline: 'all'
       },
       onlineStatus,
       showModal: false,
-      showModal2: false,
       defaultModalData: false,
-      defaultModalData2: false,
       tableData: [],
       tableColumns: [
         {
@@ -102,7 +92,7 @@ export default {
           align: 'center',
           width: 100,
           render: (h, { row, column, index }) => (
-            <span>{row.spec + row.specUnit}</span>
+            <span>{row.spec}</span>
           )
         }, {
           title: '所属分类',
@@ -164,8 +154,9 @@ export default {
           fixed: 'right',
           render: (h, { row, column, index }) => (
             <div>
-              <i-button class="noradius" v-show={row.isOnline !== 1} size="small" on-click={() => this.handlePutaway(row, index)}>上 架</i-button>
-              <i-button class="noradius" v-show={row.isOnline === 1} size="small" on-click={() => this.handleSoldout(row, index)}>下 架</i-button>
+              <i-button class="noradius" size="small" on-click={() => this.handleChangeStatus(row, index)}>
+                { row.isOnline === 1 ? '下 架' : '上 架' }
+              </i-button>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip
                 width="200"
@@ -244,24 +235,14 @@ export default {
     },
 
     // - 上架商品 -> 显示Modal
-    handlePutaway({ id, goodsNo, isOnline, spec, specUnit }, index) {
-      if (isOnline === -1) {
-        // - 第一次上架需要填写商品的详细信息
-        this.$router.push({
-          name: 'goods-desc',
-          query: {
-            goodsNo,
-            spec: spec + specUnit
-          }
-        })
+    handleChangeStatus(row, index) {
+      const { id, isOnline } = row
+      if (isOnline === 1) {
+        this.__toggleStatus(id, isOnline, index)
       } else {
-        this.__toggleStatus(goodsNo, isOnline, index)
+        // - 跳转到确认商品的详细信息
+        this.$router.push({ name: 'goods-desc', query: row })
       }
-    },
-
-    // - 下架商品
-    handleSoldout({ goodsNo, isOnline }, index) {
-      this.__toggleStatus(goodsNo, isOnline, index)
     },
 
     // - 编辑 | 添加 商品 -> 显示Modal
@@ -292,20 +273,9 @@ export default {
       })
     },
 
-    // - 添加 | 修改商品 -> 保存
-    handleSave2(formData) {
-      // putawayGoodsSave(formData).then(result => {
-      //   if (result.code === 50000) {
-      //     this.$Message.success(result.msg)
-      //     this.showModal = false
-      //     this.fetchData()
-      //   }
-      // })
-    },
-
     // - 出售中或已下架进行状态反转
-    __toggleStatus(goodsNo, isOnline, index) {
-      goodsStatusToggle({ goodsNo, isOnline }).then(result => {
+    __toggleStatus(id, isOnline, index) {
+      goodsStatusToggle({ id, isOnline }).then(result => {
         if (result.code === 50000) {
           this.tableData[index].isOnline = result.data
           this.$Message.success('状态已更新')
