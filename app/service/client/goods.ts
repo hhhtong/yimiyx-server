@@ -56,6 +56,7 @@ export default class GoodsService extends BaseService {
           'T.tagName'
         ])
         .orderBy('G.updatedAt', 'DESC');
+      console.log(list.getQuery());
 
       return list.getMany();
     } catch (error) {

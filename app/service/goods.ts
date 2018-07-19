@@ -57,7 +57,7 @@ export default class GoodsService extends BaseService {
         .andWhere(where1)
         .andWhere(where2)
         .andWhere(where3);
-      let list: any = await query.orderBy('G.createdAt', 'DESC');
+      let list: any = await query.orderBy('G.updatedAt', 'DESC');
 
       if (!disabledPage) {
         list = await list

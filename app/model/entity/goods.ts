@@ -131,7 +131,7 @@ export default class Goods {
    * @example - [{ type: 1, value: 2.72 }, { type: 2, value: '300.00' }]
    */
   @Column('varchar', { length: 1000, nullable: true })
-  type: string;
+  activityType: string;
 
   /**
    * 小图[url1, url2]

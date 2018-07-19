@@ -98,6 +98,7 @@ export default class GoodsController extends BaseController {
   async saveFull() {
     const params = this.ctx.request.body;
     const { id } = params;
+    delete params.categorys; // - 删除类目，不然保存的时候会更新类目
     try {
       await this.service.goods.createTags(id, params.tags);
       console.log(params);
