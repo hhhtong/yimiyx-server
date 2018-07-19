@@ -35,6 +35,7 @@ export default (app: Application) => {
 
   // - Client/GoodsController
   router.get('/client/goods', controller.client.goods.index);
+  router.get('/client/goods/detail', controller.client.goods.detail);
 
   // - PurchaseOrderController
   router.get('/purchaseOrder', controller.purchaseOrder.index);

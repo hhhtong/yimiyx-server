@@ -31,7 +31,7 @@ export default class GoodsService extends BaseService {
   // async queryOnlineGoodsCategorys() { }
 
   // - 获得所有的在售商品
-  async queryOnlineGoods() {
+  async queryOnline() {
     try {
       const list: any = this.Goods
         .createQueryBuilder('G')
@@ -59,6 +59,33 @@ export default class GoodsService extends BaseService {
       console.log(list.getQuery());
 
       return list.getMany();
+    } catch (error) {
+      this.error(error);
+    }
+  }
+
+  // - 查询一个商品详细
+  async queryOne(id: number) {
+    try {
+      const data: any = await this.Goods
+        .createQueryBuilder('G')
+        .where('G.id = :id', { id })
+        .leftJoin('G.tags', 'T')
+        .select([
+          'G.id',
+          'G.goodsName',
+          'G.goodsAlias',
+          'G.madeIn',
+          'G.spec',
+          'G.specNum',
+          'G.description',
+          'G.resalePrice',
+          'G.unitPrice',
+          'G.goodsAmount',
+          'T.tagName'
+        ]);
+
+      return data.getOne();
     } catch (error) {
       this.error(error);
     }
