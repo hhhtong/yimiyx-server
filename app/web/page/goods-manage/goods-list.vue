@@ -202,11 +202,7 @@ export default {
 
   // - 从详情页保存完信息跳回来的时候要刷新一下数据
   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      if (to.params.refresh) {
-        vm.fetchData()
-      }
-    })
+    next(vm => to.params.refresh && vm.fetchData())
   },
 
   methods: {
@@ -243,14 +239,14 @@ export default {
       })
     },
 
-    // - 上架商品 -> 显示Modal
+    // - 上下架商品
     handleChangeStatus(row, index) {
       const { id, isOnline } = row
       if (isOnline === 1) {
         this.__toggleStatus(id, isOnline, index)
       } else {
         // - 跳转到确认商品的详细信息
-        this.$router.push({ name: 'goods-desc', query: row })
+        this.$router.push({ name: 'goods-desc', params: row })
       }
     },
 

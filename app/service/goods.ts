@@ -117,14 +117,16 @@ export default class GoodsService extends BaseService {
   }
 
   // - 创建新标签
-  async createTags(id: number, tags: string | string[]) {
-    const createTag = (tagName: string) => this.GoodsTag.save(this.GoodsTag.create({ goods: { id }, tagName }));
+  async createTags(id: number, tags: string[]) {
+    let temp = [];
     try {
-      if (Array.isArray(tags)) {
-        for (const tagName of tags) await createTag(tagName)
-      } else {
-        await createTag(tags)
+      // - 先删除该商品之前存在的标签
+      await this.GoodsTag.delete({ goods: { id } })
+      for (const tagName of tags) {
+        temp.push(this.GoodsTag.create({ goods: { id }, tagName }));
       }
+      // - 然后在保存新标签
+      this.GoodsTag.save(temp);
     } catch (err) {
       this.error(err);
     }

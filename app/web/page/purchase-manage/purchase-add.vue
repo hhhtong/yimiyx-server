@@ -290,7 +290,7 @@ export default {
           const { name } = this.$route
           this.$store.commit('removeTag', name)
           this.$store.commit('closePage', name)
-          this.$router.replace({ name: 'purchase-list' })
+          this.$router.replace({ name: 'purchase-list', params: { refresh: true } })
           localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
         }
       })

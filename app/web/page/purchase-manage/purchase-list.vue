@@ -162,6 +162,11 @@ export default {
     this.__getCategoryList()
   },
 
+  // - 添加完采购单跳回来的时候要刷新一下列表数据
+  beforeRouteEnter (to, from, next) {
+    next(vm => to.params.refresh && vm.fetchData())
+  },
+
   methods: {
     fetchData() {
       this.listLoading = true

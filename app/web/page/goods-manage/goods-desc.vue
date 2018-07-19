@@ -81,20 +81,14 @@
           <Input style="width: 420px" v-model="formData.description" clearable type="textarea" placeholder="我是一只会喊66的洋白菜"></Input>
         </FormItem>
         <FormItem label="进价">
-          <InputNumber
-            style="width: 180px"
-            v-model="formData.unitPrice"
-            :formatter="value => `${value}元/${formData.spec}`"
-            :parser="value => value.replace(`元/${formData.spec}`, '')">
-          </InputNumber>
+          <Input style="width: 180px" v-model="formData.unitPrice">
+            <Button slot="append">{{ `元/${formData.spec}` }}</Button>
+          </Input>
         </FormItem>
         <FormItem label="售价">
-          <InputNumber
-            style="width: 180px"
-            v-model="formData.resalePrice"
-            :formatter="value => `${value}元/${formData.spec}`"
-            :parser="value => value.replace(`元/${formData.spec}`, '')">
-          </InputNumber>
+          <Input style="width: 180px" v-model="formData.resalePrice">
+            <Button slot="append">{{ `元/${formData.spec}` }}</Button>
+          </Input>
         </FormItem>
         <FormItem label="出售数量">
           <InputNumber style="width: 180px" v-model="formData.goodsAmount"></InputNumber>
@@ -115,7 +109,7 @@
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="parseImg(formData.imgs)"
+            :default-file-list="defaultFileList"
             :on-success="handleSuccess"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
@@ -123,7 +117,7 @@
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             :headers="{ 'x-csrf-token': token }"
-            :data="{ name: formData.goodsNo + '_' + prefixZero(imgNumber, 2) }"
+            :data="{ goodsNo: formData.goodsNo }"
             multiple
             type="drag"
             action="/goods/uploadImg"
@@ -168,8 +162,8 @@ export default {
       visible: false,
       uploadList: [],
       imgBigSrc: '',
-      imgNumber: 1,
       tag: '',
+      formData: this.$route.params,
       formValidate: {
         tags: [
           { validator: validateTags, trigger: 'blur' }
@@ -186,30 +180,27 @@ export default {
 
   computed: {
     ...mapGetters(['token']),
-    formData() {
-      const { query } = this.$route
-      const imgs = this.uploadList.length === 0
-        ? query.imgs
-        : JSON.stringify(this.uploadList.map(item => item.url))
-      return {
-        ...query,
-        imgs,
-        unitPrice: +query['unitPrice'],
-        resalePrice: +query['resalePrice'],
-        goodsAmount: +query['goodsAmount']
-      }
+    defaultFileList() {
+      if (!this.formData.imgs) return []
+      return JSON.parse(this.formData.imgs).map(url => {
+        return { url, status: 'finished' }
+      })
     }
   },
 
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.uploadList = vm.$refs.upload.fileList
+      vm.formData = to.params
+      if (vm.$helper.isEmptyObj(vm.defaultFileList)) {
+        vm.uploadList = vm.$refs.upload.fileList
+      } else {
+        vm.uploadList = vm.defaultFileList
+      }
     })
   },
 
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     this.$refs.upload.clearFiles()
-    this.uploadList = this.$refs.upload.fileList
     next()
   },
 
@@ -238,6 +229,7 @@ export default {
       const { url, filename } = res.data
       file.url = url
       file.name = filename
+      this.uploadList = this.$refs.upload.fileList
     },
     handleFormatError(file) {
       this.$Notice.warning({
@@ -255,15 +247,14 @@ export default {
       const check = this.uploadList.length < 5
       if (!check) {
         this.$Notice.warning({ title: '最多可以上传5张图片。' })
-      } else {
-        this.imgNumber++
       }
       return check
     },
     handleSubmit() {
       this.$refs['formData'].validate((valid) => {
         if (valid) {
-          this.__save(this.formData.id, this.formData)
+          const imgs = JSON.stringify(this.uploadList.map(item => item.url))
+          this.__save({ ...this.formData, imgs })
         } else {
           this.$Message.error('填写有误，请检查')
         }
@@ -272,17 +263,8 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
-    parseImg(imgs) {
-      if (!imgs) return []
-      return JSON.parse(imgs).map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
-    },
-    prefixZero(num, len) {
-      num = (num).toString()
-      for (let i = 0; i < len - num.length; i++) num = `0${num}`
-      return num
-    },
-    __save(id, formData) {
-      goodsSaveFull(id, formData).then(result => {
+    __save(formData) {
+      goodsSaveFull(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success('保存成功')
           // 关闭当前标签并返回商品列表

@@ -78,10 +78,9 @@ export default class GoodsController extends BaseController {
     const { ctx } = this;
     const { baseDir } = this.config;
     const stream = await ctx.getFileStream();
-    const filename = encodeURIComponent(stream.fields.name) + path.extname(stream.filename).toLowerCase();
-    const today = ctx.helper.moment().format('YYYY_MM_DD');
-    // - 存储路径按日期归类：public/upload/goods/2018_06_06/0523133306_01.png
-    const dir = path.join(baseDir, 'public/upload/goods', today);
+    const filename = ctx.helper.uuid(15, 36) + path.extname(stream.filename).toLowerCase();
+    // - 存储路径按商品编码归类：public/upload/goods/0523133306/3HYHHSWYEH8X7AY.png
+    const dir = path.join(baseDir, 'public/upload/goods', stream.fields.goodsNo);
 
     await fs.ensureDir(dir); // - 确保该目录存在，否则创建一个
     const target = path.join(dir, filename);
@@ -97,8 +96,8 @@ export default class GoodsController extends BaseController {
 
   // - 保存或者补充商品详细信息, 将完善该记录的一些字段数据到数据库，通常用于第一次上架该商品
   async saveFull() {
-    const { id } = this.ctx.query;
     const params = this.ctx.request.body;
+    const { id } = params;
     try {
       await this.service.goods.createTags(id, params.tags);
       console.log(params);
