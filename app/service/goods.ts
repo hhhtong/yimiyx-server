@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import BaseService from '../core/base-service';
 import Goods from '../model/entity/goods';
-import GoodsDesc from '../model/entity/goods-desc';
+import GoodsTag from '../model/entity/goods-tag';
 
 interface query {
   disabledPage: boolean, // 是否禁用分页，true将会忽略`page`和`rows`参数
@@ -23,7 +23,8 @@ export default class GoodsService extends BaseService {
 
   // - 商品__实体
   readonly Goods: Repository<Goods>;
-  readonly GoodsDesc: Repository<GoodsDesc>;
+  // - 商品标签__实体
+  readonly GoodsTag: Repository<GoodsTag>;
 
   // -------------------------------------------------------------------------
   // Constructor
@@ -32,7 +33,7 @@ export default class GoodsService extends BaseService {
   constructor(ctx) {
     super(ctx);
     this.Goods = this.conn.getRepository(Goods);
-    this.GoodsDesc = this.conn.getRepository(GoodsDesc);
+    this.GoodsTag = this.conn.getRepository(GoodsTag);
   }
 
   // -------------------------------------------------------------------------
@@ -53,30 +54,29 @@ export default class GoodsService extends BaseService {
       const query = this.Goods
         .createQueryBuilder('G')
         .where('ISNULL(G.deletedAt)')
-        .andWhere(`${where1} AND ${where2} AND ${where3}`);
+        .andWhere(where1)
+        .andWhere(where2)
+        .andWhere(where3);
       let list: any = await query.orderBy('G.createdAt', 'DESC');
-      let total: number = await query.getCount();
 
-      if (disabledPage) {
-        list = await list
-          .leftJoinAndSelect('G.categorys', 'categorys')
-          .getMany();
-      } else {
+      if (!disabledPage) {
         list = await list
           .skip((page - 1) * rows)
           .take(rows)
-          .leftJoinAndSelect('G.categorys', 'categorys')
-          .getMany();
       }
 
-      return { list, total };
+      list = await list
+        .leftJoinAndSelect('G.categorys', 'GC')
+        .leftJoinAndSelect('G.tags', 'T')
+        .getMany();
+      return { list, total: await query.getCount() };
     } catch (err) {
       this.error(err);
     }
   }
 
-  // - 获得商品详情
-  async queryDesc(goodsNo: string) {
+  // - 查询单个商品信息
+  async queryOne(goodsNo: string) {
     try {
       const query = this.Goods
         .createQueryBuilder('G')
@@ -116,13 +116,15 @@ export default class GoodsService extends BaseService {
     }
   }
 
-  async saveOneDesc(id: number, rowData: any) {
+  // - 创建新标签
+  async createTags(id: number, tags: string | string[]) {
+    const createTag = (tagName: string) => this.GoodsTag.save(this.GoodsTag.create({ goods: { id }, tagName }));
     try {
-      rowData = this.GoodsDesc.create(rowData);
-      await this.GoodsDesc.save({ ...rowData, goods: { id } });
-      rowData = await this.findById(id); // goods rowData
-      rowData.isOnline = 1; // 商品状态设为上架
-      this.Goods.save(rowData);
+      if (Array.isArray(tags)) {
+        for (const tagName of tags) await createTag(tagName)
+      } else {
+        await createTag(tags)
+      }
     } catch (err) {
       this.error(err);
     }

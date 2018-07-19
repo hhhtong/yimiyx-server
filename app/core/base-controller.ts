@@ -44,15 +44,24 @@ export default class BaseController extends Controller {
   }
 
   /**
+   * 对sql查询返回的时间进行格式化处理
+   * @param obj - 要进行操作的obj
+   * @param str - 时间的key
+   */
+  $sqlDateFormat(obj: Object, str: string | string[]) {
+    const { ctx } = this;
+    if (typeof str === 'string') obj[str] = ctx.helper.moment(obj[str]).format('YYYY-MM-DD HH:mm:ss');
+    else for (const item of str) obj[item] = ctx.helper.moment(obj[item]).format('YYYY-MM-DD HH:mm:ss');
+  }
+
+  /**
    * 从obj里删掉指定key,可以有效减少网络传输中的数据大小
    * @param obj - 要进行操作的obj
    * @param str - 要删除的key
    */
   $expel(obj: Object, str: string | string[]) {
     if (typeof str === 'string') delete obj[str]
-    if (typeof str === 'object') {
-      for (const item of str) delete obj[item]
-    }
+    else for (const item of str) delete obj[item]
   }
 
   /**

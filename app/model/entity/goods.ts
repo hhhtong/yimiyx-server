@@ -1,10 +1,10 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
-import GoodsDesc from './goods-desc';
+import GoodsTag from './goods-tag';
 import PurchaseMainOrder from './purchase-main-order';
 
 @Entity()
@@ -26,6 +26,13 @@ export default class Goods {
   @ManyToMany(type => GoodsCategory, category => category.goods)
   @JoinTable()
   categorys: GoodsCategory[];
+
+  /**
+   * 商品标签
+   */
+  @OneToMany(type => GoodsTag, tag => tag.goods)
+  @JoinTable()
+  tags: GoodsTag[];
 
   /**
    * 采购商品单的主订单
@@ -58,16 +65,10 @@ export default class Goods {
   goodsAlias: string;
 
   /**
-   * 商品规格 eg: 150
+   * 商品规格 eg: 150g
    */
   @Column('varchar', { length: 20, nullable: true })
   spec: string;
-
-  /**
-   * 商品规格的单位 eg: g
-   */
-  @Column('char', { length: 4, default: 'g' })
-  specUnit: string;
 
   /**
    * 商品规格的数量
@@ -78,7 +79,7 @@ export default class Goods {
   /**
    * 产地
    */
-  @Column('varchar', { length: 50, default: '' })
+  @Column('varchar', { length: 50, nullable: true })
   madeIn: string;
 
   /**
@@ -87,7 +88,6 @@ export default class Goods {
   @Column('int', { default: 0 })
   stockQty: number;
 
-
   /**
    * 是否在售
    * -1 未上架
@@ -95,7 +95,55 @@ export default class Goods {
    *  1 出售中
    */
   @Column('tinyint', { default: -1 })
-  isOnline: string;
+  isOnline: number;
+
+  /**
+   * 商品描述
+   */
+  @Column('text', { nullable: true })
+  description: string;
+
+  /**
+   * 进价
+   */
+  @Column('decimal', { precision: 5, scale: 2, nullable: true })
+  unitPrice: number;
+
+  /**
+   * 售价(按规格) xx元/500g
+   */
+  @Column('decimal', { precision: 5, scale: 2, nullable: true })
+  resalePrice: number;
+
+  /**
+   * 出售的商品总量
+   */
+  @Column('int', { default: 0 })
+  goodsAmount: number;
+
+  /**
+   * @prop {Number} type - 优惠活动的类型
+   * 1: 打折
+   * 2：满减
+   * 3：指定价格出售。如1元大促销
+   * 4: 限量(前xx名购买xx价)暂时用不到
+   * @prop {String} value - 参与活动的有效值，实际含义以优惠的类型type决定
+   * @example - [{ type: 1, value: 2.72 }, { type: 2, value: '300.00' }]
+   */
+  @Column({ nullable: true })
+  type: string;
+
+  /**
+   * 小图[url1, url2]
+   */
+  @Column({ nullable: true })
+  smallImgs: string;
+
+  /**
+   * 大图[url1, url2]
+   */
+  @Column({ nullable: true })
+  imgs: string;
 
   /**
    * 创建时间

@@ -2,7 +2,6 @@
 // Do not modify this file!!!!!!!!!
 
 import EntityGoodsCategory from '../../../app/model/entity/goods-category';
-import EntityGoodsDesc from '../../../app/model/entity/goods-desc';
 import EntityGoodsTag from '../../../app/model/entity/goods-tag';
 import EntityGoodsUnit from '../../../app/model/entity/goods-unit';
 import EntityGoods from '../../../app/model/entity/goods';
@@ -21,7 +20,6 @@ declare module 'sequelize' {
   interface Sequelize {
     Entity: {
       GoodsCategory: ReturnType<typeof EntityGoodsCategory>;
-      GoodsDesc: ReturnType<typeof EntityGoodsDesc>;
       GoodsTag: ReturnType<typeof EntityGoodsTag>;
       GoodsUnit: ReturnType<typeof EntityGoodsUnit>;
       Goods: ReturnType<typeof EntityGoods>;

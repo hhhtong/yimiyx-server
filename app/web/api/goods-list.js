@@ -22,8 +22,7 @@ export function goodsGet(params) {
  * @param {Object} data
  * └─ @prop {String} goodsName 商品名称
  * └─ @prop {String} goodsAlias 商品别名
- * └─ @prop {Number}} spec 商品规格
- * └─ @prop {String} specUnit 商品规格单位
+ * └─ @prop {Number} spec 商品规格 eg: 150g
  * └─ @prop {String?} madeIn 产地
  * └─ @prop {Number} stockQty 库存
  */
@@ -49,13 +48,13 @@ export function goodsDel(data) {
 
 /**
  * 获取商品列表
- * @param {String} goodsNo 商品编号
+ * @param {String} id 商品id
  */
-export function goodsDescGet(goodsNo) {
+export function goodsByIdGet(id) {
   return request({
-    url: '/goods/desc',
+    url: '/goods/one',
     method: 'get',
-    params: { goodsNo }
+    params: { id }
   })
 }
 
@@ -82,9 +81,9 @@ export function goodsStatusToggle(data) {
  * └─ @prop {String} resalePrice 售价
  * └─ @prop {Number} goodsAmount 出售数量
  */
-export function goodsSaveDesc(id, data) {
+export function goodsSaveFull(id, data) {
   return request({
-    url: `/goods/saveDesc?id=${id}`,
+    url: `/goods/saveFull?id=${id}`,
     method: 'post',
     data
   })

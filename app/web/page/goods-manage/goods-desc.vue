@@ -67,7 +67,7 @@
             placeholder="输入完毕之后按下回车以生成标签"
             @keyup.native.enter="handleAddTag">
           </Input>
-          <div v-if="formData.tags.length > 0" class="margin-top-8">
+          <div v-if="formData.tags && formData.tags.length > 0" class="margin-top-8">
             <Tag
               v-for="(tagValue, index) in formData.tags"
               :key="index" :name="tagValue"
@@ -84,16 +84,16 @@
           <InputNumber
             style="width: 180px"
             v-model="formData.unitPrice"
-            :formatter="value => `${value}元/${spec}`"
-            :parser="value => value.replace(`元/${spec}`, '')">
+            :formatter="value => `${value}元/${formData.spec}`"
+            :parser="value => value.replace(`元/${formData.spec}`, '')">
           </InputNumber>
         </FormItem>
         <FormItem label="售价">
           <InputNumber
             style="width: 180px"
             v-model="formData.resalePrice"
-            :formatter="value => `${value}元/${spec}`"
-            :parser="value => value.replace(`元/${spec}`, '')">
+            :formatter="value => `${value}元/${formData.spec}`"
+            :parser="value => value.replace(`元/${formData.spec}`, '')">
           </InputNumber>
         </FormItem>
         <FormItem label="出售数量">
@@ -115,7 +115,7 @@
           <Upload
             ref="upload"
             :show-upload-list="false"
-            :default-file-list="formData.imgs"
+            :default-file-list="parseImg(formData.imgs)"
             :on-success="handleSuccess"
             :format="['jpg','jpeg','png']"
             :max-size="2048"
@@ -123,7 +123,7 @@
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             :headers="{ 'x-csrf-token': token }"
-            :data="{ name: goodsNo + '_' + prefixZero(imgNumber, 2) }"
+            :data="{ name: formData.goodsNo + '_' + prefixZero(imgNumber, 2) }"
             multiple
             type="drag"
             action="/goods/uploadImg"
@@ -151,23 +151,12 @@
 import { mapGetters } from 'vuex'
 import { cloneDeep } from 'lodash'
 // import { InputNumber } from 'iview'
-import { goodsSaveDesc, goodsDescGet } from '@/api'
-
-const formData = {
-  tags: [],
-  description: '',
-  unitPrice: 0,
-  resalePrice: 0,
-  goodsAmount: 0,
-  imgs: []
-}
+import { goodsSaveFull } from '@/api'
 
 export default {
   name: 'goods-desc',
 
   data() {
-    // const editRowData = this.$route.params
-    const { goodsNo, spec } = this.$route.query
     const validateTags = (rule, value, callback) => {
       this.formData.tags.length === 0 ? callback(new Error('请填写标签')) : callback()
     }
@@ -180,13 +169,7 @@ export default {
       uploadList: [],
       imgBigSrc: '',
       imgNumber: 1,
-      goodsInfo: null,
-      goodsNo,
-      spec,
-      // isEdit,
       tag: '',
-      // formData: editRowData ? editRowData : cloneDeep(formData),
-      formData: cloneDeep(formData),
       formValidate: {
         tags: [
           { validator: validateTags, trigger: 'blur' }
@@ -202,22 +185,35 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['token'])
+    ...mapGetters(['token']),
+    formData() {
+      const { query } = this.$route
+      const imgs = this.uploadList.length === 0
+        ? query.imgs
+        : JSON.stringify(this.uploadList.map(item => item.url))
+      return {
+        ...query,
+        imgs,
+        unitPrice: +query['unitPrice'],
+        resalePrice: +query['resalePrice'],
+        goodsAmount: +query['goodsAmount']
+      }
+    }
   },
 
-  created() {
-    this.featchData()
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.uploadList = vm.$refs.upload.fileList
+    })
+  },
+
+  beforeRouteLeave (to, from, next) {
+    this.$refs.upload.clearFiles()
+    this.uploadList = this.$refs.upload.fileList
+    next()
   },
 
   methods: {
-    featchData() {
-      goodsDescGet(this.goodsNo).then(result => {
-        if (result.code === 50000) {
-          this.goodsInfo = result.data
-          this.uploadList = this.$refs.upload.fileList
-        }
-      })
-    },
     handleAddTag() {
       const tag = this.tag.trim()
       const { tags } = this.formData
@@ -264,12 +260,10 @@ export default {
       }
       return check
     },
-
     handleSubmit() {
       this.$refs['formData'].validate((valid) => {
         if (valid) {
-          this.formData.imgs = this.uploadList.map(item => item.url)
-          this.__save(this.goodsInfo.id, this.formData)
+          this.__save(this.formData.id, this.formData)
         } else {
           this.$Message.error('填写有误，请检查')
         }
@@ -278,21 +272,24 @@ export default {
     handleReset() {
       this.$refs['formData'] && this.$refs['formData'].resetFields()
     },
+    parseImg(imgs) {
+      if (!imgs) return []
+      return JSON.parse(imgs).map(url => ({ name: url.match(/\d+_\d+?.(png|gif|jpg)$/)[0], url }))
+    },
     prefixZero(num, len) {
       num = (num).toString()
       for (let i = 0; i < len - num.length; i++) num = `0${num}`
       return num
     },
     __save(id, formData) {
-      goodsSaveDesc(id, formData).then(result => {
+      goodsSaveFull(id, formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success('保存成功')
-          this.formData = cloneDeep(formData) // 清空表单数据
           // 关闭当前标签并返回商品列表
           const { name } = this.$route
           this.$store.commit('removeTag', name)
           this.$store.commit('closePage', name)
-          this.$router.replace({ name: 'goods-list' })
+          this.$router.replace({ name: 'goods-list', params: { refresh: true } })
           localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList)
         }
       })
