@@ -201,8 +201,10 @@ export default {
     }
   },
 
-  mounted() {
-    this.uploadList = this.$refs.upload.fileList
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.uploadList = vm.$refs.upload.fileList
+    })
   },
 
   beforeRouteLeave (to, from, next) {
