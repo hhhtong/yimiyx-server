@@ -80,20 +80,23 @@ export default {
           key: 'goodsName',
           align: 'center',
           width: 120,
+          render: (h, { row, column, index }) => {
+            if (row.isOnline === 1)
+              return <i-button type="text" on-click={() => this.handleChangeStatus(row, index, true)}>
+                { row.goodsName }
+              </i-button>
+            return <span>{ row.goodsName }</span>
+          }
         }, {
           title: '商品别名',
           align: 'center',
           width: 120,
-          render: (h, { row, column, index }) => (
-            <span>{row.goodsAlias ? row.goodsAlias : '--'}</span>
-          )
+          render: (h, { row }) => <span>{this.$helper.beautifyCell(row.goodsAlias)}</span>
         }, {
           title: '规格',
+          key: 'spec',
           align: 'center',
-          width: 100,
-          render: (h, { row, column, index }) => (
-            <span>{row.spec}</span>
-          )
+          width: 100
         }, {
           title: '所属分类',
           width: 270,
@@ -115,26 +118,22 @@ export default {
           title: '产地',
           align: 'center',
           width: 100,
-          render: (h, { row, column, index }) => (
-            <span>{row.madeIn ? row.madeIn : '--'}</span>
-          )
+          render: (h, { row }) => <span>{this.$helper.beautifyCell(row.madeIn)}</span>
+        }, {
+          title: '所在仓库',
+          align: 'center',
+          width: 100,
+          render: (h, { row }) => <span>{this.$helper.beautifyCell(row.storeName)}</span>
         }, {
           title: '库存',
           key: 'stockQty',
           width: 100,
           sortable: true
         }, {
-          title: '所在仓库',
-          align: 'center',
-          width: 100,
-          render: (h, { row, column, index }) => (
-            <span>{row.storeName ? row.storeName : '--'}</span>
-          )
-        }, {
           title: '状态',
           width: 100,
           align: 'center',
-          render: (h, { row, column, index }) => {
+          render: (h, { row }) => {
             if (row.isOnline === 1) {
               return <Tag type="border" color="green">出售中</Tag>
             }
@@ -202,7 +201,8 @@ export default {
 
   // - 从详情页保存完信息跳回来的时候要刷新一下数据
   beforeRouteEnter (to, from, next) {
-    next(vm => to.params.refresh && vm.fetchData())
+    const { refresh } = to.params
+    next(vm => refresh && vm.fetchData())
   },
 
   methods: {
@@ -239,10 +239,15 @@ export default {
       })
     },
 
-    // - 上下架商品
-    handleChangeStatus(row, index) {
+    /**
+     * 上下架商品
+     * @param {Object} row - 当前行
+     * @param {Number} index - 当前行的index
+     * @param {Boolean} isEdit - 是否编辑模式
+     */
+    handleChangeStatus(row, index, isEdit) {
       const { id, isOnline } = row
-      if (isOnline === 1) {
+      if (!isEdit && isOnline === 1) {
         this.__toggleStatus(id, isOnline, index)
       } else {
         // - 跳转到确认商品的详细信息
@@ -278,7 +283,12 @@ export default {
       })
     },
 
-    // - 出售中或已下架进行状态反转
+    /**
+     * 出售中或已下架进行状态反转
+     * @param {Number} id - 商品的id
+     * @param {Number} isOnline - 商品的状态
+     * @param {Number} index - 当前商品的index
+     */
     __toggleStatus(id, isOnline, index) {
       goodsStatusToggle({ id, isOnline }).then(result => {
         if (result.code === 50000) {
@@ -288,7 +298,11 @@ export default {
       })
     },
 
-    // - 嵌套类目结构解析成平级
+    /**
+     * 嵌套类目结构解析成平级
+     * @param {Array<Object>} categorys - 类目数组
+     * @return {Array<Object>}
+     */
     __parseCategory(categorys) {
       let temp = []
       const joinName = (current, name = '') => {

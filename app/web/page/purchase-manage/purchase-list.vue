@@ -109,7 +109,7 @@ export default {
           title: '备注',
           key: 'remark',
           width: 200,
-          render: (h, { row, column, index }) => <div>{row.remark ? row.remark : '--'}</div>
+          render: (h, { row, column, index }) => <div>{this.$helper.beautifyCell(row.remark)}</div>
         }, {
           title: '操作',
           key: 'handle',

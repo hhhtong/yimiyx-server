@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
-import BaseService from '../core/base-service';
-import GoodsCategory from '../model/entity/goods-category';
+import BaseService from '../../core/base-service';
+import GoodsCategory from '../../model/entity/goods-category';
 
 export default class GoodsCategoryService extends BaseService {
 

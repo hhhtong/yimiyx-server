@@ -9,38 +9,46 @@ export default (app: Application) => {
   // - TestController
   router.get('/test', controller.test.index);
 
-  // - HomeController
-  router.get('/', controller.home.index);
-  router.get('/server', controller.home.server);
+  // -------------------------------------------------------------------------
+  // Admin Controller
+  // -------------------------------------------------------------------------
 
-  // - SupplierController
-  router.get('/supplier', controller.supplier.index);
-  router.post('/supplier/add', controller.supplier.add);
-  router.post('/supplier/delete', controller.supplier.delete);
-  router.post('/supplier/update', controller.supplier.update);
+  // - Admin/HomeController
+  router.get('/', controller.admin.home.index);
+  router.get('/server', controller.admin.home.server);
 
-  // - GoodsCategoryController
-  router.get('/goodsCategory', controller.goodsCategory.index);
-  router.post('/goodsCategory/delete', controller.goodsCategory.delete);
-  router.post('/goodsCategory/save', controller.goodsCategory.save);
+  // - Admin/SupplierController
+  router.get('/supplier', controller.admin.supplier.index);
+  router.post('/supplier/add', controller.admin.supplier.add);
+  router.post('/supplier/delete', controller.admin.supplier.delete);
+  router.post('/supplier/update', controller.admin.supplier.update);
 
-  // - GoodsController
-  router.get('/goods', controller.goods.index);
-  router.get('/goods/one', controller.goods.one);
-  router.post('/goods/save', controller.goods.save);
-  router.post('/goods/delete', controller.goods.delete);
-  router.post('/goods/uploadImg', controller.goods.uploadImg);
-  router.post('/goods/saveFull', controller.goods.saveFull);
-  router.post('/goods/toggleStatus', controller.goods.toggleStatus);
+  // - Admin/GoodsCategoryController
+  router.get('/goodsCategory', controller.admin.goodsCategory.index);
+  router.post('/goodsCategory/delete', controller.admin.goodsCategory.delete);
+  router.post('/goodsCategory/save', controller.admin.goodsCategory.save);
+
+  // - Admin/GoodsController
+  router.get('/goods', controller.admin.goods.index);
+  router.get('/goods/one', controller.admin.goods.one);
+  router.post('/goods/save', controller.admin.goods.save);
+  router.post('/goods/delete', controller.admin.goods.delete);
+  router.post('/goods/uploadImg', controller.admin.goods.uploadImg);
+  router.post('/goods/saveFull', controller.admin.goods.saveFull);
+  router.post('/goods/toggleStatus', controller.admin.goods.toggleStatus);
+
+  // - Admin/PurchaseOrderController
+  router.get('/purchaseOrder', controller.admin.purchaseOrder.index);
+  router.post('/purchaseOrder/add', controller.admin.purchaseOrder.add);
+  router.post('/purchaseOrder/delete', controller.admin.purchaseOrder.delete);
+  router.post('/purchaseOrder/update', controller.admin.purchaseOrder.update);
+  router.get('/purchaseOrder/details', controller.admin.purchaseOrder.details);
+
+  // -------------------------------------------------------------------------
+  // Client Controller
+  // -------------------------------------------------------------------------
 
   // - Client/GoodsController
   router.get('/client/goods', controller.client.goods.index);
   router.get('/client/goods/detail', controller.client.goods.detail);
-
-  // - PurchaseOrderController
-  router.get('/purchaseOrder', controller.purchaseOrder.index);
-  router.post('/purchaseOrder/add', controller.purchaseOrder.add);
-  router.post('/purchaseOrder/delete', controller.purchaseOrder.delete);
-  router.post('/purchaseOrder/update', controller.purchaseOrder.update);
-  router.get('/purchaseOrder/details', controller.purchaseOrder.details);
 };

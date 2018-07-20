@@ -1,4 +1,4 @@
-import BaseController from '../core/base-controller';
+import BaseController from '../../core/base-controller';
 import * as sendToWormhole from 'stream-wormhole';
 import { write as awaitWriteStream } from 'await-stream-ready';
 import * as path from 'path';
@@ -9,7 +9,7 @@ export default class GoodsController extends BaseController {
   async index() {
     const { service, ctx } = this;
     try {
-      let { list, total } = await service.goods.queryAll(ctx.query);
+      let { list, total } = await service.admin.goods.queryAll(ctx.query);
       for (const item of list) {
         item.categorys = this.$refix(item.categorys);
         item.tags = item.tags.map(({ tagName }) => tagName);
@@ -25,7 +25,7 @@ export default class GoodsController extends BaseController {
   async one() {
     const { goodsNo } = this.ctx.query;
     try {
-      const data = await this.service.goods.queryOne(goodsNo);
+      const data = await this.service.admin.goods.queryOne(goodsNo);
       this.success(data);
     } catch (err) {
       throw err;
@@ -40,7 +40,7 @@ export default class GoodsController extends BaseController {
     if (!rowData.goodsNo) { // 无goodsNo参数时 表示新增
       try {
         // 以数组中的第一个类目作为序号前缀
-        rowData.goodsNo = await this.service.goods.getMaxGoodsNo(rowData.categorys[0].no);
+        rowData.goodsNo = await service.admin.goods.getMaxGoodsNo(rowData.categorys[0].no);
       } catch (err) {
         throw err;
       }
@@ -54,7 +54,7 @@ export default class GoodsController extends BaseController {
 
     rowData.categorys = categorys;
     try {
-      await service.goods.saveOne(rowData);
+      await service.admin.goods.saveOne(rowData);
       this.success();
     } catch (err) {
       throw err;
@@ -66,7 +66,7 @@ export default class GoodsController extends BaseController {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
     try {
-      await service.goods.deleteOne(rowData);
+      await service.admin.goods.deleteOne(rowData);
       this.success();
     } catch (err) {
       throw err;
@@ -96,15 +96,16 @@ export default class GoodsController extends BaseController {
 
   // - 保存或者补充商品详细信息, 将完善该记录的一些字段数据到数据库，通常用于第一次上架该商品
   async saveFull() {
-    const params = this.ctx.request.body;
+    const { service, ctx } = this;
+    const params = ctx.request.body;
     const { id } = params;
     delete params.categorys; // - 删除类目，不然保存的时候会更新类目
     try {
-      await this.service.goods.createTags(id, params.tags);
+      await service.admin.goods.createTags(id, params.tags);
       console.log(params);
 
-      const rowData = await this.service.goods.findById(id);
-      this.service.goods.saveOne({ ...rowData, ...params, isOnline: 1 })
+      const rowData = await service.admin.goods.findById(id);
+      service.admin.goods.saveOne({ ...rowData, ...params, isOnline: 1 })
       this.success();
     } catch (err) {
       throw err;
@@ -113,11 +114,12 @@ export default class GoodsController extends BaseController {
 
   // - 切换商品状态(1：在售 OR 0：下架)
   async toggleStatus() {
-    let { id, isOnline } = this.ctx.request.body;
+    const { service, ctx } = this;
+    let { id, isOnline } = ctx.request.body;
     isOnline = isOnline === 1 ? 0 : 1;
     try {
-      const rowData = await this.service.goods.findById(id);
-      await this.service.goods.saveOne({ ...rowData, isOnline });
+      const rowData = await service.admin.goods.findById(id);
+      await service.admin.goods.saveOne({ ...rowData, isOnline });
       this.success(isOnline)
     } catch (err) {
       throw err;

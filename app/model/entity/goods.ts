@@ -134,16 +134,22 @@ export default class Goods {
   activityType: string;
 
   /**
-   * 小图[url1, url2]
+   * 主图url(封面图))
    */
-  @Column('varchar', { length: 500, nullable: true })
-  smallImgs: string;
+  @Column('varchar', { length: 100, nullable: true })
+  mainImg: string;
 
   /**
    * 大图[url1, url2]
    */
   @Column('varchar', { length: 500, nullable: true })
   imgs: string;
+
+  /**
+   * 小图[url1, url2]
+   */
+  @Column('varchar', { length: 500, nullable: true })
+  smallImgs: string;
 
   /**
    * 创建时间

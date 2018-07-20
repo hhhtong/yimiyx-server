@@ -1,15 +1,15 @@
-import BaseController from '../core/base-controller';
+import BaseController from '../../core/base-controller';
 import { getConnection, QueryRunner } from 'typeorm';
 
 export default class PurchaseOrderController extends BaseController {
 
   // -------------------------------------------------------------------------
-  // Public Properties
+  // Private Properties
   // -------------------------------------------------------------------------
 
   // - 采购单，商品单，商品子单的数组集合
-  public codes: string[];
-  readonly queryRunner: QueryRunner;
+  private codes: string[];
+  private readonly queryRunner: QueryRunner;
 
   // -------------------------------------------------------------------------
   // Constructor
@@ -36,7 +36,7 @@ export default class PurchaseOrderController extends BaseController {
     // ctx.app.generateQRCode('CG20180605' + Date.now());
 
     try {
-      const result: any = await service.purchaseOrder.find(ctx.query);
+      const result: any = await service.admin.purchaseOrder.find(ctx.query);
       result.list.forEach(item => {
         // - 将需要用到的字段放到最外层
         item.categoryName = item.category.name;
@@ -75,7 +75,7 @@ export default class PurchaseOrderController extends BaseController {
       this.codes.unshift(id);
       this.__generateQRCode();
 
-      await service.purchaseOrder.insertPurchaseOrder(rowData);
+      await service.admin.purchaseOrder.insertPurchaseOrder(rowData);
       await this.queryRunner.commitTransaction(); // - 提交事务
       this.success();
     } catch (error) {
@@ -89,7 +89,7 @@ export default class PurchaseOrderController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.deletePurchaseOrder(rowData);
+      await service.admin.purchaseOrder.deletePurchaseOrder(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -102,7 +102,7 @@ export default class PurchaseOrderController extends BaseController {
     const rowData: any = ctx.request.body;
 
     try {
-      await service.purchaseOrder.updatePurchaseOrder(rowData);
+      await service.admin.purchaseOrder.updatePurchaseOrder(rowData);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -113,7 +113,7 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
 
     try {
-      const result: object = await service.purchaseOrder.findOne(ctx.query.id);
+      const result: object = await service.admin.purchaseOrder.findOne(ctx.query.id);
       this.success(result);
     } catch (error) {
       this.fail(error);
@@ -145,7 +145,7 @@ export default class PurchaseOrderController extends BaseController {
       });
       this.codes.unshift(mid);
     }
-    mainOrders = await this.service.purchaseOrder.insertPurchaseMainOrder(mainOrders);
+    mainOrders = await this.service.admin.purchaseOrder.insertPurchaseMainOrder(mainOrders);
 
     // - 插入订单数据并返回插入的数据
     return mainOrders;
@@ -160,7 +160,7 @@ export default class PurchaseOrderController extends BaseController {
       childOrders.push({ cid });
       this.codes.unshift(cid);
     }
-    childOrders = await this.service.purchaseOrder.insertPurchaseChildOrder(childOrders);
+    childOrders = await this.service.admin.purchaseOrder.insertPurchaseChildOrder(childOrders);
 
     // - 插入订单数据并返回插入的数据
     return childOrders;

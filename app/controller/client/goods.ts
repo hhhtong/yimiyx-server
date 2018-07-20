@@ -31,7 +31,6 @@ export default class GoodsController extends BaseController {
 
   __dispose(item: any) {
     const { spec, unitPrice, categorys } = item;
-    item.mainImg = 'https://www.34580.com/static/img/vegetable.36ef04b.png'; // - mock
     item.imgs = item.imgs ? JSON.parse(item.imgs) : [];
     item.specList = [{ spec, unitPrice }]; // - 暂时只有一种规格
     if (categorys) {

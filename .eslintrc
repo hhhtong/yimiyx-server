@@ -15,6 +15,7 @@
     "array-bracket-spacing": "off",
     "no-unused-vars": "off",
     "no-else-return": "off",
+    "no-unneeded-ternary": "off",
     "strict": "off",
     "linebreak-style": "off",
     "no-irregular-whitespace": [
