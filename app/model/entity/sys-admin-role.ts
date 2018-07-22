@@ -6,7 +6,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export default class SysAdminRole {
   @PrimaryGeneratedColumn()
-  roleID: number;
+  id: number;
 
   /**
    * 角色名

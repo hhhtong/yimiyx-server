@@ -68,11 +68,11 @@ initSize(size) {
 
 .upload-camera {
   &-1 {
-    initSize(size-1 - 2px)
+    initSize(size-1)
   }
 
   &-2 {
-    initSize(size-2 - 2px)
+    initSize(size-2)
   }
 }
 </style>
@@ -129,13 +129,13 @@ initSize(size) {
             <FormItem label="出售数量">
               <InputNumber style="width: 100%" v-model="formData.goodsAmount"></InputNumber>
             </FormItem>
-            <FormItem label="主图" prop="mainImg">
+            <FormItem label="主图" prop="cover">
               <div class="upload-list upload-list-1" v-for="item in uploadList1">
                 <template v-if="item.status === 'finished'">
                   <img :src="item.url">
                   <div class="upload-list-cover">
                     <Icon type="ios-eye-outline" @click.native="handleViewImg(item.url)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemoveImg(item, $refs.uploadMain)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemoveImg(item, $refs.uploadCover)"></Icon>
                   </div>
                 </template>
                 <template v-else>
@@ -144,7 +144,7 @@ initSize(size) {
               </div>
               <Upload
                 v-show="uploadList1.length === 0"
-                ref="uploadMain"
+                ref="uploadCover"
                 :show-upload-list="false"
                 :default-file-list="defaultFileList1"
                 :on-success="handleSuccess"
@@ -156,19 +156,19 @@ initSize(size) {
                 :data="{ goodsNo: formData.goodsNo }"
                 type="drag"
                 action="/goods/uploadImg"
-                style="display: inline-block;width:58px;">
+                style="display: inline-block;">
                 <div class="upload-camera-1">
-                  <Icon type="camera" size="20"></Icon>
+                  <Icon type="camera" size="40"></Icon>
                 </div>
               </Upload>
             </FormItem>
-            <FormItem label="轮播图" prop="imgs">
+            <FormItem label="轮播图" prop="carousels">
               <div class="upload-list upload-list-2" v-for="item in uploadList2">
                 <template v-if="item.status === 'finished'">
                   <img :src="item.url">
                   <div class="upload-list-cover">
                     <Icon type="ios-eye-outline" @click.native="handleViewImg(item.url)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemoveImg(item, $refs.uploadImgs)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemoveImg(item, $refs.uploadCarousels)"></Icon>
                   </div>
                 </template>
                 <template v-else>
@@ -176,7 +176,7 @@ initSize(size) {
                 </template>
               </div>
               <Upload
-                ref="uploadImgs"
+                ref="uploadCarousels"
                 :show-upload-list="false"
                 :default-file-list="defaultFileList2"
                 :on-success="handleSuccess"
@@ -190,7 +190,7 @@ initSize(size) {
                 multiple
                 type="drag"
                 action="/goods/uploadImg"
-                style="display: inline-block;width:58px;">
+                style="display: inline-block;">
                 <div class="upload-camera-2">
                   <Icon type="camera" size="20"></Icon>
                 </div>
@@ -242,10 +242,10 @@ export default {
         description: [
           { required: true, message: '请填写商品描述', trigger: 'blur' }
         ],
-        mainImg: [
+        cover: [
           { validator: validateLength('uploadList1', '请上传主图'), trigger: 'blur' }
         ],
-        imgs: [
+        carousels: [
           { validator: validateLength('uploadList2', '请至少上传一张图片'), trigger: 'blur' }
         ]
       },
@@ -255,12 +255,12 @@ export default {
   computed: {
     ...mapGetters(['token']),
     defaultFileList1() {
-      if (!this.formData.mainImg) return []
-      return [{ url: this.formData.mainImg, status: 'finished' }]
+      if (!this.formData.cover) return []
+      return [{ url: this.formData.cover, status: 'finished' }]
     },
     defaultFileList2() {
-      if (!this.formData.imgs) return []
-      return JSON.parse(this.formData.imgs).map(url => {
+      if (!this.formData.carousels) return []
+      return JSON.parse(this.formData.carousels).map(url => {
         return { url, status: 'finished' }
       })
     }
@@ -270,12 +270,12 @@ export default {
     next(vm => {
       vm.formData = to.params
       if (vm.$helper.isEmptyObj(vm.defaultFileList1)) {
-        vm.uploadList1 = vm.$refs.uploadMain.fileList
+        vm.uploadList1 = vm.$refs.uploadCover.fileList
       } else {
         vm.uploadList1 = vm.defaultFileList1
       }
       if (vm.$helper.isEmptyObj(vm.defaultFileList2)) {
-        vm.uploadList2 = vm.$refs.uploadImgs.fileList
+        vm.uploadList2 = vm.$refs.uploadCarousels.fileList
       } else {
         vm.uploadList2 = vm.defaultFileList2
       }
@@ -283,7 +283,7 @@ export default {
   },
 
   beforeRouteLeave(to, from, next) {
-    this.$refs.uploadImgs.clearFiles()
+    this.$refs.uploadCarousels.clearFiles()
     next()
   },
 
@@ -315,8 +315,8 @@ export default {
       this.__retrospect()
     },
     __retrospect() {
-      this.uploadList1 = this.$refs.uploadMain.fileList
-      this.uploadList2 = this.$refs.uploadImgs.fileList
+      this.uploadList1 = this.$refs.uploadCover.fileList
+      this.uploadList2 = this.$refs.uploadCarousels.fileList
     },
     handleFormatError(file) {
       this.$Notice.warning({
@@ -340,9 +340,9 @@ export default {
     handleSubmit() {
       this.$refs['formData'].validate((valid) => {
         if (valid) {
-          const mainImg = this.uploadList1.map(item => item.url).toString()
-          const imgs = JSON.stringify(this.uploadList2.map(item => item.url))
-          this.__save({ ...this.formData, mainImg, imgs })
+          const cover = this.uploadList1.map(item => item.url).toString()
+          const carousels = JSON.stringify(this.uploadList2.map(item => item.url))
+          this.__save({ ...this.formData, cover, carousels })
         } else {
           this.$Message.error('填写有误，请检查')
         }

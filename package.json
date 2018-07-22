@@ -15,7 +15,7 @@
     "start:win": "cross-env NODE_ENV=production EGG_SERVER_ENV=prod node index.js",
     "start:test": "cross-env EGG_SERVER_ENV=test node index.js",
     "restart": "npm run stop && npm run start",
-    "kill": "kill -9 $(lsof -i:7001 |grep 'node'|awk '{print $2}') | pkill --signal SIGINT egg-vue-webpack-boilerplate",
+    "kill": "kill -9 $(lsof -i:7001 |grep 'node'|awk '{print $2}')",
     "kill:win": "taskkill -PID $(netstat -ano | findstr 7001|awk '{print $5}') -F",
     "lint:fix": "tslint --fix . && eslint --fix ."
   },
@@ -26,6 +26,7 @@
     "egg": "^2.9.1",
     "egg-cors": "^2.1.0",
     "egg-logger": "^1.7.1",
+    "egg-redis": "^2.0.0",
     "egg-scripts": "^2.6.0",
     "egg-validate": "^1.0.0",
     "egg-view-vue-ssr": "^3.1.0",

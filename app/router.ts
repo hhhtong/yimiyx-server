@@ -51,4 +51,12 @@ export default (app: Application) => {
   // - Client/GoodsController
   router.get('/client/goods', controller.client.goods.index);
   router.get('/client/goods/detail', controller.client.goods.detail);
+
+  // - Client/UserController
+  router.get('/client/user', controller.client.user.getUserInfo);
+  router.get('/client/user/code2session', controller.client.user.code2session);
+  router.post('/client/user/save', controller.client.user.saveUserInfo);
+
+  // - Client/CartController
+  // router.get('/client/cart', controller.client.cart.index);
 };

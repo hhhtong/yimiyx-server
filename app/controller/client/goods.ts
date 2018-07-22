@@ -18,11 +18,8 @@ export default class GoodsController extends BaseController {
     try {
       const rowData = await this.service.client.goods.queryOne(id);
       this.__dispose(rowData);
-      for (const item of rowData.specList) {
-        item.packagingMethod = 'XXX食品级包装';
-        item.guaranteePeriod = '3天';
-        item.storageMethod = '-15°阴冷环境密存';
-      }
+      rowData.guaranteePeriod = '3天';
+      rowData.storageMethod = '冷藏';
       this.success(rowData);
     } catch (err) {
       this.fail(err);
@@ -31,7 +28,7 @@ export default class GoodsController extends BaseController {
 
   __dispose(item: any) {
     const { spec, unitPrice, categorys } = item;
-    item.imgs = item.imgs ? JSON.parse(item.imgs) : [];
+    item.carousels = item.carousels ? JSON.parse(item.carousels) : [];
     item.specList = [{ spec, unitPrice }]; // - 暂时只有一种规格
     if (categorys) {
       item.categoryName = categorys[0].name;

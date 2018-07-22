@@ -41,7 +41,7 @@ CREATE TABLE `goods` (
   `goods_amount` int(11) NOT NULL DEFAULT 0,
   `activity_type` varchar(1000) DEFAULT NULL,
   `small_imgs` varchar(500) DEFAULT NULL,
-  `imgs` varchar(500) DEFAULT NULL,
+  `carousels` varchar(500) DEFAULT NULL,
   `main_img` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `IDX_d644eef5c0d388ada12f6933b4` (`goods_no`)

@@ -11,6 +11,7 @@ import ClientCart from '../../../app/controller/client/cart';
 import ClientGoods from '../../../app/controller/client/goods';
 import ClientOrder from '../../../app/controller/client/order';
 import ClientPay from '../../../app/controller/client/pay';
+import ClientUser from '../../../app/controller/client/user';
 
 declare module 'egg' {
   interface IController {
@@ -27,6 +28,7 @@ declare module 'egg' {
       goods: ClientGoods;
       order: ClientOrder;
       pay: ClientPay;
+      user: ClientUser;
     };
   }
 }

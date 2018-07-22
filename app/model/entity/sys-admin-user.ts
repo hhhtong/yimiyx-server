@@ -7,7 +7,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 export default class SysAdminUser {
 
   @PrimaryGeneratedColumn()
-  userID: number;
+  id: number;
 
   /**
    * 用户名

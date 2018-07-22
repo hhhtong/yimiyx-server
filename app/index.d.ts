@@ -2,6 +2,7 @@ import { IObj } from './extend/helper'
 
 declare module 'egg' {
   interface Application {
+    redis: any,
     /**
      * 数据库连接对象
      */
@@ -37,6 +38,12 @@ declare module 'egg' {
      * ['2018-06-05 00:00:00', '2018-06-08 23:59:59']
      */
     transformDateRange(dateRange: string[]): string[],
+
+    /**
+     * 进行sha1加密
+     * @param str - 要加密的串
+     */
+    encryptSha1(str: string): string,
 
     /**
      * @method Helper#prefixZero - 对指定数值进行前置补 '0'

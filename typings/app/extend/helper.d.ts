@@ -8,6 +8,7 @@ declare module 'egg' {
     toCamelObj: typeof ExtendObject.toCamelObj;
     toSnakeObj: typeof ExtendObject.toSnakeObj;
     transformDateRange: typeof ExtendObject.transformDateRange;
+    encryptSha1: typeof ExtendObject.encryptSha1;
     prefixZero: typeof ExtendObject.prefixZero;
     uuid: typeof ExtendObject.uuid;
   }

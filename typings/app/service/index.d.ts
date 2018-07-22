@@ -9,6 +9,7 @@ import ClientCart from '../../../app/service/client/cart';
 import ClientGoods from '../../../app/service/client/goods';
 import ClientOrder from '../../../app/service/client/order';
 import ClientPay from '../../../app/service/client/pay';
+import ClientUser from '../../../app/service/client/user';
 
 declare module 'egg' {
   interface IService {
@@ -23,6 +24,7 @@ declare module 'egg' {
       goods: ClientGoods;
       order: ClientOrder;
       pay: ClientPay;
+      user: ClientUser;
     };
   }
 }

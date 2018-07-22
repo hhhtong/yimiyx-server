@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import { camelCase, snakeCase } from 'typeorm/util/StringUtils';
+import * as crypto from 'crypto';
 
 export interface IObj {
   obj: Object | Object[]
@@ -7,9 +8,9 @@ export interface IObj {
 
 const transformObjKey = (obj: IObj, fn: Function): Object | Object[] => {
   if (Array.isArray(obj)) {
-    return obj.map(item => transform(item))
+    return obj.map(item => transform(item));
   } else {
-    return transform(obj)
+    return transform(obj);
   }
 
   function transform(_obj) {
@@ -24,13 +25,16 @@ const transformObjKey = (obj: IObj, fn: Function): Object | Object[] => {
 export default {
   moment,
   toCamelObj(obj: IObj): Object | Object[] { // 将Object内的key转为小驼峰命名
-    return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'))
+    return transformObjKey(obj, (key: string) => camelCase(key).replace(/Id$/, 'ID'));
   },
   toSnakeObj(obj: IObj): Object | Object[] { // 将Object内的key转为下划线分割命名
-    return transformObjKey(obj, snakeCase)
+    return transformObjKey(obj, snakeCase);
   },
   transformDateRange(dateRange: string[]): string[] {
-    return [`${dateRange[0]} 00:00:00`, `${dateRange[1]} 23:59:59`]
+    return [`${dateRange[0]} 00:00:00`, `${dateRange[1]} 23:59:59`];
+  },
+  encryptSha1(str: string) {
+    return crypto.createHash('sha1').update(str, 'utf8').digest('hex');
   },
   prefixZero(num: string | number, len: number): string {
     // this 是 helper 对象，在其中可以调用其他 helper 方法

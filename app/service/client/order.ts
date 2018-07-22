@@ -38,7 +38,7 @@ export default class OrderService extends BaseService {
           'G.madeIn',
           'G.spec',
           'G.specNum',
-          'G.imgs',
+          'G.carousels',
           'G.description',
           'G.resalePrice',
           'G.unitPrice',

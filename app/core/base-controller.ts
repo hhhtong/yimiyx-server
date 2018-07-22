@@ -25,10 +25,10 @@ export default class BaseController extends Controller {
 
   fail(data: any = {}, code: number = 50001, msg: string = '操作失败') {
     if (typeof data.sqlMessage === 'string') {
-      code = 50002
-      msg = data.sqlMessage
+      code = 50002;
+      msg = data.sqlMessage;
     } else {
-      msg = data.toString()
+      msg = data.errmsg || data.toString();
     }
 
     this.ctx.body = {
@@ -60,8 +60,8 @@ export default class BaseController extends Controller {
    * @param str - 要删除的key
    */
   $expel(obj: Object, str: string | string[]) {
-    if (typeof str === 'string') delete obj[str]
-    else for (const item of str) delete obj[item]
+    if (typeof str === 'string') delete obj[str];
+    else for (const item of str) delete obj[item];
   }
 
   /**
@@ -79,16 +79,16 @@ export default class BaseController extends Controller {
    */
   $mixin(list1: any[], list2: any[]): Object[] {
     if (list2.length <= 0) {
-      list2 = list1
+      list2 = list1;
     }
 
     list2.forEach(item2 => {
-      item2.expand = true
-      item2.readonly = true
+      item2.expand = true;
+      item2.readonly = true;
       list1.forEach(item1 => {
         if (item2.pid === item1.id) {
-          item1.expand = true
-          item1.readonly = true
+          item1.expand = true;
+          item1.readonly = true;
           if (!item1.children) {
             item1.children = [item2];
           } else {
