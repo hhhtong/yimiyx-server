@@ -50,19 +50,18 @@ export default class UserController extends BaseController {
       { method: 'GET', dataType: 'json', data: params }
     );
 
-    console.log(data);
     if (!data.openid || !data.session_key || data.errcode) {
       this.fail(data || '返回数据字段不完整');
     } else {
-      // - 删除过期的skey
-      if (ctx.query.skey) app.redis.del(ctx.query.skey);
-
-      const session: string = JSON.stringify(data);
-      // - 通过生成3rd_session，维护用户的登录态信息
-      const skey = ctx.helper.encryptSha1(data.session_key);
+      let { skey } = ctx.query;
+      // - 删除Redis中过期的skey
+      if (skey) app.redis.del(skey);
+      // - 生成3rd_session
+      skey = ctx.helper.encryptSha1(data.session_key);
       delete data.session_key;
-      // - 将session存到redis中
-      await app.redis.set(skey, session);
+      // - 将session存到Redis中
+      await app.redis.set(skey, JSON.stringify(data));
+      // - 最终将3rd_session返回给前端维系用户的登录态
       this.success(skey);
     }
   }
@@ -70,16 +69,24 @@ export default class UserController extends BaseController {
   // - 更新或者新增用户信息到数据库
   async saveUserInfo() {
     const { skey, encryptedData, iv } = this.ctx.request.body;
-    const { session_key } = await this.app.redis.get(skey);
-    const pc = new WXBizDataCrypt(this.appid, session_key);
-    const data = pc.decryptData(encryptedData, iv)
+    const session = JSON.parse(await this.app.redis.get(skey));
+    let data = null;
+    if (session) {
+      data = new WXBizDataCrypt(this.appid, session.session_key);
+      data = data.decryptData(encryptedData, iv);
+    }
 
-    console.log('解密后 data: ', data)
-    try {
-      await this.service.client.user.updateUserData()
-      this.success();
-    } catch (err) {
-      this.fail(err);
+    // console.log('解密后 data: ', data);
+    if (data.watermark.appid === this.appid) {
+      data.openid = data.openId;
+      data.isAuthorized = 1;
+      this.$expel(data, ['openId', 'watermark']);
+      try {
+        await this.service.client.user.updateUserData(data);
+        this.success();
+      } catch (err) {
+        this.fail(err);
+      }
     }
   }
 }

@@ -1,13 +1,20 @@
 /**
  * 小程序端-用户表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinTable } from 'typeorm';
+import Cart from './client-cart';
 
 @Entity()
 export default class ClientUser {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  /**
+   * 购物车信息
+   */
+  @OneToMany(type => Cart, C => C.user)
+  cart: Cart[];
 
   /**
    * 用户昵称
@@ -51,26 +58,26 @@ export default class ClientUser {
   /**
    * 用户唯一标识，由微信生成
    */
-  @Column('char', { length: 28 })
+  @Column('char', { length: 28, unique: true })
   openid: string;
 
   /**
    * 用户在开放平台的唯一标识符，由微信生成
    */
-  @Column('char', { length: 29 })
+  @Column('char', { length: 29, nullable: true })
   unionid: string;
 
   /**
    * 用户微信头像
    */
-  @Column('varchar', { length: 100 })
+  @Column('varchar', { length: 500 })
   avatarUrl: string;
 
   /**
    * 用户是否授权
    */
   @Column('tinyint', { default: 0 })
-  is_authorized: number;
+  isAuthorized: number;
 
   /**
    * 创建时间

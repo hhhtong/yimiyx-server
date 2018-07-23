@@ -1,3 +1,4 @@
+// - 用于解密小程序获取的用户信息encryptedData字段中的加密敏感数据
 import * as crypto from 'crypto'
 
 class WXBizDataCrypt {

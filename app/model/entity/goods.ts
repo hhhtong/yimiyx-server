@@ -1,11 +1,12 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
 import GoodsTag from './goods-tag';
 import PurchaseMainOrder from './purchase-main-order';
+import ClientCart from './client-cart';
 
 @Entity()
 export default class Goods {
@@ -31,7 +32,6 @@ export default class Goods {
    * 商品标签
    */
   @OneToMany(type => GoodsTag, tag => tag.goods)
-  @JoinTable()
   tags: GoodsTag[];
 
   /**
@@ -39,6 +39,12 @@ export default class Goods {
    */
   @OneToMany(type => PurchaseMainOrder, pgo => pgo.goods)
   purchaseMainOrders: PurchaseMainOrder[];
+
+  /**
+   * 客户端的购物车信息
+   */
+  @ManyToOne(type => ClientCart, CC => CC.goods)
+  clientCart: ClientCart;
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)
