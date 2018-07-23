@@ -58,5 +58,7 @@ export default (app: Application) => {
   router.post('/client/user/save', controller.client.user.saveUserInfo);
 
   // - Client/CartController
-  // router.get('/client/cart', controller.client.cart.index);
+  router.get('/client/cart', controller.client.cart.getCart);
+  router.delete('/client/cart', controller.client.cart.removeCart);
+  router.put('/client/cart', controller.client.cart.addCart);
 };

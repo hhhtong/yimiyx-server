@@ -6,4 +6,3 @@ import 'egg-webpack-vue';
 import 'egg-logview';
 import 'egg-view-vue-ssr';
 import 'egg-cors';
-import 'egg-redis';

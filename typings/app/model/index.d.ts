@@ -1,6 +1,7 @@
 // This file was auto created by egg-ts-helper
 // Do not modify this file!!!!!!!!!
 
+import EntityClientCart from '../../../app/model/entity/client-cart';
 import EntityClientUser from '../../../app/model/entity/client-user';
 import EntityGoodsCategory from '../../../app/model/entity/goods-category';
 import EntityGoodsTag from '../../../app/model/entity/goods-tag';
@@ -20,6 +21,7 @@ import NamingStrategySnakeNaming from '../../../app/model/naming-strategy/snake-
 declare module 'sequelize' {
   interface Sequelize {
     Entity: {
+      ClientCart: ReturnType<typeof EntityClientCart>;
       ClientUser: ReturnType<typeof EntityClientUser>;
       GoodsCategory: ReturnType<typeof EntityGoodsCategory>;
       GoodsTag: ReturnType<typeof EntityGoodsTag>;
