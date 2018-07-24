@@ -2,7 +2,7 @@ import BaseController from '../../core/base-controller';
 
 export default class GoodsController extends BaseController {
 
-  async index() {
+  async index(): Promise<void> {
     const { service } = this;
     try {
       let list = await service.client.goods.queryOnline();
@@ -13,7 +13,7 @@ export default class GoodsController extends BaseController {
     }
   }
 
-  async detail() {
+  async detail(): Promise<void> {
     const { id } = this.ctx.query;
     try {
       const rowData = await this.service.client.goods.queryOne(id);
@@ -26,7 +26,7 @@ export default class GoodsController extends BaseController {
     }
   }
 
-  __dispose(item: any) {
+  __dispose(item: any): void {
     const { spec, unitPrice, categorys } = item;
     item.carousels = item.carousels ? JSON.parse(item.carousels) : [];
     item.specList = [{ spec, unitPrice }]; // - 暂时只有一种规格

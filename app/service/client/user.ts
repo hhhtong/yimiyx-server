@@ -25,16 +25,16 @@ export default class UserService extends BaseService {
   // -------------------------------------------------------------------------
 
   // - 查询指定openid的用户
-  async findByOpenid(openid: string) {
+  async findByOpenid(openid: string): Promise<User> {
     try {
-
+      return await this.User.findOne({ openid });
     } catch (err) {
       this.error(err);
     }
   }
 
   // - 插入新用户或者更新用户
-  async updateUserData(userInfo: any) {
+  async updateUserData(userInfo: User): Promise<void> {
     try {
       await this.User.save(userInfo)
     } catch (err) {

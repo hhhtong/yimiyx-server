@@ -6,7 +6,7 @@ import * as fs from 'fs-extra';
 
 export default class GoodsController extends BaseController {
   // - 获得商品列表
-  async index() {
+  async index(): Promise<void> {
     const { service, ctx } = this;
     try {
       let { list, total } = await service.admin.goods.queryAll(ctx.query);
@@ -22,7 +22,7 @@ export default class GoodsController extends BaseController {
   }
 
   // - 获取单个商品信息
-  async one() {
+  async one(): Promise<void> {
     const { goodsNo } = this.ctx.query;
     try {
       const data = await this.service.admin.goods.queryOne(goodsNo);
@@ -33,9 +33,9 @@ export default class GoodsController extends BaseController {
   }
 
   // - 保存商品
-  async save() {
+  async save(): Promise<void> {
     const { service, ctx } = this;
-    const rowData = ctx.request.body;
+    const rowData: any = ctx.request.body;
 
     if (!rowData.goodsNo) { // 无goodsNo参数时 表示新增
       try {
@@ -47,7 +47,7 @@ export default class GoodsController extends BaseController {
     }
 
     // 获取Goods表中的categorys[]
-    let categorys = [];
+    let categorys: any[] = [];
     for (const item of rowData.categorys) {
       categorys = [...categorys, ...item.ids.map(id => ({ id }))];
     }
@@ -62,7 +62,7 @@ export default class GoodsController extends BaseController {
   }
 
   // - 删除商品
-  async delete() {
+  async delete(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
     try {
@@ -74,16 +74,16 @@ export default class GoodsController extends BaseController {
   }
 
   // - 保存上传的图片
-  async uploadImg() {
+  async uploadImg(): Promise<void> {
     const { ctx } = this;
     const { baseDir } = this.config;
     const stream = await ctx.getFileStream();
-    const filename = ctx.helper.uuid(15, 36) + path.extname(stream.filename).toLowerCase();
+    const filename: string = ctx.helper.uuid(15, 36) + path.extname(stream.filename).toLowerCase();
     // - 存储路径按商品编码归类：public/upload/goods/0523133306/3HYHHSWYEH8X7AY.png
-    const dir = path.join(baseDir, 'public/upload/goods', stream.fields.goodsNo);
+    const dir: string = path.join(baseDir, 'public/upload/goods', stream.fields.goodsNo);
 
     await fs.ensureDir(dir); // - 确保该目录存在，否则创建一个
-    const target = path.join(dir, filename);
+    const target: string = path.join(dir, filename);
     const writeStream = fs.createWriteStream(target);
     try {
       await awaitWriteStream(stream.pipe(writeStream));
@@ -95,9 +95,9 @@ export default class GoodsController extends BaseController {
   }
 
   // - 保存或者补充商品详细信息, 将完善该记录的一些字段数据到数据库，通常用于第一次上架该商品
-  async saveFull() {
+  async saveFull(): Promise<void> {
     const { service, ctx } = this;
-    const params = ctx.request.body;
+    const params: any = ctx.request.body;
     const { id } = params;
     delete params.categorys; // - 删除类目，不然保存的时候会更新类目
     try {
@@ -113,12 +113,12 @@ export default class GoodsController extends BaseController {
   }
 
   // - 切换商品状态(1：在售 OR 0：下架)
-  async toggleStatus() {
+  async toggleStatus(): Promise<void> {
     const { service, ctx } = this;
     let { id, isOnline } = ctx.request.body;
     isOnline = isOnline === 1 ? 0 : 1;
     try {
-      const rowData = await service.admin.goods.findById(id);
+      const rowData: any = await service.admin.goods.findById(id);
       await service.admin.goods.saveOne({ ...rowData, isOnline });
       this.success(isOnline)
     } catch (err) {

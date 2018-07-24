@@ -1,6 +1,17 @@
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import GoodsCategory from '../../model/entity/goods-category';
+import { Query } from '../../common/query-interface';
+
+interface IQuery extends Query {
+  name?: string
+}
+
+type IQueryResult<T> = {
+  list: T[],
+  total: number,
+  idMax?: number
+} | T[] | T
 
 export default class GoodsCategoryService extends BaseService {
 
@@ -24,32 +35,35 @@ export default class GoodsCategoryService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async query({ page = 1, rows = 20, name }) {
-    const where = name ? `category.name LIKE '%${name}%'` : '1 = 1';
+  async query({
+    page = 1,
+    rows = 20,
+    name }: IQuery): Promise<IQueryResult<GoodsCategory>> {
+    const where: string = name ? `category.name LIKE '%${name}%'` : '1 = 1';
 
     try {
-      const query = await this.GC.createQueryBuilder('category');
-      const list = await query
+      const query: SelectQueryBuilder<GoodsCategory> = await this.GC.createQueryBuilder('category');
+      const list: GoodsCategory[] = await query
         .andWhere(`(${where} OR category.type != 1)`)
         .orderBy('category.no', 'DESC')
         // .skip((page - 1) * rows)
         // .take(rows)
         .getMany();
-      const total = await query
+      const total: number = await query
         .andWhere(`(${where} AND category.type = 1)`)
         .getCount();
-      const idMax = await query
+      const { idMax } = await query
         .andWhere(where)
         .select("MAX(id) AS idMax")
-        .getRawMany();
+        .getRawOne();
 
-      return { list, total, idMax: idMax[0].idMax };
+      return { list, total, idMax: idMax };
     } catch (error) {
       this.error(error);
     }
   }
 
-  async save(rowData: any) {
+  async save(rowData: GoodsCategory): Promise<void> {
     try {
       await this.GC.save(rowData);
     } catch (error) {
@@ -57,7 +71,7 @@ export default class GoodsCategoryService extends BaseService {
     }
   }
 
-  async delete(ids: number[]) {
+  async delete(ids: number[]): Promise<void> {
     try {
       await this.GC.remove(await this.GC.findByIds(ids))
     } catch (error) {

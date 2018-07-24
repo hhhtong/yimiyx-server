@@ -3,7 +3,7 @@ import BaseController from '../../core/base-controller';
 
 export default class SupplierController extends BaseController {
 
-  async index() {
+  async index(): Promise<void> {
     const { service, ctx } = this;
     try {
       const result: object = await service.admin.supplier.query(ctx.query);
@@ -14,7 +14,7 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  async add() {
+  async add(): Promise<void> {
     const { service, ctx } = this;
     try {
       await service.admin.supplier.insert(ctx.request.body);
@@ -24,7 +24,7 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
 
@@ -36,7 +36,7 @@ export default class SupplierController extends BaseController {
     }
   }
 
-  async update() {
+  async update(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
 

@@ -2,7 +2,7 @@ import BaseController from '../../core/base-controller';
 
 export default class GoodsCategoryController extends BaseController {
 
-  async index() {
+  async index(): Promise<void> {
     const { service, ctx } = this;
     try {
       let { list, total, idMax } = await service.admin.goodsCategory.query(ctx.query);
@@ -12,7 +12,7 @@ export default class GoodsCategoryController extends BaseController {
     }
   }
 
-  async save() {
+  async save(): Promise<void> {
     const { service, ctx } = this;
     const [treeData, deleteIds]: Array<any[]> = ctx.request.body;
 
@@ -27,7 +27,7 @@ export default class GoodsCategoryController extends BaseController {
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
     try {

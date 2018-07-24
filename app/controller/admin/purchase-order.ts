@@ -25,7 +25,7 @@ export default class PurchaseOrderController extends BaseController {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async index() {
+  async index(): Promise<void> {
     const { service, ctx } = this;
     const { dateRange } = ctx.queries;
     if (dateRange && dateRange.join('').length > 0) {
@@ -54,7 +54,7 @@ export default class PurchaseOrderController extends BaseController {
     }
   }
 
-  async add() {
+  async add(): Promise<void> {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
     // - 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
@@ -84,7 +84,7 @@ export default class PurchaseOrderController extends BaseController {
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
 
@@ -97,7 +97,7 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   // - 该方法暂时没用到
-  async update() {
+  async update(): Promise<void> {
     const { service, ctx } = this;
     const rowData: any = ctx.request.body;
 
@@ -109,7 +109,7 @@ export default class PurchaseOrderController extends BaseController {
     }
   }
 
-  async details() {
+  async details(): Promise<void> {
     const { service, ctx } = this;
 
     try {
@@ -125,13 +125,13 @@ export default class PurchaseOrderController extends BaseController {
   // -------------------------------------------------------------------------
 
   // - 批量生成二维码
-  async __generateQRCode() {
+  async __generateQRCode(): Promise<void> {
     for (const code of this.codes) await this.ctx.app.generateQRCode(code);
     this.codes = [];
   }
 
   // - 生成采购商品单主订单数据
-  async __generatePurchaseMainOrder(_goods) {
+  async __generatePurchaseMainOrder(_goods): Promise<any[]> {
     let mainOrders = [];
     for (const goods of _goods) {
       // - 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
@@ -152,7 +152,7 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   // - 生成采购商品单子订单数据
-  async __generatePurchaseChildOrder({ goodsNo, specNum }) {
+  async __generatePurchaseChildOrder({ goodsNo, specNum }): Promise<any[]> {
     let childOrders = [];
     for (let index = 1; index <= specNum; index++) {
       // - 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)

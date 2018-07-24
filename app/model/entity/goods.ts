@@ -1,7 +1,7 @@
 /**
  * 商品表
  */
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import Store from './store';
 import GoodsCategory from './goods-category';
 import GoodsTag from './goods-tag';
@@ -43,8 +43,9 @@ export default class Goods {
   /**
    * 客户端的购物车信息
    */
-  @ManyToOne(type => ClientCart, CC => CC.goods)
-  clientCart: ClientCart;
+  @ManyToMany(type => ClientCart, CC => CC.goods)
+  @JoinTable()
+  clientCart: ClientCart[];
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)

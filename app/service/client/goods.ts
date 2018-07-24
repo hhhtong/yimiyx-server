@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Goods from '../../model/entity/goods';
 
@@ -31,9 +31,9 @@ export default class GoodsService extends BaseService {
   // async queryOnlineGoodsCategorys() { }
 
   // - 获得所有的在售商品
-  async queryOnline() {
+  async queryOnline(): Promise<Goods[]> {
     try {
-      const list: any = this.Goods
+      const list: SelectQueryBuilder<Goods> = this.Goods
         .createQueryBuilder('G')
         .where('ISNULL(G.deletedAt)')
         .andWhere('G.isOnline = 1')
@@ -65,9 +65,9 @@ export default class GoodsService extends BaseService {
   }
 
   // - 查询一个商品详细
-  async queryOne(id: number) {
+  async queryOne(id: number): Promise<Goods> {
     try {
-      const data: any = await this.Goods
+      const data: SelectQueryBuilder<Goods> = await this.Goods
         .createQueryBuilder('G')
         .where('G.id = :id', { id })
         .leftJoin('G.tags', 'T')

@@ -10,9 +10,6 @@ import { Controller } from 'egg';
  * ...
  */
 export default class BaseController extends Controller {
-  get user() {
-    return this.ctx.session.user;
-  }
 
   success(data: any = {}, msg: string = '操作成功') {
     this.ctx.body = {
@@ -36,11 +33,6 @@ export default class BaseController extends Controller {
       data,
       msg
     };
-  }
-
-  notFound(msg) {
-    msg = msg || 'not found';
-    this.ctx.throw(404, msg);
   }
 
   /**

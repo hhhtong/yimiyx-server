@@ -3,13 +3,13 @@ import { Controller } from 'egg';
 export default class HomeController extends Controller {
 
   // - 客户端渲染
-  async index() {
+  async index(): Promise<void> {
     const { ctx } = this;
     await ctx.renderClient('app/app.js');
   }
 
   // - 服务端渲染
-  async server() {
+  async server(): Promise<void> {
     await this.ctx.render('app/app.js', { message: 'server render demo' });
   }
 }
