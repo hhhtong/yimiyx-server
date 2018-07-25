@@ -37,17 +37,28 @@ export default class CartService extends BaseService {
   // - 通过openid获得该用户下的所有购物车里的商品
   async findByOpenid(openid: string): Promise<Cart[]> {
     try {
-      return await this.Cart.find({
-        join: {
-          alias: 'C',
-          leftJoinAndSelect: {
-            U: 'C.user',
-            G: 'C.goods'
-          }
-        },
-        where: `U.openid = ${openid}`,
-        order: { 'createdAt': 'DESC' }
-      });
+      const res: Cart[] = await this.Cart
+        .createQueryBuilder('C')
+        .leftJoin('C.user', 'U')
+        .leftJoin('C.goods', 'G')
+        .where('U.openid = :openid')
+        .setParameters({ openid })
+        .orderBy('C.createdAt', 'DESC')
+        .select([
+          'C.id',
+          'C.quantity',
+          'C.updatedAt',
+          'G.id',
+          'G.activityType',
+          'G.cover',
+          'G.spec',
+          'G.description',
+          'G.goodsName',
+          'G.resalePrice',
+          'G.unitPrice'
+        ])
+        .getMany();
+      return res;
     } catch (err) {
       this.error(err);
     }
@@ -69,7 +80,7 @@ export default class CartService extends BaseService {
     }
   }
 
-  // - 新增一个商品到购物车
+  // - 新增或者更新一个商品到数据库
   async save(raw: IParams): Promise<void> {
     try {
       await this.Cart.save(raw);
@@ -78,7 +89,7 @@ export default class CartService extends BaseService {
     }
   }
 
-  // - 从购物车中删除一个商品
+  // - 从购物车记录中删除一条数据
   async delete(openid: string, goodsId: number): Promise<Cart> {
     try {
       const raw = await this.Cart.findOne(goodsId);

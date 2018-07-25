@@ -1,7 +1,7 @@
 /**
  * 小程序端-购物车表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinTable, ManyToOne, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import User from './client-user';
 import Goods from './goods';
 
@@ -20,9 +20,8 @@ export default class ClientCart {
   /**
    * 商品信息
    */
-  @ManyToMany(type => Goods, G=> G.clientCart)
-  @JoinTable()
-  goods: Goods[];
+  @ManyToOne(type => Goods, G=> G.clientCart)
+  goods: Goods;
 
   /**
    * 商品数量

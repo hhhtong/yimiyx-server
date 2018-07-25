@@ -29,6 +29,12 @@ export default class Goods {
   categorys: GoodsCategory[];
 
   /**
+   * 客户端的购物车信息
+   */
+  @OneToMany(type => ClientCart, CC => CC.goods)
+  clientCart: ClientCart[];
+
+  /**
    * 商品标签
    */
   @OneToMany(type => GoodsTag, tag => tag.goods)
@@ -39,13 +45,6 @@ export default class Goods {
    */
   @OneToMany(type => PurchaseMainOrder, pgo => pgo.goods)
   purchaseMainOrders: PurchaseMainOrder[];
-
-  /**
-   * 客户端的购物车信息
-   */
-  @ManyToMany(type => ClientCart, CC => CC.goods)
-  @JoinTable()
-  clientCart: ClientCart[];
 
   /**
    * 商品编号 eg: 0502020001 三级类目(050202)+000+商品id(1)

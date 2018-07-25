@@ -59,6 +59,6 @@ export default (app: Application) => {
 
   // - Client/CartController
   router.get('/client/cart', controller.client.cart.getCart);
-  router.delete('/client/cart', controller.client.cart.removeCart);
   router.put('/client/cart', controller.client.cart.addCart);
+  router.delete('/client/cart', controller.client.cart.removeCart);
 };

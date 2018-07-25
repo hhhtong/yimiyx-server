@@ -93,7 +93,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 删除一个商品
-  async deleteOne(rowData: any): Promise<void> {
+  async deleteOne(rowData: Goods): Promise<void> {
     try {
       await this.Goods.save({ ...rowData, deletedAt: new Date() });
     } catch (err) {
@@ -111,7 +111,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 保存一个商品
-  async saveOne(rowData: any): Promise<void> {
+  async saveOne(rowData: Goods): Promise<void> {
     try {
       await this.Goods.save(this.Goods.create(rowData));
     } catch (err) {
