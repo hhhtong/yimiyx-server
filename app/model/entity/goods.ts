@@ -6,7 +6,7 @@ import Store from './store';
 import GoodsCategory from './goods-category';
 import GoodsTag from './goods-tag';
 import PurchaseMainOrder from './purchase-main-order';
-import ClientCart from './client-cart';
+import ClientCart from './cart';
 
 @Entity()
 export default class Goods {

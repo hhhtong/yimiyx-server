@@ -1,12 +1,12 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
-import User from '../../model/entity/client-user';
-import Cart from '../../model/entity/client-cart';
+import User from '../../model/entity/user';
+import Cart from '../../model/entity/cart';
 
 interface IParams {
   openid: string,
   goodsId: number,
-  quantity: number
+  goodsNum: number
 }
 
 export default class CartService extends BaseService {
@@ -37,17 +37,18 @@ export default class CartService extends BaseService {
   // - 通过openid获得该用户下的所有购物车里的商品
   async findByOpenid(openid: string): Promise<Cart[]> {
     try {
+      this.Cart.find
       const res: Cart[] = await this.Cart
         .createQueryBuilder('C')
         .leftJoin('C.user', 'U')
         .leftJoin('C.goods', 'G')
+        .leftJoin('G.tags', 'T')
         .where('U.openid = :openid')
         .setParameters({ openid })
         .orderBy('C.createdAt', 'DESC')
         .select([
           'C.id',
-          'C.quantity',
-          'C.updatedAt',
+          'C.num',
           'G.id',
           'G.activityType',
           'G.cover',
@@ -55,7 +56,8 @@ export default class CartService extends BaseService {
           'G.description',
           'G.goodsName',
           'G.resalePrice',
-          'G.unitPrice'
+          'G.unitPrice',
+          'T.tagName'
         ])
         .getMany();
       return res;

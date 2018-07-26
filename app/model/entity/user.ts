@@ -2,10 +2,10 @@
  * 小程序端-用户表
  */
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinTable } from 'typeorm';
-import Cart from './client-cart';
+import Cart from './cart';
 
 @Entity()
-export default class ClientUser {
+export default class User {
 
   @PrimaryGeneratedColumn()
   id: number;

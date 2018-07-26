@@ -8,6 +8,14 @@ export default class CartController extends BaseWxController {
     try {
       const { openid } = await this.$skey2openid(skey);
       const result = await this.service.client.cart.findByOpenid(openid);
+      // - 数据塞成平级
+      result.forEach((item, index) => {
+        item.goods.goodsId = item.goods.id;
+        item.goods.tagName = item.goods.tags[0].tagName;
+        this.$expel(item.goods, 'id');
+        result[index] = { ...item, ...item.goods };
+        this.$expel(result[index], ['goods', 'tags']);
+      })
       this.success(result);
     } catch (err) {
       this.fail(err);
@@ -23,12 +31,12 @@ export default class CartController extends BaseWxController {
       const raw = await service.client.cart.findByGoodsId(openid, id);
       if (raw.id) {
         // - 商品存在于数据库中，直接对数量+1
-        raw.quantity++;
+        raw.goodsNum++;
       } else {
         // - 找到user_id,不等同于openid
         const userData = await service.client.user.findByOpenid(openid);
         // - 表中不存在数据，表示第一次新增，对商品数量赋值1
-        raw.quantity = 1;
+        raw.goodsNum = 1;
         raw.user = { id: userData.id };
         raw.goods = { id };
       }
@@ -46,7 +54,7 @@ export default class CartController extends BaseWxController {
     try {
       const { openid } = await this.$skey2openid(skey);
       const raw = await service.client.cart.findByGoodsId(openid, id);
-      if (--raw.quantity <= 0) {
+      if (--raw.num <= 0) {
         // - 购物车中该商品的数量减去本次 <=0 直接从数据库中删除该记录
         await service.client.cart.delete(openid, id);
       } else {

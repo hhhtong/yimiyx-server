@@ -15,7 +15,7 @@
     "start:win": "cross-env NODE_ENV=production EGG_SERVER_ENV=prod node index.js",
     "start:test": "cross-env EGG_SERVER_ENV=test node index.js",
     "restart": "npm run stop && npm run start",
-    "kill": "kill -9 $(lsof -i:7001 |grep 'node'|awk '{print $2}')",
+    "kill": "kill -9 $(lsof -i:9000 -i:9001 -i:7001 |grep 'node'|awk '{print $2}')",
     "kill:win": "taskkill -PID $(netstat -ano | findstr 7001|awk '{print $5}') -F",
     "lint:fix": "tslint --fix . && eslint --fix ."
   },

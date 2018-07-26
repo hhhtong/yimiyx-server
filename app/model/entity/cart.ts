@@ -2,11 +2,11 @@
  * 小程序端-购物车表
  */
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import User from './client-user';
+import User from './user';
 import Goods from './goods';
 
 @Entity()
-export default class ClientCart {
+export default class Cart {
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,7 +27,7 @@ export default class ClientCart {
    * 商品数量
    */
   @Column('int')
-  quantity: number;
+  goodsNum: number;
 
   /**
    * 创建时间

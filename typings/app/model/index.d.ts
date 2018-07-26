@@ -1,8 +1,8 @@
 // This file was auto created by egg-ts-helper
 // Do not modify this file!!!!!!!!!
 
-import EntityClientCart from '../../../app/model/entity/client-cart';
-import EntityClientUser from '../../../app/model/entity/client-user';
+import EntityCart from '../../../app/model/entity/cart';
+import EntityCoupon from '../../../app/model/entity/coupon';
 import EntityGoodsCategory from '../../../app/model/entity/goods-category';
 import EntityGoodsTag from '../../../app/model/entity/goods-tag';
 import EntityGoodsUnit from '../../../app/model/entity/goods-unit';
@@ -16,13 +16,14 @@ import EntitySupplier from '../../../app/model/entity/supplier';
 import EntitySysAdminDepartment from '../../../app/model/entity/sys-admin-department';
 import EntitySysAdminRole from '../../../app/model/entity/sys-admin-role';
 import EntitySysAdminUser from '../../../app/model/entity/sys-admin-user';
+import EntityUser from '../../../app/model/entity/user';
 import NamingStrategySnakeNaming from '../../../app/model/naming-strategy/snake-naming';
 
 declare module 'sequelize' {
   interface Sequelize {
     Entity: {
-      ClientCart: ReturnType<typeof EntityClientCart>;
-      ClientUser: ReturnType<typeof EntityClientUser>;
+      Cart: ReturnType<typeof EntityCart>;
+      Coupon: ReturnType<typeof EntityCoupon>;
       GoodsCategory: ReturnType<typeof EntityGoodsCategory>;
       GoodsTag: ReturnType<typeof EntityGoodsTag>;
       GoodsUnit: ReturnType<typeof EntityGoodsUnit>;
@@ -36,6 +37,7 @@ declare module 'sequelize' {
       SysAdminDepartment: ReturnType<typeof EntitySysAdminDepartment>;
       SysAdminRole: ReturnType<typeof EntitySysAdminRole>;
       SysAdminUser: ReturnType<typeof EntitySysAdminUser>;
+      User: ReturnType<typeof EntityUser>;
     };
     NamingStrategy: {
       SnakeNaming: ReturnType<typeof NamingStrategySnakeNaming>;

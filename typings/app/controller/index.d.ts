@@ -8,7 +8,6 @@ import AdminHome from '../../../app/controller/admin/home';
 import AdminPurchaseOrder from '../../../app/controller/admin/purchase-order';
 import AdminSupplier from '../../../app/controller/admin/supplier';
 import ClientCart from '../../../app/controller/client/cart';
-import ClientCommon from '../../../app/controller/client/common';
 import ClientGoods from '../../../app/controller/client/goods';
 import ClientOrder from '../../../app/controller/client/order';
 import ClientPay from '../../../app/controller/client/pay';
@@ -26,7 +25,6 @@ declare module 'egg' {
     };
     client: {
       cart: ClientCart;
-      common: ClientCommon;
       goods: ClientGoods;
       order: ClientOrder;
       pay: ClientPay;

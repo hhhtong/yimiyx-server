@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import BaseService from '../../core/base-service';
-import User from '../../model/entity/client-user';
+import User from '../../model/entity/user';
 
 export default class UserService extends BaseService {
 
