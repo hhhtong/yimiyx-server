@@ -1,4 +1,5 @@
 import { Controller } from 'egg';
+import { GoodsCategoryLiteral, GoodsCategoryResult } from '../common/query-interface';
 /**
  * 业务码说明
  * 50000 操作成功
@@ -96,13 +97,13 @@ export default class BaseController extends Controller {
   /**
    * 将商品树形结构转成平级结构
    */
-  $unmixin(list: any): Object[] {
-    const categoryList = [];
+  $unmixin(list: any): GoodsCategoryResult[] {
+    const categoryList: GoodsCategoryResult[] = [];
     const next = (item: any) => {
       if (item.name !== '') {
         categoryList.push(item);
       }
-      if (item.children instanceof Array) {
+      if (Array.isArray(item.children)) {
         item.children.forEach(children => next(children));
       }
     };

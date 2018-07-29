@@ -2,6 +2,7 @@
 // Do not modify this file!!!!!!!!!
 
 import Test from '../../../app/controller/test';
+import AdminCoupon from '../../../app/controller/admin/coupon';
 import AdminGoodsCategory from '../../../app/controller/admin/goods-category';
 import AdminGoods from '../../../app/controller/admin/goods';
 import AdminHome from '../../../app/controller/admin/home';
@@ -17,6 +18,7 @@ declare module 'egg' {
   interface IController {
     test: Test;
     admin: {
+      coupon: AdminCoupon;
       goodsCategory: AdminGoodsCategory;
       goods: AdminGoods;
       home: AdminHome;

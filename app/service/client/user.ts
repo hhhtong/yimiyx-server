@@ -33,8 +33,8 @@ export default class UserService extends BaseService {
     }
   }
 
-  // - 插入新用户或者更新用户
-  async updateUserData(userInfo: User): Promise<void> {
+  // - 添加新用户
+  async insertNewUser(userInfo: Partial<User>): Promise<void> {
     try {
       await this.User.save(userInfo)
     } catch (err) {

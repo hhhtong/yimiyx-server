@@ -1,17 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import GoodsCategory from '../../model/entity/goods-category';
-import { Query } from '../../common/query-interface';
-
-interface IQuery extends Query {
-  name?: string
-}
-
-type IQueryResult<T> = {
-  list: T[],
-  total: number,
-  idMax?: number
-} | T[] | T
+import { GoodsCategoryQuery, GoodsCategoryResult } from '../../common/query-interface';
 
 export default class GoodsCategoryService extends BaseService {
 
@@ -38,7 +28,7 @@ export default class GoodsCategoryService extends BaseService {
   async query({
     page = 1,
     rows = 20,
-    name }: IQuery): Promise<IQueryResult<GoodsCategory>> {
+    name }: GoodsCategoryQuery): Promise<GoodsCategoryResult> {
     const where: string = name ? `category.name LIKE '%${name}%'` : '1 = 1';
 
     try {
@@ -58,24 +48,24 @@ export default class GoodsCategoryService extends BaseService {
         .getRawOne();
 
       return { list, total, idMax: idMax };
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
     }
   }
 
-  async save(rowData: GoodsCategory): Promise<void> {
+  async save(rowData: Partial<GoodsCategory>): Promise<void> {
     try {
-      await this.GC.save(rowData);
-    } catch (error) {
-      this.error(error);
+      await this.GC.save(this.GC.create(rowData));
+    } catch (err) {
+      this.error(err);
     }
   }
 
   async delete(ids: number[]): Promise<void> {
     try {
       await this.GC.remove(await this.GC.findByIds(ids))
-    } catch (error) {
-      this.error(error);
+    } catch (err) {
+      this.error(err);
     }
   }
 }

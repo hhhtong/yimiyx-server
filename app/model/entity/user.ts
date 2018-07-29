@@ -1,8 +1,9 @@
 /**
  * 小程序端-用户表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import Cart from './cart';
+import Coupon from './coupon';
 
 @Entity()
 export default class User {
@@ -11,10 +12,17 @@ export default class User {
   id: number;
 
   /**
-   * 购物车信息
+   * 购物车
    */
   @OneToMany(type => Cart, C => C.user)
   cart: Cart[];
+
+  /**
+   * 优惠券
+   */
+  @ManyToMany(type => Coupon, C => C.user)
+  @JoinTable()
+  coupons: Coupon[];
 
   /**
    * 用户昵称

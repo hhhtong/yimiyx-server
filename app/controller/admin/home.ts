@@ -4,8 +4,7 @@ export default class HomeController extends Controller {
 
   // - 客户端渲染
   async index(): Promise<void> {
-    const { ctx } = this;
-    await ctx.renderClient('app/app.js');
+    await this.ctx.renderClient('app/app.js');
   }
 
   // - 服务端渲染

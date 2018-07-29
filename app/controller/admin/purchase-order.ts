@@ -1,5 +1,6 @@
 import BaseController from '../../core/base-controller';
 import { getConnection, QueryRunner } from 'typeorm';
+import { PurchaseMainOrderLiteral, PurchaseChildOrderLiteral, PurchaseOrderResult, PurchaseOrderLiteral } from '../../common/query-interface';
 
 export default class PurchaseOrderController extends BaseController {
 
@@ -36,8 +37,8 @@ export default class PurchaseOrderController extends BaseController {
     // ctx.app.generateQRCode('CG20180605' + Date.now());
 
     try {
-      const result: any = await service.admin.purchaseOrder.find(ctx.query);
-      result.list.forEach(item => {
+      const result: PurchaseOrderResult = await service.admin.purchaseOrder.find(ctx.query);
+      (result as any).list.forEach(item => {
         // - 将需要用到的字段放到最外层
         item.categoryName = item.category.name;
         item.categoryID = item.category.id;
@@ -58,24 +59,33 @@ export default class PurchaseOrderController extends BaseController {
     const { service, ctx } = this;
     const { categoryID, supplierID, goods, transactor, remark } = ctx.request.body;
     // - 采购单编号生成规则：CG(`采购`首字母) + 20180415150610(YYYYMMDDHHmmss) + E0STI4(6位随机UUID)
-    const id = 'CG' + ctx.helper.moment(new Date()).format('YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
+    const id: string = 'CG' + ctx.helper.moment(new Date()).format('YYYYMMDDHHmmss') + ctx.helper.uuid(6, 36);
     await this.queryRunner.startTransaction(); // - 开启事务
 
     try {
-      const rowData = {
-        id,
-        category: { id: categoryID },
-        supplier: { id: supplierID },
-        mainOrders: await this.__generatePurchaseMainOrder(goods),
-        transactor,
-        remark,
-        status: 1
-      };
+      const raw: PurchaseOrderResult = this.service.admin.purchaseOrder.purchaseOrderInstance;
+      raw.id = id;
+      raw.category.id = categoryID;
+      raw.supplier.id = supplierID;
+      raw.mainOrders = await this.__generatePurchaseMainOrder(goods);
+      raw.transactor = transactor;
+      raw.remark = remark;
+      raw.status = 1;
+
+      // const raw: PurchaseOrderLiteral = {
+      //   id,
+      //   category: { id: categoryID },
+      //   supplier: { id: supplierID },
+      //   mainOrders: await this.__generatePurchaseMainOrder(goods),
+      //   transactor,
+      //   remark,
+      //   status: 1
+      // };
 
       this.codes.unshift(id);
       this.__generateQRCode();
 
-      await service.admin.purchaseOrder.insertPurchaseOrder(rowData);
+      await service.admin.purchaseOrder.insertPurchaseOrder(raw);
       await this.queryRunner.commitTransaction(); // - 提交事务
       this.success();
     } catch (error) {
@@ -85,11 +95,9 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   async delete(): Promise<void> {
-    const { service, ctx } = this;
-    const rowData: any = ctx.request.body;
-
+    const params: PurchaseOrderLiteral = this.ctx.request.body;
     try {
-      await service.admin.purchaseOrder.deletePurchaseOrder(rowData);
+      await this.service.admin.purchaseOrder.deletePurchaseOrder(params);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -98,11 +106,9 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 该方法暂时没用到
   async update(): Promise<void> {
-    const { service, ctx } = this;
-    const rowData: any = ctx.request.body;
-
+    const params: PurchaseOrderLiteral = this.ctx.request.body;
     try {
-      await service.admin.purchaseOrder.updatePurchaseOrder(rowData);
+      await this.service.admin.purchaseOrder.updatePurchaseOrder(params);
       this.success();
     } catch (error) {
       this.fail(error);
@@ -110,10 +116,9 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   async details(): Promise<void> {
-    const { service, ctx } = this;
-
+    const id: number = this.ctx.query.id;
     try {
-      const result: object = await service.admin.purchaseOrder.findOne(ctx.query.id);
+      const result: PurchaseOrderResult = await this.service.admin.purchaseOrder.findOne(id);
       this.success(result);
     } catch (error) {
       this.fail(error);
@@ -132,10 +137,10 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 生成采购商品单主订单数据
   async __generatePurchaseMainOrder(_goods): Promise<any[]> {
-    let mainOrders = [];
+    let mainOrders: PurchaseMainOrderLiteral[] = [];
     for (const goods of _goods) {
       // - 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
-      const mid = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
+      const mid: string = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
       mainOrders.push({
         mid,
         goods,
@@ -153,10 +158,10 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 生成采购商品单子订单数据
   async __generatePurchaseChildOrder({ goodsNo, specNum }): Promise<any[]> {
-    let childOrders = [];
+    let childOrders: PurchaseChildOrderLiteral[] = [];
     for (let index = 1; index <= specNum; index++) {
       // - 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
-      const cid = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
+      const cid: string = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);
       childOrders.push({ cid });
       this.codes.unshift(cid);
     }

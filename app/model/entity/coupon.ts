@@ -1,13 +1,20 @@
 /**
  * 优惠券表
  */
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import User from './user';
 
 @Entity()
 export default class Coupon {
 
   @PrimaryGeneratedColumn()
   couponId: number;
+
+  /**
+   * 用户拥有的优惠券
+   */
+  @ManyToMany(type => User, U => U.coupons)
+  user: User[];
 
   /**
    * 优惠券名称

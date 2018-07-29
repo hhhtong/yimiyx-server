@@ -67,7 +67,7 @@ export default class UserController extends BaseWxController {
     }
   }
 
-  // - 更新或者新增用户信息到数据库
+  // - 新增用户信息
   async saveUserInfo(): Promise<void> {
     const { skey, encryptedData, iv } = this.ctx.request.body;
     const session = await this.$skey2openid(skey);
@@ -83,7 +83,7 @@ export default class UserController extends BaseWxController {
     data.isAuthorized = 1;
     this.$expel(data, ['openId', 'watermark']);
     try {
-      await this.service.client.user.updateUserData(data);
+      await this.service.client.user.insertNewUser(data);
       this.success();
     } catch (err) {
       this.fail(err);

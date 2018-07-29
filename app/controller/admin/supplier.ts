@@ -1,50 +1,47 @@
 import BaseController from '../../core/base-controller';
-// import * as moment from 'moment';
+import { SupplierQuery, SupplierResult, SupplierLiteral } from '../../common/query-interface';
 
 export default class SupplierController extends BaseController {
 
   async index(): Promise<void> {
-    const { service, ctx } = this;
+    const query: SupplierQuery = this.ctx.query;
     try {
-      const result: object = await service.admin.supplier.query(ctx.query);
-      // list.forEach(item => item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss'))
+      const result: SupplierResult = await this.service.admin.supplier.query(query);
+      (result as any).list.forEach(item => this.$sqlDateFormat(item, 'createdAt'));
       this.success(result);
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      this.fail(err);
     }
   }
 
   async add(): Promise<void> {
-    const { service, ctx } = this;
+    const raw: SupplierQuery = this.ctx.request.body;
+    const categoryID: number = raw.categoryID;
     try {
-      await service.admin.supplier.insert(ctx.request.body);
+      await this.service.admin.supplier.insert(raw, categoryID);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      this.fail(err);
     }
   }
 
   async delete(): Promise<void> {
-    const { service, ctx } = this;
-    const rowData: any = ctx.request.body;
-
+    const params: SupplierLiteral = this.ctx.request.body;
     try {
-      await service.admin.supplier.delete(rowData);
+      await this.service.admin.supplier.delete(params);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      this.fail(err);
     }
   }
 
   async update(): Promise<void> {
-    const { service, ctx } = this;
-    const rowData: any = ctx.request.body;
-
+    const params: SupplierLiteral = this.ctx.request.body;
     try {
-      await service.admin.supplier.update(rowData);
+      await this.service.admin.supplier.update(params);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } catch (err) {
+      this.fail(err);
     }
   }
 }

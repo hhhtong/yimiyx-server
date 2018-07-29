@@ -2,14 +2,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Goods from '../../model/entity/goods';
 import GoodsTag from '../../model/entity/goods-tag';
-import { Query, QueryResult } from '../../common/query-interface';
-
-
-interface IQuery extends Query {
-  isOnline?: string | number, // 是否出售中的商品
-  goodsNo?: string, // 商品编号
-  goodsName?: string // 商品名称
-}
+import { GoodsQuery, GoodsResult } from '../../common/query-interface';
 
 export default class GoodsService extends BaseService {
 
@@ -43,7 +36,7 @@ export default class GoodsService extends BaseService {
     disabledPage = false,
     isOnline,
     goodsNo,
-    goodsName }: IQuery): Promise<QueryResult<Goods>> {
+    goodsName }: GoodsQuery): Promise<GoodsResult> {
     const where1: string = +goodsNo ? `G.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
     const where2: string= goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
     const where3: string = +isOnline === 1
@@ -71,7 +64,7 @@ export default class GoodsService extends BaseService {
       const list: Goods[] = await query
         .leftJoinAndSelect('G.categorys', 'GC')
         .leftJoinAndSelect('G.tags', 'T')
-        .getMany() as Goods[];
+        .getMany();
       return { list, total };
     } catch (err) {
       this.error(err);
@@ -79,7 +72,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 查询单个商品信息
-  async queryOne(goodsNo: string): Promise<QueryResult<Goods>> {
+  async queryOne(goodsNo: string): Promise<GoodsResult> {
     try {
       return await this.Goods
         .createQueryBuilder('G')
@@ -93,7 +86,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 删除一个商品
-  async deleteOne(rowData: Goods): Promise<void> {
+  async deleteOne(rowData: Partial<Goods>): Promise<void> {
     try {
       await this.Goods.save({ ...rowData, deletedAt: new Date() });
     } catch (err) {
@@ -111,7 +104,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 保存一个商品
-  async saveOne(rowData: Goods): Promise<void> {
+  async saveOne(rowData: Partial<Goods>): Promise<void> {
     try {
       await this.Goods.save(this.Goods.create(rowData));
     } catch (err) {
@@ -137,7 +130,10 @@ export default class GoodsService extends BaseService {
 
   // - 获得最大的商品编号
   async getMaxGoodsNo(goodsNoPrefix: string): Promise<string> {
-    const maxNo: number = await this.Goods.createQueryBuilder('G').where(`G.goodsNo LIKE '${goodsNoPrefix}%'`).getCount() + 1;
-    return goodsNoPrefix + this.ctx.helper.prefixZero(maxNo, 4);
+    let maxNo: number = await this.Goods
+      .createQueryBuilder('G')
+      .where(`G.goodsNo LIKE ':goodsNoPrefix%'`, { goodsNoPrefix })
+      .getCount();
+    return goodsNoPrefix + this.ctx.helper.prefixZero(++maxNo, 4);
   }
 }

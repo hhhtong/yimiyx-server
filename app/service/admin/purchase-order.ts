@@ -3,14 +3,7 @@ import BaseService from '../../core/base-service';
 import PurchaseOrder from '../../model/entity/purchase-order';
 import PurchaseMainOrder from '../../model/entity/purchase-main-order';
 import PurchaseChildOrder from '../../model/entity/purchase-child-order';
-import { Query, QueryResult } from '../../common/query-interface';
-
-interface IQuery extends Query {
-  dateRange?: string[], // 采购单创建时间范围筛选
-  categoryID?: number, // 商品类别 默认0(全部)
-  supplierID?: number, // 供应商ID
-  supplierName?: string // 供应商名称
-}
+import { PurchaseOrderQuery, PurchaseOrderResult, PurchaseMainOrderResult, PurchaseChildOrderResult } from '../../common/query-interface';
 
 export default class SupplierService extends BaseService {
 
@@ -47,7 +40,7 @@ export default class SupplierService extends BaseService {
     dateRange,
     categoryID,
     supplierID,
-    supplierName }: IQuery): Promise<QueryResult<PurchaseOrder>> {
+    supplierName }: PurchaseOrderQuery): Promise<PurchaseOrderResult> {
     let where: string = 'ISNULL(PO.deletedAt)';
 
     if (dateRange) {
@@ -82,13 +75,13 @@ export default class SupplierService extends BaseService {
         .getCount();
 
       return { list, total };
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 根据一组采购单的 id 获取相关联的采购商品单列表
-  async findByIds(ids: string[]): Promise<QueryResult<PurchaseOrder>> {
+  async findByIds(ids: string[]): Promise<PurchaseOrder[]> {
     try {
       return await this.PO.findByIds(ids, {
         relations: [
@@ -99,13 +92,13 @@ export default class SupplierService extends BaseService {
           'mainOrders.childOrders'
         ]
       })
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 查找符合id的采购单所有关联信息
-  async findOne(id: number): Promise<QueryResult<PurchaseOrder>> {
+  async findOne(id: number): Promise<PurchaseOrder> {
     try {
       return await this.PO.findOne(id, {
         relations: [
@@ -116,53 +109,57 @@ export default class SupplierService extends BaseService {
           'mainOrders.childOrders'
         ]
       })
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
+  get purchaseOrderInstance() {
+    return this.PO.create();
+  }
+
   // - 插入采购单数据
-  async insertPurchaseOrder(rowData): Promise<QueryResult<PurchaseOrder>> {
+  async insertPurchaseOrder(rowData: Partial<PurchaseOrder>): Promise<PurchaseOrder> {
     try {
       return await this.PO.save(this.PO.create(rowData));
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 插入采购的商品单数据
-  async insertPurchaseMainOrder(rowData): Promise<QueryResult<PurchaseMainOrder>> {
+  async insertPurchaseMainOrder(rowData: Partial<PurchaseMainOrder>[]): Promise<PurchaseMainOrder[]> {
     try {
       return await this.PMO.save(this.PMO.create(rowData));
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 插入采购的商品单的子订单数据
-  async insertPurchaseChildOrder(rowData): Promise<QueryResult<PurchaseChildOrder>> {
+  async insertPurchaseChildOrder(rowData: Partial<PurchaseChildOrder>[]): Promise<PurchaseChildOrder[]> {
     try {
       return await this.PCO.save(this.PCO.create(rowData));
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 假删除一条采购单数据
-  async deletePurchaseOrder(rowData): Promise<void> {
+  async deletePurchaseOrder(rowData: Partial<PurchaseOrder>): Promise<void> {
     try {
       await this.PO.save({ ...rowData, deletedAt: new Date() });
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
   // - 更新采购单数据
-  async updatePurchaseOrder(rowData) {
+  async updatePurchaseOrder(rowData: Partial<PurchaseOrder>) {
     try {
       await this.PO.save(rowData);
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 }

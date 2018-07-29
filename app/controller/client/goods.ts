@@ -16,11 +16,10 @@ export default class GoodsController extends BaseController {
   async detail(): Promise<void> {
     const { id } = this.ctx.query;
     try {
-      const rowData = await this.service.client.goods.queryOne(id);
-      this.__dispose(rowData);
-      rowData.guaranteePeriod = '3天';
-      rowData.storageMethod = '冷藏';
-      this.success(rowData);
+      let raw = await this.service.client.goods.queryOne(id);
+      this.__dispose(raw);
+      raw = { ...raw, guaranteePeriod: '3天', storageMethod: '冷藏' } as any
+      this.success(raw);
     } catch (err) {
       this.fail(err);
     }

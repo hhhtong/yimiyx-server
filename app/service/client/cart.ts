@@ -1,13 +1,7 @@
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import BaseService from '../../core/base-service';
 import User from '../../model/entity/user';
 import Cart from '../../model/entity/cart';
-
-interface IParams {
-  openid: string,
-  goodsId: number,
-  goodsNum: number
-}
 
 export default class CartService extends BaseService {
 
@@ -37,7 +31,6 @@ export default class CartService extends BaseService {
   // - 通过openid获得该用户下的所有购物车里的商品
   async findByOpenid(openid: string): Promise<Cart[]> {
     try {
-      this.Cart.find
       const res: Cart[] = await this.Cart
         .createQueryBuilder('C')
         .leftJoin('C.user', 'U')
@@ -48,7 +41,7 @@ export default class CartService extends BaseService {
         .orderBy('C.createdAt', 'DESC')
         .select([
           'C.id',
-          'C.num',
+          'C.goodsNum',
           'G.id',
           'G.activityType',
           'G.cover',
@@ -82,8 +75,8 @@ export default class CartService extends BaseService {
     }
   }
 
-  // - 新增或者更新一个商品到数据库
-  async save(raw: IParams): Promise<void> {
+  // - 新增或者更新一个商品
+  async save(raw: Cart): Promise<void> {
     try {
       await this.Cart.save(raw);
     } catch (err) {

@@ -9,12 +9,14 @@
     "app.ts",
     "index.ts",
     "app/**/*.ts",
-    "config/**/*.ts"
+    "config/**/*.ts",
+    "typings"
   ],
   "exclude": [
     "public",
     "app/web*",
     "app/public",
-    "app/view"
+    "app/view",
+    "typings/app/model"
   ]
 }

@@ -1,14 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Supplier from '../../model/entity/supplier';
-import { Query, QueryResult } from '../../common/query-interface';
-
-interface IQuery extends Query {
-  areaCode?: string, // 省份ID,城市ID
-  categoryID?: number, // 商品类别 默认0(全部)
-  supplierID?: number, // 供应商编号
-  supplierName?: string // 供应商名称
-}
+import { SupplierQuery, SupplierResult } from '../../common/query-interface';
 
 export default class SupplierService extends BaseService {
 
@@ -39,7 +32,7 @@ export default class SupplierService extends BaseService {
     categoryID = 0,
     supplierID = 0,
     supplierName = ''
-  }: IQuery): Promise<QueryResult<Supplier>> {
+  }: SupplierQuery): Promise<SupplierResult> {
     const where1: string = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2: string = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
@@ -58,34 +51,34 @@ export default class SupplierService extends BaseService {
         .getMany();
 
       return { list, total };
-    } catch (e) {
-      this.error(e);
+    } catch (err) {
+      this.error(err);
     }
   }
 
-  async insert(rowData): Promise<void> {
+  async insert(raw: Partial<Supplier>, id: number): Promise<void> {
     try {
-      const id: number = rowData.categoryID
-      rowData = this.Supplier.create(rowData)
-      await this.Supplier.save({ ...rowData, category: { id } });
-    } catch (e) {
-      this.error(e);
+      raw = this.Supplier.create(raw);
+      await this.Supplier.save({ ...raw, category: { id } });
+    } catch (err) {
+      this.error(err);
     }
   }
 
-  async delete(rowData): Promise<void> {
+  async delete(raw: Partial<Supplier>): Promise<void> {
     try {
-      await this.Supplier.save({ ...rowData, deletedAt: new Date() })
-    } catch (e) {
-      this.error(e);
+      await this.Supplier.save({ ...raw, deletedAt: new Date() })
+    } catch (err) {
+      this.error(err);
     }
   }
 
-  async update(rowData): Promise<void> {
+  async update(raw: Partial<Supplier>): Promise<void> {
     try {
-      await this.Supplier.save(rowData)
-    } catch (e) {
-      this.error(e);
+      raw = this.Supplier.create(raw);
+      await this.Supplier.save(raw);
+    } catch (err) {
+      this.error(err);
     }
   }
 }

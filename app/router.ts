@@ -44,6 +44,11 @@ export default (app: Application) => {
   router.post('/purchaseOrder/update', controller.admin.purchaseOrder.update);
   router.get('/purchaseOrder/details', controller.admin.purchaseOrder.details);
 
+  // - Admin/CouponController
+  router.get('/coupon', controller.admin.coupon.getCouponList);
+  router.post('/coupon', controller.admin.coupon.saveCoupon);
+  router.delete('/coupon', controller.admin.coupon.deleteCoupon);
+
   // -------------------------------------------------------------------------
   // Client Controller
   // -------------------------------------------------------------------------
