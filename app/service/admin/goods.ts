@@ -2,7 +2,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Goods from '../../model/entity/goods';
 import GoodsTag from '../../model/entity/goods-tag';
-import { GoodsQuery, GoodsResult } from '../../common/query-interface';
+import { GoodsQuery, GoodsResult } from '../../common/QueryInterface';
 
 export default class GoodsService extends BaseService {
 
@@ -72,7 +72,7 @@ export default class GoodsService extends BaseService {
   }
 
   // - 查询单个商品信息
-  async queryOne(goodsNo: string): Promise<GoodsResult> {
+  async queryOne(goodsNo: string): Promise<Goods> {
     try {
       return await this.Goods
         .createQueryBuilder('G')

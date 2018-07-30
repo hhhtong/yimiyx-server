@@ -1,5 +1,6 @@
 import { Controller } from 'egg';
-import { GoodsCategoryLiteral, GoodsCategoryResult } from '../common/query-interface';
+import { GoodsCategoryResult } from '../common/QueryInterface';
+
 /**
  * 业务码说明
  * 50000 操作成功

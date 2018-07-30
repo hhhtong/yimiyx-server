@@ -1,7 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Supplier from '../../model/entity/supplier';
-import { SupplierQuery, SupplierResult } from '../../common/query-interface';
+import { SupplierQuery, SupplierResult } from '../../common/QueryInterface';
 
 export default class SupplierService extends BaseService {
 

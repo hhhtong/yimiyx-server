@@ -4,7 +4,7 @@ import { write as awaitWriteStream } from 'await-stream-ready';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import Goods from '../../model/entity/goods';
-import { GoodsLiteral, GoodsResult, GoodsQuery } from '../../common/query-interface';
+import { GoodsPartial, GoodsQuery } from '../../common/QueryInterface';
 
 export default class GoodsController extends BaseController {
   // - 获得商品列表
@@ -27,7 +27,7 @@ export default class GoodsController extends BaseController {
   async one(): Promise<void> {
     const { goodsNo } = this.ctx.query;
     try {
-      const data: GoodsResult = await this.service.admin.goods.queryOne(goodsNo);
+      const data: GoodsPartial = await this.service.admin.goods.queryOne(goodsNo);
       this.success(data);
     } catch (err) {
       throw err;
@@ -37,7 +37,7 @@ export default class GoodsController extends BaseController {
   // - 保存商品
   async save(): Promise<void> {
     const { service, ctx } = this;
-    const raw: GoodsLiteral = ctx.request.body;
+    const raw: GoodsPartial = ctx.request.body;
 
     if (!raw.goodsNo) { // 无goodsNo参数时 表示新增
       try {
@@ -66,7 +66,7 @@ export default class GoodsController extends BaseController {
   // - 删除商品
   async delete(): Promise<void> {
     const { service, ctx } = this;
-    const raw: GoodsLiteral = ctx.request.body;
+    const raw: GoodsPartial = ctx.request.body;
     try {
       await service.admin.goods.deleteOne(raw);
       this.success();
@@ -98,9 +98,9 @@ export default class GoodsController extends BaseController {
 
   // - 保存或者补充商品详细信息, 将完善该记录的一些字段数据到数据库，通常用于第一次上架该商品
   async saveFull(): Promise<void> {
-    type SGoodsLiteral = GoodsLiteral & { tags: string[] }
+    type SGoodsPartial = GoodsPartial & { tags: string[] }
     const { service, ctx } = this;
-    const params: SGoodsLiteral = ctx.request.body;
+    const params: SGoodsPartial = ctx.request.body;
     const { id } = params;
     delete params.categorys; // - 删除类目，不然保存的时候会更新类目
     try {

@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import BaseService from '../../core/base-service';
 import Coupon from '../../model/entity/coupon';
-import { CouponQuery, CouponResult } from '../../common/query-interface';
+import { CouponQuery, CouponResult } from '../../common/QueryInterface';
 
 export default class CouponService extends BaseService {
 

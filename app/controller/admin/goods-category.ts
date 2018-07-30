@@ -1,7 +1,5 @@
 import BaseController from '../../core/base-controller';
-import GoodsCategory from '../../model/entity/goods-category';
-
-type GoodsCategoryLiteral = Partial<GoodsCategory>;
+import { GoodsCategoryPartial, GoodsCategoryResult } from '../../common/QueryInterface';
 
 export default class GoodsCategoryController extends BaseController {
 
@@ -32,7 +30,7 @@ export default class GoodsCategoryController extends BaseController {
 
   async delete(): Promise<void> {
     const { service, ctx } = this;
-    const params: GoodsCategoryLiteral = ctx.request.body;
+    const params: GoodsCategoryPartial = ctx.request.body;
     try {
       await service.admin.goodsCategory.delete([params.id]);
       this.success();

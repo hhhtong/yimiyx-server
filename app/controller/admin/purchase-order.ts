@@ -1,6 +1,6 @@
 import BaseController from '../../core/base-controller';
 import { getConnection, QueryRunner } from 'typeorm';
-import { PurchaseMainOrderLiteral, PurchaseChildOrderLiteral, PurchaseOrderResult, PurchaseOrderLiteral } from '../../common/query-interface';
+import { PurchaseMainOrderPartial, PurchaseChildOrderPartial, PurchaseOrderResult, PurchaseOrderPartial } from '../../common/QueryInterface';
 
 export default class PurchaseOrderController extends BaseController {
 
@@ -63,7 +63,7 @@ export default class PurchaseOrderController extends BaseController {
     await this.queryRunner.startTransaction(); // - 开启事务
 
     try {
-      const raw: PurchaseOrderResult = this.service.admin.purchaseOrder.purchaseOrderInstance;
+      const raw: PurchaseOrderPartial = this.service.admin.purchaseOrder.purchaseOrderInstance;
       raw.id = id;
       raw.category.id = categoryID;
       raw.supplier.id = supplierID;
@@ -72,7 +72,7 @@ export default class PurchaseOrderController extends BaseController {
       raw.remark = remark;
       raw.status = 1;
 
-      // const raw: PurchaseOrderLiteral = {
+      // const raw: PurchaseOrderPartial = {
       //   id,
       //   category: { id: categoryID },
       //   supplier: { id: supplierID },
@@ -95,7 +95,7 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   async delete(): Promise<void> {
-    const params: PurchaseOrderLiteral = this.ctx.request.body;
+    const params: PurchaseOrderPartial = this.ctx.request.body;
     try {
       await this.service.admin.purchaseOrder.deletePurchaseOrder(params);
       this.success();
@@ -106,7 +106,7 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 该方法暂时没用到
   async update(): Promise<void> {
-    const params: PurchaseOrderLiteral = this.ctx.request.body;
+    const params: PurchaseOrderPartial = this.ctx.request.body;
     try {
       await this.service.admin.purchaseOrder.updatePurchaseOrder(params);
       this.success();
@@ -116,9 +116,9 @@ export default class PurchaseOrderController extends BaseController {
   }
 
   async details(): Promise<void> {
-    const id: number = this.ctx.query.id;
+    const id: string = this.ctx.query.id;
     try {
-      const result: PurchaseOrderResult = await this.service.admin.purchaseOrder.findOne(id);
+      const result = await this.service.admin.purchaseOrder.findOne(id);
       this.success(result);
     } catch (error) {
       this.fail(error);
@@ -137,7 +137,7 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 生成采购商品单主订单数据
   async __generatePurchaseMainOrder(_goods): Promise<any[]> {
-    let mainOrders: PurchaseMainOrderLiteral[] = [];
+    let mainOrders: PurchaseMainOrderPartial[] = [];
     for (const goods of _goods) {
       // - 采购商品单编号生成规则： M(代表主订单) + 商品编号(0502020001) + E0STI4(6位随机UUID)
       const mid: string = `M${goods.goodsNo}${this.ctx.helper.uuid(6, 36)}`;
@@ -158,7 +158,7 @@ export default class PurchaseOrderController extends BaseController {
 
   // - 生成采购商品单子订单数据
   async __generatePurchaseChildOrder({ goodsNo, specNum }): Promise<any[]> {
-    let childOrders: PurchaseChildOrderLiteral[] = [];
+    let childOrders: PurchaseChildOrderPartial[] = [];
     for (let index = 1; index <= specNum; index++) {
       // - 采购商品单编号生成规则： C(代表子订单) + 商品编号(0502020001) + 四位自然数递增(从0001开始) + E0STI4(6位随机UUID)
       const cid: string = 'C' + goodsNo + this.ctx.helper.prefixZero(index, 4) + this.ctx.helper.uuid(6, 36);

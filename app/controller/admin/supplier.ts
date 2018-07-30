@@ -1,5 +1,5 @@
 import BaseController from '../../core/base-controller';
-import { SupplierQuery, SupplierResult, SupplierLiteral } from '../../common/query-interface';
+import { SupplierQuery, SupplierResult, SupplierPartial } from '../../common/QueryInterface';
 
 export default class SupplierController extends BaseController {
 
@@ -7,7 +7,7 @@ export default class SupplierController extends BaseController {
     const query: SupplierQuery = this.ctx.query;
     try {
       const result: SupplierResult = await this.service.admin.supplier.query(query);
-      (result as any).list.forEach(item => this.$sqlDateFormat(item, 'createdAt'));
+      result.list.forEach(item => this.$sqlDateFormat(item, 'createdAt'));
       this.success(result);
     } catch (err) {
       this.fail(err);
@@ -26,7 +26,7 @@ export default class SupplierController extends BaseController {
   }
 
   async delete(): Promise<void> {
-    const params: SupplierLiteral = this.ctx.request.body;
+    const params: SupplierPartial = this.ctx.request.body;
     try {
       await this.service.admin.supplier.delete(params);
       this.success();
@@ -36,7 +36,7 @@ export default class SupplierController extends BaseController {
   }
 
   async update(): Promise<void> {
-    const params: SupplierLiteral = this.ctx.request.body;
+    const params: SupplierPartial = this.ctx.request.body;
     try {
       await this.service.admin.supplier.update(params);
       this.success();

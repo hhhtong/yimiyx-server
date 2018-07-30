@@ -1,7 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import BaseService from '../../core/base-service';
 import GoodsCategory from '../../model/entity/goods-category';
-import { GoodsCategoryQuery, GoodsCategoryResult } from '../../common/query-interface';
+import { GoodsCategoryQuery, GoodsCategoryResult } from '../../common/QueryInterface';
 
 export default class GoodsCategoryService extends BaseService {
 

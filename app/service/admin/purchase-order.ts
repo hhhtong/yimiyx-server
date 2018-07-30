@@ -3,7 +3,7 @@ import BaseService from '../../core/base-service';
 import PurchaseOrder from '../../model/entity/purchase-order';
 import PurchaseMainOrder from '../../model/entity/purchase-main-order';
 import PurchaseChildOrder from '../../model/entity/purchase-child-order';
-import { PurchaseOrderQuery, PurchaseOrderResult, PurchaseMainOrderResult, PurchaseChildOrderResult } from '../../common/query-interface';
+import { PurchaseOrderQuery, PurchaseOrderResult } from '../../common/QueryInterface';
 
 export default class SupplierService extends BaseService {
 
@@ -98,7 +98,7 @@ export default class SupplierService extends BaseService {
   }
 
   // - 查找符合id的采购单所有关联信息
-  async findOne(id: number): Promise<PurchaseOrder> {
+  async findOne(id: string): Promise<PurchaseOrder> {
     try {
       return await this.PO.findOne(id, {
         relations: [

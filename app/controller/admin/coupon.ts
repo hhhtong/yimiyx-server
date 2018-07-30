@@ -1,5 +1,5 @@
 import BaseController from '../../core/base-controller';
-import { CouponQuery, CouponResult, CouponLiteral } from '../../common/query-interface';
+import { CouponQuery, CouponResult, CouponPartial } from '../../common/QueryInterface';
 
 export default class CouponController extends BaseController {
 
@@ -14,7 +14,7 @@ export default class CouponController extends BaseController {
   }
 
   async saveCoupon(): Promise<void> {
-    const couponData: CouponLiteral = this.ctx.request.body;
+    const couponData: CouponPartial = this.ctx.request.body;
     try {
       await this.service.admin.coupon.save(couponData);
       this.success();
@@ -25,7 +25,7 @@ export default class CouponController extends BaseController {
 
   async deleteCoupon(): Promise<void> {
     const { service, ctx } = this;
-    const params: CouponLiteral = ctx.request.body;
+    const params: CouponPartial = ctx.request.body;
     try {
       // await service.admin.coupon.delete([params.id]);
       this.success();
