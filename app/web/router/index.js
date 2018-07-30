@@ -3,8 +3,6 @@ import iView from 'iview'
 import Util from '../libs/util'
 import VueRouter from 'vue-router'
 import { routes } from './router'
-// import Home from './modules/home'
-// const routes = [...Home]
 
 const mode = process.env.EGG_SERVER_ENV === 'prop' ? 'history' : 'hash'
 

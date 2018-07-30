@@ -24,10 +24,9 @@ export default class CouponController extends BaseController {
   }
 
   async deleteCoupon(): Promise<void> {
-    const { service, ctx } = this;
-    const params: CouponPartial = ctx.request.body;
+    const params: CouponPartial = this.ctx.request.body;
     try {
-      // await service.admin.coupon.delete([params.id]);
+      await this.service.admin.coupon.remove(params.couponId);
       this.success();
     } catch (error) {
       this.fail(error);

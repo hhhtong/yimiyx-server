@@ -24,7 +24,8 @@ export default class Coupon {
 
   /**
    * 优惠券类型
-   * 1、满减
+   * 1、满减券，不包含邮费之后
+   * 2、包邮券
    */
   @Column('tinyint', { default: 1 })
   couponType: number;
