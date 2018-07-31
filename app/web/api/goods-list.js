@@ -47,7 +47,7 @@ export function goodsDel(data) {
 }
 
 /**
- * 获取商品列表
+ * 通过商品id获取某个商品
  * @param {String} id 商品id
  */
 export function goodsByIdGet(id) {

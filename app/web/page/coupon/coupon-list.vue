@@ -97,97 +97,67 @@ export default {
       tableData: [],
       tableColumns: [
         {
-          title: 'ID',
-          key: 'id',
-          width: 80,
-          sortable: true
-        }, {
-          title: '级别',
-          key: 'level',
-          width: 100,
-          sortable: true,
-          filters: [
-            { label: '1级', value: 1 },
-            { label: '2级', value: 2 },
-            { label: '3级', value: 3 }
-          ],
-          filterMultiple: false,
-          filterMethod: (value, row) => row.level === value,
-          render: (h, { row, column, index }) => (
-            <Badge count={row.level} class-name={`badge-level-${row.level}`} style="transform: scale(0.75)"></Badge>
-          )
+          title: '#',
+          type: 'index',
+          width: 60
         }, {
           title: '优惠券名称',
           key: 'couponName',
-          width: 180
+          width: 120
         }, {
           title: '优惠券类型',
-          width: 100,
-          render: (h, { row, column, index }) => (
-            <div>{row.couponType === 1 ? '公司' : '个人'}</div>
-          )
-        }, {
-          title: '负责人/电话',
-          width: 125,
-          render: (h, { row, column, index }) => (
-            <div>
-              {row.linkmanName}
-              <br />
-              {row.tel}
-            </div>
-          )
-        }, {
-          title: '供应产品', // 也是商品分类
-          key: 'categoryName',
-          width: 100
-        }, {
-          title: '所在地区',
-          key: 'areaName',
+          key: 'couponType',
           width: 120
         }, {
-          title: '详细地址',
-          key: 'address',
+          title: '优惠券面额',
+          key: 'couponMoney',
+          width: 120
+        }, {
+          title: '最低消费金额',
+          key: 'spendMoney',
+          width: 120
+        }, {
+          title: '活动描述',
+          key: 'couponDes',
           width: 150
         }, {
-          title: '收款方式',
-          width: 100,
-          render: (h, { row, column, index }) => {
-            let innerHTML = ''
-            if (row.payType === 'bank') {
-              innerHTML =
-                <Poptip placement="left">
-                  <div slot="content">
-                    <p>银行名称：{row.bankName}</p>
-                    <p>银行卡号：{row.accountNo}</p>
-                    <p>持卡人姓名：{row.bankUsername}</p>
-                    <p>开户行地址：{row.bankAddress}</p>
-                  </div>
-                  <i-button type="text" style="padding: 0">银行转账</i-button>
-                </Poptip>
-            } else {
-              const text = row.payType === 'ali' ? '支付宝' : '微信'
-              innerHTML =
-                <Poptip placement="top">
-                  <div slot="content">
-                    <p>{text}账号：{row.accountNo}</p>
-                  </div>
-                  <i-button type="text" style="padding: 0">{text}</i-button>
-                </Poptip>
-            }
-
-            return innerHTML
-          }
+          title: '发放数量',
+          key: 'sendNum',
+          width: 100
         }, {
-          title: '税号',
-          key: 'taxNo',
-          width: 120
+          title: '领取数量',
+          key: 'receiveNum',
+          width: 100
+        }, {
+          title: '状态',
+          key: 'dataFlag',
+          width: 100,
+          render: (h, { row }) => (
+            <span>{ row.dataFlag === 1 ? '生效中' : row.dataFlag === 0 ? '已禁用' : '已失效' }</span>
+          )
+        }, {
+          title: '发放开始时间',
+          key: 'sendStartTime',
+          width: 160
+        }, {
+          title: '发放结束时间',
+          key: 'sendEndTime',
+          width: 160
+        }, {
+          title: '活动开始时间',
+          key: 'validStartTime',
+          width: 160
+        }, {
+          title: '活动结束时间',
+          key: 'validEndTime',
+          width: 160
         }, {
           title: '操作',
           key: 'handle',
           align: 'center',
           width: 150,
           fixed: 'right',
-          render: (h, { row, column, index }) => (
+          render: (h, { row }) => (
             <div>
               <i-button class="noradius" size="small" type="primary" on-click={() => this.handleEdit(row)}>编 辑</i-button>
               <Poptip

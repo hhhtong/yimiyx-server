@@ -63,9 +63,9 @@ export default class Coupon {
 
   /**
    * 有效状态
-   *  1、有效
-   *  0、失效
-   * -1、删除
+   *  1、生效中
+   *  0、已禁用
+   * -1、已失效
    */
   @Column('tinyint', { default: 1 })
   dataFlag: number;
@@ -105,4 +105,10 @@ export default class Coupon {
    */
   @UpdateDateColumn()
   updatedAt: Date;
+
+  /**
+   * 删除时间
+   */
+  @Column('timestamp', { nullable: true })
+  deletedAt: Date;
 }

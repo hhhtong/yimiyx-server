@@ -107,7 +107,8 @@ export const appRouter = [
         component: $import('purchase-manage/purchase-list')
       }
     ]
-  }, {
+  },
+  {
     path: '/goods-manage',
     icon: 'ios-folder',
     name: 'goods-manage',
@@ -128,6 +129,13 @@ export const appRouter = [
         component: $import('goods-manage/goods-category')
       }
     ]
+  },
+  {
+    path: '/coupon/coupon-list',
+    icon: 'ios-folder',
+    name: 'coupon',
+    title: '优惠券管理',
+    component: $import('coupon/coupon-list')
   },
   // {
   //   path: '/access',
