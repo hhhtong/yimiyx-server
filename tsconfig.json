@@ -10,13 +10,13 @@
     "index.ts",
     "app/**/*.ts",
     "config/**/*.ts",
-    "typings"
+    "/typings"
   ],
   "exclude": [
     "public",
     "app/web*",
     "app/public",
     "app/view",
-    "typings/app/model"
+    "/typings/app/model"
   ]
 }

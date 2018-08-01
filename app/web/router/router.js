@@ -131,11 +131,20 @@ export const appRouter = [
     ]
   },
   {
-    path: '/coupon/coupon-list',
+    path: '/coupon',
     icon: 'ios-folder',
     name: 'coupon',
     title: '优惠券管理',
-    component: $import('coupon/coupon-list')
+    component: Main,
+    children: [
+      {
+        path: 'coupon-list',
+        icon: 'ios-paper-outline',
+        name: 'coupon-list',
+        title: '优惠券管理',
+        component: $import('coupon/coupon-list')
+      }
+    ]
   },
   // {
   //   path: '/access',

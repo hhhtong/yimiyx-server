@@ -6,7 +6,7 @@ import Store from './store';
 import GoodsCategory from './goods-category';
 import GoodsTag from './goods-tag';
 import PurchaseMainOrder from './purchase-main-order';
-import ClientCart from './cart';
+import Cart from './cart';
 
 @Entity()
 export default class Goods {
@@ -31,8 +31,8 @@ export default class Goods {
   /**
    * 客户端的购物车信息
    */
-  @OneToMany(type => ClientCart, CC => CC.goods)
-  clientCart: ClientCart[];
+  @OneToMany(type => Cart, CC => CC.goods)
+  cart: Cart[];
 
   /**
    * 商品标签

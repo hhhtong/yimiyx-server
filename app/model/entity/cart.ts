@@ -20,7 +20,7 @@ export default class Cart {
   /**
    * 商品信息
    */
-  @ManyToOne(type => Goods, G=> G.clientCart)
+  @ManyToOne(type => Goods, G=> G.cart)
   goods: Goods;
 
   /**
