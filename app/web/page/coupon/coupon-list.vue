@@ -64,7 +64,7 @@
 
 <script>
 import ModalAddCoupon from './components/ModalAddCoupon'
-import { couponGet, couponAdd, couponDel, couponUpdate } from '@/api'
+import { couponGet, couponSave, couponDel } from '@/api'
 import { mapState } from 'vuex'
 import { Badge, Poptip } from 'iview'
 
@@ -236,8 +236,8 @@ export default {
 
     // 添加 | 修改优惠券 -> 保存
     handleSave(formData, isEdit) {
-      const action = isEdit ? couponUpdate : couponAdd
-      action(formData).then(result => {
+      // const action = isEdit ? couponUpdate : couponSave
+      couponSave(formData).then(result => {
         if (result.code === 50000) {
           this.$Message.success('保存成功')
           this.showModal = false
