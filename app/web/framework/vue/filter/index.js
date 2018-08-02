@@ -3,13 +3,6 @@
 import Vue from 'vue'
 
 /**
- * 对空的内容进行‘--’替换
- */
-// Vue.filter('formatColumnData', input => {
-//   input ? input : '--'
-// })
-
-/**
  * 去掉HTML标签
  */
 Vue.filter('removeHtml', input => {

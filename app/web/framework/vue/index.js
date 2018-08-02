@@ -19,9 +19,9 @@ App.init = options => {
 
 App.client = options => {
   if (options.store) {
-    options.store.replaceState(Object.assign({}, App.data(), options.store.state))
+    options.store.replaceState({ ...App.data(), ...options.store.state })
   } else if (window.__INITIAL_STATE__) {
-    options.data = Object.assign(window.__INITIAL_STATE__, options.data && options.data())
+    options.data = { ...window.__INITIAL_STATE__, ...(options.data && options.data()) }
   }
   const app = new Vue(options)
   app.$mount('#app')
