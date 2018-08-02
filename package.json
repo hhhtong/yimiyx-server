@@ -113,7 +113,7 @@
     "mode": "yarn"
   },
   "author": "syazhao@foxmail.com",
-  "license": "MIT",
+  "license": "BSD",
   "homepage": "https://github.com/songyazhao/veggie-admin",
   "config": {
     "commitizen": {

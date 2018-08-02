@@ -1,4 +1,4 @@
-import { Application, EggAppConfig } from 'egg';
+import { EggAppConfig } from 'egg';
 import * as path from 'path';
 import * as ip from 'ip';
 
