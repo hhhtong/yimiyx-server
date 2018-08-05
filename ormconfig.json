@@ -10,17 +10,17 @@
   "logging": false,
   "timezone": "local",
   "entities": [
-    "app/db/entity/*.js"
+    "app/model/entity/*.ts"
   ],
   "subscribers": [
-    "app/db/subscriber/*.js"
+    "app/model/subscriber/*.ts"
   ],
   "migrations": [
-    "app/db/migration/*.js"
+    "app/model/migration/*.ts"
   ],
   "cli": {
-    "entitiesDir": "app/db/entity",
-    "migrationsDir": "app/db/migration",
-    "subscribersDir": "app/db/subscriber"
+    "entitiesDir": "app/model/entity",
+    "migrationsDir": "app/model/migration",
+    "subscribersDir": "app/model/subscriber"
   }
 }

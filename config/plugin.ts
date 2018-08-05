@@ -1,13 +1,15 @@
-import { join } from 'path';
+import { EggPlugin } from 'egg';
 
-exports.static = true;
-
-exports.vuessr = {
-  enable: true,
-  package: 'egg-view-vue-ssr'
+const plugin: EggPlugin = {
+  static: true,
+  cors: {
+    enable: true,
+    package: 'egg-cors'
+  },
+  redis: {
+    enable: true,
+    package: 'egg-redis'
+  }
 };
 
-exports.typeorm = {
-  enable: true,
-  path: join(__dirname, '../libs/plugin/egg-typeorm')
-};
+export default plugin;

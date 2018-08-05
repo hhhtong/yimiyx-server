@@ -1,15 +1,22 @@
-import { Application, EggAppConfig } from 'egg';
+import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
 import { join } from 'path';
-// import { readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 
-export default (app: EggAppConfig) => {
-  const exports: any = {};
+// for config.{env}.ts
+export type DefaultConfig = PowerPartial<EggAppConfig & BizConfig>;
 
-  // exports.siteFile = {
-  //   '/favicon.ico': readFileSync(join(app.baseDir, 'app/web/asset/images/favicon.ico'))
-  // };
+// app special config scheme
+export interface BizConfig {
+  sourceUrl: string;
+}
 
-  exports.cluster = {
+export default (appInfo: EggAppInfo) => {
+  const config = {} as PowerPartial<EggAppConfig> & BizConfig;
+
+  // app special config
+  // config.sourceUrl = `https://github.com/eggjs/examples/tree/master/${appInfo.name}`;
+
+  config.cluster = {
     listen: {
       port: 7001,
       hostname: '127.0.0.1',
@@ -17,35 +24,51 @@ export default (app: EggAppConfig) => {
     }
   };
 
-  exports.security = {
+  config.siteFile = {
+    '/favicon.ico': readFileSync(join(appInfo.baseDir, 'favicon.ico'))
+  };
+
+  config.security = {
     csrf: {
-      ignoreJSON: false, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
+      ignoreJSON: true, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
     }
   };
 
-  exports.view = {
+  config.static = {
+    prefix: '/public/',
+    dir: join(appInfo.baseDir, 'public')
+  };
+
+  config.redis = {
+    client: {
+      port: 6379,          // Redis port
+      host: '127.0.0.1',   // Redis host
+      password: '',
+      db: 0,
+    }
+  };
+
+  config.view = {
     cache: false
   };
 
-  exports.vuessr = {
-    layout: join(app.baseDir, 'app/web/template/layout.html')
-  };
+  // config.vuessr = {
+  //   layout: join(appInfo.baseDir, 'app/web/template/layout.html')
+  // };
 
-  exports.logger = {
+  config.logger = {
     consoleLevel: 'DEBUG',
-    dir: join(app.baseDir, 'logs')
+    dir: join(appInfo.baseDir, 'logs')
   };
 
-  exports.static = {
-    prefix: '/public/',
-    dir: join(app.baseDir, 'public')
-  };
+  // override config from framework / plugin
+  // use for cookie sign key, should change to your own and keep security
+  config.keys = appInfo.name + '_1533191882173_8870';
 
-  exports.keys = '123456';
-
-  exports.middleware = [
+  // add your config here
+  config.middleware = [
     'access'
   ];
 
-  return exports;
+  return config;
 };

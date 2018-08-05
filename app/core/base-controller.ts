@@ -1,4 +1,6 @@
 import { Controller } from 'egg';
+import { GoodsCategoryResult } from '../common/QueryInterface';
+
 /**
  * 业务码说明
  * 50000 操作成功
@@ -10,11 +12,8 @@ import { Controller } from 'egg';
  * ...
  */
 export default class BaseController extends Controller {
-  get user() {
-    return this.ctx.session.user;
-  }
 
-  success(data = {}, msg = '操作成功') {
+  success(data: any = {}, msg: string = '操作成功') {
     this.ctx.body = {
       code: 50000,
       data,
@@ -23,12 +22,14 @@ export default class BaseController extends Controller {
     return data;
   }
 
-  fail(data: any = {}, code = 50001, msg = '操作失败') {
+  fail(data: any = {}, code: number = 50001, msg: string = '操作失败') {
     if (typeof data.sqlMessage === 'string') {
-      code = 50002
-      msg = data.sqlMessage
+      // - 数据库相关操作错误
+      code = 50002;
+      msg = data.sqlMessage;
     } else {
-      msg = data.toString()
+      // - 抛出的异常错误
+      msg = data.errmsg || data.toString();
     }
 
     this.ctx.body = {
@@ -38,37 +39,52 @@ export default class BaseController extends Controller {
     };
   }
 
-  notFound(msg) {
-    msg = msg || 'not found';
-    this.ctx.throw(404, msg);
+  /**
+   * 对sql查询返回的时间进行格式化处理
+   * @param obj - 要进行操作的obj
+   * @param str - 时间的key
+   */
+  $sqlDateFormat(obj: Object, str: string | string[]) {
+    const { ctx } = this;
+    if (typeof str === 'string') obj[str] = ctx.helper.moment(obj[str]).format('YYYY-MM-DD HH:mm:ss');
+    else for (const item of str) obj[item] = ctx.helper.moment(obj[item]).format('YYYY-MM-DD HH:mm:ss');
   }
 
+  /**
+   * 从obj里删掉指定key,可以有效减少网络传输中的数据大小
+   * @param obj - 要进行操作的obj
+   * @param str - 要删除的key
+   */
+  $expel(obj: Object, str: string | string[]) {
+    if (typeof str === 'string') delete obj[str];
+    else for (const item of str) delete obj[item];
+  }
 
   /**
-   * 数据重排变成嵌套
+   * 商品数据重排变成嵌套
    */
-  $refix(list: Array<object>) {
-    const oneList = list.filter(item => item.type === 1);
-    const twoList = list.filter(item => item.type === 2);
-    const threeList = list.filter(item => item.type === 3);
+  $refix(list: Object[]) {
+    const oneList = list.filter((item: any) => item.type === 1);
+    const twoList = list.filter((item: any) => item.type === 2);
+    const threeList = list.filter((item: any) => item.type === 3);
     return this.$mixin(oneList.reverse(), this.$mixin(twoList, threeList));
   }
 
   /**
-   * 将平级结构转成树形结构
+   * 将商品平级结构转成树形结构
    */
-  $mixin(list1: Array<any>, list2: Array<any>): Array<object> {
+  $mixin(list1: any[], list2: any[]): Object[] {
     if (list2.length <= 0) {
-      list2 = list1
+      list2 = list1;
     }
 
     list2.forEach(item2 => {
-      item2.expand = true
-      item2.readonly = true
+      item2.expand = true;
+      item2.readonly = true;
       list1.forEach(item1 => {
         if (item2.pid === item1.id) {
-          item1.expand = true
-          item1.readonly = true
+          item1.expand = true;
+          item1.readonly = true;
           if (!item1.children) {
             item1.children = [item2];
           } else {
@@ -82,15 +98,15 @@ export default class BaseController extends Controller {
   }
 
   /**
-   * 将树形结构转成平级结构
+   * 将商品树形结构转成平级结构
    */
-  $unmixin(list: any): Array<object> {
-    const categoryList = [];
+  $unmixin(list: any): GoodsCategoryResult[] {
+    const categoryList: GoodsCategoryResult[] = [];
     const next = (item: any) => {
       if (item.name !== '') {
         categoryList.push(item);
       }
-      if (item.children instanceof Array) {
+      if (Array.isArray(item.children)) {
         item.children.forEach(children => next(children));
       }
     };
