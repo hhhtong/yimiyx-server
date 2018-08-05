@@ -1,13 +1,20 @@
 import BaseController from '../../core/base-controller';
-import { GoodsCategoryPartial, GoodsCategoryResult } from '../../common/QueryInterface';
+import { GoodsCategoryQuery, GoodsCategoryPartial } from '../../common/QueryInterface';
 
 export default class GoodsCategoryController extends BaseController {
 
   async index(): Promise<void> {
-    const { service, ctx } = this;
+    let { page, rows, disabledPage , name }: GoodsCategoryQuery = this.ctx.query;
+    let start = (page - 1) * rows;
+    let end = start + rows;
+    if (!name) name = '';
     try {
-      let { list, total, idMax } = await service.admin.goodsCategory.query(ctx.query);
-      this.success({ list: this.$refix(list), listEqual: list, total, idMax });
+      let { list, total, idMax } = await this.service.admin.goodsCategory.query(name);
+      const listEqual = list;
+      list = this.$refix(list) as any;
+      if (!disabledPage) list = list.slice(start, end);
+
+      this.success({ list, listEqual, total, idMax });
     } catch (error) {
       this.fail(error);
     }
@@ -29,13 +36,12 @@ export default class GoodsCategoryController extends BaseController {
   }
 
   async delete(): Promise<void> {
-    const { service, ctx } = this;
-    const params: GoodsCategoryPartial = ctx.request.body;
-    try {
-      await service.admin.goodsCategory.delete([params.id]);
+    const params: GoodsCategoryPartial = this.ctx.request.body;
+    if (params.id) {
+      await this.service.admin.goodsCategory.delete([params.id]);
       this.success();
-    } catch (error) {
-      this.fail(error);
+    } else {
+      this.fail();
     }
   }
 }

@@ -16,10 +16,13 @@ export default class SupplierController extends BaseController {
 
   async add(): Promise<void> {
     const raw: SupplierQuery = this.ctx.request.body;
-    const categoryID: number = raw.categoryID;
     try {
-      await this.service.admin.supplier.insert(raw, categoryID);
-      this.success();
+      if (raw.categoryID) {
+        await this.service.admin.supplier.insert(raw, raw.categoryID);
+        this.success();
+      } else {
+        this.fail();
+      }
     } catch (err) {
       this.fail(err);
     }

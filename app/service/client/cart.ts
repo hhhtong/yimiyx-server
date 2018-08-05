@@ -30,39 +30,35 @@ export default class CartService extends BaseService {
 
   // - 通过openid获得该用户下的所有购物车里的商品
   async findByOpenid(openid: string): Promise<Cart[]> {
-    try {
-      const res: Cart[] = await this.Cart
-        .createQueryBuilder('C')
-        .leftJoin('C.user', 'U')
-        .leftJoin('C.goods', 'G')
-        .leftJoin('G.tags', 'T')
-        .where('U.openid = :openid')
-        .setParameters({ openid })
-        .orderBy('C.createdAt', 'DESC')
-        .select([
-          'C.id',
-          'C.goodsNum',
-          'G.id',
-          'G.activityType',
-          'G.cover',
-          'G.spec',
-          'G.description',
-          'G.goodsName',
-          'G.resalePrice',
-          'G.unitPrice',
-          'T.tagName'
-        ])
-        .getMany();
-      return res;
-    } catch (err) {
-      this.error(err);
-    }
+    const res = await this.Cart
+      .createQueryBuilder('C')
+      .leftJoin('C.user', 'U')
+      .leftJoin('C.goods', 'G')
+      .leftJoin('G.tags', 'T')
+      .where('U.openid = :openid')
+      .setParameters({ openid })
+      .orderBy('C.createdAt', 'DESC')
+      .select([
+        'C.id',
+        'C.goodsNum',
+        'G.id',
+        'G.activityType',
+        'G.cover',
+        'G.spec',
+        'G.description',
+        'G.goodsName',
+        'G.resalePrice',
+        'G.unitPrice',
+        'T.tagName'
+      ])
+      .getMany();
+    return res;
   }
 
   // - 通过商品ID获得某个商品在购物车中的记录
-  async findByGoodsId(openid: string, goodsId: number): Promise<Cart> {
+  async findByGoodsId(openid: string, goodsId: number): Promise<Cart | undefined> {
     try {
-      const res: Cart = await this.Cart
+      const res = await this.Cart
         .createQueryBuilder('C')
         .leftJoin('C.user', 'U')
         .leftJoin('C.goods', 'G')
@@ -85,10 +81,12 @@ export default class CartService extends BaseService {
   }
 
   // - 从购物车记录中删除一条数据
-  async delete(openid: string, goodsId: number): Promise<Cart> {
+  async delete(goodsId: number): Promise<Cart | undefined> {
     try {
       const raw = await this.Cart.findOne(goodsId);
-      return await this.Cart.remove(raw);
+      if (raw) {
+        return await this.Cart.remove(raw);
+      }
     } catch (err) {
       this.error(err);
     }

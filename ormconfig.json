@@ -10,13 +10,13 @@
   "logging": false,
   "timezone": "local",
   "entities": [
-    "app/model/entity/*.js"
+    "app/model/entity/*.ts"
   ],
   "subscribers": [
-    "app/model/subscriber/*.js"
+    "app/model/subscriber/*.ts"
   ],
   "migrations": [
-    "app/model/migration/*.js"
+    "app/model/migration/*.ts"
   ],
   "cli": {
     "entitiesDir": "app/model/entity",

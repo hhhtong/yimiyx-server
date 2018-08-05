@@ -11,7 +11,7 @@ export default class BaseService extends Service {
   }
 
   error(e) {
-    this.log.error(e.message);
+    this.log.error(e);
     throw new Error(e)
   }
 }

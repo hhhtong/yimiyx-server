@@ -28,29 +28,29 @@ export default class CouponService extends BaseService {
   async query({
     page = 1,
     rows = 20,
+    couponType = 0,
+    couponName = '',
     couponMoney1,
     couponMoney2 }: CouponQuery): Promise<CouponResult> {
-    let where: string;
+    let query = this.Coupon.createQueryBuilder('C');
+
     if (couponMoney1 && couponMoney2) {
-      where += `C.couponMoney BETWEEN :couponMoney1 AND :couponMoney2`;
-    } else {
-      where = '1 = 1';
+      query = query.where(`C.couponMoney BETWEEN :couponMoney1 AND :couponMoney2`, { couponMoney1, couponMoney2 })
+    }
+    if (couponType > 0) {
+      query = query.andWhere(`C.couponType = :couponType`, { couponType});
+    }
+    if (couponName !== '') {
+      query = query.andWhere(`C.couponName LIKE '%' :couponName '%'`, { couponName});
     }
 
-    try {
-      const [list, total] = await this.Coupon
-        .createQueryBuilder('C')
-        .andWhere(where)
-        .setParameters({ couponMoney1, couponMoney2 })
-        .orderBy('C.updatedAt', 'DESC')
-        .skip((page - 1) * rows)
-        .take(rows)
-        .getManyAndCount();
+    const [list, total] = await query
+      .orderBy('C.updatedAt', 'DESC')
+      .skip((page - 1) * rows)
+      .take(rows)
+      .getManyAndCount();
 
-      return { list, total };
-    } catch (err) {
-      this.error(err);
-    }
+    return { list, total };
   }
 
   // - 新增一种优惠券
@@ -64,21 +64,25 @@ export default class CouponService extends BaseService {
   }
 
   // - 更新某个优惠券
-  async saveById(couponId: number, data: Partial<Coupon>): Promise<Coupon> {
+  async saveById(couponId: number, data: Partial<Coupon>): Promise<Coupon | undefined> {
     try {
-      let raw: Coupon = await this.Coupon.findOne(couponId);
-      raw = { ...raw, ...data }
-      return await this.Coupon.save(raw);
+      let raw = await this.Coupon.findOne(couponId);
+      if (raw) {
+        raw = { ...raw, ...data }
+        return await this.Coupon.save(raw);
+      }
     } catch (err) {
       this.error(err);
     }
   }
 
   // - 删除某个优惠券
-  async remove(couponId: number): Promise<Coupon> {
+  async remove(couponId: number): Promise<Coupon | undefined> {
     try {
       const raw = await this.Coupon.findOne(couponId);
-      return await this.Coupon.remove(raw);
+      if (raw) {
+        return await this.Coupon.remove(raw);
+      }
     } catch (err) {
       this.error(err);
     }

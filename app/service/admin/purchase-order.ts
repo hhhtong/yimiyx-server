@@ -38,8 +38,8 @@ export default class SupplierService extends BaseService {
     page = 1,
     rows = 20,
     dateRange,
-    categoryID,
-    supplierID,
+    categoryID = 0,
+    supplierID = 0,
     supplierName }: PurchaseOrderQuery): Promise<PurchaseOrderResult> {
     let where: string = 'ISNULL(PO.deletedAt)';
 
@@ -51,67 +51,55 @@ export default class SupplierService extends BaseService {
     const where2: string = categoryID > 0 ? `C.id = ${categoryID}` : '1 = 1';
     const where3: string = supplierName && supplierName.trim() !== '' ? `S.supplierName LIKE '%${supplierName}%'` : '1 = 1';
 
-    try {
-      const list: PurchaseOrder[] = await this.PO.find({
-        join: {
-          alias: 'PO',
-          leftJoinAndSelect: {
-            C: 'PO.category',
-            S: 'PO.supplier',
-            MO: 'PO.mainOrders',
-            G: 'MO.goods',
-            CO: 'MO.childOrders'
-          }
-        },
-        where: `${where} AND ${where1} AND ${where2} AND ${where3}`,
-        order: { 'createdAt': 'DESC' }, // - PO.createdAt
-        skip: (page - 1) * rows,
-        take: rows
-      })
+    const list: PurchaseOrder[] = await this.PO.find({
+      join: {
+        alias: 'PO',
+        leftJoinAndSelect: {
+          C: 'PO.category',
+          S: 'PO.supplier',
+          MO: 'PO.mainOrders',
+          G: 'MO.goods',
+          CO: 'MO.childOrders'
+        }
+      },
+      where: `${where} AND ${where1} AND ${where2} AND ${where3}`,
+      order: { 'createdAt': 'DESC' }, // - PO.createdAt
+      skip: (page - 1) * rows,
+      take: rows
+    })
 
-      const total: number = await this.PO
-        .createQueryBuilder('PO')
-        .where(where)
-        .getCount();
+    const total: number = await this.PO
+      .createQueryBuilder('PO')
+      .where(where)
+      .getCount();
 
-      return { list, total };
-    } catch (err) {
-      this.error(err);
-    }
+    return { list, total };
   }
 
   // - 根据一组采购单的 id 获取相关联的采购商品单列表
-  async findByIds(ids: string[]): Promise<PurchaseOrder[]> {
-    try {
-      return await this.PO.findByIds(ids, {
-        relations: [
-          'category',
-          'supplier',
-          'mainOrders',
-          'mainOrders.goods',
-          'mainOrders.childOrders'
-        ]
-      })
-    } catch (err) {
-      this.error(err);
-    }
+  async findByIds(ids: string[]): Promise<PurchaseOrder[] | undefined> {
+    return await this.PO.findByIds(ids, {
+      relations: [
+        'category',
+        'supplier',
+        'mainOrders',
+        'mainOrders.goods',
+        'mainOrders.childOrders'
+      ]
+    })
   }
 
   // - 查找符合id的采购单所有关联信息
   async findOne(id: string): Promise<PurchaseOrder> {
-    try {
-      return await this.PO.findOne(id, {
-        relations: [
-          'category',
-          'supplier',
-          'mainOrders',
-          'mainOrders.goods',
-          'mainOrders.childOrders'
-        ]
-      })
-    } catch (err) {
-      this.error(err);
-    }
+    return await this.PO.findOne(id, {
+      relations: [
+        'category',
+        'supplier',
+        'mainOrders',
+        'mainOrders.goods',
+        'mainOrders.childOrders'
+      ]
+    }) || this.purchaseOrderInstance;
   }
 
   get purchaseOrderInstance() {
@@ -119,16 +107,18 @@ export default class SupplierService extends BaseService {
   }
 
   // - 插入采购单数据
-  async insertPurchaseOrder(rowData: Partial<PurchaseOrder>): Promise<PurchaseOrder> {
+  async insertPurchaseOrder(rowData: Partial<PurchaseOrder>): Promise<boolean> {
     try {
-      return await this.PO.save(this.PO.create(rowData));
+      await this.PO.save(this.PO.create(rowData));
+      return true;
     } catch (err) {
       this.error(err);
+      return false;
     }
   }
 
   // - 插入采购的商品单数据
-  async insertPurchaseMainOrder(rowData: Partial<PurchaseMainOrder>[]): Promise<PurchaseMainOrder[]> {
+  async insertPurchaseMainOrder(rowData: Partial<PurchaseMainOrder>[]): Promise<PurchaseMainOrder[] | undefined> {
     try {
       return await this.PMO.save(this.PMO.create(rowData));
     } catch (err) {
@@ -137,7 +127,7 @@ export default class SupplierService extends BaseService {
   }
 
   // - 插入采购的商品单的子订单数据
-  async insertPurchaseChildOrder(rowData: Partial<PurchaseChildOrder>[]): Promise<PurchaseChildOrder[]> {
+  async insertPurchaseChildOrder(rowData: Partial<PurchaseChildOrder>[]): Promise<PurchaseChildOrder[] | undefined> {
     try {
       return await this.PCO.save(this.PCO.create(rowData));
     } catch (err) {

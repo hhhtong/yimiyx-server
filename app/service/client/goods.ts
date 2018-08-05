@@ -31,64 +31,56 @@ export default class GoodsService extends BaseService {
   // async queryOnlineGoodsCategorys() { }
 
   // - 获得所有的在售商品
-  async queryOnline(): Promise<Goods[]> {
-    try {
-      const list: SelectQueryBuilder<Goods> = this.Goods
-        .createQueryBuilder('G')
-        .where('ISNULL(G.deletedAt)')
-        .andWhere('G.isOnline = 1')
-        .andWhere('GC.type = 3')
-        .leftJoin('G.categorys', 'GC')
-        .leftJoin('G.tags', 'T')
-        .select([
-          'G.id',
-          'G.barCode',
-          'G.goodsName',
-          'G.goodsAlias',
-          'G.madeIn',
-          'G.spec',
-          'G.specNum',
-          'G.cover',
-          'G.description',
-          'G.resalePrice',
-          'G.unitPrice',
-          'G.goodsAmount',
-          'GC.name',
-          'T.tagName'
-        ])
-        .orderBy('G.updatedAt', 'DESC');
+  queryOnline(): Promise<Goods[]> {
+    const list: SelectQueryBuilder<Goods> = this.Goods
+      .createQueryBuilder('G')
+      .where('ISNULL(G.deletedAt)')
+      .andWhere('G.isOnline = 1')
+      .andWhere('GC.type = 3')
+      .leftJoin('G.categorys', 'GC')
+      .leftJoin('G.tags', 'T')
+      .select([
+        'G.id',
+        'G.barCode',
+        'G.goodsName',
+        'G.goodsAlias',
+        'G.madeIn',
+        'G.spec',
+        'G.specNum',
+        'G.cover',
+        'G.description',
+        'G.resalePrice',
+        'G.unitPrice',
+        'G.goodsAmount',
+        'GC.name',
+        'T.tagName'
+      ])
+      .orderBy('G.updatedAt', 'DESC');
 
-      return list.getMany();
-    } catch (error) {
-      this.error(error);
-    }
+    return list.getMany();
   }
 
   // - 查询一个商品详细
-  async queryOne(id: number): Promise<Goods> {
-    try {
-      const data: SelectQueryBuilder<Goods> = await this.Goods
-        .createQueryBuilder('G')
-        .where('G.id = :id', { id })
-        .leftJoin('G.tags', 'T')
-        .select([
-          'G.id',
-          'G.goodsName',
-          'G.goodsAlias',
-          'G.madeIn',
-          'G.spec',
-          'G.specNum',
-          'G.carousels',
-          'G.description',
-          'G.resalePrice',
-          'G.unitPrice',
-          'G.goodsAmount',
-          'T.tagName'
-        ]);
+  async queryOne(id: number): Promise<Goods | undefined> {
+    const data: SelectQueryBuilder<Goods> = await this.Goods
+      .createQueryBuilder('G')
+      .where('G.id = :id', { id })
+      .leftJoin('G.tags', 'T')
+      .select([
+        'G.id',
+        'G.goodsName',
+        'G.goodsAlias',
+        'G.madeIn',
+        'G.spec',
+        'G.specNum',
+        'G.carousels',
+        'G.description',
+        'G.resalePrice',
+        'G.unitPrice',
+        'G.goodsAmount',
+        'T.tagName'
+      ]);
 
-      return data.getOne();
-    } catch (error) {
-      this.error(error);
-    }
+    return data.getOne();
   }
 }

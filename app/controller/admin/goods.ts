@@ -3,7 +3,6 @@ import * as sendToWormhole from 'stream-wormhole';
 import { write as awaitWriteStream } from 'await-stream-ready';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import Goods from '../../model/entity/goods';
 import { GoodsPartial, GoodsQuery } from '../../common/QueryInterface';
 
 export default class GoodsController extends BaseController {
@@ -27,7 +26,7 @@ export default class GoodsController extends BaseController {
   async one(): Promise<void> {
     const { goodsNo } = this.ctx.query;
     try {
-      const data: GoodsPartial = await this.service.admin.goods.queryOne(goodsNo);
+      let data = await this.service.admin.goods.queryOne(goodsNo);
       this.success(data);
     } catch (err) {
       throw err;
@@ -39,22 +38,20 @@ export default class GoodsController extends BaseController {
     const { service, ctx } = this;
     const raw: GoodsPartial = ctx.request.body;
 
-    if (!raw.goodsNo) { // 无goodsNo参数时 表示新增
-      try {
+    if (raw.categorys) {
+      if (!raw.goodsNo) { // 无goodsNo参数时 表示新增
         // 以数组中的第一个类目作为序号前缀
         raw.goodsNo = await service.admin.goods.getMaxGoodsNo(raw.categorys[0].no);
-      } catch (err) {
-        throw err;
       }
+      // 获取Goods表中的categorys[]
+      let categorys: any[] = [];
+      for (const item of raw.categorys) {
+        categorys = [...categorys, ...(item as any).ids.map(id => ({ id }))];
+      }
+
+      raw.categorys = categorys;
     }
 
-    // 获取Goods表中的categorys[]
-    let categorys: any[] = [];
-    for (const item of raw.categorys) {
-      categorys = [...categorys, ...(item as any).ids.map(id => ({ id }))];
-    }
-
-    raw.categorys = categorys;
     try {
       await service.admin.goods.saveOne(raw);
       this.success();
@@ -104,10 +101,13 @@ export default class GoodsController extends BaseController {
     const { id } = params;
     delete params.categorys; // - 删除类目，不然保存的时候会更新类目
     try {
-      await service.admin.goods.createTags(id, params.tags);
-      console.log(params);
+      let raw: GoodsPartial = {};
+      if (id) {
+        await service.admin.goods.createTags(id, params.tags);
+        raw = await service.admin.goods.findById(id);
+      }
+      // console.log(params);
 
-      const raw: Goods = await service.admin.goods.findById(id);
       service.admin.goods.saveOne({ ...raw, ...params, isOnline: 1 })
       this.success();
     } catch (err) {
@@ -120,7 +120,7 @@ export default class GoodsController extends BaseController {
     let { id, isOnline } = this.ctx.request.body;
     isOnline = isOnline === 1 ? 0 : 1;
     try {
-      const raw: Goods = await this.service.admin.goods.findById(id);
+      const raw = await this.service.admin.goods.findById(id);
       await this.service.admin.goods.saveOne({ ...raw, isOnline });
       this.success(isOnline)
     } catch (err) {

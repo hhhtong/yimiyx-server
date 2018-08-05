@@ -3,9 +3,8 @@ import BaseController from '../../core/base-controller';
 export default class GoodsController extends BaseController {
 
   async index(): Promise<void> {
-    const { service } = this;
     try {
-      let list = await service.client.goods.queryOnline();
+      let list = await this.service.client.goods.queryOnline();
       for (const item of list) this.__dispose(item);
       this.success(list);
     } catch (err) {

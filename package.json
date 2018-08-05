@@ -1,123 +1,74 @@
 {
-  "name": "veggie-admin",
-  "version": "1.0.6",
-  "description": "基于 Egg + Vue2 + TypeScript + iView + Webpack4 多页面和单页面服务端客户端渲染同构工程项目.",
+  "name": "yimiyx",
+  "version": "2.0.0",
+  "description": "Egg+Typescript",
+  "private": true,
+  "egg": {
+    "typescript": true
+  },
   "scripts": {
-    "tsc": "ets && tsc -p tsconfig.json",
-    "tsc:w": "ets && tsc -p tsconfig.json -w",
-    "clean": "ets clean && find . -path './node_modules' -prune -o -name '*.map' | xargs rm",
-    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
-    "build": "cross-env easywebpack build prod",
+    "start": "egg-scripts start --daemon --title=egg-server-yimiyx",
+    "stop": "egg-scripts stop --title=egg-server-yimiyx",
+    "restart": "npm run stop && npm run start",
     "dev": "egg-bin dev -r egg-ts-helper/register",
     "debug": "egg-bin debug -r egg-ts-helper/register",
-    "start": "egg-scripts start --daemon --title=egg-server-veggie",
-    "stop": "egg-scripts stop --title=egg-server-veggie",
-    "start:win": "cross-env NODE_ENV=production EGG_SERVER_ENV=prod node index.js",
-    "start:test": "cross-env EGG_SERVER_ENV=test node index.js",
-    "restart": "npm run stop && npm run start",
-    "kill": "kill -9 $(lsof -i:9000 -i:9001 -i:7001 |grep 'node'|awk '{print $2}')",
-    "kill:win": "taskkill -PID $(netstat -ano | findstr 7001|awk '{print $5}') -F",
-    "lint:fix": "tslint --fix . && eslint --fix ."
+    "test-local": "egg-bin test -r egg-ts-helper/register",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "cov": "egg-bin cov -r egg-ts-helper/register",
+    "tsc": "ets && tsc -p tsconfig.json",
+    "ci": "npm run lint && npm run cov && npm run tsc",
+    "autod": "autod",
+    "lint": "tslint --project . -c tslint.json",
+    "clean": "ets clean && find . -path './node_modules' -prune -o -name '*.map' | xargs rm",
+    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
+    "kill": "kill -9 $(lsof -i:9000 -i:9001 -i:7001 |grep 'node'|awk '{print $2}')"
   },
   "dependencies": {
     "await-stream-ready": "^1.0.1",
-    "axios": "^0.18.0",
-    "countup": "^1.8.2",
     "egg": "^2.9.1",
     "egg-cors": "^2.1.0",
-    "egg-logger": "^1.7.1",
     "egg-redis": "^2.0.0",
     "egg-scripts": "^2.6.0",
-    "egg-validate": "^1.0.0",
-    "egg-view-vue-ssr": "^3.1.2",
-    "extend": "~3.0.2",
+    "egg-validate": "^1.1.0",
     "fs-extra": "^7.0.0",
-    "iview": "^3.0.0",
-    "iview-area": "^1.5.17",
-    "js-cookie": "^2.2.0",
-    "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "mysql2": "^1.6.1",
     "qrcode": "^1.2.2",
-    "reflect-metadata": "^0.1.12",
-    "server-side-render-resource": "^1.0.3",
     "stream-wormhole": "^1.0.4",
-    "tinymce": "^4.8.1",
-    "typeorm": "^0.2.7",
-    "vue": "^2.5.17",
-    "vue-hot-reload-api": "^2.3.0",
-    "vue-router": "^3.0.1",
-    "vue-server-renderer": "^2.5.17",
-    "vue-virtual-scroller": "^0.12.0",
-    "vuex": "^3.0.1",
-    "vuex-router-sync": "^5.0.0"
+    "typeorm": "^0.2.7"
   },
   "devDependencies": {
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^10.5.6",
+    "@types/supertest": "^2.0.5",
+    "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
-    "autoprefixer": "^9.0.2",
-    "babel-core": "^6.26.3",
-    "babel-helper-vue-jsx-merge-props": "^2.0.3",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-jsx-v-model": "^2.0.3",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-syntax-jsx": "^6.18.0",
-    "babel-plugin-transform-object-assign": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-plugin-transform-vue-jsx": "^3.7.0",
-    "babel-preset-env": "^1.7.0",
-    "cross-env": "^5.2.0",
     "cz-conventional-changelog": "^2.1.0",
-    "directory-named-webpack-plugin": "^4.0.0",
-    "easywebpack-cli": "^3.11.1",
-    "easywebpack-vue": "^4.0.4",
     "egg-bin": "^4.8.1",
+    "egg-ci": "^1.8.0",
     "egg-logview": "^2.0.0",
-    "egg-ts-helper": "^1.9.1",
-    "egg-webpack": "^4.1.2",
-    "egg-webpack-vue": "^2.0.1",
-    "eslint": "^5.2.0",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-loader": "^2.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "eslint-plugin-vue": "^4.7.1",
-    "imagemin-webpack-plugin": "^2.2.0",
-    "ip": "^1.1.5",
-    "postcss-loader": "^2.1.6",
-    "progress-bar-webpack-plugin": "^1.11.0",
-    "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.2",
-    "ts-loader": "^4.4.2",
+    "egg-ts-helper": "^1.9.2",
+    "tslib": "^1.9.3",
     "tslint": "^5.11.0",
-    "tslint-loader": "^3.6.0",
-    "typescript": "^3.0.1",
-    "uglifyjs-webpack-plugin": "^1.2.7",
-    "vue-template-compiler": "^2.5.17",
-    "webpack-manifest-resource-plugin": "^4.2.4"
+    "typescript": "^3.0.1"
   },
   "engines": {
     "node": ">=8.9.0"
   },
   "ci": {
-    "version": "6, 7, 8"
+    "version": "8"
   },
+  "eslintIgnore": [
+    "coverage"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/songyazhao/veggie-admin.git"
+    "url": "git+https://github.com/hhhtong/yimiyx.git"
   },
   "tnpm": {
     "mode": "yarn"
   },
   "author": "syazhao@foxmail.com",
   "license": "BSD",
-  "homepage": "https://github.com/songyazhao/veggie-admin",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  }
+  "homepage": "https://github.com/hhhtong/yimiyx"
 }

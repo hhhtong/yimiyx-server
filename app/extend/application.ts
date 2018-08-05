@@ -2,6 +2,7 @@ import { join } from 'path';
 import * as moment from 'moment';
 import * as QRCode from 'qrcode';
 import * as fs from 'fs-extra';
+import { Application } from 'egg';
 
 export default {
   // - 生成二维码
@@ -9,7 +10,7 @@ export default {
     const fileName = `${code}.png`;
     // - 存储路径按日期归类：public/upload/qrcode/2018_06_06/CG2018060523133306BCW2.png
     const saveDir = join(
-      this.config.baseDir,
+      (this as Application).config.baseDir,
       'public/upload/qrcode',
       moment().format('YYYY_MM_DD')
     );

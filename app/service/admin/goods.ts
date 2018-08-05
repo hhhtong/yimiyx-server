@@ -34,55 +34,47 @@ export default class GoodsService extends BaseService {
     page = 1,
     rows = 20,
     disabledPage = false,
-    isOnline,
-    goodsNo,
+    isOnline = 'all',
+    goodsNo = '',
     goodsName }: GoodsQuery): Promise<GoodsResult> {
     const where1: string = +goodsNo ? `G.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
-    const where2: string= goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
+    const where2: string = goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
     const where3: string = +isOnline === 1
       ? `G.isOnline = ${isOnline}`
       : +isOnline === 0
         ? 'G.isOnline != 1'
         : '1 = 1';
 
-    try {
-      let query: SelectQueryBuilder<Goods> = this.Goods
-        .createQueryBuilder('G')
-        .where('ISNULL(G.deletedAt)')
-        .andWhere(where1)
-        .andWhere(where2)
-        .andWhere(where3)
-        .orderBy('G.updatedAt', 'DESC');
-      const total: number = await query.getCount();
+    let query: SelectQueryBuilder<Goods> = this.Goods
+      .createQueryBuilder('G')
+      .where('ISNULL(G.deletedAt)')
+      .andWhere(where1)
+      .andWhere(where2)
+      .andWhere(where3)
+      .orderBy('G.updatedAt', 'DESC');
+    const total: number = await query.getCount();
 
-      if (!disabledPage) {
-        query = await query
-          .skip((page - 1) * rows)
-          .take(rows)
-      }
-
-      const list: Goods[] = await query
-        .leftJoinAndSelect('G.categorys', 'GC')
-        .leftJoinAndSelect('G.tags', 'T')
-        .getMany();
-      return { list, total };
-    } catch (err) {
-      this.error(err);
+    if (!disabledPage) {
+      query = query
+        .skip((page - 1) * rows)
+        .take(rows);
     }
+
+    const list: Goods[] = await query
+      .leftJoinAndSelect('G.categorys', 'GC')
+      .leftJoinAndSelect('G.tags', 'T')
+      .getMany();
+    return { list, total };
   }
 
   // - 查询单个商品信息
   async queryOne(goodsNo: string): Promise<Goods> {
-    try {
-      return await this.Goods
-        .createQueryBuilder('G')
-        .where('G.goodsNo = :goodsNo', { goodsNo })
-        .leftJoin('G.goodsDesc', 'GD')
-        .leftJoin('GD.tags', 'T')
-        .getOne()
-    } catch (err) {
-      this.error(err);
-    }
+    return await this.Goods
+      .createQueryBuilder('G')
+      .where('G.goodsNo = :goodsNo', { goodsNo })
+      .leftJoin('G.goodsDesc', 'GD')
+      .leftJoin('GD.tags', 'T')
+      .getOne() || this.Goods.create();
   }
 
   // - 删除一个商品
@@ -96,11 +88,7 @@ export default class GoodsService extends BaseService {
 
   // - 根据id查找
   async findById(id: number): Promise<Goods> {
-    try {
-      return await this.Goods.findOne(id);
-    } catch (err) {
-      this.error(err);
-    }
+    return await this.Goods.findOne(id) || this.Goods.create();
   }
 
   // - 保存一个商品
@@ -114,7 +102,7 @@ export default class GoodsService extends BaseService {
 
   // - 创建新标签
   async createTags(id: number, tags: string[]): Promise<void> {
-    let temp = [];
+    let temp: GoodsTag[] = [];
     try {
       // - 先删除该商品之前存在的标签
       await this.GoodsTag.delete({ goods: { id } })
@@ -132,7 +120,7 @@ export default class GoodsService extends BaseService {
   async getMaxGoodsNo(goodsNoPrefix: string): Promise<string> {
     let maxNo: number = await this.Goods
       .createQueryBuilder('G')
-      .where(`G.goodsNo LIKE ':goodsNoPrefix%'`, { goodsNoPrefix })
+      .where(`G.goodsNo LIKE :goodsNoPrefix '%'`, { goodsNoPrefix })
       .getCount();
     return goodsNoPrefix + this.ctx.helper.prefixZero(++maxNo, 4);
   }

@@ -24,9 +24,11 @@ export default class BaseController extends Controller {
 
   fail(data: any = {}, code: number = 50001, msg: string = '操作失败') {
     if (typeof data.sqlMessage === 'string') {
+      // - 数据库相关操作错误
       code = 50002;
       msg = data.sqlMessage;
     } else {
+      // - 抛出的异常错误
       msg = data.errmsg || data.toString();
     }
 

@@ -23,6 +23,8 @@ interface Query {
 
 // - 优惠券
 export interface CouponQuery extends Query {
+  couponType?: number,
+  couponName?: string;
   couponMoney1?: Coupon['couponMoney']; // - 优惠券金额范围
   couponMoney2?: Coupon['couponMoney'];
 }

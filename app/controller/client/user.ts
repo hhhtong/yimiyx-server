@@ -72,7 +72,7 @@ export default class UserController extends BaseWxController {
     const { skey, encryptedData, iv } = this.ctx.request.body;
     const session = await this.$skey2openid(skey);
 
-    let data = null;
+    let data;
     if (session) {
       data = new WXBizDataCrypt(this.appId, session.sessionKey);
       data = data.decryptData(encryptedData, iv);

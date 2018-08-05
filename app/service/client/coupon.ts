@@ -47,7 +47,7 @@ export default class CouponService extends BaseService {
   // -------------------------------------------------------------------------
 
   // - 通过openid获得该用户下的所有优惠券
-  async findByOpenid(openid: string): Promise<Coupon[]> {
+  async findByOpenid(openid: string): Promise<Coupon[] | undefined> {
     try {
       return await this.Coupon
         .createQueryBuilder('C')
@@ -63,7 +63,7 @@ export default class CouponService extends BaseService {
   }
 
   // - 查询指定id的优惠券
-  async findByCouponId(couponId: Coupon['couponId']): Promise<Coupon> {
+  async findByCouponId(couponId: Coupon['couponId']): Promise<Coupon | undefined> {
     try {
       return await this.Coupon
         .createQueryBuilder('C')

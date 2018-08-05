@@ -1,16 +1,15 @@
-exports.static = true;
+import { EggPlugin } from 'egg';
 
-exports.vuessr = {
-  enable: true,
-  package: 'egg-view-vue-ssr'
+const plugin: EggPlugin = {
+  static: true,
+  cors: {
+    enable: true,
+    package: 'egg-cors'
+  },
+  redis: {
+    enable: true,
+    package: 'egg-redis'
+  }
 };
 
-exports.cors = {
-  enable: true,
-  package: 'egg-cors'
-};
-
-exports.redis = {
-  enable: true,
-  package: 'egg-redis'
-};
+export default plugin;

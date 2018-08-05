@@ -3,11 +3,9 @@
  *
  * 最终生效的配置为 prod + default（前者覆盖后者）
  */
+import { DefaultConfig } from './config.default';
 
-import { EggAppConfig } from 'egg';
-
-export default (app : EggAppConfig) => {
-  const exports : any = {};
-
-  return exports;
+export default () => {
+  const config: DefaultConfig = {};
+  return config;
 };

@@ -1,8 +1,6 @@
 import BaseController from '../core/base-controller';
 import { getConnection } from 'typeorm';
 import PurchaseOrder from '../model/entity/purchase-order';
-import PurchaseMainOrder from '../model/entity/purchase-main-order';
-import PurchaseChildOrder from '../model/entity/purchase-child-order';
 
 export default class TestController extends BaseController {
 

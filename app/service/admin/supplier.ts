@@ -36,24 +36,20 @@ export default class SupplierService extends BaseService {
     const where1: string = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1';
     const where2: string = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1';
 
-    try {
-      const query: SelectQueryBuilder<Supplier> = await this.Supplier
-        .createQueryBuilder('supplier')
-        .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
-        .andWhere(`supplier.areaCode LIKE '${areaCode}%'`)
-        .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
-        .orderBy('supplier.id', 'ASC')
-      const total: number = await query.getCount();
-      const list: Supplier[] = await query
-        .skip((page - 1) * rows)
-        .take(rows)
-        .leftJoinAndSelect('supplier.category', 'category')
-        .getMany();
+    const query: SelectQueryBuilder<Supplier> = await this.Supplier
+      .createQueryBuilder('supplier')
+      .where(`ISNULL(supplier.deletedAt) AND ${where1} AND ${where2}`)
+      .andWhere(`supplier.areaCode LIKE '${areaCode}%'`)
+      .andWhere(`supplier.supplierName LIKE '%${supplierName}%'`)
+      .orderBy('supplier.id', 'ASC')
+    const total: number = await query.getCount();
+    const list: Supplier[] = await query
+      .skip((page - 1) * rows)
+      .take(rows)
+      .leftJoinAndSelect('supplier.category', 'category')
+      .getMany();
 
-      return { list, total };
-    } catch (err) {
-      this.error(err);
-    }
+    return { list, total };
   }
 
   async insert(raw: Partial<Supplier>, id: number): Promise<void> {

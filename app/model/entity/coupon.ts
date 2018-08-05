@@ -105,10 +105,4 @@ export default class Coupon {
    */
   @UpdateDateColumn()
   updatedAt: Date;
-
-  /**
-   * 删除时间
-   */
-  @Column('timestamp', { nullable: true })
-  deletedAt: Date;
 }
