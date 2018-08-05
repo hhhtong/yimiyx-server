@@ -1,7 +1,7 @@
-import { Repository } from 'typeorm';
-import BaseService from '../../core/base-service';
-import User from '../../model/entity/user';
-import Coupon from '../../model/entity/coupon';
+import { Repository } from 'typeorm'
+import BaseService from '../../core/base-service'
+import User from '../../model/entity/user'
+import Coupon from '../../model/entity/coupon'
 
 export default class CouponService extends BaseService {
 
@@ -10,18 +10,18 @@ export default class CouponService extends BaseService {
   // -------------------------------------------------------------------------
 
   // - 用户
-  readonly User: Repository<User>;
+  readonly user: Repository<User>
   // - 优惠券
-  readonly Coupon: Repository<Coupon>;
+  readonly coupon: Repository<Coupon>
 
   // -------------------------------------------------------------------------
   // Constructor
   // -------------------------------------------------------------------------
 
   constructor(ctx) {
-    super(ctx);
-    this.User = this.conn.getRepository(User);
-    this.Coupon = this.conn.getRepository(Coupon);
+    super(ctx)
+    this.user = this.conn.getRepository(User)
+    this.coupon = this.conn.getRepository(Coupon)
   }
 
   // -------------------------------------------------------------------------
@@ -49,30 +49,30 @@ export default class CouponService extends BaseService {
   // - 通过openid获得该用户下的所有优惠券
   async findByOpenid(openid: string): Promise<Coupon[] | undefined> {
     try {
-      return await this.Coupon
+      return await this.coupon
         .createQueryBuilder('C')
         .leftJoin('C.user', 'U')
         .where('U.openid = :openid')
         .setParameters({ openid })
         .orderBy('C.dataFlag', 'DESC')
         .select(this.selectField)
-        .getMany();
+        .getMany()
     } catch (err) {
-      this.error(err);
+      this.error(err)
     }
   }
 
   // - 查询指定id的优惠券
   async findByCouponId(couponId: Coupon['couponId']): Promise<Coupon | undefined> {
     try {
-      return await this.Coupon
+      return await this.coupon
         .createQueryBuilder('C')
         .where('C.couponId = :couponId')
         .setParameters({ couponId })
         .select(this.selectField)
-        .getOne();
+        .getOne()
     } catch (err) {
-      this.error(err);
+      this.error(err)
     }
   }
 }

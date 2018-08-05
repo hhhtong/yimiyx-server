@@ -1,6 +1,6 @@
 // - 数据库表名字段名小驼峰式命名策略
-import { NamingStrategyInterface, DefaultNamingStrategy } from 'typeorm';
-import { snakeCase, camelCase } from 'typeorm/util/StringUtils';
+import { NamingStrategyInterface, DefaultNamingStrategy } from 'typeorm'
+import { snakeCase, camelCase } from 'typeorm/util/StringUtils'
 
 export class SnakeNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
   tableName(className: string, customName: string): string {
@@ -24,7 +24,6 @@ export class SnakeNamingStrategy extends DefaultNamingStrategy implements Naming
     secondTableName: string,
     firstPropertyName: string,
     secondPropertyName: string): string {
-    console.log(secondPropertyName);
     return snakeCase(firstTableName + '_' + firstPropertyName.replace(/\./gi, '_') + '_' + secondTableName)
   }
 

@@ -1,6 +1,6 @@
-import BaseController from '../core/base-controller';
-import { getConnection } from 'typeorm';
-import PurchaseOrder from '../model/entity/purchase-order';
+import BaseController from '../core/base-controller'
+import { getConnection } from 'typeorm'
+import PurchaseOrder from '../model/entity/purchase-order'
 
 export default class TestController extends BaseController {
 
@@ -9,8 +9,8 @@ export default class TestController extends BaseController {
       'CG20180604012316T8WXRN',
       'CG20180604230155Y8VO4H',
       'CG2018060523133306BCW2'
-    ]);
-    this.success(list);
+    ])
+    this.success(list)
   }
 
   async findByIds(ids: string[]) {
@@ -31,7 +31,7 @@ export default class TestController extends BaseController {
           where: 'supplier.id = 1 AND goods.id = 192'
         })
       // console.log('@@@@@@@@@@@@@@@', list instanceof Promise);
-      return Promise.resolve(list);
+      return Promise.resolve(list)
     } catch (e) {
       this.ctx.logger.error(e)
     }

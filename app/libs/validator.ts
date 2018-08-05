@@ -4,8 +4,9 @@
  * @returns {Boolean}
  */
 export function checkMobile(mobile: string) {
-  if (/^((\d{3}-\d{8}|\d{4}-\d{7,8})|(1[3|5|7|8][0-9]{9}))$/.test(mobile))
+  if (/^((\d{3}-\d{8}|\d{4}-\d{7,8})|(1[3|5|7|8][0-9]{9}))$/.test(mobile)) {
     return true
+  }
   return false
 }
 
@@ -16,8 +17,9 @@ export function checkMobile(mobile: string) {
  * @returns {Boolean}
  */
 export function checkTaxNo(taxNo: string) {
-  if (/^[A-Z0-9]{15}$|^[A-Z0-9]{17}$|^[A-Z0-9]{18}$|^[A-Z0-9]{20}$/.test(taxNo))
+  if (/^[A-Z0-9]{15}$|^[A-Z0-9]{17}$|^[A-Z0-9]{18}$|^[A-Z0-9]{20}$/.test(taxNo)) {
     return true
+  }
   return false
 }
 
@@ -27,8 +29,9 @@ export function checkTaxNo(taxNo: string) {
  * @returns {Boolean}
  */
 export function checkUserName(username: string) {
-  if (/^[a-zA-Z0-9_-]{3,16}$/.test(username))
+  if (/^[a-zA-Z0-9_-]{3,16}$/.test(username)) {
     return true
+  }
   return false
 }
 
@@ -39,8 +42,9 @@ export function checkUserName(username: string) {
  * @param obj
  */
 export function checkIdCard(obj: string) {
-  if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(obj))
+  if (/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(obj)) {
     return true
+  }
   return false
 }
 
@@ -53,7 +57,8 @@ export function checkGATIdCard(obj: string) {
   let reg2 = /^[A-Z][0-9]{8,12}$/ // 香港格式2 (H60152555)
   let reg3 = /^[1|5|7][0-9]{6}[\(|\（]?[0-9A-Z][\)|\）]?$/ // 澳门,8位数,不包含出生年月 格式为 xxxxxxx(x) 注:x全为数字,无英文字母 首位数只有1、5、7字开头的
   let reg4 = /^[a-zA-Z][0-9]{9}$/ // 台湾:10位字母和数字
-  if (reg1.test(obj) || reg2.test(obj) || reg3.test(obj) || reg4.test(obj))
+  if (reg1.test(obj) || reg2.test(obj) || reg3.test(obj) || reg4.test(obj)) {
     return true
+  }
   return false
 }

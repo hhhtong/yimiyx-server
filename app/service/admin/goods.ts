@@ -1,8 +1,8 @@
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import BaseService from '../../core/base-service';
-import Goods from '../../model/entity/goods';
-import GoodsTag from '../../model/entity/goods-tag';
-import { GoodsQuery, GoodsResult } from '../../common/QueryInterface';
+import { Repository, SelectQueryBuilder } from 'typeorm'
+import BaseService from '../../core/base-service'
+import Goods from '../../model/entity/goods'
+import GoodsTag from '../../model/entity/goods-tag'
+import { GoodsQuery, GoodsResult } from '../../common/QueryInterface'
 
 export default class GoodsService extends BaseService {
 
@@ -11,18 +11,18 @@ export default class GoodsService extends BaseService {
   // -------------------------------------------------------------------------
 
   // - 商品__实体
-  readonly Goods: Repository<Goods>;
+  readonly goods: Repository<Goods>
   // - 商品标签__实体
-  readonly GoodsTag: Repository<GoodsTag>;
+  readonly goodsTag: Repository<GoodsTag>
 
   // -------------------------------------------------------------------------
   // Constructor
   // -------------------------------------------------------------------------
 
   constructor(ctx) {
-    super(ctx);
-    this.Goods = this.conn.getRepository(Goods);
-    this.GoodsTag = this.conn.getRepository(GoodsTag);
+    super(ctx)
+    this.goods = this.conn.getRepository(Goods)
+    this.goodsTag = this.conn.getRepository(GoodsTag)
   }
 
   // -------------------------------------------------------------------------
@@ -36,92 +36,95 @@ export default class GoodsService extends BaseService {
     disabledPage = false,
     isOnline = 'all',
     goodsNo = '',
-    goodsName }: GoodsQuery): Promise<GoodsResult> {
-    const where1: string = +goodsNo ? `G.goodsNo LIKE '%${goodsNo}%'` : '1 = 1';
-    const where2: string = goodsName ? `G.goodsName LIKE '%${goodsName}%'` : '1 = 1';
-    const where3: string = +isOnline === 1
-      ? `G.isOnline = ${isOnline}`
-      : +isOnline === 0
-        ? 'G.isOnline != 1'
-        : '1 = 1';
-
-    let query: SelectQueryBuilder<Goods> = this.Goods
+    goodsName = '' }: GoodsQuery): Promise<GoodsResult> {
+    let query: SelectQueryBuilder<Goods> = this.goods
       .createQueryBuilder('G')
       .where('ISNULL(G.deletedAt)')
-      .andWhere(where1)
-      .andWhere(where2)
-      .andWhere(where3)
-      .orderBy('G.updatedAt', 'DESC');
-    const total: number = await query.getCount();
+    let total: number = 0
+
+    if (+goodsNo) {
+      query = query.andWhere(`G.goodsNo LIKE '%' :goodsNo '%'`, { goodsNo })
+    }
+    if (goodsName !== '') {
+      query = query.andWhere(`G.goodsName LIKE '%' :goodsName '%'`, { goodsName })
+    }
+    if (+isOnline === 1) {
+      query = query.andWhere(`G.isOnline = :isOnline`, { isOnline })
+    } else if (+isOnline === 0) {
+      query = query.andWhere(`G.isOnline != 1`)
+    }
+
+    total = await query.getCount()
 
     if (!disabledPage) {
       query = query
         .skip((page - 1) * rows)
-        .take(rows);
+        .take(rows)
     }
 
-    const list: Goods[] = await query
+    query = query
       .leftJoinAndSelect('G.categorys', 'GC')
       .leftJoinAndSelect('G.tags', 'T')
-      .getMany();
-    return { list, total };
+      .orderBy('G.updatedAt', 'DESC')
+
+    return { list: await query.getMany(), total }
   }
 
   // - 查询单个商品信息
   async queryOne(goodsNo: string): Promise<Goods> {
-    return await this.Goods
+    return await this.goods
       .createQueryBuilder('G')
       .where('G.goodsNo = :goodsNo', { goodsNo })
       .leftJoin('G.goodsDesc', 'GD')
       .leftJoin('GD.tags', 'T')
-      .getOne() || this.Goods.create();
+      .getOne() || this.goods.create()
   }
 
   // - 删除一个商品
   async deleteOne(rowData: Partial<Goods>): Promise<void> {
     try {
-      await this.Goods.save({ ...rowData, deletedAt: new Date() });
+      await this.goods.save({ ...rowData, deletedAt: new Date() })
     } catch (err) {
-      this.error(err);
+      this.error(err)
     }
   }
 
   // - 根据id查找
   async findById(id: number): Promise<Goods> {
-    return await this.Goods.findOne(id) || this.Goods.create();
+    return await this.goods.findOne(id) || this.goods.create()
   }
 
   // - 保存一个商品
   async saveOne(rowData: Partial<Goods>): Promise<void> {
     try {
-      await this.Goods.save(this.Goods.create(rowData));
+      await this.goods.save(this.goods.create(rowData))
     } catch (err) {
-      this.error(err);
+      this.error(err)
     }
   }
 
   // - 创建新标签
   async createTags(id: number, tags: string[]): Promise<void> {
-    let temp: GoodsTag[] = [];
+    let temp: GoodsTag[] = []
     try {
       // - 先删除该商品之前存在的标签
-      await this.GoodsTag.delete({ goods: { id } })
+      await this.goodsTag.delete({ goods: { id } })
       for (const tagName of tags) {
-        temp.push(this.GoodsTag.create({ goods: { id }, tagName }));
+        temp.push(this.goodsTag.create({ goods: { id }, tagName }))
       }
       // - 然后在保存新标签
-      this.GoodsTag.save(temp);
+      await this.goodsTag.save(temp)
     } catch (err) {
-      this.error(err);
+      this.error(err)
     }
   }
 
   // - 获得最大的商品编号
   async getMaxGoodsNo(goodsNoPrefix: string): Promise<string> {
-    let maxNo: number = await this.Goods
+    let maxNo: number = await this.goods
       .createQueryBuilder('G')
       .where(`G.goodsNo LIKE :goodsNoPrefix '%'`, { goodsNoPrefix })
-      .getCount();
-    return goodsNoPrefix + this.ctx.helper.prefixZero(++maxNo, 4);
+      .getCount()
+    return goodsNoPrefix + this.ctx.helper.prefixZero(++maxNo, 4)
   }
 }

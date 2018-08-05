@@ -3,9 +3,9 @@
  *
  * 最终生效的配置为 prod + default（前者覆盖后者）
  */
-import { DefaultConfig } from './config.default';
+import { DefaultConfig } from './config.default'
 
 export default () => {
-  const config: DefaultConfig = {};
-  return config;
-};
+  const config: DefaultConfig = {}
+  return config
+}

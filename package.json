@@ -20,7 +20,7 @@
     "autod": "autod",
     "lint": "tslint --project . -c tslint.json",
     "clean": "ets clean && find . -path './node_modules' -prune -o -name '*.map' | xargs rm",
-    "compress": "tar -zcvf veggie-admin.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
+    "compress": "tar -zcvf yimiyx-server.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
     "kill": "kill -9 $(lsof -i:9000 -i:9001 -i:7001 |grep 'node'|awk '{print $2}')"
   },
   "dependencies": {
@@ -47,9 +47,11 @@
     "egg-bin": "^4.8.1",
     "egg-ci": "^1.8.0",
     "egg-logview": "^2.0.0",
+    "egg-mock": "^3.18.0",
     "egg-ts-helper": "^1.9.2",
     "tslib": "^1.9.3",
     "tslint": "^5.11.0",
+    "tslint-config-standard": "^7.1.0",
     "typescript": "^3.0.1"
   },
   "engines": {

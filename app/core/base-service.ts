@@ -1,9 +1,9 @@
-import { Service } from 'egg';
+import { Service } from 'egg'
 
 export default class BaseService extends Service {
 
   get log() {
-    return this.app.logger;
+    return this.app.logger
   }
 
   get conn() {
@@ -11,7 +11,7 @@ export default class BaseService extends Service {
   }
 
   error(e) {
-    this.log.error(e);
+    this.log.error(e)
     throw new Error(e)
   }
 }

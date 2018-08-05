@@ -1,6 +1,5 @@
-import 'reflect-metadata';
-import { createConnection, getConnectionOptions } from 'typeorm';
-import { SnakeNamingStrategy } from './app/model/naming-strategy/snake-naming';
+import { createConnection, getConnectionOptions } from 'typeorm'
+import { SnakeNamingStrategy } from './app/model/naming-strategy/snake-naming'
 
 export default app => {
   app.beforeStart(async () => {
@@ -9,10 +8,10 @@ export default app => {
     app.connection = await createConnection({
       ...await getConnectionOptions(),
       namingStrategy: new SnakeNamingStrategy()
-    });
+    })
 
     // - 也可以通过以下方式来调用 Service
     // - const ctx = app.createAnonymousContext();
     // - app.cities = await ctx.service.cities.load();
-  });
-};
+  })
+}

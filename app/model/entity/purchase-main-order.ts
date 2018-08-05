@@ -1,10 +1,10 @@
 /**
  * 采购的商品单
  */
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
-import Goods from './goods';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm'
+import Goods from './goods'
 import PurchaseOrder from './purchase-order'
-import PurchaseChildOrder from './purchase-child-order';
+import PurchaseChildOrder from './purchase-child-order'
 
 @Entity()
 export default class PurchaseMainOrder {
@@ -16,25 +16,25 @@ export default class PurchaseMainOrder {
    * C开头表示商品主订单下的子订单
    */
   @PrimaryColumn('char', { length: 24 })
-  mid: string;
+  mid: string
 
   /**
    * 商品
    */
   @ManyToOne(type => Goods, goods => goods.purchaseMainOrders)
-  goods: Goods;
+  goods: Goods
 
   /**
    * 采购单
    */
   @ManyToOne(type => PurchaseOrder, po => po.mainOrders)
-  order: PurchaseOrder;
+  order: PurchaseOrder
 
   /**
    * 采购的子订单
    */
   @OneToMany(type => PurchaseChildOrder, co => co.mainOrder)
-  childOrders: PurchaseChildOrder[];
+  childOrders: PurchaseChildOrder[]
 
   /**
    * 采购商品单状态
@@ -44,23 +44,23 @@ export default class PurchaseMainOrder {
    *  2: 已入库
    */
   @Column('tinyint', { default: -1 })
-  status: number;
+  status: number
 
   /**
    * 采购数量
    */
   @Column()
-  purchaseNum: number;
+  purchaseNum: number
 
   /**
    * 创建时间
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * 更新时间
    */
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

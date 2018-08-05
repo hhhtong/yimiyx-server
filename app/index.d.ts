@@ -1,4 +1,4 @@
-import { IObj } from '../app/extend/helper'
+import { ObjOrObjArr } from '../app/extend/helper'
 
 declare module 'egg' {
   interface Application {
@@ -21,13 +21,13 @@ declare module 'egg' {
      * @method Helper#toCamelObj - 将对象或者数组内对象的key转为小驼峰命名
      * @param obj - 要进行转换的对象或者数组
      */
-    toCamelObj(obj: IObj): Object | Object[],
+    toCamelObj(obj: ObjOrObjArr): Object | Object[],
 
     /**
      * @method Helper#toSnakeObj - 将对象或者数组内对象的key转为下划线分割命名
      * @param obj - 要进行转换的对象或者数组
      */
-    toSnakeObj(obj: IObj): Object | Object[],
+    toSnakeObj(obj: ObjOrObjArr): Object | Object[],
 
     /**
      * 日期补全时间

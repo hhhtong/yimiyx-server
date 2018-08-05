@@ -1,6 +1,6 @@
-import { Repository } from 'typeorm';
-import BaseService from '../../core/base-service';
-import Goods from '../../model/entity/goods';
+import { Repository } from 'typeorm'
+import BaseService from '../../core/base-service'
+import Goods from '../../model/entity/goods'
 
 export default class OrderService extends BaseService {
 
@@ -9,15 +9,15 @@ export default class OrderService extends BaseService {
   // -------------------------------------------------------------------------
 
   // - 商品__实体
-  readonly Goods: Repository<Goods>;
+  readonly goods: Repository<Goods>
 
   // -------------------------------------------------------------------------
   // Constructor
   // -------------------------------------------------------------------------
 
   constructor(ctx) {
-    super(ctx);
-    this.Goods = this.conn.getRepository(Goods);
+    super(ctx)
+    this.goods = this.conn.getRepository(Goods)
   }
 
   // -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ export default class OrderService extends BaseService {
   // - 查询一个商品详细
   async queryOne(id: number) {
     try {
-      const data: any = await this.Goods
+      const data: any = this.goods
         .createQueryBuilder('G')
         .where('G.id = :id', { id })
         .leftJoin('G.tags', 'T')
@@ -44,11 +44,11 @@ export default class OrderService extends BaseService {
           'G.unitPrice',
           'G.goodsAmount',
           'T.tagName'
-        ]);
+        ])
 
-      return data.getOne();
+      return data.getOne()
     } catch (error) {
-      this.error(error);
+      this.error(error)
     }
   }
 }

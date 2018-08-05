@@ -1,24 +1,24 @@
 /**
  * 后台管理系统-角色表
  */
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity()
 export default class SysAdminRole {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   /**
    * 角色名
    */
   @Column('varchar', { length: 64 })
-  roleName: string;
+  roleName: string
 
   /**
    * 角色描述
    */
   @Column('varchar', { length: 200, nullable: true })
-  roleDesc: string;
+  roleDesc: string
 
   /**
    * 角色类型

@@ -15,6 +15,7 @@ public/
 *.swp
 *.lock
 *.js
+*.log
 !.autod.conf.js
 
 app/**/*.js

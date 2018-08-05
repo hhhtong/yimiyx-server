@@ -1,10 +1,10 @@
 /**
  * 采购单
  */
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
-import Supplier from './supplier';
-import GoodsCategory from './goods-category';
-import PurchaseMainOrder from './purchase-main-order';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm'
+import Supplier from './supplier'
+import GoodsCategory from './goods-category'
+import PurchaseMainOrder from './purchase-main-order'
 
 @Entity()
 export default class PurchaseOrder {
@@ -14,25 +14,25 @@ export default class PurchaseOrder {
    * 据此生成条形码
    */
   @PrimaryColumn('char', { length: 24 })
-  id: string;
+  id: string
 
   /**
    * 采购类别(一级类目)
    */
   @ManyToOne(type => GoodsCategory, gc => gc.purchaseOrders)
-  category: GoodsCategory;
+  category: GoodsCategory
 
   /**
    * 供货商
    */
   @ManyToOne(type => Supplier, supplier => supplier.purchaseOrder)
-  supplier: Supplier;
+  supplier: Supplier
 
   /**
    * 采购商品单的主订单
    */
   @OneToMany(type => PurchaseMainOrder, mo => mo.order)
-  mainOrders: PurchaseMainOrder[];
+  mainOrders: PurchaseMainOrder[]
 
   /**
    * 采购单状态
@@ -41,36 +41,35 @@ export default class PurchaseOrder {
    *  2: 已入库
    */
   @Column('tinyint', { default: 1 })
-  status: number;
+  status: number
 
   /**
    * 备注
    */
   @Column()
-  remark: string;
+  remark: string
 
   /**
    * 经办人
    */
   @Column('char', { length: 32, nullable: true })
-  transactor: string;
+  transactor: string
 
   /**
    * 创建时间
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   /**
    * 更新时间
    */
   @UpdateDateColumn()
-  updatedAt: Date;
-
+  updatedAt: Date
 
   /**
    * 删除时间
    */
   @Column({ nullable: true })
-  deletedAt: Date;
+  deletedAt: Date
 }
