@@ -73,7 +73,6 @@ export const otherRouter = {
     { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: $import('own-space/own-space') },
     { path: 'message', title: '消息中心', name: 'message_index', component: $import('message/message') },
     { path: 'purchase-add', title: '新增采购单', name: 'purchase-add', component: $import('purchase-manage/purchase-add') },
-    // { path: 'purchase-details', title: '采购单详情', name: 'purchase-details', component: $import('purchase-manage/purchase-details') },
     { path: 'goods-desc', title: '填写商品详细信息', name: 'goods-desc', component: $import('goods-manage/goods-desc') }
   ]
 }

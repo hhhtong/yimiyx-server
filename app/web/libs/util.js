@@ -27,8 +27,8 @@ util.parseSearchField = function ({ query, field, ID = `${field}ID`, name = `${f
 
   return {
     ...query,
-      [ID]: tempID,
-      [name]: tempName
+    [ID]: tempID,
+    [name]: tempName
   }
 }
 
