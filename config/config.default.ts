@@ -24,7 +24,7 @@ export default (appInfo: EggAppInfo) => {
   }
 
   config.siteFile = {
-    '/favicon.ico': readFileSync(join(appInfo.baseDir, 'favicon.ico'))
+    '/favicon.ico': readFileSync(join(appInfo.baseDir, 'public/static/favicon.ico'))
   }
 
   config.security = {
