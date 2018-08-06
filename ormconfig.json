@@ -5,7 +5,7 @@
   "port": 3306,
   "username": "root",
   "password": "root",
-  "database": "veggie_db",
+  "database": "yimiyx_db",
   "synchronize": true,
   "logging": false,
   "timezone": "local",

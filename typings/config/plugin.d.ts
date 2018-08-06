@@ -3,4 +3,5 @@
 
 import 'egg-logview';
 import 'egg-cors';
+import 'egg-view-nunjucks';
 import 'egg-redis';

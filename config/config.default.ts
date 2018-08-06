@@ -20,7 +20,6 @@ export default (appInfo: EggAppInfo) => {
     listen: {
       port: 7001,
       hostname: '127.0.0.1'
-      // path: '/var/run/egg.sock',
     }
   }
 
@@ -49,12 +48,11 @@ export default (appInfo: EggAppInfo) => {
   }
 
   config.view = {
-    cache: false
+    defaultViewEngine: 'nunjucks',
+    mapping: {
+      '.nj': 'nunjucks'
+    }
   }
-
-  // config.vuessr = {
-  //   layout: join(appInfo.baseDir, 'app/web/template/layout.html')
-  // };
 
   config.logger = {
     consoleLevel: 'DEBUG',

@@ -19,8 +19,8 @@ export default (app: EggAppConfig) => {
     dir: path.join(app.baseDir, 'logs')
   }
 
-  config.vuessr = {
-    injectCss: false
+  config.view = {
+    cache: false
   }
 
   const localIP: string = ip.address()
