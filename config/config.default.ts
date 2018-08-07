@@ -28,6 +28,9 @@ export default (appInfo: EggAppInfo) => {
   }
 
   config.security = {
+    domainWhiteList: [
+      `http://erp.haohaihongtong.com`
+    ],
     csrf: {
       // - 忽略 JSON 请求(即将废弃)
       // - 注意：该选项即将废弃，攻击者可以通过 flash + 307 来攻破，请不要在生产环境打开改选项！

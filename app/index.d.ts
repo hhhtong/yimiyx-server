@@ -1,4 +1,4 @@
-import { ObjOrObjArr } from '../app/extend/helper'
+import { ObjOrObjArr } from './extend/helper'
 
 declare module 'egg' {
   interface Application {

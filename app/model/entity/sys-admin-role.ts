@@ -1,12 +1,27 @@
 /**
  * 后台管理系统-角色表
  */
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm'
+import AdminUser from './sys-admin-user'
 
 @Entity()
-export default class SysAdminRole {
+export default class AdminRole {
+  /**
+   * 角色类型
+   * - 超级管理员
+   * - 管理员
+   * - 店长
+   * - 仓库管理员
+   * - 采购员
+   */
   @PrimaryGeneratedColumn()
-  id: number
+  roleId: number
+
+  /**
+   * 角色下对应的用户
+   */
+  @ManyToMany(type => AdminUser, AU => AU.role)
+  user: AdminUser[]
 
   /**
    * 角色名
@@ -15,18 +30,20 @@ export default class SysAdminRole {
   roleName: string
 
   /**
+   * 父级ID
+   */
+  @Column()
+  parentID: number
+
+  /**
    * 角色描述
    */
   @Column('varchar', { length: 200, nullable: true })
-  roleDesc: string
+  description: string
 
   /**
-   * 角色类型
-   * 1、超级管理员
-   * 2、店长
-   * 3、仓库管理员
-   * 4、采购员
+   * 创建时间
    */
-  @Column('tinyint', { default: 2 })
-  roleType: number
+  @CreateDateColumn()
+  createdAt: Date
 }

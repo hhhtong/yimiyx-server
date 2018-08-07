@@ -8,8 +8,8 @@ export default class HomeController extends BaseController {
 
   async login(): Promise<void> {
     const { ctx } = this
-    const { username, password } = ctx.request.body
-    const user = await ctx.service.user.find({ username, password })
+    const { userName, password } = ctx.request.body
+    const user = await ctx.service.user.find({ userName, password })
 
     if (!user) ctx.throw(403)
 
