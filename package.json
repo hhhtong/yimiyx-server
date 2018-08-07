@@ -21,7 +21,7 @@
     "lint": "tslint --project . -c tslint.json",
     "clean": "ets clean && find . -path './node_modules' -prune -o -name '*.map' | xargs rm",
     "compress": "tar -zcvf yimiyx-server.tar.gz --exclude=*/*.ts --exclude=app/web app config libs public run app.js index.js package.json yarn.lock",
-    "kill": "kill -9 $(lsof -i:9000 -i:9001 -i:7001 |grep 'node'|awk '{print $2}')"
+    "kill": "kill -9 $(lsof -i:7001 |grep 'node'|awk '{print $2}')"
   },
   "dependencies": {
     "await-stream-ready": "^1.0.1",

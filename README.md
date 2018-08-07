@@ -7,6 +7,14 @@
 - [yimiyx-admin](https://github.com/hhhtong/yimiyx-admin)
 - [yimiyx-miniprogram](https://github.com/hhhtong/yimiyx-miniprogram)
 
+### Introduction
+
+本项目依赖于Mariadb，Redis，请自行安装
+```bash
+brew install mariadb
+brew install redis-cli
+```
+
 ### Development
 
 ```bash

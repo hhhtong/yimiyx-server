@@ -25,7 +25,9 @@ export default (app: EggAppConfig) => {
 
   const localIP: string = ip.address()
   const domainWhiteList: string[] = [];
-  [7001, 9000, 9001].forEach(port => {
+  // - 7000 yimiyx-admin 开发期间的端口
+  // - 7001 yimiyx-server 开发期间的端口
+  [7000, 7001].forEach(port => {
     domainWhiteList.push(`http://localhost:${port}`)
     domainWhiteList.push(`http://127.0.0.1:${port}`)
     domainWhiteList.push(`http://${localIP}:${port}`)
