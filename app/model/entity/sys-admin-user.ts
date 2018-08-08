@@ -14,25 +14,28 @@ export default class AdminUser {
   userId: number
 
   /**
-   * 用户所在部门
+   * 用户<n——n>部门
+   * @description 用户所在部门
    */
   @ManyToMany(type => AdminDepartment, AD => AD.user)
   @JoinTable()
   department: AdminDepartment[]
 
   /**
-   * 用户所拥有权限
-   */
-  @ManyToMany(type => AdminAccess, AD => AD.user)
-  @JoinTable()
-  access: AdminAccess[]
-
-  /**
-   * 用户的角色
+   * 用户<n——n>角色
+   * @description 用户的角色
    */
   @ManyToMany(type => AdminRole, AD => AD.user)
   @JoinTable()
   role: AdminRole[]
+
+  /**
+   * 用户<n——n>权限
+   * @description 用户所拥有权限
+   */
+  @ManyToMany(type => AdminAccess, AD => AD.user)
+  @JoinTable()
+  access: AdminAccess[]
 
   /**
    * 操作日志
@@ -59,13 +62,13 @@ export default class AdminUser {
   userName: string
 
   /**
-   * 头像
+   * 头像 - URL
    */
   @Column('varchar', { length: 100, nullable: true })
   avator: string
 
   /**
-   * 电子邮箱
+   * 手机号
    */
   @Column('varchar', { length: 20, nullable: true })
   tel: string

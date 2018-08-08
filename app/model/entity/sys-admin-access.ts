@@ -3,6 +3,8 @@
  */
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm'
 import AdminUser from './sys-admin-user'
+import AdminDepartment from './sys-admin-department'
+import AdminRole from './sys-admin-role'
 
 @Entity()
 export default class AdminAccess {
@@ -10,7 +12,19 @@ export default class AdminAccess {
   accessId: number
 
   /**
-   * 用户
+   * 权限的归属部门
+   */
+  @ManyToMany(type => AdminDepartment, AD => AD.access)
+  department: AdminDepartment[]
+
+  /**
+   * 权限的归属角色
+   */
+  @ManyToMany(type => AdminRole, AR => AR.access)
+  role: AdminRole[]
+
+  /**
+   * 权限的归属用户
    */
   @ManyToMany(type => AdminUser, AU => AU.access)
   user: AdminUser[]
@@ -32,15 +46,4 @@ export default class AdminAccess {
    */
   @Column('varchar', { length: 200, nullable: true })
   description: string
-
-  /**
-   * 权限类型
-   * 1、超级管理员
-   * 2、管理员
-   * 3、店长
-   * 4、仓库管理员
-   * 5、采购员
-   */
-  @Column('tinyint', { default: 3 })
-  accessType: number
 }
