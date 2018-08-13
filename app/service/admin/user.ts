@@ -19,7 +19,7 @@ export default class UserService extends BaseService {
   // Constructor
   // -------------------------------------------------------------------------
 
-  constructor(ctx) {
+  constructor (ctx) {
     super(ctx)
     this.user = this.conn.getRepository(User)
   }
@@ -28,7 +28,7 @@ export default class UserService extends BaseService {
   // Public Methods
   // -------------------------------------------------------------------------
 
-  async find({
+  async find ({
     page = 1,
     rows = 20,
     roleId = 0,
@@ -55,7 +55,7 @@ export default class UserService extends BaseService {
     return await query.getManyAndCount()
   }
 
-  async save(raw: Partial<User>): Promise<boolean> {
+  async save (raw: Partial<User>): Promise<boolean> {
     try {
       await this.user.save(this.user.create(raw))
       return true
@@ -65,7 +65,7 @@ export default class UserService extends BaseService {
     }
   }
 
-  async remove(userId: number): Promise<boolean> {
+  async remove (userId: number): Promise<boolean> {
     try {
       await this.user.delete(userId)
       return true
@@ -74,13 +74,17 @@ export default class UserService extends BaseService {
     }
   }
 
+  async findUserById (userId: number) {
+
+  }
+
   // - 登录的时候调用，获取要登录的用户信息
-  async getUserInfo(userName: string, password: string): Promise<{ userInfo, code }> {
+  async findUserByName (user: number | string, password: string, verifyPswd: boolean): Promise<{ userInfo, code }> {
     let code: string = 'ok'
     let userInfo: User | undefined
     let query = this.user
       .createQueryBuilder('U')
-      .where('userName = :userName', { userName })
+      .where(typeof user === 'number' ? 'userId = :user' : 'userName = :user', { user })
 
     userInfo = await query
       .select([
@@ -100,7 +104,7 @@ export default class UserService extends BaseService {
 
     if (!userInfo) {
       code = 'account_unknown' // - 账户不存在
-    } else if (userInfo.password !== password) {
+    } else if (verifyPswd && userInfo.password !== password) {
       code = 'password_err' // - 密码错误
     } else if (userInfo.isDisable === 1) {
       code = 'account_disable' // - 账户被禁用

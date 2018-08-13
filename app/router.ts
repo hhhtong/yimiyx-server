@@ -50,6 +50,7 @@ export default (app: Application) => {
   router.delete('/coupon', controller.admin.coupon.deleteCoupon)
 
   // - Admin/AdminController
+  router.get('/user', controller.admin.user.getUserInfo)
   router.post('/login', controller.admin.user.login)
   router.get('/userList', controller.admin.user.getUserList)
   router.put('/user', controller.admin.user.saveUser)
