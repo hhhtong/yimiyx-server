@@ -31,7 +31,8 @@ export default class CouponService extends BaseService {
     couponType = 0,
     couponName = '',
     couponMoney1,
-    couponMoney2 }: CouponQuery): Promise<CouponResult> {
+    couponMoney2
+  }: CouponQuery): Promise<CouponResult> {
     let query = this.coupon.createQueryBuilder('C')
 
     if (couponMoney1 && couponMoney2) {

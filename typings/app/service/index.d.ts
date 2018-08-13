@@ -6,6 +6,7 @@ import AdminGoodsCategory from '../../../app/service/admin/goods-category';
 import AdminGoods from '../../../app/service/admin/goods';
 import AdminPurchaseOrder from '../../../app/service/admin/purchase-order';
 import AdminSupplier from '../../../app/service/admin/supplier';
+import AdminUser from '../../../app/service/admin/user';
 import ClientCart from '../../../app/service/client/cart';
 import ClientCoupon from '../../../app/service/client/coupon';
 import ClientGoods from '../../../app/service/client/goods';
@@ -21,6 +22,7 @@ declare module 'egg' {
       goods: AdminGoods;
       purchaseOrder: AdminPurchaseOrder;
       supplier: AdminSupplier;
+      user: AdminUser;
     };
     client: {
       cart: ClientCart;

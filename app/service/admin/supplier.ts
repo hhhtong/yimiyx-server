@@ -4,7 +4,6 @@ import Supplier from '../../model/entity/supplier'
 import { SupplierQuery, SupplierResult } from '../../common/QueryInterface'
 
 export default class SupplierService extends BaseService {
-
   // -------------------------------------------------------------------------
   // Public Properties
   // -------------------------------------------------------------------------
@@ -33,8 +32,10 @@ export default class SupplierService extends BaseService {
     supplierID = 0,
     supplierName = ''
   }: SupplierQuery): Promise<SupplierResult> {
-    const where1: string = supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1'
-    const where2: string = categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1'
+    const where1: string =
+      supplierID > 0 ? `supplier.id = ${supplierID}` : '1 = 1'
+    const where2: string =
+      categoryID > 0 ? `supplier.category_id = ${categoryID}` : '1 = 1'
 
     const query: SelectQueryBuilder<Supplier> = this.supplier
       .createQueryBuilder('supplier')

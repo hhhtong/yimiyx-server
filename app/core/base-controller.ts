@@ -4,7 +4,7 @@ import { GoodsCategoryResult } from '../common/QueryInterface'
 /**
  * 业务码说明
  * 50000 操作成功
- * 50001 操作失败
+ * 50001 常规性操作失败
  * 50002 数据库相关操作失败
  * 50003 待定
  * 50004 待定

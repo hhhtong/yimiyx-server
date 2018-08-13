@@ -3,10 +3,12 @@ import BaseService from '../../core/base-service'
 import PurchaseOrder from '../../model/entity/purchase-order'
 import PurchaseMainOrder from '../../model/entity/purchase-main-order'
 import PurchaseChildOrder from '../../model/entity/purchase-child-order'
-import { PurchaseOrderQuery, PurchaseOrderResult } from '../../common/QueryInterface'
+import {
+  PurchaseOrderQuery,
+  PurchaseOrderResult
+} from '../../common/QueryInterface'
 
 export default class SupplierService extends BaseService {
-
   // -------------------------------------------------------------------------
   // Public Properties
   // -------------------------------------------------------------------------
@@ -40,16 +42,22 @@ export default class SupplierService extends BaseService {
     dateRange,
     categoryID = 0,
     supplierID = 0,
-    supplierName }: PurchaseOrderQuery): Promise<PurchaseOrderResult> {
+    supplierName
+  }: PurchaseOrderQuery): Promise<PurchaseOrderResult> {
     let where: string = 'ISNULL(PO.deletedAt)'
 
     if (dateRange) {
-      where += ` AND PO.createdAt BETWEEN '${dateRange[0]}' AND '${dateRange[1]}'`
+      where += ` AND PO.createdAt BETWEEN '${dateRange[0]}' AND '${
+        dateRange[1]
+      }'`
     }
 
     const where1: string = supplierID > 0 ? `S.id = ${supplierID}` : '1 = 1'
     const where2: string = categoryID > 0 ? `C.id = ${categoryID}` : '1 = 1'
-    const where3: string = supplierName && supplierName.trim() !== '' ? `S.supplierName LIKE '%${supplierName}%'` : '1 = 1'
+    const where3: string =
+      supplierName && supplierName.trim() !== ''
+        ? `S.supplierName LIKE '%${supplierName}%'`
+        : '1 = 1'
 
     const list: PurchaseOrder[] = await this.PO.find({
       join: {
@@ -63,13 +71,12 @@ export default class SupplierService extends BaseService {
         }
       },
       where: `${where} AND ${where1} AND ${where2} AND ${where3}`,
-      order: { 'createdAt': 'DESC' }, // - PO.createdAt
+      order: { createdAt: 'DESC' }, // - PO.createdAt
       skip: (page - 1) * rows,
       take: rows
     })
 
-    const total: number = await this.PO
-      .createQueryBuilder('PO')
+    const total: number = await this.PO.createQueryBuilder('PO')
       .where(where)
       .getCount()
 
@@ -91,15 +98,17 @@ export default class SupplierService extends BaseService {
 
   // - 查找符合id的采购单所有关联信息
   async findOne(id: string): Promise<PurchaseOrder> {
-    return await this.PO.findOne(id, {
-      relations: [
-        'category',
-        'supplier',
-        'mainOrders',
-        'mainOrders.goods',
-        'mainOrders.childOrders'
-      ]
-    }) || this.purchaseOrderInstance
+    return (
+      (await this.PO.findOne(id, {
+        relations: [
+          'category',
+          'supplier',
+          'mainOrders',
+          'mainOrders.goods',
+          'mainOrders.childOrders'
+        ]
+      })) || this.purchaseOrderInstance
+    )
   }
 
   get purchaseOrderInstance() {
@@ -118,7 +127,9 @@ export default class SupplierService extends BaseService {
   }
 
   // - 插入采购的商品单数据
-  async insertPurchaseMainOrder(rowData: Partial<PurchaseMainOrder>[]): Promise<PurchaseMainOrder[] | undefined> {
+  async insertPurchaseMainOrder(
+    rowData: Partial<PurchaseMainOrder>[]
+  ): Promise<PurchaseMainOrder[] | undefined> {
     try {
       return await this.PMO.save(this.PMO.create(rowData))
     } catch (err) {
@@ -127,7 +138,9 @@ export default class SupplierService extends BaseService {
   }
 
   // - 插入采购的商品单的子订单数据
-  async insertPurchaseChildOrder(rowData: Partial<PurchaseChildOrder>[]): Promise<PurchaseChildOrder[] | undefined> {
+  async insertPurchaseChildOrder(
+    rowData: Partial<PurchaseChildOrder>[]
+  ): Promise<PurchaseChildOrder[] | undefined> {
     try {
       return await this.PCO.save(this.PCO.create(rowData))
     } catch (err) {

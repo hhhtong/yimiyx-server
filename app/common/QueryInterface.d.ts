@@ -1,11 +1,12 @@
 // - 本文件存放相关参数接口
-import Coupon from '../model/entity/coupon';
-import Goods from '../model/entity/goods';
-import GoodsCategory from '../model/entity/goods-category';
-import Supplier from '../model/entity/supplier';
-import PurchaseOrder from '../model/entity/purchase-order';
-import PurchaseMainOrder from '../model/entity/purchase-main-order';
-import PurchaseChildOrder from '../model/entity/purchase-child-order';
+import AdminUser from '../model/entity/sys-admin-user'
+import Coupon from '../model/entity/coupon'
+import Goods from '../model/entity/goods'
+import GoodsCategory from '../model/entity/goods-category'
+import Supplier from '../model/entity/supplier'
+import PurchaseOrder from '../model/entity/purchase-order'
+import PurchaseMainOrder from '../model/entity/purchase-main-order'
+import PurchaseChildOrder from '../model/entity/purchase-child-order'
 
 // - 基础返回数据列表接口
 type QueryResult<Entity> = {
@@ -21,7 +22,13 @@ interface Query {
   disabledPage?: boolean; // 是否禁用分页，true将会忽略`page`和`rows`参数
 }
 
-// - 优惠券
+// - 后台用户
+export interface AdminUserQuery extends Query {
+  roleId?: number,
+  userName?: string;
+}
+export type AdminUserPartial = Partial<AdminUser>;
+
 export interface CouponQuery extends Query {
   couponType?: number,
   couponName?: string;

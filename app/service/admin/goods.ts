@@ -5,7 +5,6 @@ import GoodsTag from '../../model/entity/goods-tag'
 import { GoodsQuery, GoodsResult } from '../../common/QueryInterface'
 
 export default class GoodsService extends BaseService {
-
   // -------------------------------------------------------------------------
   // Public Properties
   // -------------------------------------------------------------------------
@@ -36,7 +35,8 @@ export default class GoodsService extends BaseService {
     disabledPage = false,
     isOnline = 'all',
     goodsNo = '',
-    goodsName = '' }: GoodsQuery): Promise<GoodsResult> {
+    goodsName = ''
+  }: GoodsQuery): Promise<GoodsResult> {
     let query: SelectQueryBuilder<Goods> = this.goods
       .createQueryBuilder('G')
       .where('ISNULL(G.deletedAt)')
@@ -46,7 +46,9 @@ export default class GoodsService extends BaseService {
       query = query.andWhere(`G.goodsNo LIKE '%' :goodsNo '%'`, { goodsNo })
     }
     if (goodsName !== '') {
-      query = query.andWhere(`G.goodsName LIKE '%' :goodsName '%'`, { goodsName })
+      query = query.andWhere(`G.goodsName LIKE '%' :goodsName '%'`, {
+        goodsName
+      })
     }
     if (+isOnline === 1) {
       query = query.andWhere(`G.isOnline = :isOnline`, { isOnline })
@@ -57,9 +59,7 @@ export default class GoodsService extends BaseService {
     total = await query.getCount()
 
     if (!disabledPage) {
-      query = query
-        .skip((page - 1) * rows)
-        .take(rows)
+      query = query.skip((page - 1) * rows).take(rows)
     }
 
     query = query
@@ -72,12 +72,14 @@ export default class GoodsService extends BaseService {
 
   // - 查询单个商品信息
   async queryOne(goodsNo: string): Promise<Goods> {
-    return await this.goods
-      .createQueryBuilder('G')
-      .where('G.goodsNo = :goodsNo', { goodsNo })
-      .leftJoin('G.goodsDesc', 'GD')
-      .leftJoin('GD.tags', 'T')
-      .getOne() || this.goods.create()
+    return (
+      (await this.goods
+        .createQueryBuilder('G')
+        .where('G.goodsNo = :goodsNo', { goodsNo })
+        .leftJoin('G.goodsDesc', 'GD')
+        .leftJoin('GD.tags', 'T')
+        .getOne()) || this.goods.create()
+    )
   }
 
   // - 删除一个商品
@@ -91,7 +93,7 @@ export default class GoodsService extends BaseService {
 
   // - 根据id查找
   async findById(id: number): Promise<Goods> {
-    return await this.goods.findOne(id) || this.goods.create()
+    return (await this.goods.findOne(id)) || this.goods.create()
   }
 
   // - 保存一个商品

@@ -8,7 +8,7 @@ export default class UserService extends BaseService {
   // Public Properties
   // -------------------------------------------------------------------------
 
-  // - 商品__实体
+  // - User entity
   readonly user: Repository<User>
 
   // -------------------------------------------------------------------------
