@@ -15,7 +15,6 @@ export default (app: Application) => {
 
   // - Admin/HomeController
   router.get('/', controller.admin.home.index)
-  router.post('/login', controller.admin.home.login)
 
   // - Admin/SupplierController
   router.get('/supplier', controller.admin.supplier.index)

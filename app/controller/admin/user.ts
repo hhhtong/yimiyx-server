@@ -9,7 +9,7 @@ export default class AdminUserController extends BaseController {
     const { token } = this.ctx.query
     let userCache: any
     if (!(userCache = await this.app.redis.get(token))) {
-      return this.fail({}, 50002, '登陆过期，请重新登陆')
+      return this.fail({}, 4001, '登陆过期，请重新登陆')
     }
 
     const result = await this.__getInfo(userCache.userId, '', true)
@@ -51,7 +51,10 @@ export default class AdminUserController extends BaseController {
     if (typeof result === 'string') {
       this.fail({}, 50001, result)
     } else {
-      // this.app.redis.set(token, JSON.stringify({ userId: result.userId, userName: result.userName }))
+      // this.app.sessionStore.set(session)
+      // this.ctx.session = result
+      // this.app.redis.set(session, JSON.stringify({ userId: result.userId, userName: result.userName }))
+      this.ctx.rotateCsrfSecret() // - 调用 rotateCsrfSecret 刷新用户的 CSRF token
       this.success(result, '登录成功')
     }
   }

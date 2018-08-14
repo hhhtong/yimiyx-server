@@ -3,6 +3,7 @@ import { GoodsCategoryResult } from '../common/QueryInterface'
 
 /**
  * 业务码说明
+ * 4001 登陆过期或者未登录
  * 50000 操作成功
  * 50001 常规性操作失败
  * 50002 数据库相关操作失败
@@ -13,7 +14,7 @@ import { GoodsCategoryResult } from '../common/QueryInterface'
  */
 export default class BaseController extends Controller {
 
-  success(data: any = {}, msg: string = '操作成功') {
+  success (data: any = {}, msg: string = '操作成功') {
     this.ctx.body = {
       code: 50000,
       data,
@@ -22,12 +23,12 @@ export default class BaseController extends Controller {
     return data
   }
 
-  fail(data: any = {}, code: number = 50001, msg: string = '操作失败') {
+  fail (data: any = {}, code: number = 50001, msg: string = '操作失败') {
     if (typeof data.sqlMessage === 'string') {
       // - 数据库相关操作错误
       code = 50002
       msg = data.sqlMessage
-    } else {
+    } else if (typeof msg === 'object') {
       // - 抛出的异常错误
       msg = data.errmsg || data.toString()
     }
@@ -44,7 +45,7 @@ export default class BaseController extends Controller {
    * @param obj - 要进行操作的obj
    * @param str - 时间的key
    */
-  $sqlDateFormat(obj: Object, str: string | string[]) {
+  $sqlDateFormat (obj: Object, str: string | string[]) {
     const { ctx } = this
     if (typeof str === 'string') obj[str] = ctx.helper.moment(obj[str]).format('YYYY-MM-DD HH:mm:ss')
     else for (const item of str) obj[item] = ctx.helper.moment(obj[item]).format('YYYY-MM-DD HH:mm:ss')
@@ -55,7 +56,7 @@ export default class BaseController extends Controller {
    * @param obj - 要进行操作的obj
    * @param str - 要删除的key
    */
-  $expel(obj: Object, str: string | string[]) {
+  $expel (obj: Object, str: string | string[]) {
     if (typeof str === 'string') delete obj[str]
     else for (const item of str) delete obj[item]
   }
@@ -63,7 +64,7 @@ export default class BaseController extends Controller {
   /**
    * 商品数据重排变成嵌套
    */
-  $refix(list: Object[]) {
+  $refix (list: Object[]) {
     const oneList = list.filter((item: any) => item.type === 1)
     const twoList = list.filter((item: any) => item.type === 2)
     const threeList = list.filter((item: any) => item.type === 3)
@@ -73,7 +74,7 @@ export default class BaseController extends Controller {
   /**
    * 将商品平级结构转成树形结构
    */
-  $mixin(list1: any[], list2: any[]): Object[] {
+  $mixin (list1: any[], list2: any[]): Object[] {
     if (list2.length <= 0) {
       list2 = list1
     }
@@ -100,7 +101,7 @@ export default class BaseController extends Controller {
   /**
    * 将商品树形结构转成平级结构
    */
-  $unmixin(list: any): GoodsCategoryResult[] {
+  $unmixin (list: any): GoodsCategoryResult[] {
     const categoryList: GoodsCategoryResult[] = []
     const next = (item: any) => {
       if (item.name !== '') {

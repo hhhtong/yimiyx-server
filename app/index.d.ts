@@ -1,19 +1,28 @@
 import { ObjOrObjArr } from './extend/helper'
+import { Connection } from 'typeorm'
 
 declare module 'egg' {
   interface Application {
-    redis: any,
+    redis: any;
+
     /**
      * 数据库连接对象
      */
-    connection: any,
+    connection: Connection;
+
+    sessionStore: {
+      get: (key: string) => Promise<any>;
+      set: (key: string, value: string, maxAge: number) => Promise<void>;
+      destroy: (key: string) => Promise<void>;
+    };
+
     /**
      * 生成二维码
      * @param code - 二维码内容
      * @param options - options in `qrcode` module
      * @see https://www.npmjs.com/package/qrcode#options
      */
-    generateQRCode(code: string, options?: Object): Promise<string>
+    generateQRCode (code: string, options?: Object): Promise<string>;
   }
 
   interface IHelper {
@@ -21,13 +30,13 @@ declare module 'egg' {
      * @method Helper#toCamelObj - 将对象或者数组内对象的key转为小驼峰命名
      * @param obj - 要进行转换的对象或者数组
      */
-    toCamelObj(obj: ObjOrObjArr): Object | Object[],
+    toCamelObj (obj: ObjOrObjArr): Object | Object[];
 
     /**
      * @method Helper#toSnakeObj - 将对象或者数组内对象的key转为下划线分割命名
      * @param obj - 要进行转换的对象或者数组
      */
-    toSnakeObj(obj: ObjOrObjArr): Object | Object[],
+    toSnakeObj (obj: ObjOrObjArr): Object | Object[];
 
     /**
      * 日期补全时间
@@ -37,13 +46,13 @@ declare module 'egg' {
      * =>
      * ['2018-06-05 00:00:00', '2018-06-08 23:59:59']
      */
-    transformDateRange(dateRange: string[]): string[],
+    transformDateRange (dateRange: string[]): string[];
 
     /**
      * 进行sha1加密
      * @param str - 要加密的串
      */
-    encryptSha1(str: string): string,
+    encryptSha1 (str: string): string;
 
     /**
      * @method Helper#prefixZero - 对指定数值进行前置补 '0'
@@ -55,15 +64,15 @@ declare module 'egg' {
      * => '0001'
      * ```
      */
-    prefixZero(num: number | string, len: number): string,
+    prefixZero (num: number | string, len: number): string;
 
     /**
      * @method Helper#uuid - 生成随机ID
      * @param len - 生成长度
      * @param radix - 基于几进制生成
      */
-    uuid(len: number, radix: number): string
+    uuid (len: number, radix: number): string;
   }
 
-  function startCluster(options: any)
+  function startCluster (options: any)
 }

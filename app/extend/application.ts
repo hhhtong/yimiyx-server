@@ -6,7 +6,7 @@ import { Application } from 'egg'
 
 export default {
   // - 生成二维码
-  async generateQRCode(code: string, options?: Object): Promise<string> {
+  async generateQRCode (code: string, options?: Object): Promise<string> {
     const fileName = `${code}.png`
     // - 存储路径按日期归类：public/upload/qrcode/2018_06_06/CG2018060523133306BCW2.png
     const saveDir = join(
