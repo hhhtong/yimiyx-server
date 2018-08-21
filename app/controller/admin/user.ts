@@ -1,6 +1,7 @@
 import BaseController from '../../core/base-controller'
 import { AdminUserQuery, AdminUserPartial } from '../../common/QueryInterface'
 import * as Crypto from 'crypto'
+import { checkUserName, checkPassword } from '../../libs/validator'
 
 const SALT = '$kjdshfJF&'
 
@@ -8,7 +9,7 @@ export default class AdminUserController extends BaseController {
   async getUserInfo () {
     const { token } = this.ctx.query
     let userCache: any
-    if (!(userCache = await this.app.redis.get(token))) {
+    if (!(userCache = await this.app.sessionStore.get(token))) {
       return this.fail({}, 4001, '登陆过期，请重新登陆')
     }
 
@@ -21,39 +22,25 @@ export default class AdminUserController extends BaseController {
   }
 
   async login (): Promise<void> {
+    this.print(this.config.session.genid())
     const MD5 = Crypto.createHash('md5')
-    let { userName, password } = this.ctx.request.body
-    let errMsg: string = ''
-
-    if (!userName) {
-      errMsg = '用户名不能为空'
-    } else if (userName) {
-      errMsg = '用户名格式不正确'
-    }
-
-    if (!password) {
-      errMsg = '密码不能为空'
-    } else if (password) {
-      errMsg = '密码格式不正确'
-    } else {
-      password = password + SALT // - add salt
-    }
-
-    if (errMsg !== '') {
-      return this.fail({}, 50001, errMsg)
+    const { userName, password } = this.ctx.request.body
+    const errMsg = this.__validatePostUser(userName, password)
+    if (errMsg) {
+      return this.fail({}, 50001, errMsg as string)
     }
 
     const result = await this.__getInfo(
       userName,
-      MD5.update(password).digest('hex'),
+      MD5.update(password + SALT).digest('hex'),
       true
     )
     if (typeof result === 'string') {
       this.fail({}, 50001, result)
     } else {
-      // this.app.sessionStore.set(session)
+      // - 生成token随result一同返给前端
       // this.ctx.session = result
-      // this.app.redis.set(session, JSON.stringify({ userId: result.userId, userName: result.userName }))
+      // this.app.sessionStore.set(session, JSON.stringify({ userId: result.userId, userName: result.userName }))
       this.ctx.rotateCsrfSecret() // - 调用 rotateCsrfSecret 刷新用户的 CSRF token
       this.success(result, '登录成功')
     }
@@ -81,8 +68,21 @@ export default class AdminUserController extends BaseController {
     }
   }
 
-  async __getInfo (user: number | string, pswd: string, verify: boolean): Promise<string | AdminUserPartial> {
-    const { userInfo, code } = await this.service.admin.user.findUserByName(user, pswd, verify)
+  private __validatePostUser(userName: string, password: string): string | boolean {
+    if (!userName) {
+      return '用户名不能为空'
+    } else if (!checkUserName(userName)) {
+      return '用户名格式不正确'
+    } else if (!password) {
+      return '密码不能为空'
+    } else if (!checkPassword(password)) {
+      return '密码格式不正确'
+    }
+    return false
+  }
+
+  private async __getInfo (user: number | string, pswd: string, verifyPswd: boolean): Promise<string | AdminUserPartial> {
+    const { userInfo, code } = await this.service.admin.user.findUserByName(user, pswd, verifyPswd)
     if (code === 'account_unknown') {
       return '不存在此用户名'
     } else if (code === 'account_disable') {

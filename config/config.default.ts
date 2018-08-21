@@ -7,7 +7,14 @@ export type DefaultConfig = PowerPartial<EggAppConfig & BizConfig>
 
 // app special config scheme
 export interface BizConfig {
-  sourceUrl: string
+  sourceUrl: string;
+  session: {
+    renew?: boolean;
+    maxAge?: number
+    key?: string,
+    httpOnly?: boolean,
+    encrypt?: boolean,
+  } | boolean
 }
 
 export default (appInfo: EggAppInfo) => {
@@ -53,6 +60,11 @@ export default (appInfo: EggAppInfo) => {
       password: '',
       db: 0
     }
+  }
+
+  config.session = {
+    renew: true,
+    key: 'SESSION_ID'
   }
 
   config.view = {

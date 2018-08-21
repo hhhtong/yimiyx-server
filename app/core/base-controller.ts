@@ -14,6 +14,10 @@ import { GoodsCategoryResult } from '../common/QueryInterface'
  */
 export default class BaseController extends Controller {
 
+  print (...msg) {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', ...msg)
+  }
+
   success (data: any = {}, msg: string = '操作成功') {
     this.ctx.body = {
       code: 50000,

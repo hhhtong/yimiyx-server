@@ -10,9 +10,15 @@ declare module 'egg' {
      */
     connection: Connection;
 
+    /**
+     * @method app#sessionStore - session读取销毁类相关方法
+     * @prop {Function<string>} - get
+     * @prop {Function<string, any, number?>} - set
+     * @prop {Function<string>} - destroy
+     */
     sessionStore: {
       get: (key: string) => Promise<any>;
-      set: (key: string, value: string, maxAge: number) => Promise<void>;
+      set: (key: string, value: any, maxAge?: number) => Promise<void>;
       destroy: (key: string) => Promise<void>;
     };
 
@@ -39,7 +45,7 @@ declare module 'egg' {
     toSnakeObj (obj: ObjOrObjArr): Object | Object[];
 
     /**
-     * 日期补全时间
+     * @method Helper#transformDateRange - 日期补全时间
      * @param dateRange - 一个包含起止日期的数组
      * @example
      * ['2018-06-05', '2018-06-08']
@@ -49,7 +55,7 @@ declare module 'egg' {
     transformDateRange (dateRange: string[]): string[];
 
     /**
-     * 进行sha1加密
+     * @method Helper#encryptSha1 - 进行sha1加密
      * @param str - 要加密的串
      */
     encryptSha1 (str: string): string;

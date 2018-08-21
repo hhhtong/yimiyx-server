@@ -165,13 +165,13 @@
   version "3.2.2"
   resolved "http://registry.npm.taobao.org/@types/koa-compose/download/@types/koa-compose-3.2.2.tgz#dc106e000bbf92a3ac900f756df47344887ee847"
 
-"@types/koa-router@^7.0.27":
+"@types/koa-router@^7.0.30":
   version "7.0.31"
   resolved "http://registry.npm.taobao.org/@types/koa-router/download/@types/koa-router-7.0.31.tgz#afe279634cca7b4536be38cf641f35f58a4bc5ee"
   dependencies:
     "@types/koa" "*"
 
-"@types/koa@*", "@types/koa@^2.0.45":
+"@types/koa@*", "@types/koa@^2.0.46":
   version "2.0.46"
   resolved "http://registry.npm.taobao.org/@types/koa/download/@types/koa-2.0.46.tgz#24bc3cd405d10fcde81f876cd8285b44d4ddc3e9"
   dependencies:
@@ -195,9 +195,9 @@
   version "10.5.5"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.5.5.tgz#8e84d24e896cd77b0d4f73df274027e3149ec2ba"
 
-"@types/node@^10.5.6":
-  version "10.5.6"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.5.6.tgz#1640f021dd0eaf12e731e54198c12ad2e020dc8e"
+"@types/node@^10.7.1":
+  version "10.7.1"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-10.7.1.tgz#b704d7c259aa40ee052eec678758a68d07132a2e"
 
 "@types/power-assert-formatter@*":
   version "1.4.28"
@@ -234,7 +234,7 @@
   dependencies:
     "@types/superagent" "*"
 
-"@types/urllib@^2.25.0":
+"@types/urllib@^2.28.0":
   version "2.28.0"
   resolved "http://registry.npm.taobao.org/@types/urllib/download/@types/urllib-2.28.0.tgz#5c84e11f84d047409fac6cc5b91176f4d52c2dd0"
   dependencies:
@@ -1425,7 +1425,7 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "http://registry.npm.taobao.org/chownr/download/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
-circular-json@^0.5.3, circular-json@^0.5.4:
+circular-json@^0.5.4, circular-json@^0.5.5:
   version "0.5.5"
   resolved "http://registry.npm.taobao.org/circular-json/download/circular-json-0.5.5.tgz#64182ef359042d37cd8e767fc9de878b1e9447d3"
 
@@ -1472,7 +1472,7 @@ cliui@^4.0.0:
     strip-ansi "^4.0.0"
     wrap-ansi "^2.0.0"
 
-cluster-client@^2.1.0:
+cluster-client@^2.1.1:
   version "2.1.1"
   resolved "http://registry.npm.taobao.org/cluster-client/download/cluster-client-2.1.1.tgz#794fa465e0cd117cb720a222168ead8c6671dbe7"
   dependencies:
@@ -1970,7 +1970,7 @@ egg-ci@^1.8.0:
   dependencies:
     nunjucks "^3.0.1"
 
-egg-cluster@^1.16.0:
+egg-cluster@^1.18.0:
   version "1.19.0"
   resolved "http://registry.npm.taobao.org/egg-cluster/download/egg-cluster-1.19.0.tgz#11fedf3adc8244a11725f3b1ca14bc3900eb7e00"
   dependencies:
@@ -1996,7 +1996,7 @@ egg-cookies@^2.2.2:
     scmp "^2.0.0"
     utility "^1.9.0"
 
-egg-core@^4.6.0:
+egg-core@^4.8.0:
   version "4.9.1"
   resolved "http://registry.npm.taobao.org/egg-core/download/egg-core-4.9.1.tgz#406e61370437609b5071656bbf3867741b2e3b01"
   dependencies:
@@ -2022,7 +2022,7 @@ egg-cors@^2.1.0:
   dependencies:
     "@koa/cors" "^2.2.1"
 
-egg-development@^2.2.0:
+egg-development@^2.3.1:
   version "2.4.1"
   resolved "http://registry.npm.taobao.org/egg-development/download/egg-development-2.4.1.tgz#098292396919ad0acb4a3d41ac8aea61faac7595"
   dependencies:
@@ -2046,7 +2046,7 @@ egg-jsonp@^2.0.0:
     is-type-of "^1.2.0"
     jsonp-body "^1.0.0"
 
-egg-logger@^1.6.1, egg-logger@^1.6.2:
+egg-logger@^1.6.1, egg-logger@^1.6.2, egg-logger@^1.7.1:
   version "1.7.1"
   resolved "http://registry.npm.taobao.org/egg-logger/download/egg-logger-1.7.1.tgz#1536acf185eeaf1d5211241ca5bdcaaabe2ab228"
   dependencies:
@@ -2073,9 +2073,9 @@ egg-logview@^2.0.0:
     bytes "^3.0.0"
     mz "^2.7.0"
 
-egg-mock@^3.18.0:
-  version "3.18.0"
-  resolved "http://registry.npm.taobao.org/egg-mock/download/egg-mock-3.18.0.tgz#65aa920b5a20e2b86ce4881cdc8191daebb17b6e"
+egg-mock@^3.19.3:
+  version "3.19.3"
+  resolved "http://registry.npm.taobao.org/egg-mock/download/egg-mock-3.19.3.tgz#04377def74e2c784904b02d7bf1ce0f5be210243"
   dependencies:
     "@types/power-assert" "^1.4.29"
     await-event "^2.1.0"
@@ -2104,7 +2104,7 @@ egg-multipart@^2.0.0:
     co-busboy "^1.4.0"
     humanize-bytes "^1.0.1"
 
-egg-onerror@^2.0.0:
+egg-onerror@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/egg-onerror/download/egg-onerror-2.1.0.tgz#e05dc08e39aec16518b64053b8bc874110aba9f7"
   dependencies:
@@ -2135,11 +2135,12 @@ egg-schedule@^3.3.0:
     safe-timers "^1.1.0"
     utility "^1.13.1"
 
-egg-scripts@^2.6.0:
-  version "2.6.0"
-  resolved "http://registry.npm.taobao.org/egg-scripts/download/egg-scripts-2.6.0.tgz#381f23ffc762b843b5604d53b72d5be9285a859b"
+egg-scripts@^2.8.1:
+  version "2.8.1"
+  resolved "http://registry.npm.taobao.org/egg-scripts/download/egg-scripts-2.8.1.tgz#0b39bf9fedbb02856eb66c6b8a54e6b294b99485"
   dependencies:
     common-bin "^2.7.1"
+    debug "^3.1.0"
     egg-utils "^2.3.0"
     moment "^2.19.2"
     mz "^2.7.0"
@@ -2149,9 +2150,9 @@ egg-scripts@^2.6.0:
     source-map-support "^0.5.4"
     zlogger "^1.1.0"
 
-egg-security@^2.2.2:
-  version "2.2.3"
-  resolved "http://registry.npm.taobao.org/egg-security/download/egg-security-2.2.3.tgz#7fbf2660ba316be1b90d4e7053011534d31244e5"
+egg-security@^2.2.3:
+  version "2.3.1"
+  resolved "http://registry.npm.taobao.org/egg-security/download/egg-security-2.3.1.tgz#759cc80fe3fbf527714451f5601d7b8b725ebbd8"
   dependencies:
     csrf "^3.0.6"
     debug "^3.1.0"
@@ -2161,12 +2162,17 @@ egg-security@^2.2.2:
     extend "^3.0.1"
     ip "^1.1.5"
     koa-compose "^4.0.0"
+    matcher "^1.1.1"
     methods "^1.1.2"
+    nanoid "^1.1.1"
     platform "^1.3.4"
-    rndm "^1.2.0"
     statuses "^1.5.0"
     type-is "^1.6.15"
     xss "^0.3.4"
+
+egg-session-redis@^2.0.0:
+  version "2.0.0"
+  resolved "http://registry.npm.taobao.org/egg-session-redis/download/egg-session-redis-2.0.0.tgz#bd382e613add1fca9efe424864f42a31337446b2"
 
 egg-session@^3.1.0:
   version "3.1.0"
@@ -2174,7 +2180,7 @@ egg-session@^3.1.0:
   dependencies:
     koa-session "^5.7.0"
 
-egg-static@^2.1.0:
+egg-static@^2.1.1:
   version "2.1.1"
   resolved "http://registry.npm.taobao.org/egg-static/download/egg-static-2.1.1.tgz#d76ce75162bd27a002e4922a73c868be9e412496"
   dependencies:
@@ -2203,9 +2209,9 @@ egg-utils@^2.2.0, egg-utils@^2.3.0, egg-utils@^2.4.0:
     mkdirp "^0.5.1"
     utility "^1.13.1"
 
-egg-validate@^1.1.0:
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/egg-validate/download/egg-validate-1.1.0.tgz#667968b502579fa3d5e368edcac667c0c656639a"
+egg-validate@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/egg-validate/download/egg-validate-1.1.1.tgz#38286a8c8b8c9dbe3ccca237ec75568a7d1e52ee"
   dependencies:
     parameter "^2.4.0"
 
@@ -2229,49 +2235,50 @@ egg-watcher@^3.0.0:
     sdk-base "^3.3.0"
     wt "^1.1.1"
 
-egg@^2.9.1:
-  version "2.9.1"
-  resolved "http://registry.npm.taobao.org/egg/download/egg-2.9.1.tgz#cf6c652c1ec2dde03abb6d7f7dde7dd4749d582b"
+egg@^2.10.0:
+  version "2.10.0"
+  resolved "http://registry.npm.taobao.org/egg/download/egg-2.10.0.tgz#394666318432dd87586bddd1d87607cb206755fb"
   dependencies:
     "@types/accepts" "^1.3.5"
-    "@types/koa" "^2.0.45"
-    "@types/koa-router" "^7.0.27"
-    "@types/urllib" "^2.25.0"
+    "@types/koa" "^2.0.46"
+    "@types/koa-router" "^7.0.30"
+    "@types/urllib" "^2.28.0"
     accepts "^1.3.5"
     agentkeepalive "^3.4.1"
-    circular-json "^0.5.3"
-    cluster-client "^2.1.0"
+    cache-content-type "^1.0.0"
+    circular-json "^0.5.5"
+    cluster-client "^2.1.1"
     debug "^3.1.0"
     delegates "^1.0.0"
-    egg-cluster "^1.16.0"
+    egg-cluster "^1.18.0"
     egg-cookies "^2.2.2"
-    egg-core "^4.6.0"
-    egg-development "^2.2.0"
+    egg-core "^4.8.0"
+    egg-development "^2.3.1"
     egg-i18n "^2.0.0"
     egg-jsonp "^2.0.0"
-    egg-logger "^1.6.2"
+    egg-logger "^1.7.1"
     egg-logrotator "^3.0.3"
     egg-multipart "^2.0.0"
-    egg-onerror "^2.0.0"
+    egg-onerror "^2.1.0"
     egg-schedule "^3.3.0"
-    egg-security "^2.2.2"
+    egg-security "^2.2.3"
     egg-session "^3.1.0"
-    egg-static "^2.1.0"
+    egg-static "^2.1.1"
     egg-view "^2.1.0"
     egg-watcher "^3.0.0"
     extend2 "^1.0.0"
     graceful "^1.0.1"
     humanize-ms "^1.2.1"
     is-type-of "^1.2.0"
-    koa-bodyparser "^4.2.0"
+    koa-bodyparser "^4.2.1"
     koa-is-json "^1.0.0"
     koa-override "^3.0.0"
-    mime-types "^2.1.18"
+    ms "^2.1.1"
     on-finished "^2.3.0"
     sendmessage "^1.1.0"
-    urllib "^2.27.0"
-    utility "^1.13.1"
-    ylru "^1.2.0"
+    urllib "^2.29.0"
+    utility "^1.14.0"
+    ylru "^1.2.1"
 
 electron-to-chromium@^1.3.47:
   version "1.3.55"
@@ -2387,7 +2394,7 @@ escape-html@^1.0.3, escape-html@~1.0.3:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/escape-html/download/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
 
-escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
+escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.4, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "http://registry.npm.taobao.org/escape-string-regexp/download/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
 
@@ -3423,7 +3430,7 @@ ko-sleep@^1.0.2, ko-sleep@^1.0.3:
   dependencies:
     ms "^2.0.0"
 
-koa-bodyparser@^4.2.0:
+koa-bodyparser@^4.2.1:
   version "4.2.1"
   resolved "http://registry.npm.taobao.org/koa-bodyparser/download/koa-bodyparser-4.2.1.tgz#4d7dacb5e6db1106649b595d9e5ccb158b6f3b29"
   dependencies:
@@ -3715,6 +3722,12 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+matcher@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/matcher/download/matcher-1.1.1.tgz#51d8301e138f840982b338b116bb0c09af62c1c2"
+  dependencies:
+    escape-string-regexp "^1.0.4"
+
 md5-hex@^1.2.0:
   version "1.3.0"
   resolved "http://registry.npm.taobao.org/md5-hex/download/md5-hex-1.3.0.tgz#d2c4afe983c4370662179b8cad145219135046c4"
@@ -3878,7 +3891,7 @@ ms@2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/ms/download/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-ms@^2.0.0:
+ms@^2.0.0, ms@^2.1.1:
   version "2.1.1"
   resolved "http://registry.npm.taobao.org/ms/download/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
 
@@ -3947,6 +3960,10 @@ named-placeholders@1.1.1:
 nan@^2.9.2:
   version "2.10.0"
   resolved "http://registry.npm.taobao.org/nan/download/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
+
+nanoid@^1.1.1:
+  version "1.2.1"
+  resolved "http://registry.npm.taobao.org/nanoid/download/nanoid-1.2.1.tgz#922bf6c10e35f7b208993768dad643577c907adf"
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -4810,7 +4827,7 @@ rimraf@^2.6.1, rimraf@^2.6.2:
   dependencies:
     glob "^7.0.5"
 
-rndm@1.2.0, rndm@^1.2.0:
+rndm@1.2.0:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/rndm/download/rndm-1.2.0.tgz#f33fe9cfb52bbfd520aa18323bc65db110a1b76c"
 
@@ -5119,9 +5136,9 @@ stream-slice@^0.1.2:
   version "0.1.2"
   resolved "http://registry.npm.taobao.org/stream-slice/download/stream-slice-0.1.2.tgz#2dc4f4e1b936fb13f3eb39a2def1932798d07a4b"
 
-stream-wormhole@^1.0.4:
-  version "1.0.4"
-  resolved "http://registry.npm.taobao.org/stream-wormhole/download/stream-wormhole-1.0.4.tgz#625fc76b0aeac014419e05f7fbef6d4cea9ef92b"
+stream-wormhole@^1.1.0:
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/stream-wormhole/download/stream-wormhole-1.1.0.tgz#300aff46ced553cfec642a05251885417693c33d"
 
 streamsearch@0.1.2:
   version "0.1.2"
@@ -5547,7 +5564,7 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "http://registry.npm.taobao.org/urix/download/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
 
-urllib@^2.24.0, urllib@^2.25.1, urllib@^2.27.0:
+urllib@^2.24.0, urllib@^2.25.1, urllib@^2.29.0:
   version "2.29.1"
   resolved "http://registry.npm.taobao.org/urllib/download/urllib-2.29.1.tgz#2164cc1f47cb8351fc77954a5017b1b3a2a046ed"
   dependencies:
@@ -5580,7 +5597,7 @@ utility@0.1.11:
   dependencies:
     address ">=0.0.1"
 
-utility@^1.11.0, utility@^1.12.0, utility@^1.13.1, utility@^1.9.0:
+utility@^1.11.0, utility@^1.12.0, utility@^1.13.1, utility@^1.14.0, utility@^1.9.0:
   version "1.14.0"
   resolved "http://registry.npm.taobao.org/utility/download/utility-1.14.0.tgz#92eaf51ff69d2a98ddb6b88fa722d3b2345f3eae"
   dependencies:
@@ -5846,7 +5863,7 @@ yargs@~3.10.0:
     decamelize "^1.0.0"
     window-size "0.1.0"
 
-ylru@^1.2.0:
+ylru@^1.2.0, ylru@^1.2.1:
   version "1.2.1"
   resolved "http://registry.npm.taobao.org/ylru/download/ylru-1.2.1.tgz#f576b63341547989c1de7ba288760923b27fe84f"
 

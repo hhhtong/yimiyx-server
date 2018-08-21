@@ -5,3 +5,5 @@ import 'egg-logview';
 import 'egg-cors';
 import 'egg-view-nunjucks';
 import 'egg-redis';
+import 'egg-session-redis';
+import 'egg-validate';
