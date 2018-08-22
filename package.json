@@ -4,7 +4,15 @@
   "description": "Egg+Typescript",
   "private": true,
   "egg": {
-    "typescript": true
+    "typescript": true,
+    "tsHelper": {
+      "watchDirs": {
+        "extend": false,
+        "model": false,
+        "config": false,
+        "plugin": false
+      }
+    }
   },
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-yimiyx",

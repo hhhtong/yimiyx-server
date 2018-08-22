@@ -1,4 +1,4 @@
-import { ObjOrObjArr } from './extend/helper'
+import { ObjOrObjArr } from '../app/extend/helper'
 import { Connection } from 'typeorm'
 
 declare module 'egg' {
