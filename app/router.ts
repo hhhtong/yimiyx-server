@@ -51,6 +51,7 @@ export default (app: Application) => {
   // - Admin/AdminController
   router.get('/user', controller.admin.user.getUserInfo)
   router.post('/login', controller.admin.user.login)
+  router.post('/logout', controller.admin.user.logout)
   router.get('/userList', controller.admin.user.getUserList)
   router.put('/user', controller.admin.user.saveUser)
   router.delete('/user', controller.admin.user.deleteUser)

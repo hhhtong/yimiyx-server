@@ -84,21 +84,21 @@ export default class UserService extends BaseService {
     let userInfo: User | undefined
     let query = this.user
       .createQueryBuilder('U')
-      .where(typeof user === 'number' ? 'userId = :user' : 'userName = :user', { user })
+      .where(typeof user === 'number' ? 'U.userId = :user' : 'U.loginName = :user', { user })
 
     userInfo = await query
       .select([
-        'userId',
-        'loginName',
-        'password',
-        'userName',
-        'avator',
-        'tel',
-        'email',
-        'count',
-        'isDisable',
-        'loginTime',
-        'lastLoginTime'
+        'U.userId',
+        'U.loginName',
+        'U.password',
+        'U.userName',
+        'U.avator',
+        'U.tel',
+        'U.email',
+        'U.count',
+        'U.isDisable',
+        'U.loginTime',
+        'U.lastLoginTime'
       ])
       .getOne()
 

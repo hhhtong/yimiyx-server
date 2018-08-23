@@ -43,8 +43,8 @@ export default (appInfo: EggAppInfo) => {
       // - 注意：该选项即将废弃，攻击者可以通过 flash + 307 来攻破，请不要在生产环境打开改选项！
       ignoreJSON: true, // - 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
       // useSession: true, // - 默认为 false，当设置为 true 时，将会把 csrf token 保存到 Session 中
-      cookieName: 'token', // - Cookie 中的字段名，默认为 csrfToken
-      sessionName: 'token' // - Session 中的字段名，默认为 csrfToken
+      cookieName: 'CSRF_TOKEN', // - Cookie 中的字段名，默认为 csrfToken
+      sessionName: 'CSRF_TOKEN' // - Session 中的字段名，默认为 csrfToken
     }
   }
 

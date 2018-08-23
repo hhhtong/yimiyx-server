@@ -10,6 +10,10 @@ export default class BaseService extends Service {
     return this.ctx.app.connection
   }
 
+  print (...msg) {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@', ...msg)
+  }
+
   error(e) {
     this.log.error(e)
     // throw new Error(e)
