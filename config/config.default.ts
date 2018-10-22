@@ -64,7 +64,8 @@ export default (appInfo: EggAppInfo) => {
 
   config.session = {
     renew: true,
-    key: 'SESSION_ID'
+    key: 'SESSION_ID',
+    httpOnly: false
   }
 
   config.view = {
@@ -85,6 +86,7 @@ export default (appInfo: EggAppInfo) => {
 
   // add your config here
   config.middleware = [
+    'notFound',
     'access'
   ]
 
