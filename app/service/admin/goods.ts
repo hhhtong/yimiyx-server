@@ -35,7 +35,8 @@ export default class GoodsService extends BaseService {
     disabledPage = false,
     isOnline = 'all',
     goodsNo = '',
-    goodsName = ''
+    goodsName = '',
+    categoryIds = ''
   }: GoodsQuery): Promise<GoodsResult> {
     let query: SelectQueryBuilder<Goods> = this.goods
       .createQueryBuilder('G')
@@ -46,14 +47,18 @@ export default class GoodsService extends BaseService {
       query = query.andWhere(`G.goodsNo LIKE '%' :goodsNo '%'`, { goodsNo })
     }
     if (goodsName !== '') {
-      query = query.andWhere(`G.goodsName LIKE '%' :goodsName '%'`, {
-        goodsName
-      })
+      query = query.andWhere(`G.goodsName LIKE '%' :goodsName '%'`, { goodsName })
     }
+
     if (+isOnline === 1) {
       query = query.andWhere(`G.isOnline = :isOnline`, { isOnline })
     } else if (+isOnline === 0) {
       query = query.andWhere(`G.isOnline != 1`)
+    }
+
+    query = query.leftJoinAndSelect('G.categorys', 'GC')
+    if (categoryIds) {
+      query = query.where(`GC.id IN(:categoryIds)`, { categoryIds: categoryIds.split(',') })
     }
 
     total = await query.getCount()
@@ -63,10 +68,8 @@ export default class GoodsService extends BaseService {
     }
 
     query = query
-      .leftJoinAndSelect('G.categorys', 'GC')
       .leftJoinAndSelect('G.tags', 'T')
       .orderBy('G.updatedAt', 'DESC')
-
     return { list: await query.getMany(), total }
   }
 

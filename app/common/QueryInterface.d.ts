@@ -43,6 +43,7 @@ export interface GoodsQuery extends Query {
   isOnline?: string | number; // 是否出售中的商品
   goodsNo?: string; // 商品编号
   goodsName?: string; // 商品名称
+  categoryIds?: string; // 商品分类
 }
 export type GoodsPartial = Partial<Goods>;
 export type GoodsResult = QueryResult<Goods>;
